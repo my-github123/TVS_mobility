@@ -1,6 +1,6 @@
 
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, View} from 'react-native';
+import {StyleSheet, View,Image} from 'react-native';
 import Logo from './assets/images/logo.svg';
 import ScreenList from "./src/navigation/ScreenList";
 
@@ -8,7 +8,11 @@ import ScreenList from "./src/navigation/ScreenList";
 const SplashScreen = () => {
   return (
     <View style={styles.container}>
-      <Logo width={'80%'} height={'80%'} resizeMode="contain" />
+      {/* <Logo width={'80%'} height={'80%'} resizeMode="contain" /> */}
+      <Image source={require("./assets/images/tvs_fit.png")}
+      style={{width:"80%",height:"80%"}}
+      resizeMode="contain"
+      />
     </View>
   );
 };

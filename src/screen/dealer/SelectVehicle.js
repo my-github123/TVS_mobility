@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, TextInput, FlatList, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, TextInput, FlatList, Text, TouchableOpacity, StyleSheet,Image,Platform} from 'react-native';
 
 const SelectVehicle = ({navigation}) => {
   const vehicleList = [
@@ -44,6 +44,26 @@ const SelectVehicle = ({navigation}) => {
         value={searchText}
         onChangeText={handleSearch}
       /> */}
+           <View style={[styles.profileContainer, {height: 55}]}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Image
+            source={require('../../../assets/images/back.png')}
+            style={{width: 40, height: 43, marginTop: 3}}
+          />
+        </TouchableOpacity>
+
+    
+        <Text
+          style={{
+            marginTop: 16,
+            color: 'black',
+            fontFamily: 'DMSans-Medium',
+            marginLeft: 6,
+          }}>
+          Back
+        </Text>
+      </View>
+    
         <TextInput
         style={styles.searchInput}
         placeholder="Search..."
@@ -71,6 +91,18 @@ const SelectVehicle = ({navigation}) => {
     </View>
   );
 };
+
+const elevationStyle = Platform.select({
+  ios: {
+    // shadowColor: 'black',
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+  },
+  android: {
+    elevation: 3,
+  },
+});
 
 const styles = StyleSheet.create({
   container: {
@@ -104,6 +136,16 @@ const styles = StyleSheet.create({
     marginTop: 16,
     fontSize: 16,
     paddingHorizontal:14
+  },
+  profileContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    marginVertical: 4,
+    paddingHorizontal: 12,
+    backgroundColor: 'white',
+    // padding: 5,
+    // height: 55,
+    ...elevationStyle, // Apply elevation or shadow based on platform
   },
 });
 

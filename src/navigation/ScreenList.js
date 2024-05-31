@@ -58,11 +58,13 @@ export default function ScreenList() {
         screenOptions={{
           headerShown: false,
         }}>
+         
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Dashboard" component={Dashboard}/>
         <Stack.Screen name="DealerList" component={DealerList} />
         <Stack.Screen name="SelectVehicle" component={SelectVehicle} />
-         <Stack.Screen name="OrderCreation" component={OrderCreation} />
+        <Stack.Screen name="OrderCreation" component={OrderCreation} />
+        
          <Stack.Screen name="take" component={TakePhotoScreen}/>
          <Stack.Screen name="CustomPhotoComponent" component={CustomPhotoComponent} />
         {/* <Stack.Screen name="Notification" component={Notification} />

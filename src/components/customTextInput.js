@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
     paddingHorizontal:3
   },
   input: {
-  padding: 10,
+    padding: 10,
     borderRadius: 5,
     fontSize: 16,
     backgroundColor: '#f7f8f9',
