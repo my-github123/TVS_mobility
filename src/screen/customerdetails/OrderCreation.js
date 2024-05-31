@@ -23,8 +23,6 @@ import {Picker} from '@react-native-picker/picker';
 const {width} = Dimensions.get('window');
 
 const OrderCreation = ({navigation}) => {
-
- 
   const swiperRef = useRef(null);
 
   const [carDetailsFormData, setCarDetailsFormData] = useState({
@@ -132,6 +130,21 @@ const OrderCreation = ({navigation}) => {
     Array.from({length: 13}, () => null),
   );
 
+  const [bodyInspectionPhotosForPillars, setbodyInspectionPhotosForPillars] =
+    useState(Array.from({length: 13}, () => null));
+  const [bodyInspectionPhotosForPillars2, setbodyInspectionPhotosForPillars2] =
+    useState(Array.from({length: 13}, () => null));
+  const [bodyInspectionPhotosForPillars3, setbodyInspectionPhotosForPillars3] =
+    useState(Array.from({length: 13}, () => null));
+  const [bodyInspectionPhotosForPillars4, setbodyInspectionPhotosForPillars4] =
+    useState(Array.from({length: 13}, () => null));
+  const [bodyInspectionPhotosForPillars5, setbodyInspectionPhotosForPillars5] =
+    useState(Array.from({length: 13}, () => null));
+
+  const [bodyInspectionPhotos2, setBodyInspectionPhotos2] = useState(
+    Array.from({length: 13}, () => null),
+  );
+
   const [carDetailsPhoto, setCarDetailsPhoto] = useState(
     Array.from({length: 6}, () => null),
   );
@@ -140,6 +153,17 @@ const OrderCreation = ({navigation}) => {
     Array.from({length: 6}, () => null),
   );
 
+  const [carDetailsPhoto3, setCarDetailsPhoto3] = useState(
+    Array.from({length: 6}, () => null),
+  );
+
+  const [carDetailsPhoto4, setCarDetailsPhoto4] = useState(
+    Array.from({length: 6}, () => null),
+  );
+
+  const [carDetailsPhoto5, setCarDetailsPhoto5] = useState(
+    Array.from({length: 6}, () => null),
+  );
 
   const [selectedContainerIndex, setSelectedContainerIndex] = useState(null);
   const [selectedInspectionIndex, setSelectedInspectionIndex] = useState(null);
@@ -205,6 +229,66 @@ const OrderCreation = ({navigation}) => {
     });
   };
 
+  const openCameraForBodyInspectionPillars1 = () => {
+    launchCamera({mediaType: 'photo'}, response => {
+      if (response.assets && response.assets.length > 0) {
+        const newPhotoUris = [...bodyInspectionPhotosForPillars];
+        newPhotoUris[selectedBodyInspectionIndex] = response.assets[0].uri;
+        setbodyInspectionPhotosForPillars(newPhotoUris);
+      }
+    });
+  };
+
+  const openCameraForBodyInspectionPillars2 = () => {
+    launchCamera({mediaType: 'photo'}, response => {
+      if (response.assets && response.assets.length > 0) {
+        const newPhotoUris = [...bodyInspectionPhotosForPillars2];
+        newPhotoUris[selectedBodyInspectionIndex] = response.assets[0].uri;
+        setbodyInspectionPhotosForPillars2(newPhotoUris);
+      }
+    });
+  };
+
+  const openCameraForBodyInspectionPillars3 = () => {
+    launchCamera({mediaType: 'photo'}, response => {
+      if (response.assets && response.assets.length > 0) {
+        const newPhotoUris = [...bodyInspectionPhotosForPillars3];
+        newPhotoUris[selectedBodyInspectionIndex] = response.assets[0].uri;
+        setbodyInspectionPhotosForPillars3(newPhotoUris);
+      }
+    });
+  };
+
+  const openCameraForBodyInspectionPillars4 = () => {
+    launchCamera({mediaType: 'photo'}, response => {
+      if (response.assets && response.assets.length > 0) {
+        const newPhotoUris = [...bodyInspectionPhotosForPillars4];
+        newPhotoUris[selectedBodyInspectionIndex] = response.assets[0].uri;
+        setbodyInspectionPhotosForPillars4(newPhotoUris);
+      }
+    });
+  };
+
+  const openCameraForBodyInspectionPillars5 = () => {
+    launchCamera({mediaType: 'photo'}, response => {
+      if (response.assets && response.assets.length > 0) {
+        const newPhotoUris = [...bodyInspectionPhotosForPillars5];
+        newPhotoUris[selectedBodyInspectionIndex] = response.assets[0].uri;
+        setbodyInspectionPhotosForPillars5(newPhotoUris);
+      }
+    });
+  };
+
+  const openCameraForBodyInspection2 = () => {
+    launchCamera({mediaType: 'photo'}, response => {
+      if (response.assets && response.assets.length > 0) {
+        const newPhotoUris = [...bodyInspectionPhotos2];
+        newPhotoUris[selectedBodyInspectionIndex] = response.assets[0].uri;
+        setBodyInspectionPhotos2(newPhotoUris);
+      }
+    });
+  };
+
   const openCameraForCarDetails = () => {
     launchCamera({mediaType: 'photo'}, response => {
       if (response.assets && response.assets.length > 0) {
@@ -225,10 +309,37 @@ const OrderCreation = ({navigation}) => {
     });
   };
 
+  const openCameraForCarDetailsThree = () => {
+    launchCamera({mediaType: 'photo'}, response => {
+      if (response.assets && response.assets.length > 0) {
+        const newPhotoUris = [...carDetailsPhoto3];
+        newPhotoUris[carDetailsIndex] = response.assets[0].uri;
+        setCarDetailsPhoto3(newPhotoUris);
+      }
+    });
+  };
 
+  const openCameraForCarDetailsFour = () => {
+    launchCamera({mediaType: 'photo'}, response => {
+      if (response.assets && response.assets.length > 0) {
+        const newPhotoUris = [...carDetailsPhoto4];
+        newPhotoUris[carDetailsIndex] = response.assets[0].uri;
+        setCarDetailsPhoto4(newPhotoUris);
+      }
+    });
+  };
 
+  const openCameraForCarDetailsFive = () => {
+    launchCamera({mediaType: 'photo'}, response => {
+      if (response.assets && response.assets.length > 0) {
+        const newPhotoUris = [...carDetailsPhoto5];
+        newPhotoUris[carDetailsIndex] = response.assets[0].uri;
+        setCarDetailsPhoto5(newPhotoUris);
+      }
+    });
+  };
 
-  console.log(carDetailsPhoto[carDetailsIndex],"INDE S AJD AJ D");
+  console.log(carDetailsPhoto[carDetailsIndex], 'INDE S AJD AJ D');
 
   const handleOkPress = () => {
     // if (!remarks[selectedContainerIndex]) {
@@ -769,7 +880,71 @@ const OrderCreation = ({navigation}) => {
                 </>
               ))}
 
-              {bodyInspectionPhotos[selectedBodyInspectionIndex] ? (
+              {bodyInspectionPhotos2[selectedBodyInspectionIndex] && (
+                <Image
+                  source={{
+                    uri: bodyInspectionPhotos2[selectedBodyInspectionIndex],
+                  }}
+                  style={styles.uploadedImage}
+                />
+              )}
+
+              {bodyInspectionPhotosForPillars[selectedBodyInspectionIndex] && (
+                <Image
+                  source={{
+                    uri: bodyInspectionPhotosForPillars[
+                      selectedBodyInspectionIndex
+                    ],
+                  }}
+                  style={styles.uploadedImage}
+                />
+              )}
+
+              {bodyInspectionPhotosForPillars2[selectedBodyInspectionIndex] && (
+                <Image
+                  source={{
+                    uri: bodyInspectionPhotosForPillars2[
+                      selectedBodyInspectionIndex
+                    ],
+                  }}
+                  style={styles.uploadedImage}
+                />
+              )}
+
+              {bodyInspectionPhotosForPillars3[selectedBodyInspectionIndex] && (
+                <Image
+                  source={{
+                    uri: bodyInspectionPhotosForPillars3[
+                      selectedBodyInspectionIndex
+                    ],
+                  }}
+                  style={styles.uploadedImage}
+                />
+              )}
+
+              {bodyInspectionPhotosForPillars4[selectedBodyInspectionIndex] && (
+                <Image
+                  source={{
+                    uri: bodyInspectionPhotosForPillars4[
+                      selectedBodyInspectionIndex
+                    ],
+                  }}
+                  style={styles.uploadedImage}
+                />
+              )}
+
+              {bodyInspectionPhotosForPillars5[selectedBodyInspectionIndex] && (
+                <Image
+                  source={{
+                    uri: bodyInspectionPhotosForPillars5[
+                      selectedBodyInspectionIndex
+                    ],
+                  }}
+                  style={styles.uploadedImage}
+                />
+              )}
+
+              {bodyInspectionPhotos[selectedBodyInspectionIndex] && (
                 <View style={styles.photoContainer}>
                   <Image
                     source={{
@@ -821,15 +996,117 @@ const OrderCreation = ({navigation}) => {
                     </TouchableOpacity>
                   </View>
                 </View>
-              ) : (
-                <View style={{paddingHorizontal: 8}}>
-                  <TouchableOpacity
-                    style={styles.photoInput}
-                    onPress={() => openCameraForBodyInspection()}>
-                    <Text>Upload</Text>
-                  </TouchableOpacity>
-                </View>
               )}
+
+              <View style={{paddingHorizontal: 8}}>
+                {selectedBodyInspectionIndex === 1 ||
+                selectedBodyInspectionIndex === 2 ||
+                selectedBodyInspectionIndex === 3 ||
+                selectedBodyInspectionIndex === 4 ||
+                selectedBodyInspectionIndex === 10 ||
+                selectedBodyInspectionIndex === 11 ||
+                selectedBodyInspectionIndex === 12 ? (
+                  <>
+                    {bodyInspectionPhotos[selectedBodyInspectionIndex] ==
+                      null && (
+                      <TouchableOpacity
+                        style={styles.photoInput}
+                        onPress={() => openCameraForBodyInspection()}>
+                        <Text>Upload</Text>
+                      </TouchableOpacity>
+                    )}
+                    {bodyInspectionPhotos2[selectedBodyInspectionIndex] ==
+                      null && (
+                      <TouchableOpacity
+                        style={styles.photoInput}
+                        onPress={() => openCameraForBodyInspection2()}>
+                        <Text>Upload</Text>
+                      </TouchableOpacity>
+                    )}
+                    {/* <TouchableOpacity
+                       style={styles.photoInput}
+                       onPress={() => openCameraForCarDetails()}>
+                       <Text>Upload</Text>
+                     </TouchableOpacity> */}
+                  </>
+                ) : (
+                  <>
+                    {bodyInspectionPhotos[selectedBodyInspectionIndex] ==
+                      null && (
+                      <TouchableOpacity
+                        style={styles.photoInput}
+                        onPress={() => openCameraForBodyInspection()}>
+                        <Text>Upload</Text>
+                      </TouchableOpacity>
+                    )}
+                  </>
+                )}
+              </View>
+
+              <View style={{paddingHorizontal: 8}}>
+                {selectedBodyInspectionIndex === 0 && (
+                  <>
+                    {bodyInspectionPhotosForPillars[
+                      selectedBodyInspectionIndex
+                    ] == null && (
+                      <TouchableOpacity
+                        style={styles.photoInput}
+                        onPress={() => openCameraForBodyInspectionPillars1()}>
+                        <Text>Upload</Text>
+                      </TouchableOpacity>
+                    )}
+
+                    {bodyInspectionPhotosForPillars2[
+                      selectedBodyInspectionIndex
+                    ] == null && (
+                      <TouchableOpacity
+                        style={styles.photoInput}
+                        onPress={() => openCameraForBodyInspectionPillars2()}>
+                        <Text>Upload</Text>
+                      </TouchableOpacity>
+                    )}
+
+                    {bodyInspectionPhotosForPillars3[
+                      selectedBodyInspectionIndex
+                    ] == null && (
+                      <TouchableOpacity
+                        style={styles.photoInput}
+                        onPress={() => openCameraForBodyInspectionPillars3()}>
+                        <Text>Upload</Text>
+                      </TouchableOpacity>
+                    )}
+                    {bodyInspectionPhotosForPillars4[
+                      selectedBodyInspectionIndex
+                    ] == null && (
+                      <TouchableOpacity
+                        style={styles.photoInput}
+                        onPress={() => openCameraForBodyInspectionPillars4()}>
+                        <Text>Upload</Text>
+                      </TouchableOpacity>
+                    )}
+
+                    {bodyInspectionPhotosForPillars5[
+                      selectedBodyInspectionIndex
+                    ] == null && (
+                      <TouchableOpacity
+                        style={styles.photoInput}
+                        onPress={() => openCameraForBodyInspectionPillars5()}>
+                        <Text>Upload</Text>
+                      </TouchableOpacity>
+                    )}
+                  </>
+                )}
+              </View>
+
+              {/* // ) : (
+              //   <View style={{paddingHorizontal: 8}}>
+              //     <TouchableOpacity
+              //       style={styles.photoInput}
+              //       onPress={() => openCameraForBodyInspection()}>
+              //       <Text>Upload</Text>
+              //     </TouchableOpacity>
+              //   </View>
+              // )} */}
               <View style={{paddingHorizontal: 8, marginTop: 18}}>
                 <CustomButton
                   title="Submit"
@@ -908,19 +1185,51 @@ const OrderCreation = ({navigation}) => {
                 </>
               ))}
 
+              {carDetailsPhoto4[carDetailsIndex] && (
+                <>
+                  <Image
+                    source={{
+                      uri: carDetailsPhoto4[carDetailsIndex],
+                    }}
+                    style={styles.uploadedImage}
+                  />
+                </>
+              )}
+
+              {carDetailsPhoto3[carDetailsIndex] && (
+                <>
+                  <Image
+                    source={{
+                      uri: carDetailsPhoto3[carDetailsIndex],
+                    }}
+                    style={styles.uploadedImage}
+                  />
+                </>
+              )}
+
               {carDetailsPhoto2[carDetailsIndex] && (
                 <>
                   <Image
-                  source={{
-                    uri: carDetailsPhoto2[carDetailsIndex],
-                  }}
-                  style={styles.uploadedImage}
-                />
+                    source={{
+                      uri: carDetailsPhoto2[carDetailsIndex],
+                    }}
+                    style={styles.uploadedImage}
+                  />
                 </>
-                
               )}
 
-              {carDetailsPhoto[carDetailsIndex] ? (
+              {carDetailsPhoto5[carDetailsIndex] && (
+                <>
+                  <Image
+                    source={{
+                      uri: carDetailsPhoto5[carDetailsIndex],
+                    }}
+                    style={styles.uploadedImage}
+                  />
+                </>
+              )}
+
+              {carDetailsPhoto[carDetailsIndex] && (
                 <View style={styles.photoContainer}>
                   <Image
                     source={{
@@ -929,8 +1238,6 @@ const OrderCreation = ({navigation}) => {
                     style={styles.uploadedImage}
                   />
 
-                  
-     
                   {carDetailsValues[carDetailsIndex] !== undefined && (
                     <Picker
                       style={styles.picker}
@@ -963,48 +1270,76 @@ const OrderCreation = ({navigation}) => {
                     </TouchableOpacity>
                   </View>
                 </View>
-              ) : (
-              <></>
               )}
-                <View style={{paddingHorizontal: 8}}>
-                  {carDetailsIndex===3 ?(
-                    <>
-                    {carDetailsPhoto[carDetailsIndex] ==null  && (
-                       <TouchableOpacity
-                       style={styles.photoInput}
-                       onPress={() => openCameraForCarDetails()}>
-                       <Text>Upload</Text>
-                     </TouchableOpacity>
-
+              <View style={{paddingHorizontal: 8}}>
+                {carDetailsIndex === 2 ? (
+                  <>
+                    {carDetailsPhoto[carDetailsIndex] == null && (
+                      <TouchableOpacity
+                        style={styles.photoInput}
+                        onPress={() => openCameraForCarDetails()}>
+                        <Text>Upload</Text>
+                      </TouchableOpacity>
                     )}
 
-{carDetailsPhoto2[carDetailsIndex] ==null  && (
-                    
-                   <TouchableOpacity
+                    {carDetailsPhoto2[carDetailsIndex] == null && (
+                      <TouchableOpacity
+                        style={styles.photoInput}
+                        onPress={() => openCameraForCarDetailsTwo()}>
+                        <Text>Upload</Text>
+                      </TouchableOpacity>
+                    )}
+
+                    {carDetailsPhoto3[carDetailsIndex] == null && (
+                      <TouchableOpacity
+                        style={styles.photoInput}
+                        onPress={() => openCameraForCarDetailsThree()}>
+                        <Text>Upload</Text>
+                      </TouchableOpacity>
+                    )}
+                    {carDetailsPhoto4[carDetailsIndex] == null && (
+                      <TouchableOpacity
+                        style={styles.photoInput}
+                        onPress={() => openCameraForCarDetailsFour()}>
+                        <Text>Upload</Text>
+                      </TouchableOpacity>
+                    )}
+                  </>
+                ) : (
+                  <>
+                    {carDetailsPhoto[carDetailsIndex] == null && (
+                      <TouchableOpacity
+                        style={styles.photoInput}
+                        onPress={() => openCameraForCarDetails()}>
+                        <Text>Upload</Text>
+                      </TouchableOpacity>
+                    )}
+                  </>
+                )}
+              </View>
+
+              {carDetailsIndex === 5 && (
+                <>
+                  {/* {carDetailsPhoto[carDetailsIndex] ==null  && ( */}
+                  <TouchableOpacity
+                    style={styles.photoInput}
+                    onPress={() => openCameraForCarDetailsFive()}>
+                    <Text>Upload</Text>
+                  </TouchableOpacity>
+
+                  {/* )} */}
+
+                  {/* {carDetailsPhoto2[carDetailsIndex] ==null  && ( */}
+
+                  {/* <TouchableOpacity
                    style={styles.photoInput}
                    onPress={() => openCameraForCarDetailsTwo()}>
                    <Text>Upload</Text>
-                 </TouchableOpacity>
-)}
-                 <TouchableOpacity
-                 style={styles.photoInput}
-                 onPress={() => openCameraForCarDetails()}>
-                 <Text>Upload</Text>
-               </TouchableOpacity>
-               </>
+                 </TouchableOpacity> */}
+                  {/* )} */}
+                </>
+              )}
 
-                  ):(
-                    <>
-                    <TouchableOpacity
-                    style={styles.photoInput}
-                    onPress={() => openCameraForCarDetails()}>
-                    <Text>Upload</Text>
-                  </TouchableOpacity>
-                    
-                    </>
-                  )}
-                 
-                </View>
               <View style={{paddingHorizontal: 8, marginTop: 18}}>
                 <CustomButton
                   title="Submit"
@@ -1283,7 +1618,9 @@ const OrderCreation = ({navigation}) => {
                   <TouchableOpacity
                     style={styles.photoInput}
                     onPress={() => handleMechanicalInspectionPress(index)}>
-                    <Text>{secondValidation[index] ? 'Update / View' : 'Select'}</Text>
+                    <Text>
+                      {secondValidation[index] ? 'Update / View' : 'Select'}
+                    </Text>
                   </TouchableOpacity>
                   <Text style={{textAlign: 'right'}}>
                     {secondValidation[index] ? '✅' : '☒'}
