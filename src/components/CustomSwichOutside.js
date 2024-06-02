@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 
-const CustomSwitch = ({
+const CustomSwichOutside = ({
   selectionMode,
   roundCorner,
   option1,
@@ -24,7 +24,7 @@ const CustomSwitch = ({
   return (
     <View>
          {/* <Text style={{bottom:15}}>"jgjhgghg</Text> */}
-         {label && <Text style={{  fontSize: 16,
+         {label && <Text style={{fontSize:16,
     marginBottom:8,
     fontWeight:"bold",
     color:"black",
@@ -32,7 +32,7 @@ const CustomSwitch = ({
       <View
         style={{
           height: 44,
-          width: 310,
+          width: 330,
           backgroundColor: 'white',
           borderRadius: roundCorner ? 25 : 0,
           borderWidth: 1,
@@ -81,4 +81,4 @@ const CustomSwitch = ({
   );
 };
 
-export default CustomSwitch;
+export default CustomSwichOutside;

@@ -12,8 +12,10 @@ import {
   Alert,
   Dimensions,
   ScrollView,
+  ToastAndroid,
 } from 'react-native';
 import Swiper from 'react-native-swiper';
+import CustomSwichOutside from '../../components/CustomSwichOutside';
 import CustomSwitch from '../../components/CustomSwitch';
 import CustomTextInput from '../../components/customTextInput';
 import CustomButton from '../../components/customTextButton';
@@ -28,40 +30,66 @@ const OrderCreation = ({navigation}) => {
   const [carDetailsFormData, setCarDetailsFormData] = useState({
     make: '',
     model: '',
-    yearOfManufacture: '',
-    trim: '',
+    yearofmanufacture: '',
+    trimvariant: '',
     mileage: '',
     color: '',
     transmission: '',
-    fuelType: '',
-    alteration: '',
-    numberOfOwners: '',
+    numberofowners: '',
   });
 
   const [carDetailsSecondFormData, setCarDetailsSecondFormData] = useState({
-    hasHypothication: '',
     hypothicatedBy: '',
-    noc: '',
+
     roadtaxIsValid: '',
-    reRegistered: '',
+
     cubicCapacity: '',
     numberOfSeats: '',
     registrationType: '',
     registrationDate: '',
-    insurance: '',
   });
+
+  const labelToKeyMap = {
+    'Hypothicated by': 'hypothicatedBy',
+
+    'Road tax is valid': 'roadtaxIsValid',
+
+    'Cubic Capacity': 'cubicCapacity',
+    'Number of seats': 'numberOfSeats',
+    'Registration type': 'registrationType',
+    'Registration Date': 'registrationDate',
+  };
 
   const [carDetailsThirdFormData, setCarDetailsThirdFormData] = useState({
     insuranceCompany: '',
     insuranceValidity: '',
     chellanDetails: '',
-    blackListed: '',
+
     chassisNumber: '',
     engineNumber: '',
-    rcStatus: '',
-    stateNoc: '',
-    flood: '',
   });
+
+  const labelToKeyMap1 = {
+    'Insurance Company': 'insuranceCompany',
+    'Insurance Validity': 'insuranceValidity',
+    'Challan Details': 'chellanDetails',
+
+    'Chassis Number': 'chassisNumber',
+    'Engine Number': 'engineNumber',
+  };
+
+  const switchTitle = [
+    'Fuel type',
+    'Alteration',
+    'Has Hypothication',
+    'NOC',
+    'Re-Registered',
+    'Insurance',
+    'Blacklisted',
+    'RC Status',
+    'State NOC',
+    'Flood',
+  ];
 
   const [modalVisible, setModalVisible] = useState(false);
   const [inspectionVisible, setInspectionVisible] = useState(false);
@@ -94,6 +122,9 @@ const OrderCreation = ({navigation}) => {
     switchStateForMechanicalInspection,
     setSwitchStateForMechanicalInspection,
   ] = useState(Array.from({length: 8}, () => 2));
+
+  const [switchStateForVehicleDetails, setSwitchStateForVehicleDetails] =
+    useState(Array.from({length: 10}, () => 2));
 
   const [selectedValuesForCondition, setSelectedValuesForCondition] = useState(
     Array.from({length: 8}, () => ''),
@@ -141,6 +172,16 @@ const OrderCreation = ({navigation}) => {
   const [bodyInspectionPhotosForPillars5, setbodyInspectionPhotosForPillars5] =
     useState(Array.from({length: 13}, () => null));
 
+  const [bodyInspectionDoor1, setBodyInspectionDoor1] = useState(
+    Array.from({length: 13}, () => null),
+  );
+  const [bodyInspectionDoor2, setBodyInspectionDoor2] = useState(
+    Array.from({length: 13}, () => null),
+  );
+  const [bodyInspectionDoor3, setBodyInspectionDoor3] = useState(
+    Array.from({length: 13}, () => null),
+  );
+
   const [bodyInspectionPhotos2, setBodyInspectionPhotos2] = useState(
     Array.from({length: 13}, () => null),
   );
@@ -169,14 +210,106 @@ const OrderCreation = ({navigation}) => {
   const [selectedInspectionIndex, setSelectedInspectionIndex] = useState(null);
   const [selectedBodyInspectionIndex, setSelectedBodyInspectionIndex] =
     useState(null);
+
   const [carDetailsIndex, setCarDetailsIndex] = useState(null);
 
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const handleNext = () => {
+    console.log('Form Data:', carDetailsFormData);
+
+    console.log('FORM DARAASSS', carDetailsSecondFormData);
+
+    const isFormComplete = Object.values(carDetailsFormData).every(value => {
+      console.log('Value:', value, 'Trimmed:', value.trim());
+      return value.trim() !== '';
+    });
+
+    const isFormComplete2 = Object.values(carDetailsSecondFormData).every(
+      value => {
+        console.log('Value:', value, 'Trimmed:', value.trim());
+        return value.trim() !== '';
+      },
+    );
+
+    console.log(isFormComplete2, 'iSHGFHFHG');
+
+    // const isFormComplete = Object.values(carDetailsFormData).every(value => value.trim() !== '');
+
+    console.log(carDetailsFormData, 'cetd');
+
+    console.log(isFormComplete, 'log');
+    const isFormCompleteCarDetails2 = Object.values(
+      carDetailsSecondFormData,
+    ).every(value => value != '');
+
+    const isFormCompleteCarDetails3 = Object.values(
+      carDetailsThirdFormData,
+    ).every(value => value != '');
+
+    // if (isFormComplete) {
     if (swiperRef.current) {
       swiperRef.current.scrollBy(1);
     }
+    // } else {
+    //   ToastAndroid.show('Please fill all the fields', ToastAndroid.SHORT);
+    // }
+  };
+
+  const handleNext2 = () => {
+    const isFormComplete2 = Object.values(carDetailsSecondFormData).every(
+      value => {
+        console.log('Value:', value, 'Trimmed:', value.trim());
+        return value.trim() !== '';
+      },
+    );
+
+    console.log(isFormComplete2);
+    console.log(carDetailsSecondFormData, 'car detauls firnm datsvvv');
+
+    // const isFormComplete = Object.values(carDetailsFormData).every(value => value.trim() !== '');
+
+    // if (isFormComplete2) {
+    if (swiperRef.current) {
+      swiperRef.current.scrollBy(1);
+    }
+    // } else {
+    //   ToastAndroid.show('Please fill all the fields', ToastAndroid.SHORT);
+    // }
+  };
+
+  const getOptions = index => {
+    switch (index) {
+      case 0:
+        return {option1: 'Diesel', option2: 'Petrol'};
+      case 2:
+        return {option1: 'LPG', option2: 'Color'};
+      case 7:
+        return {option1: 'Original', option2: 'Duplicate'};
+      default:
+        return {option1: 'Yes', option2: 'No'};
+    }
+  };
+
+  const handleNext3 = () => {
+    const isFormComplete3 = Object.values(carDetailsThirdFormData).every(
+      value => {
+        console.log('Value:', value, 'Trimmed:', value.trim());
+        return value.trim() !== '';
+      },
+    );
+
+    console.log(carDetailsThirdFormData);
+    console.log(isFormComplete3, 'lmklj');
+    // const isFormComplete = Object.values(carDetailsFormData).every(value => value.trim() !== '');
+
+    // if (isFormComplete3) {
+    if (swiperRef.current) {
+      swiperRef.current.scrollBy(1);
+    }
+    // } else {
+    //   ToastAndroid.show('Please fill all the fields', ToastAndroid.SHORT);
+    // }
   };
 
   const handleSubmit = () => {
@@ -187,7 +320,7 @@ const OrderCreation = ({navigation}) => {
   };
 
   const getProgressBarWidth = () => {
-    return `${((currentIndex + 1) / 7) * 100}%`;
+    return `${((currentIndex + 1) / 8) * 100}%`;
   };
 
   const handleUpload = buttonIndex => {
@@ -235,6 +368,36 @@ const OrderCreation = ({navigation}) => {
         const newPhotoUris = [...bodyInspectionPhotosForPillars];
         newPhotoUris[selectedBodyInspectionIndex] = response.assets[0].uri;
         setbodyInspectionPhotosForPillars(newPhotoUris);
+      }
+    });
+  };
+
+  const openCameraForBodyInspection1 = () => {
+    launchCamera({mediaType: 'photo'}, response => {
+      if (response.assets && response.assets.length > 0) {
+        const newPhotoUris = [...bodyInspectionDoor1];
+        newPhotoUris[selectedBodyInspectionIndex] = response.assets[0].uri;
+        setBodyInspectionDoor1(newPhotoUris);
+      }
+    });
+  };
+
+  const openCameraForBodyInspectionDoor2 = () => {
+    launchCamera({mediaType: 'photo'}, response => {
+      if (response.assets && response.assets.length > 0) {
+        const newPhotoUris = [...bodyInspectionDoor2];
+        newPhotoUris[selectedBodyInspectionIndex] = response.assets[0].uri;
+        setBodyInspectionDoor2(newPhotoUris);
+      }
+    });
+  };
+
+  const openCameraForBodyInspectionDoor3 = () => {
+    launchCamera({mediaType: 'photo'}, response => {
+      if (response.assets && response.assets.length > 0) {
+        const newPhotoUris = [...bodyInspectionDoor3];
+        newPhotoUris[selectedBodyInspectionIndex] = response.assets[0].uri;
+        setBodyInspectionDoor3(newPhotoUris);
       }
     });
   };
@@ -342,10 +505,10 @@ const OrderCreation = ({navigation}) => {
   console.log(carDetailsPhoto[carDetailsIndex], 'INDE S AJD AJ D');
 
   const handleOkPress = () => {
-    // if (!remarks[selectedContainerIndex]) {
-    //   Alert.alert('Error', 'Remarks field is mandatory');
-    //   return;
-    // }
+    if (!photoUris[selectedContainerIndex]) {
+      ToastAndroid.show('Photo fields are required', ToastAndroid.SHORT);
+      return;
+    }
     const newValidations = [...validations];
     // Assume validatePhotoAndRemarks is a function that returns true if both photo and remarks are valid
     newValidations[selectedContainerIndex] = validatePhotoAndRemarks(
@@ -356,6 +519,13 @@ const OrderCreation = ({navigation}) => {
   };
 
   const handleInspectionOkPress = () => {
+    if (
+      switchStateForMechanicalInspection[selectedInspectionIndex] === 2 &&
+      !inspectionPhotos[selectedInspectionIndex]
+    ) {
+      ToastAndroid.show('Photo fields are required', ToastAndroid.SHORT);
+      return;
+    }
     setInspectionVisible(false);
     const newValidations = [...secondValidation];
     // Assume validatePhotoAndRemarks is a function that returns true if both photo and remarks are valid
@@ -366,6 +536,14 @@ const OrderCreation = ({navigation}) => {
   };
 
   const handleBodyInspectionOkPress = () => {
+    if (
+      switchStateForBodyInspection[selectedBodyInspectionIndex] === 2 &&
+      !bodyInspectionPhotos[selectedBodyInspectionIndex]
+    ) {
+      ToastAndroid.show('Photo fields are required', ToastAndroid.SHORT);
+      return;
+    }
+
     setBodyInspectionVisible(false);
     const newValidations = [...thirdValidation];
     // Assume validatePhotoAndRemarks is a function that returns true if both photo and remarks are valid
@@ -376,6 +554,13 @@ const OrderCreation = ({navigation}) => {
   };
 
   const handleCarDetailsOkPress = () => {
+    if (
+      switchStateForCarDetails[carDetailsIndex] === 2 &&
+      !carDetailsPhoto[carDetailsIndex]
+    ) {
+      ToastAndroid.show('Photo fields are required', ToastAndroid.SHORT);
+      return;
+    }
     setCarDetailsInspection(false);
     const newValidations = [...carValidation];
     // Assume validatePhotoAndRemarks is a function that returns true if both photo and remarks are valid
@@ -417,6 +602,96 @@ const OrderCreation = ({navigation}) => {
     setBodyInspectionRemarks(newRemarks);
   };
 
+  const handleBodyInspectionClosePress2 = index => {
+    const newPhotoUris = [...bodyInspectionPhotos2];
+    newPhotoUris[index] = null;
+    // const newRemarks = [...bodyInspectionRemarks];
+    // newRemarks[index] = '';
+
+    setBodyInspectionPhotos2(newPhotoUris);
+    // setBodyInspectionRemarks(newRemarks);
+  };
+
+  const handleBodyInspectionDoor3 = index => {
+    const newPhotoUris = [...bodyInspectionDoor3];
+    newPhotoUris[index] = null;
+    // const newRemarks = [...bodyInspectionRemarks];
+    // newRemarks[index] = '';
+
+    setBodyInspectionDoor3(newPhotoUris);
+    // setBodyInspectionRemarks(newRemarks);
+  };
+
+  const handleBodyInspectionDoor2 = index => {
+    const newPhotoUris = [...bodyInspectionDoor2];
+    newPhotoUris[index] = null;
+    // const newRemarks = [...bodyInspectionRemarks];
+    // newRemarks[index] = '';
+
+    setBodyInspectionDoor2(newPhotoUris);
+    // setBodyInspectionRemarks(newRemarks);
+  };
+
+  const handleBodyInspectionDoor1 = index => {
+    const newPhotoUris = [...bodyInspectionDoor1];
+    newPhotoUris[index] = null;
+    // const newRemarks = [...bodyInspectionRemarks];
+    // newRemarks[index] = '';
+
+    setBodyInspectionDoor1(newPhotoUris);
+    // setBodyInspectionRemarks(newRemarks);
+  };
+
+  const handleBodyInspectionPhotosForPillar5 = index => {
+    const newPhotoUris = [...bodyInspectionPhotosForPillars5];
+    newPhotoUris[index] = null;
+    // const newRemarks = [...bodyInspectionRemarks];
+    // newRemarks[index] = '';
+
+    setbodyInspectionPhotosForPillars5(newPhotoUris);
+    // setBodyInspectionRemarks(newRemarks);
+  };
+
+  const handleBodyInspectionPhotosForPillar4 = index => {
+    const newPhotoUris = [...bodyInspectionPhotosForPillars4];
+    newPhotoUris[index] = null;
+    // const newRemarks = [...bodyInspectionRemarks];
+    // newRemarks[index] = '';
+
+    setbodyInspectionPhotosForPillars4(newPhotoUris);
+    // setBodyInspectionRemarks(newRemarks);
+  };
+
+  const handleBodyInspectionPhotosForPillar3 = index => {
+    const newPhotoUris = [...bodyInspectionPhotosForPillars3];
+    newPhotoUris[index] = null;
+    // const newRemarks = [...bodyInspectionRemarks];
+    // newRemarks[index] = '';
+
+    setbodyInspectionPhotosForPillars3(newPhotoUris);
+    // setBodyInspectionRemarks(newRemarks);
+  };
+
+  const handleBodyInspectionPhotosForPillar2 = index => {
+    const newPhotoUris = [...bodyInspectionPhotosForPillars2];
+    newPhotoUris[index] = null;
+    // const newRemarks = [...bodyInspectionRemarks];
+    // newRemarks[index] = '';
+
+    setbodyInspectionPhotosForPillars2(newPhotoUris);
+    // setBodyInspectionRemarks(newRemarks);
+  };
+
+  const handleBodyInspectionPhotosForPillar1 = index => {
+    const newPhotoUris = [...bodyInspectionPhotosForPillars];
+    newPhotoUris[index] = null;
+    // const newRemarks = [...bodyInspectionRemarks];
+    // newRemarks[index] = '';
+
+    setbodyInspectionPhotosForPillars(newPhotoUris);
+    // setBodyInspectionRemarks(newRemarks);
+  };
+
   const handleCarDetailsClosePress = index => {
     const newPhotoUris = [...carDetailsPhoto];
     newPhotoUris[index] = null;
@@ -427,6 +702,46 @@ const OrderCreation = ({navigation}) => {
     setCarDetailsRemarks(newRemarks);
   };
 
+  const handleCarDetailsClosePress5 = index => {
+    const newPhotoUris = [...carDetailsPhoto5];
+    newPhotoUris[index] = null;
+    // const newRemarks = [...carDetailsRemarks];
+    // newRemarks[index] = '';
+
+    setCarDetailsPhoto5(newPhotoUris);
+    // setCarDetailsRemarks(newRemarks);
+  };
+
+  const handleCarDetailsClosePress2 = index => {
+    const newPhotoUris = [...carDetailsPhoto2];
+    newPhotoUris[index] = null;
+    // const newRemarks = [...carDetailsRemarks];
+    // newRemarks[index] = '';
+
+    setCarDetailsPhoto2(newPhotoUris);
+    // setCarDetailsRemarks(newRemarks);
+  };
+
+  const handleCarDetailsClosePress3 = index => {
+    const newPhotoUris = [...carDetailsPhoto3];
+    newPhotoUris[index] = null;
+    // const newRemarks = [...carDetailsRemarks];
+    // newRemarks[index] = '';
+
+    setCarDetailsPhoto3(newPhotoUris);
+    //   setCarDetailsRemarks(newRemarks);
+  };
+
+  const handleCarDetailsClosePress4 = index => {
+    const newPhotoUris = [...carDetailsPhoto4];
+    newPhotoUris[index] = null;
+    // const newRemarks = [...carDetailsRemarks];
+    // newRemarks[index] = '';
+
+    setCarDetailsPhoto4(newPhotoUris);
+    //   setCarDetailsRemarks(newRemarks);
+  };
+
   const handleSelectContainerPress = index => {
     setSelectedContainerIndex(index);
     setModalVisible(true);
@@ -435,21 +750,16 @@ const OrderCreation = ({navigation}) => {
   const handleBodyInspectionContainerPress = index => {
     setSelectedBodyInspectionIndex(index);
     setBodyInspectionVisible(true);
-
-    const newValidations = [...thirdValidation];
-    // Assume validatePhotoAndRemarks is a function that returns true if both photo and remarks are valid
-    newValidations[index] = validatePhotoAndRemarks(index);
-    setThirdValidation(newValidations);
   };
 
   const carDetailsContainerPress = index => {
     setCarDetailsIndex(index);
     setCarDetailsInspection(true);
 
-    const newValidations = [...carValidation];
-    // Assume validatePhotoAndRemarks is a function that returns true if both photo and remarks are valid
-    newValidations[index] = validatePhotoAndRemarks(index);
-    setCarDetailsValidation(newValidations);
+    // const newValidations = [...carValidation];
+    // // Assume validatePhotoAndRemarks is a function that returns true if both photo and remarks are valid
+    // newValidations[index] = validatePhotoAndRemarks(index);
+    // setCarDetailsValidation(newValidations);
   };
 
   const handleMechanicalInspectionPress = index => {
@@ -486,17 +796,17 @@ const OrderCreation = ({navigation}) => {
     setCarDetailsRemarks(newRemarks);
   };
 
-  const handleInputChange = (text, field) => {
+  const handleInputChange = (text, key) => {
     setCarDetailsFormData(prevState => ({
       ...prevState,
-      [field]: text,
+      [key]: text,
     }));
   };
 
-  const handleSecondInputChange = (text, field) => {
+  const handleSecondInputChange = (text, key) => {
     setCarDetailsSecondFormData(prevState => ({
       ...prevState,
-      [field]: text,
+      [key]: text,
     }));
   };
 
@@ -656,7 +966,9 @@ const OrderCreation = ({navigation}) => {
             <TouchableOpacity onPress={() => setModalVisible(false)}>
               <Text style={{textAlign: 'right', marginRight: 8}}>Close</Text>
             </TouchableOpacity>
-            <ScrollView contentContainerStyle={styles.scrollViewContent}>
+            <ScrollView
+              contentContainerStyle={styles.scrollViewContent}
+              showsVerticalScrollIndicator={false}>
               {photoUris[selectedContainerIndex] ? (
                 <View style={{paddingHorizontal: 12, marginTop: 12}}>
                   <Image
@@ -706,19 +1018,303 @@ const OrderCreation = ({navigation}) => {
             <TouchableOpacity onPress={() => setInspectionVisible(false)}>
               <Text style={{textAlign: 'right', marginRight: 8}}>Close</Text>
             </TouchableOpacity>
-            <ScrollView contentContainerStyle={styles.scrollViewContent}>
+            <ScrollView
+              contentContainerStyle={styles.scrollViewContent}
+              showsVerticalScrollIndicator={false}>
               {selectedValues[selectedInspectionIndex] !== undefined && (
-                <Picker
-                  style={styles.picker}
-                  selectedValue={selectedValues[selectedInspectionIndex]}
-                  onValueChange={itemValue =>
-                    handleDropdownChange(itemValue, selectedInspectionIndex)
-                  }>
-                  <Picker.Item label="Select DropDown" value="" />
-                  <Picker.Item label="Pad" value="Pad" />
-                  <Picker.Item label="Disc" value="disc" />
-                  {/* Add other items as needed */}
-                </Picker>
+                <View style={{paddingHorizontal: 8}}>
+                  <Picker
+                    style={styles.photoInput}
+                    selectedValue={selectedValues[selectedInspectionIndex]}
+                    onValueChange={itemValue =>
+                      handleDropdownChange(itemValue, selectedInspectionIndex)
+                    }>
+                    <Picker.Item label="Select DropDown" value="" />
+
+                    <Picker.Item
+                      label={
+                        selectedInspectionIndex === 0
+                          ? 'Strut'
+                          : selectedInspectionIndex === 1
+                          ? 'Rack and Pinion'
+                          : selectedInspectionIndex === 2
+                          ? 'Pad'
+                          : selectedInspectionIndex === 3
+                          ? 'Clutch'
+                          : selectedInspectionIndex === 4
+                          ? 'Smoke'
+                          : selectedInspectionIndex === 5
+                          ? 'Battery'
+                          : selectedInspectionIndex === 6
+                          ? 'Cooling'
+                          : selectedInspectionIndex === 7
+                          ? 'Music System'
+                          : 'asas'
+                      }
+                      value={
+                        selectedInspectionIndex === 0
+                          ? 'Strut'
+                          : selectedInspectionIndex === 1
+                          ? 'Rack and Pinion'
+                          : selectedInspectionIndex === 2
+                          ? 'Pad'
+                          : selectedInspectionIndex === 3
+                          ? 'Clutch'
+                          : selectedInspectionIndex === 4
+                          ? 'Smoke'
+                          : selectedInspectionIndex === 5
+                          ? 'Battery'
+                          : selectedInspectionIndex === 6
+                          ? 'Cooling'
+                          : selectedInspectionIndex === 7
+                          ? 'Music System'
+                          : 'asas'
+                      }
+                    />
+
+                    <Picker.Item
+                      label={
+                        selectedInspectionIndex === 0
+                          ? 'Lower Arm'
+                          : selectedInspectionIndex === 1
+                          ? 'Steering Coloum'
+                          : selectedInspectionIndex === 2
+                          ? 'Disc'
+                          : selectedInspectionIndex === 3
+                          ? 'Gear'
+                          : selectedInspectionIndex === 4
+                          ? 'Turbo'
+                          : selectedInspectionIndex === 5
+                          ? 'Alternator'
+                          : selectedInspectionIndex === 6
+                          ? 'Blower'
+                          : selectedInspectionIndex === 7
+                          ? 'Parking Sensor'
+                          : 'asas'
+                      }
+                      value={
+                        selectedInspectionIndex === 0
+                          ? 'Lower Arm'
+                          : selectedInspectionIndex === 1
+                          ? 'Steering Coloum'
+                          : selectedInspectionIndex === 2
+                          ? 'Disc'
+                          : selectedInspectionIndex === 3
+                          ? 'Gear'
+                          : selectedInspectionIndex === 4
+                          ? 'Turbo'
+                          : selectedInspectionIndex === 5
+                          ? 'Alternator'
+                          : selectedInspectionIndex === 6
+                          ? 'Blower'
+                          : selectedInspectionIndex === 7
+                          ? 'Parking Sensor'
+                          : 'asas'
+                      }
+                    />
+                    <Picker.Item
+                      label={
+                        selectedInspectionIndex === 0
+                          ? 'Link Rod'
+                          : selectedInspectionIndex === 1
+                          ? 'Hardness'
+                          : selectedInspectionIndex === 2
+                          ? 'Shoe'
+                          : selectedInspectionIndex === 3
+                          ? 'Shifting'
+                          : selectedInspectionIndex === 4
+                          ? 'Misfiring'
+                          : selectedInspectionIndex === 5
+                          ? 'self motor'
+                          : selectedInspectionIndex === 6
+                          ? 'Condenser'
+                          : selectedInspectionIndex === 7
+                          ? 'Reverse Camera'
+                          : 'asas'
+                      }
+                      value={
+                        selectedInspectionIndex === 0
+                          ? 'Link Rod'
+                          : selectedInspectionIndex === 1
+                          ? 'Hardness'
+                          : selectedInspectionIndex === 2
+                          ? 'Shoe'
+                          : selectedInspectionIndex === 3
+                          ? 'Shifting'
+                          : selectedInspectionIndex === 4
+                          ? 'Misfiring'
+                          : selectedInspectionIndex === 5
+                          ? 'self motor'
+                          : selectedInspectionIndex === 6
+                          ? 'Condenser'
+                          : selectedInspectionIndex === 7
+                          ? 'Reverse Camera'
+                          : 'asas'
+                      }
+                    />
+                    <Picker.Item
+                      label={
+                        selectedInspectionIndex === 0
+                          ? 'Stablizer Bar'
+                          : selectedInspectionIndex === 1
+                          ? 'Ball joint end'
+                          : selectedInspectionIndex === 2
+                          ? 'Drum'
+                          : selectedInspectionIndex === 3
+                          ? 'Drive Shaff'
+                          : selectedInspectionIndex === 4
+                          ? 'Tappet'
+                          : selectedInspectionIndex === 5
+                          ? 'Wiring Harness'
+                          : selectedInspectionIndex === 6
+                          ? 'fan'
+                          : selectedInspectionIndex === 7
+                          ? 'OVRM Adjuster'
+                          : 'asas'
+                      }
+                      value={
+                        selectedInspectionIndex === 0
+                          ? 'Stablizer Bar'
+                          : selectedInspectionIndex === 1
+                          ? 'Ball joint end'
+                          : selectedInspectionIndex === 2
+                          ? 'Drum'
+                          : selectedInspectionIndex === 3
+                          ? 'Drive Shaft'
+                          : selectedInspectionIndex === 4
+                          ? 'Tappet'
+                          : selectedInspectionIndex === 5
+                          ? 'Wiring Harness'
+                          : selectedInspectionIndex === 6
+                          ? 'fan'
+                          : selectedInspectionIndex === 7
+                          ? 'OVRM Adjuster'
+                          : 'asas'
+                      }
+                    />
+                    {/* <Picker.Item
+  label={
+    selectedInspectionIndex === 0
+      ? "shok absorber"
+      : selectedInspectionIndex === 1
+      ? ""
+      : selectedInspectionIndex === 2
+      ? "psdddd"
+      : selectedInspectionIndex === 3
+      ? "sdsdsd"
+      : selectedInspectionIndex === 4
+      ? "dsd"
+      : selectedInspectionIndex === 5
+      ? "aa"
+      : selectedInspectionIndex === 6
+      ? "aaxxz"
+      : selectedInspectionIndex === 7
+      ? "ss"
+      : "asas"
+  }
+  value={
+    selectedInspectionIndex === 0
+      ? "shok absorber"
+      : selectedInspectionIndex === 1
+      ? ""
+      : selectedInspectionIndex === 2
+      ? "psdddd"
+      : selectedInspectionIndex === 3
+      ? "sdsdsd"
+      : selectedInspectionIndex === 4
+      ? "dsd"
+      : selectedInspectionIndex === 5
+      ? "aa"
+      : selectedInspectionIndex === 6
+      ? "aaxxz"
+      : selectedInspectionIndex === 7
+      ? "ss"
+      : "asas"
+  }
+/>
+          <Picker.Item
+  label={
+    selectedInspectionIndex === 0
+      ? "coil spring"
+      : selectedInspectionIndex === 1
+      ? ""
+      : selectedInspectionIndex === 2
+      ? "psdddd"
+      : selectedInspectionIndex === 3
+      ? "sdsdsd"
+      : selectedInspectionIndex === 4
+      ? "dsd"
+      : selectedInspectionIndex === 5
+      ? "aa"
+      : selectedInspectionIndex === 6
+      ? "aaxxz"
+      : selectedInspectionIndex === 7
+      ? "ss"
+      : "asas"
+  }
+  value={
+    selectedInspectionIndex === 0
+      ? "coil spring,"
+      : selectedInspectionIndex === 1
+      ? ""
+      : selectedInspectionIndex === 2
+      ? "psdddd"
+      : selectedInspectionIndex === 3
+      ? "sdsdsd"
+      : selectedInspectionIndex === 4
+      ? "dsd"
+      : selectedInspectionIndex === 5
+      ? "aa"
+      : selectedInspectionIndex === 6
+      ? "aaxxz"
+      : selectedInspectionIndex === 7
+      ? "ss"
+      : "asas"
+  }
+/>
+<Picker.Item
+  label={
+    selectedInspectionIndex === 0
+      ? "leaf spring"
+      : selectedInspectionIndex === 1
+      ? ""
+      : selectedInspectionIndex === 2
+      ? "psdddd"
+      : selectedInspectionIndex === 3
+      ? "sdsdsd"
+      : selectedInspectionIndex === 4
+      ? "dsd"
+      : selectedInspectionIndex === 5
+      ? "aa"
+      : selectedInspectionIndex === 6
+      ? "aaxxz"
+      : selectedInspectionIndex === 7
+      ? "ss"
+      : "asas"
+  }
+  value={
+    selectedInspectionIndex === 0
+      ? "leaf spring"
+      : selectedInspectionIndex === 1
+      ? ""
+      : selectedInspectionIndex === 2
+      ? "psdddd"
+      : selectedInspectionIndex === 3
+      ? "sdsdsd"
+      : selectedInspectionIndex === 4
+      ? "dsd"
+      : selectedInspectionIndex === 5
+      ? "aa"
+      : selectedInspectionIndex === 6
+      ? "aaxxz"
+      : selectedInspectionIndex === 7
+      ? "ss"
+      : "asas"
+  }
+/> */}
+                    {/* Add other items as needed */}
+                  </Picker>
+                </View>
               )}
               {/* {switchStates[selectedInspectionIndex] !== undefined && (
               <View style={styles.switchRow}>
@@ -759,61 +1355,71 @@ const OrderCreation = ({navigation}) => {
                 </>
               ))}
 
-              {inspectionPhotos[selectedInspectionIndex] ? (
-                <View style={styles.photoContainer}>
-                  <Image
-                    source={{uri: inspectionPhotos[selectedInspectionIndex]}}
-                    style={styles.uploadedImage}
-                  />
+              <View style={{paddingHorizontal: 8}}>
+                {inspectionPhotos[selectedInspectionIndex] ? (
+                  <>
+                    <View style={styles.photoContainer}>
+                      <Image
+                        source={{
+                          uri: inspectionPhotos[selectedInspectionIndex],
+                        }}
+                        style={styles.uploadedImage}
+                      />
 
-                  {selectedValuesForCondition[selectedInspectionIndex] !==
-                    undefined && (
-                    <Picker
-                      style={styles.picker}
-                      selectedValue={
-                        selectedValuesForCondition[selectedInspectionIndex]
-                      }
-                      onValueChange={itemValue =>
-                        handleDropDownForCondition(
-                          itemValue,
-                          selectedInspectionIndex,
-                        )
-                      }>
-                      <Picker.Item label="Select DropDown" value="" />
-                      <Picker.Item label="Pad" value="Pad" />
-                      <Picker.Item label="Disc" value="disc" />
-                      {/* Add other items as needed */}
-                    </Picker>
-                  )}
+                      {selectedValuesForCondition[selectedInspectionIndex] !==
+                        undefined && (
+                        <Picker
+                          style={styles.photoInput}
+                          selectedValue={
+                            selectedValuesForCondition[selectedInspectionIndex]
+                          }
+                          onValueChange={itemValue =>
+                            handleDropDownForCondition(
+                              itemValue,
+                              selectedInspectionIndex,
+                            )
+                          }>
+                          <Picker.Item label="Select DropDown" value="" />
+                          <Picker.Item label="Level" value="Level" />
+                          <Picker.Item label="Noise" value="Noise" />
+                          <Picker.Item label="Leak" value="Leak" />
+                          <Picker.Item label="Damaged" value="Damaged" />
 
-                  <TextInput
-                    style={styles.photoInput}
-                    placeholder="Enter remarks"
-                    value={inspectionRemarks[selectedInspectionIndex]}
-                    onChangeText={text =>
-                      handleInspectionRemarks(text, selectedInspectionIndex)
-                    }
-                  />
-                  <View>
+                          {/* Add other items as needed */}
+                        </Picker>
+                      )}
+
+                      <TextInput
+                        style={styles.photoInput}
+                        placeholder="Enter remarks"
+                        value={inspectionRemarks[selectedInspectionIndex]}
+                        onChangeText={text =>
+                          handleInspectionRemarks(text, selectedInspectionIndex)
+                        }
+                      />
+                    </View>
+
+                    <View>
+                      <TouchableOpacity
+                        style={styles.closeButton}
+                        onPress={() =>
+                          handleInspectionClosePress(selectedInspectionIndex)
+                        }>
+                        <Text style={styles.closeButtonText}>Cancel</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </>
+                ) : (
+                  <View style={{paddingHorizontal: 0}}>
                     <TouchableOpacity
-                      style={styles.closeButton}
-                      onPress={() =>
-                        handleInspectionClosePress(selectedInspectionIndex)
-                      }>
-                      <Text style={styles.closeButtonText}>Cancel</Text>
+                      style={styles.photoInput}
+                      onPress={() => openCameraForInspection()}>
+                      <Text>Upload</Text>
                     </TouchableOpacity>
                   </View>
-                </View>
-              ) : (
-                <View style={{paddingHorizontal: 8}}>
-                  <TouchableOpacity
-                    style={styles.photoInput}
-                    onPress={() => openCameraForInspection()}>
-                    <Text>Upload</Text>
-                  </TouchableOpacity>
-                </View>
-              )}
-              <View style={{paddingHorizontal: 8, marginTop: 18}}>
+                )}
+              </View>
+              <View style={{paddingHorizontal: 8, marginTop: 5}}>
                 <CustomButton
                   title="Submit"
                   onPress={handleInspectionOkPress}
@@ -834,7 +1440,9 @@ const OrderCreation = ({navigation}) => {
             <TouchableOpacity onPress={() => setBodyInspectionVisible(false)}>
               <Text style={{textAlign: 'right', marginRight: 8}}>Close</Text>
             </TouchableOpacity>
-            <ScrollView contentContainerStyle={styles.scrollViewContent}>
+            <ScrollView
+              contentContainerStyle={styles.scrollViewContent}
+              showsVerticalScrollIndicator={false}>
               {/* {switchStateForBodyInspection[selectedBodyInspectionIndex] !== undefined && (
                 <View style={styles.switchContainer}>
                   <Switch
@@ -880,81 +1488,329 @@ const OrderCreation = ({navigation}) => {
                 </>
               ))}
 
-              {bodyInspectionPhotos2[selectedBodyInspectionIndex] && (
-                <Image
-                  source={{
-                    uri: bodyInspectionPhotos2[selectedBodyInspectionIndex],
-                  }}
-                  style={styles.uploadedImage}
-                />
-              )}
+              <View style={{paddingHorizontal: 8}}>
+                {bodyInspectionDoor1[selectedBodyInspectionIndex] && (
+                  <View style={{position: 'relative'}}>
+                    <Image
+                      source={{
+                        uri: bodyInspectionDoor1[selectedBodyInspectionIndex],
+                      }}
+                      style={styles.uploadedImage}
+                    />
+                    <TouchableOpacity
+                      style={{
+                        position: 'absolute',
+                        top: 0,
+                        right: 0,
+                        backgroundColor: 'black',
+                        borderRadius: 15,
+                        width: 60,
+                        height: 30,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                      }}
+                      onPress={() =>
+                        handleBodyInspectionDoor1(selectedBodyInspectionIndex)
+                      }>
+                      <Text style={{fontSize: 14, color: 'white'}}>Cancel</Text>
+                    </TouchableOpacity>
+                  </View>
+                )}
 
-              {bodyInspectionPhotosForPillars[selectedBodyInspectionIndex] && (
-                <Image
-                  source={{
-                    uri: bodyInspectionPhotosForPillars[
-                      selectedBodyInspectionIndex
-                    ],
-                  }}
-                  style={styles.uploadedImage}
-                />
-              )}
+                {bodyInspectionDoor2[selectedBodyInspectionIndex] && (
+                  <View style={{position: 'relative'}}>
+                    <Image
+                      source={{
+                        uri: bodyInspectionDoor2[selectedBodyInspectionIndex],
+                      }}
+                      style={styles.uploadedImage}
+                    />
+                    <TouchableOpacity
+                      style={{
+                        position: 'absolute',
+                        top: 0,
+                        right: 0,
+                        backgroundColor: 'black',
+                        borderRadius: 15,
+                        width: 60,
+                        height: 30,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                      }}
+                      onPress={() =>
+                        handleBodyInspectionDoor2(selectedBodyInspectionIndex)
+                      }>
+                      <Text style={{fontSize: 14, color: 'white'}}>Cancel</Text>
+                    </TouchableOpacity>
+                  </View>
+                )}
 
-              {bodyInspectionPhotosForPillars2[selectedBodyInspectionIndex] && (
-                <Image
-                  source={{
-                    uri: bodyInspectionPhotosForPillars2[
-                      selectedBodyInspectionIndex
-                    ],
-                  }}
-                  style={styles.uploadedImage}
-                />
-              )}
+                {bodyInspectionDoor3[selectedBodyInspectionIndex] && (
+                  <View style={{position: 'relative'}}>
+                    <Image
+                      source={{
+                        uri: bodyInspectionDoor3[selectedBodyInspectionIndex],
+                      }}
+                      style={styles.uploadedImage}
+                    />
+                    <TouchableOpacity
+                      style={{
+                        position: 'absolute',
+                        top: 0,
+                        right: 0,
+                        backgroundColor: 'black',
+                        borderRadius: 15,
+                        width: 60,
+                        height: 30,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                      }}
+                      onPress={() =>
+                        handleBodyInspectionDoor3(selectedBodyInspectionIndex)
+                      }>
+                      <Text style={{fontSize: 14, color: 'white'}}>Cancel</Text>
+                    </TouchableOpacity>
+                  </View>
+                )}
 
-              {bodyInspectionPhotosForPillars3[selectedBodyInspectionIndex] && (
-                <Image
-                  source={{
-                    uri: bodyInspectionPhotosForPillars3[
-                      selectedBodyInspectionIndex
-                    ],
-                  }}
-                  style={styles.uploadedImage}
-                />
-              )}
+                {bodyInspectionPhotos2[selectedBodyInspectionIndex] && (
+                  <View style={{position: 'relative'}}>
+                    <Image
+                      source={{
+                        uri: bodyInspectionPhotos2[selectedBodyInspectionIndex],
+                      }}
+                      style={styles.uploadedImage}
+                    />
+                    <TouchableOpacity
+                      style={{
+                        position: 'absolute',
+                        top: 0,
+                        right: 0,
+                        backgroundColor: 'black',
+                        borderRadius: 15,
+                        width: 60,
+                        height: 30,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                      }}
+                      onPress={() =>
+                        handleBodyInspectionClosePress2(
+                          selectedBodyInspectionIndex,
+                        )
+                      }>
+                      <Text style={{fontSize: 14, color: 'white'}}>Cancel</Text>
+                    </TouchableOpacity>
+                  </View>
+                )}
 
-              {bodyInspectionPhotosForPillars4[selectedBodyInspectionIndex] && (
-                <Image
-                  source={{
-                    uri: bodyInspectionPhotosForPillars4[
-                      selectedBodyInspectionIndex
-                    ],
-                  }}
-                  style={styles.uploadedImage}
-                />
-              )}
+                {bodyInspectionPhotosForPillars[
+                  selectedBodyInspectionIndex
+                ] && (
+                  <View style={{position: 'relative'}}>
+                    <Image
+                      source={{
+                        uri: bodyInspectionPhotosForPillars[
+                          selectedBodyInspectionIndex
+                        ],
+                      }}
+                      style={styles.uploadedImage}
+                    />
+                    <TouchableOpacity
+                      style={{
+                        position: 'absolute',
+                        top: 0,
+                        right: 0,
+                        backgroundColor: 'black',
+                        borderRadius: 15,
+                        width: 60,
+                        height: 30,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                      }}
+                      onPress={() =>
+                        handleBodyInspectionPhotosForPillar1(
+                          selectedBodyInspectionIndex,
+                        )
+                      }>
+                      <Text style={{fontSize: 14, color: 'white'}}>Cancel</Text>
+                    </TouchableOpacity>
+                  </View>
+                )}
 
-              {bodyInspectionPhotosForPillars5[selectedBodyInspectionIndex] && (
-                <Image
-                  source={{
-                    uri: bodyInspectionPhotosForPillars5[
-                      selectedBodyInspectionIndex
-                    ],
-                  }}
-                  style={styles.uploadedImage}
-                />
-              )}
+                {bodyInspectionPhotosForPillars2[
+                  selectedBodyInspectionIndex
+                ] && (
+                  <View style={{position: 'relative'}}>
+                    <Image
+                      source={{
+                        uri: bodyInspectionPhotosForPillars2[
+                          selectedBodyInspectionIndex
+                        ],
+                      }}
+                      style={styles.uploadedImage}
+                    />
+                    <TouchableOpacity
+                      style={{
+                        position: 'absolute',
+                        top: 0,
+                        right: 0,
+                        backgroundColor: 'black',
+                        borderRadius: 15,
+                        width: 60,
+                        height: 30,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                      }}
+                      onPress={() =>
+                        handleBodyInspectionPhotosForPillar2(
+                          selectedBodyInspectionIndex,
+                        )
+                      }>
+                      <Text style={{fontSize: 14, color: 'white'}}>Cancel</Text>
+                    </TouchableOpacity>
+                  </View>
+                )}
 
-              {bodyInspectionPhotos[selectedBodyInspectionIndex] && (
-                <View style={styles.photoContainer}>
-                  <Image
-                    source={{
-                      uri: bodyInspectionPhotos[selectedBodyInspectionIndex],
-                    }}
-                    style={styles.uploadedImage}
-                  />
+                {bodyInspectionPhotosForPillars3[
+                  selectedBodyInspectionIndex
+                ] && (
+                  <View style={{position: 'relative'}}>
+                    <Image
+                      source={{
+                        uri: bodyInspectionPhotosForPillars3[
+                          selectedBodyInspectionIndex
+                        ],
+                      }}
+                      style={styles.uploadedImage}
+                    />
+                    <TouchableOpacity
+                      style={{
+                        position: 'absolute',
+                        top: 0,
+                        right: 0,
+                        backgroundColor: 'black',
+                        borderRadius: 15,
+                        width: 60,
+                        height: 30,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                      }}
+                      onPress={() =>
+                        handleBodyInspectionPhotosForPillar3(
+                          selectedBodyInspectionIndex,
+                        )
+                      }>
+                      <Text style={{fontSize: 14, color: 'white'}}>Cancel</Text>
+                    </TouchableOpacity>
+                  </View>
+                )}
 
-                  {bodyInspectionValues[selectedBodyInspectionIndex] !==
-                    undefined && (
+                {bodyInspectionPhotosForPillars4[
+                  selectedBodyInspectionIndex
+                ] && (
+                  <View style={{position: 'relative'}}>
+                    <Image
+                      source={{
+                        uri: bodyInspectionPhotosForPillars4[
+                          selectedBodyInspectionIndex
+                        ],
+                      }}
+                      style={styles.uploadedImage}
+                    />
+                    <TouchableOpacity
+                      style={{
+                        position: 'absolute',
+                        top: 0,
+                        right: 0,
+                        backgroundColor: 'black',
+                        borderRadius: 15,
+                        width: 60,
+                        height: 30,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                      }}
+                      onPress={() =>
+                        handleBodyInspectionPhotosForPillar4(
+                          selectedBodyInspectionIndex,
+                        )
+                      }>
+                      <Text style={{fontSize: 14, color: 'white'}}>Cancel</Text>
+                    </TouchableOpacity>
+                  </View>
+                )}
+
+                {bodyInspectionPhotosForPillars5[
+                  selectedBodyInspectionIndex
+                ] && (
+                  <View style={{position: 'relative'}}>
+                    <Image
+                      source={{
+                        uri: bodyInspectionPhotosForPillars5[
+                          selectedBodyInspectionIndex
+                        ],
+                      }}
+                      style={styles.uploadedImage}
+                    />
+                    <TouchableOpacity
+                      style={{
+                        position: 'absolute',
+                        top: 0,
+                        right: 0,
+                        backgroundColor: 'black',
+                        borderRadius: 15,
+                        width: 60,
+                        height: 30,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                      }}
+                      onPress={() =>
+                        handleBodyInspectionPhotosForPillar5(
+                          selectedBodyInspectionIndex,
+                        )
+                      }>
+                      <Text style={{fontSize: 14, color: 'white'}}>Cancel</Text>
+                    </TouchableOpacity>
+                  </View>
+                )}
+              </View>
+
+              <View style={{paddingHorizontal: 8}}>
+                {bodyInspectionPhotos[selectedBodyInspectionIndex] && (
+                  <View style={styles.photoContainer}>
+                    <View style={{position: 'relative'}}>
+                      <Image
+                        source={{
+                          uri: bodyInspectionPhotos[
+                            selectedBodyInspectionIndex
+                          ],
+                        }}
+                        style={styles.uploadedImage}
+                      />
+                      <TouchableOpacity
+                        style={{
+                          position: 'absolute',
+                          top: 0,
+                          right: 0,
+                          backgroundColor: 'black',
+                          borderRadius: 15,
+                          width: 60,
+                          height: 30,
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                        }}
+                        onPress={() =>
+                          handleBodyInspectionClosePress(
+                            selectedBodyInspectionIndex,
+                          )
+                        }>
+                        <Text style={{fontSize: 14, color: 'white'}}>
+                          Cancel
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+
+                    {/* {bodyInspectionValues[selectedBodyInspectionIndex] !==
+                      undefined && ( */}
                     <Picker
                       style={styles.picker}
                       selectedValue={
@@ -967,36 +1823,39 @@ const OrderCreation = ({navigation}) => {
                         )
                       }>
                       <Picker.Item label="Select Condition" value="" />
-                      <Picker.Item label="Pad" value="Pad" />
-                      <Picker.Item label="Disc" value="disc" />
+                      <Picker.Item label="Damaged" value="Damaged" />
+                      <Picker.Item label="Rusting" value="Rusting" />
+                      <Picker.Item label="Replaced" value="Replaced" />
+                      <Picker.Item label="Repaired" valeu="Repaired" />
                       {/* Add other items as needed */}
                     </Picker>
-                  )}
+                    {/* )} */}
 
-                  <TextInput
-                    style={styles.photoInput}
-                    placeholder="Enter remarks"
-                    value={bodyInspectionRemarks[selectedBodyInspectionIndex]}
-                    onChangeText={text =>
-                      handleBodyInspectionRemarks(
-                        text,
-                        selectedBodyInspectionIndex,
-                      )
-                    }
-                  />
-                  <View>
-                    <TouchableOpacity
-                      style={styles.closeButton}
-                      onPress={() =>
-                        handleBodyInspectionClosePress(
+                    <TextInput
+                      style={styles.photoInput}
+                      placeholder="Enter remarks"
+                      value={bodyInspectionRemarks[selectedBodyInspectionIndex]}
+                      onChangeText={text =>
+                        handleBodyInspectionRemarks(
+                          text,
                           selectedBodyInspectionIndex,
                         )
-                      }>
-                      <Text style={styles.closeButtonText}>Cancel</Text>
-                    </TouchableOpacity>
+                      }
+                    />
+                    <View>
+                      {/* <TouchableOpacity
+                        style={styles.closeButton}
+                        onPress={() =>
+                          handleBodyInspectionClosePress(
+                            selectedBodyInspectionIndex,
+                          )
+                        }>
+                        <Text style={styles.closeButtonText}>Cancel</Text>
+                      </TouchableOpacity> */}
+                    </View>
                   </View>
-                </View>
-              )}
+                )}
+              </View>
 
               <View style={{paddingHorizontal: 8}}>
                 {selectedBodyInspectionIndex === 1 ||
@@ -1098,6 +1957,42 @@ const OrderCreation = ({navigation}) => {
                 )}
               </View>
 
+              <View style={{paddingHorizontal: 8}}>
+                {selectedBodyInspectionIndex === 5 ||
+                selectedBodyInspectionIndex === 9 ? (
+                  <>
+                    {bodyInspectionDoor1[selectedBodyInspectionIndex] ==
+                      null && (
+                      <TouchableOpacity
+                        style={styles.photoInput}
+                        onPress={() => openCameraForBodyInspection1()}>
+                        <Text>Upload</Text>
+                      </TouchableOpacity>
+                    )}
+
+                    {bodyInspectionDoor2[selectedBodyInspectionIndex] ==
+                      null && (
+                      <TouchableOpacity
+                        style={styles.photoInput}
+                        onPress={() => openCameraForBodyInspectionDoor2()}>
+                        <Text>Upload</Text>
+                      </TouchableOpacity>
+                    )}
+
+                    {bodyInspectionDoor3[selectedBodyInspectionIndex] ==
+                      null && (
+                      <TouchableOpacity
+                        style={styles.photoInput}
+                        onPress={() => openCameraForBodyInspectionDoor3()}>
+                        <Text>Upload</Text>
+                      </TouchableOpacity>
+                    )}
+                  </>
+                ) : (
+                  <></>
+                )}
+              </View>
+
               {/* // ) : (
               //   <View style={{paddingHorizontal: 8}}>
               //     <TouchableOpacity
@@ -1128,7 +2023,9 @@ const OrderCreation = ({navigation}) => {
             <TouchableOpacity onPress={() => setCarDetailsInspection(false)}>
               <Text style={{textAlign: 'right', marginRight: 8}}>Close</Text>
             </TouchableOpacity>
-            <ScrollView contentContainerStyle={styles.scrollViewContent}>
+            <ScrollView
+              contentContainerStyle={styles.scrollViewContent}
+              showsVerticalScrollIndicator={false}>
               {/* {switchStateForBodyInspection[selectedBodyInspectionIndex] !== undefined && (
                 <View style={styles.switchContainer}>
                   <Switch
@@ -1186,92 +2083,188 @@ const OrderCreation = ({navigation}) => {
               ))}
 
               {carDetailsPhoto4[carDetailsIndex] && (
-                <>
-                  <Image
-                    source={{
-                      uri: carDetailsPhoto4[carDetailsIndex],
-                    }}
-                    style={styles.uploadedImage}
-                  />
-                </>
-              )}
-
-              {carDetailsPhoto3[carDetailsIndex] && (
-                <>
-                  <Image
-                    source={{
-                      uri: carDetailsPhoto3[carDetailsIndex],
-                    }}
-                    style={styles.uploadedImage}
-                  />
-                </>
-              )}
-
-              {carDetailsPhoto2[carDetailsIndex] && (
-                <>
-                  <Image
-                    source={{
-                      uri: carDetailsPhoto2[carDetailsIndex],
-                    }}
-                    style={styles.uploadedImage}
-                  />
-                </>
-              )}
-
-              {carDetailsPhoto5[carDetailsIndex] && (
-                <>
-                  <Image
-                    source={{
-                      uri: carDetailsPhoto5[carDetailsIndex],
-                    }}
-                    style={styles.uploadedImage}
-                  />
-                </>
-              )}
-
-              {carDetailsPhoto[carDetailsIndex] && (
-                <View style={styles.photoContainer}>
-                  <Image
-                    source={{
-                      uri: carDetailsPhoto[carDetailsIndex],
-                    }}
-                    style={styles.uploadedImage}
-                  />
-
-                  {carDetailsValues[carDetailsIndex] !== undefined && (
-                    <Picker
-                      style={styles.picker}
-                      selectedValue={carDetailsValues[carDetailsIndex]}
-                      onValueChange={itemValue =>
-                        handleCarDetailsDropDown(itemValue, carDetailsIndex)
-                      }>
-                      <Picker.Item label="Select Condition" value="" />
-                      <Picker.Item label="Pad" value="Pad" />
-                      <Picker.Item label="Disc" value="disc" />
-                      {/* Add other items as needed */}
-                    </Picker>
-                  )}
-
-                  <TextInput
-                    style={styles.photoInput}
-                    placeholder="Enter remarks"
-                    value={carDetailsRemarks[carDetailsIndex]}
-                    onChangeText={text =>
-                      handleCarDetailsRemarks(text, carDetailsIndex)
-                    }
-                  />
-                  <View>
+                <View style={{paddingHorizontal: 8}}>
+                  <View style={{position: 'relative'}}>
+                    <Image
+                      source={{uri: carDetailsPhoto4[carDetailsIndex]}}
+                      style={styles.uploadedImage}
+                    />
                     <TouchableOpacity
-                      style={styles.closeButton}
-                      onPress={() =>
-                        handleCarDetailsClosePress(carDetailsIndex)
-                      }>
-                      <Text style={styles.closeButtonText}>Cancel</Text>
+                      style={{
+                        position: 'absolute',
+                        top: 0,
+                        right: 0,
+                        backgroundColor: 'black',
+                        borderRadius: 15,
+                        width: 60,
+                        height: 30,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                      }}
+                      onPress={() => handleCarDetailsClosePress4()}>
+                      <Text
+                        style={{
+                          color: 'white',
+                          fontSize: 14,
+                          //  fontWeight: 'bold',
+                        }}>
+                        Cancel
+                      </Text>
                     </TouchableOpacity>
                   </View>
                 </View>
               )}
+
+              {carDetailsPhoto3[carDetailsIndex] && (
+                <View style={{paddingHorizontal: 8}}>
+                  <View style={{position: 'relative'}}>
+                    <Image
+                      source={{uri: carDetailsPhoto3[carDetailsIndex]}}
+                      style={styles.uploadedImage}
+                    />
+                    <TouchableOpacity
+                      style={{
+                        position: 'absolute',
+                        top: 0,
+                        right: 0,
+                        backgroundColor: 'black',
+                        borderRadius: 15,
+                        width: 60,
+                        height: 30,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                      }}
+                      onPress={() =>
+                        handleCarDetailsClosePress3(carDetailsIndex)
+                      }>
+                      <Text
+                        style={{
+                          color: 'white',
+                          fontSize: 14,
+                          //  fontWeight: 'bold',
+                        }}>
+                        Cancel
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              )}
+
+              {carDetailsPhoto2[carDetailsIndex] && (
+                <View style={{paddingHorizontal: 8}}>
+                  <View style={{position: 'relative'}}>
+                    <Image
+                      source={{uri: carDetailsPhoto2[carDetailsIndex]}}
+                      style={styles.uploadedImage}
+                    />
+                    <TouchableOpacity
+                      style={{
+                        position: 'absolute',
+                        top: 0,
+                        right: 0,
+                        backgroundColor: 'black',
+                        borderRadius: 15,
+                        width: 60,
+                        height: 30,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                      }}
+                      onPress={() =>
+                        handleCarDetailsClosePress2(carDetailsIndex)
+                      }>
+                      <Text
+                        style={{
+                          color: 'white',
+                          fontSize: 14,
+                          //  fontWeight: 'bold',
+                        }}>
+                        Cancel
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              )}
+
+              {carDetailsPhoto5[carDetailsIndex] && (
+                <View style={{paddingHorizontal: 8}}>
+                  <View style={{position: 'relative'}}>
+                    <Image
+                      source={{uri: carDetailsPhoto5[carDetailsIndex]}}
+                      style={styles.uploadedImage}
+                    />
+                    <TouchableOpacity
+                      style={{
+                        position: 'absolute',
+                        top: 0,
+                        right: 0,
+                        backgroundColor: 'black',
+                        borderRadius: 15,
+                        width: 60,
+                        height: 30,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                      }}
+                      onPress={() =>
+                        handleCarDetailsClosePress5(carDetailsIndex)
+                      }>
+                      <Text
+                        style={{
+                          color: 'white',
+                          fontSize: 14,
+                          //  fontWeight: 'bold',
+                        }}>
+                        Cancel
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              )}
+
               <View style={{paddingHorizontal: 8}}>
+                {carDetailsPhoto[carDetailsIndex] && (
+                  <View style={styles.photoContainer}>
+                    <Image
+                      source={{
+                        uri: carDetailsPhoto[carDetailsIndex],
+                      }}
+                      style={styles.uploadedImage}
+                    />
+
+                    {carDetailsValues[carDetailsIndex] !== undefined && (
+                      <Picker
+                        style={styles.photoInput}
+                        selectedValue={carDetailsValues[carDetailsIndex]}
+                        onValueChange={itemValue =>
+                          handleCarDetailsDropDown(itemValue, carDetailsIndex)
+                        }>
+                        <Picker.Item label="Select Condition" value="" />
+                        <Picker.Item label="Pad" value="Pad" />
+                        <Picker.Item label="Disc" value="disc" />
+                        {/* Add other items as needed */}
+                      </Picker>
+                    )}
+
+                    <TextInput
+                      style={styles.photoInput}
+                      placeholder="Enter remarks"
+                      value={carDetailsRemarks[carDetailsIndex]}
+                      onChangeText={text =>
+                        handleCarDetailsRemarks(text, carDetailsIndex)
+                      }
+                    />
+                    <View>
+                      <TouchableOpacity
+                        style={styles.closeButton}
+                        onPress={() =>
+                          handleCarDetailsClosePress(carDetailsIndex)
+                        }>
+                        <Text style={styles.closeButtonText}>Cancel</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                )}
+              </View>
+              <View style={{paddingHorizontal: 10}}>
                 {carDetailsIndex === 2 ? (
                   <>
                     {carDetailsPhoto[carDetailsIndex] == null && (
@@ -1319,15 +2312,14 @@ const OrderCreation = ({navigation}) => {
               </View>
 
               {carDetailsIndex === 5 && (
-                <>
-                  {/* {carDetailsPhoto[carDetailsIndex] ==null  && ( */}
-                  <TouchableOpacity
-                    style={styles.photoInput}
-                    onPress={() => openCameraForCarDetailsFive()}>
-                    <Text>Upload</Text>
-                  </TouchableOpacity>
-
-                  {/* )} */}
+                <View style={{paddingHorizontal: 10}}>
+                  {carDetailsPhoto5[carDetailsIndex] == null && (
+                    <TouchableOpacity
+                      style={styles.photoInput}
+                      onPress={() => openCameraForCarDetailsFive()}>
+                      <Text>Upload</Text>
+                    </TouchableOpacity>
+                  )}
 
                   {/* {carDetailsPhoto2[carDetailsIndex] ==null  && ( */}
 
@@ -1337,7 +2329,7 @@ const OrderCreation = ({navigation}) => {
                    <Text>Upload</Text>
                  </TouchableOpacity> */}
                   {/* )} */}
-                </>
+                </View>
               )}
 
               <View style={{paddingHorizontal: 8, marginTop: 18}}>
@@ -1378,12 +2370,15 @@ const OrderCreation = ({navigation}) => {
         dot={<View style={{backgroundColor: 'transparent'}} />}
         activeDot={<View style={{backgroundColor: 'transparent'}} />}>
         <View style={styles.slide}>
+          <Text style={{color: 'black', fontSize: 22, fontWeight: 'bold'}}>
+            Car Details
+          </Text>
           <View style={styles.progressBarContainer}>
             <View
               style={[styles.progressBar, {width: getProgressBarWidth()}]}
             />
           </View>
-          <Text style={styles.indicator}>{`${currentIndex + 1}/7`}</Text>
+          <Text style={styles.indicator}>{`${currentIndex + 1}/8`}</Text>
 
           <ScrollView showsVerticalScrollIndicator={false}>
             <View style={styles.wrapperContainer}>
@@ -1391,12 +2386,10 @@ const OrderCreation = ({navigation}) => {
                 'Make',
                 'Model',
                 'Year of Manufacture',
-                'Trim / Variant',
+                'trimvariant',
                 'Mileage',
                 'Color',
                 'Transmission',
-                'Fuel type',
-                'Alteration',
                 'Number of Owners',
               ].map((label, index) => (
                 <CustomTextInput
@@ -1422,6 +2415,9 @@ const OrderCreation = ({navigation}) => {
         </View>
 
         <View style={styles.slide}>
+          <Text style={{color: 'black', fontSize: 22, fontWeight: 'bold'}}>
+            Car Details
+          </Text>
           <View style={styles.progressBarContainer}>
             <View
               style={[styles.progressBar, {width: getProgressBarWidth()}]}
@@ -1431,94 +2427,114 @@ const OrderCreation = ({navigation}) => {
 
           <ScrollView showsVerticalScrollIndicator={false}>
             <View style={styles.wrapperContainer}>
-              {[
-                'Has Hypothication',
-                'Hypothicated by',
-                'NOC',
-                'Road tax is valid',
-                'Re-Registered',
-                'Cubic Capacity',
-                'Number of seats',
-                'Registration type',
-                'Registration Date',
-                'Insurance',
-              ].map((label, index) => (
+              {Object.keys(labelToKeyMap).map((label, index) => (
                 <CustomTextInput
                   key={index}
                   label={label}
-                  value={
-                    carDetailsSecondFormData[
-                      label.replace(/ /g, '').toLowerCase()
-                    ]
-                  }
+                  value={carDetailsSecondFormData[labelToKeyMap[label]]}
                   onChangeText={text =>
-                    handleSecondInputChange(
-                      text,
-                      label.replace(/ /g, '').toLowerCase(),
-                    )
+                    handleSecondInputChange(text, labelToKeyMap[label])
                   }
                   placeholder={`Enter your ${label.toLowerCase()}`}
                 />
               ))}
               <View style={{bottom: 25, marginTop: 20}}>
-                <CustomButton title="Next" onPress={handleNext} />
+                <CustomButton title="Next" onPress={handleNext2} />
               </View>
             </View>
           </ScrollView>
         </View>
 
         <View style={styles.slide}>
+          <Text style={{color: 'black', fontSize: 22, fontWeight: 'bold'}}>
+            Car Details
+          </Text>
           <View style={styles.progressBarContainer}>
             <View
               style={[styles.progressBar, {width: getProgressBarWidth()}]}
             />
           </View>
-          <Text style={styles.indicator}>{`${currentIndex + 1}/7`}</Text>
+          <Text style={styles.indicator}>{`${currentIndex + 1}/8`}</Text>
 
           <ScrollView showsVerticalScrollIndicator={false}>
             <View style={styles.wrapperContainer}>
-              {[
-                'Insurance Company',
-                'Insurance Validity',
-                'Challan Details',
-                'Blacklisted',
-                'Chassis Number',
-                'Engine Number',
-                'RC Status',
-                'State NOC',
-                'Flood',
-              ].map((label, index) => (
+              {Object.keys(labelToKeyMap1).map((label, index) => (
                 <CustomTextInput
                   key={index}
                   label={label}
-                  value={
-                    carDetailsThirdFormData[
-                      label.replace(/ /g, '').toLowerCase()
-                    ]
-                  }
+                  value={carDetailsThirdFormData[labelToKeyMap1[label]]}
                   onChangeText={text =>
-                    handleThirdInputChange(
-                      text,
-                      label.replace(/ /g, '').toLowerCase(),
-                    )
+                    handleThirdInputChange(text, labelToKeyMap1[label])
                   }
                   placeholder={`Enter your ${label.toLowerCase()}`}
                 />
               ))}
+
               <View style={{bottom: 25, marginTop: 20}}>
-                <CustomButton title="Next" onPress={handleNext} />
+                <CustomButton title="Next" onPress={handleNext3} />
               </View>
             </View>
           </ScrollView>
         </View>
 
         <View style={styles.slide}>
+          <Text style={{color: 'black', fontSize: 22, fontWeight: 'bold'}}>
+            Car Details
+          </Text>
           <View style={styles.progressBarContainer}>
             <View
               style={[styles.progressBar, {width: getProgressBarWidth()}]}
             />
           </View>
-          <Text style={styles.indicator}>{`${currentIndex + 1}/7`}</Text>
+          <Text style={styles.indicator}>{`${currentIndex + 1}/8`}</Text>
+
+          <ScrollView showsVerticalScrollIndicator={false}>
+            <View style={styles.wrapperContainer}>
+              {switchStateForVehicleDetails.map((state, index) => {
+                const options = getOptions(index);
+                return (
+                  <React.Fragment key={index}>
+                    <View
+                      style={{
+                        alignItems: 'center',
+                        marginLeft: 20,
+                        marginRight: 20,
+                        marginBottom: 20,
+                      }}>
+                      <CustomSwichOutside
+                        selectionMode={state}
+                        roundCorner={false}
+                        label={switchTitle[index]}
+                        option1={options.option1}
+                        option2={options.option2}
+                        onSelectSwitch={val =>
+                          handleMechanicalInspectionChange(index, val)
+                        }
+                        selectionColor={'#007BFF'}
+                        index={index} // Pass the index as a prop
+                      />
+                    </View>
+                  </React.Fragment>
+                );
+              })}
+
+              <View style={{bottom: 25, marginTop: 20}}>
+                <CustomButton title="Next" onPress={handleNext2} />
+              </View>
+            </View>
+          </ScrollView>
+        </View>
+
+        <View style={styles.slide}>
+          <Text style={{color: 'black', fontSize: 22, fontWeight: 'bold'}}>
+            Car Photos
+          </Text>
+          <View style={styles.progressBarContainer}>
+            <View
+              style={[styles.progressBar, {width: getProgressBarWidth()}]}
+            />
+          </View>
+          <Text style={styles.indicator}>{`${currentIndex + 1}/8`}</Text>
 
           <ScrollView showsVerticalScrollIndicator={false}>
             <View style={styles.wrapperContainer}>
@@ -1528,7 +2544,9 @@ const OrderCreation = ({navigation}) => {
                   <TouchableOpacity
                     style={styles.photoInput}
                     onPress={() => handleSelectContainerPress(index)}>
-                    <Text>Select</Text>
+                    <Text>
+                      {validations[index] ? 'Update / View' : 'Select'}
+                    </Text>
                   </TouchableOpacity>
                   <Text style={{textAlign: 'right'}}>
                     {validations[index] ? '✅' : '☒'}
@@ -1543,12 +2561,15 @@ const OrderCreation = ({navigation}) => {
           </ScrollView>
         </View>
         <View style={styles.slide}>
+          <Text style={{color: 'black', fontSize: 22, fontWeight: 'bold'}}>
+            Car Photos
+          </Text>
           <View style={styles.progressBarContainer}>
             <View
               style={[styles.progressBar, {width: getProgressBarWidth()}]}
             />
           </View>
-          <Text style={styles.indicator}>{`${currentIndex + 1}/7`}</Text>
+          <Text style={styles.indicator}>{`${currentIndex + 1}/8`}</Text>
 
           <ScrollView showsVerticalScrollIndicator={false}>
             <View style={styles.wrapperContainer}>
@@ -1558,7 +2579,9 @@ const OrderCreation = ({navigation}) => {
                   <TouchableOpacity
                     style={styles.photoInput}
                     onPress={() => carDetailsContainerPress(index)}>
-                    <Text>Select</Text>
+                    <Text>
+                      {carValidation[index] ? 'Update / View' : 'Select'}
+                    </Text>
                   </TouchableOpacity>
                   <Text style={{textAlign: 'right'}}>
                     {carValidation[index] ? '✅' : '☒'}
@@ -1573,12 +2596,15 @@ const OrderCreation = ({navigation}) => {
           </ScrollView>
         </View>
         <View style={styles.slide}>
+          <Text style={{color: 'black', fontSize: 22, fontWeight: 'bold'}}>
+            Body Inspection
+          </Text>
           <View style={styles.progressBarContainer}>
             <View
               style={[styles.progressBar, {width: getProgressBarWidth()}]}
             />
           </View>
-          <Text style={styles.indicator}>{`${currentIndex + 1}/7`}</Text>
+          <Text style={styles.indicator}>{`${currentIndex + 1}/8`}</Text>
 
           <ScrollView showsVerticalScrollIndicator={false}>
             <View style={styles.wrapperContainer}>
@@ -1588,7 +2614,10 @@ const OrderCreation = ({navigation}) => {
                   <TouchableOpacity
                     style={styles.photoInput}
                     onPress={() => handleBodyInspectionContainerPress(index)}>
-                    <Text>Select</Text>
+                    <Text>
+                      {' '}
+                      {thirdValidation[index] ? 'Update / View' : 'Select'}
+                    </Text>
                   </TouchableOpacity>
                   <Text style={{textAlign: 'right'}}>
                     {thirdValidation[index] ? '✅' : '☒'}
@@ -1603,12 +2632,15 @@ const OrderCreation = ({navigation}) => {
           </ScrollView>
         </View>
         <View style={styles.slide}>
+          <Text style={{color: 'black', fontSize: 22, fontWeight: 'bold'}}>
+            Mechanical Inspection
+          </Text>
           <View style={styles.progressBarContainer}>
             <View
               style={[styles.progressBar, {width: getProgressBarWidth()}]}
             />
           </View>
-          <Text style={styles.indicator}>{`${currentIndex + 1}/7`}</Text>
+          <Text style={styles.indicator}>{`${currentIndex + 1}/8`}</Text>
 
           <ScrollView showsVerticalScrollIndicator={false}>
             <View style={styles.wrapperContainer}>
@@ -1732,12 +2764,21 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     fontSize: 16,
     backgroundColor: '#f7f8f9',
+    borderRadius: 8,
     borderColor: '#e8ecf4',
     borderWidth: 1,
-    height: 40,
-    marginTop: 25,
-    marginHorizontal: 8,
+    // width: '100%',
+    //   height:46,
+    //   backgroundColor: '#f7f8f9',
+    // //  height: 150,
+    //   borderWidth: 1,
+    //   borderColor: '#ccc',
+    //   borderRadius: 4,
+    //   justifyContent: 'center',
+    //   alignItems: 'center',
+    //   marginTop: 10,
   },
+
   switchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -1771,6 +2812,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 20,
+  },
+  remarksInput: {
+    padding: 10,
+    borderRadius: 5,
+    fontSize: 16,
+    backgroundColor: '#f7f8f9',
+    borderRadius: 8,
+    borderColor: '#e8ecf4',
+    borderWidth: 1,
   },
   label: {
     fontSize: 16,
