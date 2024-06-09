@@ -32,7 +32,7 @@ const CustomSwichOutside = ({
       <View
         style={{
           height: 44,
-          width: 330,
+          width:"100%",
           backgroundColor: 'white',
           borderRadius: roundCorner ? 25 : 0,
           borderWidth: 1,

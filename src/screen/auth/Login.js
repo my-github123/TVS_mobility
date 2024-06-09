@@ -15,6 +15,8 @@ import CustomButton from '../../components/customTextButton';
 import Logo from '../../../assets/images/logo.svg';
 import Password from '../../../assets/images/password.svg';
 import CustomTextInput from '../../components/customTextInput';
+import {apiPostWithoutToken} from '../../services/apiService';
+import {getItem, setItem, deleteItem} from '../../utils/asyncStorageUtils';
 
 // Call the function to store the data
 
@@ -28,8 +30,36 @@ export default function Login({navigation}) {
     setIsPasswordVisible(prev => !prev);
   };
 
-  const handlePress = () => {
-    navigation.navigate('Dashboard');
+  const handlePress = async () => {
+    const params = {
+      username: username.trim(),
+      password: password.trim(),
+    };
+
+    try {
+      const data = await apiPostWithoutToken('fitAuthenticate', params);
+      console.log(data, 'DATA IS THEEE......');
+
+      const token = data.data.data[0].token;
+
+
+
+      const userName = data.data.data[0].userData[0].user_name;
+
+      console.log(userName,"username is trr");
+
+      await setItem('username',userName);
+
+
+      await setItem('token', token);
+
+      // console.log(data, 'DATA IS THERE..............');
+      // Navigate to the dashboard or handle the successful response
+      navigation.navigate('Dashboard');
+    } catch (error) {
+      // Handle errors here
+      console.error('Request failed:', error);
+    }
   };
 
   return (
@@ -39,7 +69,7 @@ export default function Login({navigation}) {
         {/* <Image source={images.logo} /> */}
         <Image
           source={require('../../../assets/images/tvs_fit.png')}
-          style={{width:165, height:55,right:10}}
+          style={{width: 165, height: 55, right: 10}}
           resizeMode="contain"
         />
         <Text style={styles.wrapperText}>Certified Cars</Text>
@@ -79,11 +109,11 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   wrapperText: {
-    fontSize:18,
+    fontSize: 18,
     color: '#22240f',
-   // marginTop: 50.6,
+    // marginTop: 50.6,
     fontFamily: 'DMSans-Medium',
-    right:10,
+    right: 10,
     // lineHeight: 18,
     // fontWeight: '600',
   },
@@ -94,15 +124,15 @@ const styles = StyleSheet.create({
   wrapperLoginText: {
     fontSize: 20,
     color: '#22240f',
-    marginTop:100,
+    marginTop: 100,
     fontFamily: 'DMSans-Medium',
-    right:10,
+    right: 10,
     //  lineHeight: 18,
   },
   loginContainer: {
     justifyContent: 'center',
     paddingHorizontal: 20,
-    marginTop:10,
+    marginTop: 10,
   },
   forgotPassword: {
     color: '#6a707c',
