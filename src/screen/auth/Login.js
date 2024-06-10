@@ -5,6 +5,7 @@ import {
   StyleSheet,
   StatusBar,
   Image,
+  
   Alert,
   TouchableOpacity,
   ToastAndroid,
@@ -40,6 +41,12 @@ export default function Login({navigation}) {
       const data = await apiPostWithoutToken('fitAuthenticate', params);
       console.log(data, 'DATA IS THEEE......');
 
+
+      if(data.data[0]?.error === "User Not Found.") {
+        ToastAndroid.show("User Not Found", ToastAndroid.LONG);
+
+      }  else {
+
       const token = data.data.data[0].token;
 
 
@@ -53,9 +60,14 @@ export default function Login({navigation}) {
 
       await setItem('token', token);
 
+
+      setUsername("");
+      setPassword("")
+
       // console.log(data, 'DATA IS THERE..............');
       // Navigate to the dashboard or handle the successful response
       navigation.navigate('Dashboard');
+      }
     } catch (error) {
       // Handle errors here
       console.error('Request failed:', error);

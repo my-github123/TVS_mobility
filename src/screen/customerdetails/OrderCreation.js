@@ -8,6 +8,7 @@ import {
   Platform,
   TouchableOpacity,
   BackHandler,
+  ActivityIndicator,
   Switch,
   Image,
   Alert,
@@ -16,6 +17,8 @@ import {
   ToastAndroid,
 } from 'react-native';
 import axios from 'axios';
+import Marker from 'react-native-image-marker';
+import Slider from '@react-native-community/slider';
 
 import SingleSwitch from '../../components/SingleSwitch';
 import * as base64js from 'base64-js';
@@ -29,7 +32,7 @@ import CustomButton from '../../components/customTextButton';
 import {launchCamera} from 'react-native-image-picker';
 import {Picker} from '@react-native-picker/picker';
 import RNFS from 'react-native-fs';
-import {useNavigation, useRoute} from '@react-navigation/native';
+import {useNavigation, useRoute, CommonActions} from '@react-navigation/native';
 import {apiPostWithToken} from '../../services/apiService';
 import {getItem} from '../../utils/asyncStorageUtils';
 
@@ -63,9 +66,7 @@ const OrderCreation = ({navigation}) => {
   const [variant, setVariant] = useState(vehicleMakeModel);
   const [mileage, setMileage] = useState('');
   const [color, setColor] = useState(vehicleColor);
-
-  const [progress, setProgress] = useState(0);
-  const [uploading, setUploading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const [owners, setOwners] = useState(vehicleOwnerNumber);
   const [hasHypothecated, setHasHypothecated] = useState('');
@@ -194,13 +195,61 @@ const OrderCreation = ({navigation}) => {
     engineNumber: '',
   });
 
+  const [sliderValue, setSliderValue] = useState(0);
 
+  const getTrackColor = value => {
+    if (value < 0.25) return 'red';
+    if (value < 0.5) return 'orange';
+    if (value < 0.75) return 'yellow';
+    return 'green';
+  };
 
   const photos = ['RC frontPhoto', 'Insurance frontPhoto', 'Noc Photo'];
-  const carPhotosList=['FrontView Photo',"RearView Photo","LHSView Photo","RHSView Photo","OdoMeter Photo","Roof Photo","Interior Photo","UnderChassis Photo","EngineRoom Photo","TrunkBoot Photo"]
-  const carDetailsPhotosList=["ChassisPunch Photo","VinPlate Photo","FrontTyres Photo","SpareWheel Photo","ToolKit Photo","SpareKey Photo"]
-  const mechanicalInspectionList=["Suspension Photo","Steering Photo","Brake Photo","Transmission Photo","Engine Photo","Electrical Photo","AC Photo","Accessories Photo"]
-  const bodyInspectionList=["Pillar A LeftSide Photo","Apron LeftSide Photo","Fenders LeftSide Photo","QuarterPanels  LeftSide Photo","Running LeftSide Photo","DoorFront LeftSide Photo","Boot Photo","BootSkirt Photo","Bonet Photo","SupportMembers Upper Photo","BumberFront Photo","WheelType Alloy Photo","WindShield FrontTyre Photo"]
+  const carPhotosList = [
+    'FrontView Photo',
+    'RearView Photo',
+    'LHSView Photo',
+    'RHSView Photo',
+    'OdoMeter Photo',
+    'Roof Photo',
+    'Interior Photo',
+    'UnderChassis Photo',
+    'EngineRoom Photo',
+    'TrunkBoot Photo',
+  ];
+  const carDetailsPhotosList = [
+    'ChassisPunch Photo',
+    'VinPlate Photo',
+    'FrontTyres Photo',
+    'SpareWheel Photo',
+    'ToolKit Photo',
+    'SpareKey Photo',
+  ];
+  const mechanicalInspectionList = [
+    'Suspension Photo',
+    'Steering Photo',
+    'Brake Photo',
+    'Transmission Photo',
+    'Engine Photo',
+    'Electrical Photo',
+    'AC Photo',
+    'Accessories Photo',
+  ];
+  const bodyInspectionList = [
+    'Pillar A LeftSide Photo',
+    'Apron LeftSide Photo',
+    'Fenders LeftSide Photo',
+    'QuarterPanels  LeftSide Photo',
+    'Running LeftSide Photo',
+    'DoorFront LeftSide Photo',
+    'Boot Photo',
+    'BootSkirt Photo',
+    'Bonet Photo',
+    'SupportMembers Upper Photo',
+    'BumberFront Photo',
+    'WheelType Alloy Photo',
+    'WindShield FrontTyre Photo',
+  ];
 
   const [modalVisible, setModalVisible] = useState(false);
   const [modalVisible1, setModalVisible1] = useState(false);
@@ -340,19 +389,19 @@ const OrderCreation = ({navigation}) => {
   );
 
   const [base64BodyInspectionDoor1, setBase64BodyInspectionDoor1] = useState(
-    Array.from({length:4}, () => null),
+    Array.from({length: 4}, () => null),
   );
 
   const [base64BodyInspectionDoor2, setBase64BodyInspectionDoor2] = useState(
-    Array.from({length:4}, () => null),
+    Array.from({length: 4}, () => null),
   );
 
   const [base64BodyInspectionDoor3, setBase64BodyInspectionDoor3] = useState(
-    Array.from({length:4}, () => null),
+    Array.from({length: 4}, () => null),
   );
 
   const [bodyInspectionPhotos2, setBodyInspectionPhotos2] = useState(
-    Array.from({length:7}, () => null),
+    Array.from({length: 7}, () => null),
   );
 
   const [base64BodyInspectionPhotos2, setBase64BodyInspectionPhotos2] =
@@ -398,14 +447,6 @@ const OrderCreation = ({navigation}) => {
 
   const [currentIndex, setCurrentIndex] = useState(0);
 
-
-
-
-
- 
-
-
-
   const handleNext = () => {
     // const isFormComplete = Object.values(carDetailsFormData).every(value => {
     //   console.log('Value:', value, 'Trimmed:', value.trim());
@@ -444,6 +485,8 @@ const OrderCreation = ({navigation}) => {
   };
 
   const handleDocuments = async () => {
+    setLoading(true); // Show activity indicator
+
     const itemId = await getItem('dealarId');
 
     console.log(itemId, 'DEKARWR');
@@ -522,35 +565,35 @@ const OrderCreation = ({navigation}) => {
       primaryKeyPhoto: base64CarDetailsPhoto[5],
       primaryKeyCondition: carDetailsValues[5],
       primarKeyRemarks: carDetailsRemarks[5],
-      spareKeyPhoto:base64CarDetailsPhoto5,
+      spareKeyPhoto: base64CarDetailsPhoto5,
       pillarALeftSidePhoto: base64BodyInspection[0],
-      pillarARightSidePhoto:base64StringsPillars,
-      pillarBLeftSidePhoto:base64StringsPillars2,
-      pillarBRightSidePhoto:base64StringsPillars3,
-      pillarCLeftSidePhoto:base64StringsPillars4,
-      pillarCRightSidePhoto:base64StringsPillars5,
+      pillarARightSidePhoto: base64StringsPillars,
+      pillarBLeftSidePhoto: base64StringsPillars2,
+      pillarBRightSidePhoto: base64StringsPillars3,
+      pillarCLeftSidePhoto: base64StringsPillars4,
+      pillarCRightSidePhoto: base64StringsPillars5,
       pillarCondition: bodyInspectionValues[0],
       pillarRemarks: bodyInspectionRemarks[0],
       apronLeftSidePhoto: base64BodyInspection[1],
-      apronRightSidePhoto:base64BodyInspectionPhotos2[0],
+      apronRightSidePhoto: base64BodyInspectionPhotos2[0],
       apronCondition: bodyInspectionValues[1],
       apronRemarks: bodyInspectionRemarks[1],
       fendersRightSidePhoto: base64BodyInspection[2],
-      fendersLeftSidePhoto:base64BodyInspectionPhotos2[1],
+      fendersLeftSidePhoto: base64BodyInspectionPhotos2[1],
       fendersCondition: bodyInspectionValues[2],
       fendersRemarks: bodyInspectionRemarks[2],
       quarterPanelsLeftSidePhoto: base64BodyInspection[3],
-      quarterPanelsRightSidePhoto:base64BodyInspectionPhotos2[2],
+      quarterPanelsRightSidePhoto: base64BodyInspectionPhotos2[2],
       quarterPanelsCondition: bodyInspectionValues[3],
       quarterPanelsRemarks: bodyInspectionRemarks[3],
       runningBoardLeftSidePhoto: base64BodyInspection[4],
-      runningBoardRightSidePhoto:base64BodyInspectionPhotos2[3],
+      runningBoardRightSidePhoto: base64BodyInspectionPhotos2[3],
       runningBoardCondition: bodyInspectionValues[4],
       runningBoardRemarks: bodyInspectionRemarks[4],
       doorsFrontRightSidePhoto: base64BodyInspection[5],
-      doorsFrontLeftSidePhoto:base64BodyInspectionDoor1[0],
-      doorsRearRightSidePhoto:base64BodyInspectionDoor2[0],
-      doorsRearLeftSidePhoto:base64BodyInspectionDoor3[0],
+      doorsFrontLeftSidePhoto: base64BodyInspectionDoor1[0],
+      doorsRearRightSidePhoto: base64BodyInspectionDoor2[0],
+      doorsRearLeftSidePhoto: base64BodyInspectionDoor3[0],
       doorConditon: bodyInspectionValues[5],
       doorRemarks: bodyInspectionRemarks[5],
       bootPhoto: base64BodyInspection[6],
@@ -563,21 +606,21 @@ const OrderCreation = ({navigation}) => {
       bonetCondition: bodyInspectionValues[8],
       bonetRemarks: bodyInspectionRemarks[8],
       supportMemberUpperPhoto: base64BodyInspection[9],
-      supportMemberLowerPhoto:base64BodyInspectionDoor1[1],
-      headLampSupportRightSidePhoto:base64BodyInspectionDoor2[1],
-      headLampSupportLeftSidePhoto:base64BodyInspectionDoor3[1],
+      supportMemberLowerPhoto: base64BodyInspectionDoor1[1],
+      headLampSupportRightSidePhoto: base64BodyInspectionDoor2[1],
+      headLampSupportLeftSidePhoto: base64BodyInspectionDoor3[1],
       supportMembersCondition: bodyInspectionValues[9],
       supportMembersRemarks: bodyInspectionRemarks[9],
       bumperFrontPhoto: base64BodyInspection[10],
-      bumperRearPhoto:base64BodyInspectionPhotos2[4],
+      bumperRearPhoto: base64BodyInspectionPhotos2[4],
       bumberCondition: bodyInspectionValues[10],
       bumberRemarks: bodyInspectionRemarks[10],
       wheelTypeAlloyPhoto: base64BodyInspection[11],
-      wheelTypeDrumPhoto:base64BodyInspectionPhotos2[5],
+      wheelTypeDrumPhoto: base64BodyInspectionPhotos2[5],
       wheelCondition: bodyInspectionValues[11],
       wheelRemarks: bodyInspectionRemarks[11],
       windShieldFrontTyrePhoto: base64BodyInspection[12],
-      windShieldRearTyrePhoto:base64BodyInspectionPhotos2[6],
+      windShieldRearTyrePhoto: base64BodyInspectionPhotos2[6],
       windShieldCondition: bodyInspectionValues[12],
       windShieldRemarks: bodyInspectionRemarks[12],
       suspensionPhoto: base64StringsForMechanicalInspection[0],
@@ -617,10 +660,17 @@ const OrderCreation = ({navigation}) => {
     try {
       const data = await apiPostWithToken('createOrder', params);
 
-      navigation.navigate('Dashboard');
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{name: 'Dashboard'}],
+        }),
+      );
     } catch (error) {
       // Handle errors here
       console.error('Request failed:', error);
+    } finally {
+      setLoading(false); // Hide activity indicator
     }
   };
 
@@ -645,7 +695,6 @@ const OrderCreation = ({navigation}) => {
     //   ToastAndroid.show('Please fill all the fields', ToastAndroid.SHORT);
     // }
   };
-
 
   const getOptions = index => {
     switch (index) {
@@ -712,34 +761,7 @@ const OrderCreation = ({navigation}) => {
     setUploadStatus(updatedUploadStatus);
   };
 
-  // const openCamera = () => {
-  //   launchCamera({mediaType: 'photo'}, response => {
-  //     if (response.assets && response.assets.length > 0) {
-  //       const newPhotoUris = [...photoUris];
-  //       newPhotoUris[selectedContainerIndex] = response.assets[0].uri;
-  //       setPhotoUris(newPhotoUris);
-
-  //       RNFS.readFile(newPhotoUris[selectedContainerIndex], 'base64')
-  //         .then(base64 => {
-  //           const imageType = getImageType(base64);
-
-  //           if (imageType) {
-  //             const base64Image = `data:image/${imageType};base64,${base64}`;
-
-  //             const newBase64Strings = [...base64Strings];
-  //             newBase64Strings[selectedContainerIndex] = base64Image;
-
-  //             setBase64Strings(newBase64Strings);
-  //           } else {
-  //             console.log('Unknown image type');
-  //           }
-  //         })
-  //         .catch(e => {
-  //           console.log('Error converting file to base64', e);
-  //         });
-  //     }
-  //   });
-  // };
+  
 
   const openCamera = () => {
     launchCamera({mediaType: 'photo'}, response => {
@@ -778,6 +800,67 @@ const OrderCreation = ({navigation}) => {
       }
     });
   };
+
+  // const openCamera = () => {
+  //   launchCamera({mediaType: 'photo'}, response => {
+  //     if (response.assets && response.assets.length > 0) {
+  //       const newPhotoUris = [...photoUris];
+  //       newPhotoUris[selectedContainerIndex] = response.assets[0].uri;
+  //       setPhotoUris(newPhotoUris);
+  
+  //       const uri = newPhotoUris[selectedContainerIndex];
+  
+  //       // Resize and compress the image with quality set to 10
+  //       ImageResizer.createResizedImage(uri, 400, 300, 'JPEG', 10) // Quality set to 10
+  //         .then(compressedImage => {
+  //           // Get current date and time
+  //           const currentDateTime = new Date();
+  //           const date = currentDateTime.toLocaleDateString();
+  //           const time = currentDateTime.toLocaleTimeString();
+  
+  //           // Overlay date and time on the image
+  //           Marker.markText({
+  //             src: compressedImage.uri,
+  //             text: `${date} ${time}`,
+  //             X: 20,
+  //             Y: 280,
+  //             color: 'blue',
+  //             fontName: 'Arial',
+  //             fontSize: 20,
+  //             scale: 1,
+  //             quality: 100,
+  //             position: 'bottomLeft',
+  //           })
+  //             .then((markedImagePath) => {
+  //               RNFS.readFile(markedImagePath, 'base64')
+  //                 .then(base64 => {
+  //                   const imageType = getImageType(base64);
+  
+  //                   if (imageType) {
+  //                     const base64Image = `data:image/${imageType};base64,${base64}`;
+  
+  //                     const newBase64Strings = [...base64Strings];
+  //                     newBase64Strings[selectedContainerIndex] = base64Image;
+  
+  //                     setBase64Strings(newBase64Strings);
+  //                   } else {
+  //                     console.log('Unknown image type');
+  //                   }
+  //                 })
+  //                 .catch(e => {
+  //                   console.log('Error converting file to base64', e);
+  //                 });
+  //             })
+  //             .catch(e => {
+  //               console.log('Error marking image', e);
+  //             });
+  //         })
+  //         .catch(e => {
+  //           console.log('Error resizing image', e);
+  //         });
+  //     }
+  //   });
+  // };
 
   // const imageType = getImageType(base64);
 
@@ -1273,7 +1356,7 @@ const OrderCreation = ({navigation}) => {
 
         // Resize and compress the image with quality set to 10
         ImageResizer.createResizedImage(
-         response.assets[0].uri,
+          response.assets[0].uri,
           400,
           300,
           'JPEG',
@@ -2092,13 +2175,11 @@ const OrderCreation = ({navigation}) => {
 
     const backHandler = BackHandler.addEventListener(
       'hardwareBackPress',
-      handleBackPress
+      handleBackPress,
     );
 
     return () => backHandler.remove(); // Clean up event listener
-
   }, [navigation, swiperRef, currentIndex]);
-
 
   return (
     <>
@@ -2116,21 +2197,20 @@ const OrderCreation = ({navigation}) => {
             <ScrollView
               contentContainerStyle={styles.scrollViewContent}
               showsVerticalScrollIndicator={false}>
-             
               {photoUris[selectedContainerIndex] ? (
                 <View style={{paddingHorizontal: 12, marginTop: 12}}>
-                                    <View style={{position: 'relative'}}>
-                  <Image
-                    source={{uri: photoUris[selectedContainerIndex]}}
-                    style={styles.uploadedImage}
-                  />
-                                      <TouchableOpacity
+                  <View style={{position: 'relative'}}>
+                    <Image
+                      source={{uri: photoUris[selectedContainerIndex]}}
+                      style={styles.uploadedImage}
+                    />
+                    <TouchableOpacity
                       style={{
                         position: 'absolute',
                         top: 0,
                         right: 0,
                         backgroundColor: 'black',
-                       // borderRadius: 15,
+                        // borderRadius: 15,
                         width: 60,
                         height: 30,
                         justifyContent: 'center',
@@ -2139,27 +2219,20 @@ const OrderCreation = ({navigation}) => {
                       onPress={() => handleClosePress(selectedContainerIndex)}>
                       <Text style={{fontSize: 14, color: 'white'}}>Cancel</Text>
                     </TouchableOpacity>
-                 </View>
-                  <View>
-                   
                   </View>
+                  <View></View>
                 </View>
               ) : (
                 <View style={{paddingHorizontal: 8}}>
-
-                 
                   <TouchableOpacity
                     style={styles.photoInput}
                     onPress={() => openCamera()}>
-                    <Text>
-                    {photos[selectedContainerIndex]}
-                    </Text>
+                    <Text>{photos[selectedContainerIndex]}</Text>
                   </TouchableOpacity>
-          
                 </View>
               )}
 
-{photoUris1[selectedContainerIndex] && (
+              {photoUris1[selectedContainerIndex] && (
                 <View style={{paddingHorizontal: 12, marginTop: 12}}>
                   <View style={{position: 'relative'}}>
                     <Image
@@ -2174,7 +2247,7 @@ const OrderCreation = ({navigation}) => {
                         top: 0,
                         right: 0,
                         backgroundColor: 'black',
-                      //  borderRadius: 15,
+                        //  borderRadius: 15,
                         width: 60,
                         height: 30,
                         justifyContent: 'center',
@@ -2203,7 +2276,7 @@ const OrderCreation = ({navigation}) => {
                         top: 0,
                         right: 0,
                         backgroundColor: 'black',
-                      //  borderRadius: 15,
+                        //  borderRadius: 15,
                         width: 60,
                         height: 30,
                         justifyContent: 'center',
@@ -2215,16 +2288,16 @@ const OrderCreation = ({navigation}) => {
                   </View>
                 </View>
               )}
-  
+
               {selectedContainerIndex === 0 && (
                 <View style={{paddingHorizontal: 8}}>
                   {photoUris1[selectedContainerIndex] == null && (
-                                   <View style={{marginTop:16}}>
-                    <TouchableOpacity
-                      style={styles.photoInput}
-                      onPress={() => openCamera1()}>
-                      <Text>RC backPhoto</Text>
-                    </TouchableOpacity>
+                    <View style={{marginTop: 16}}>
+                      <TouchableOpacity
+                        style={styles.photoInput}
+                        onPress={() => openCamera1()}>
+                        <Text>RC backPhoto</Text>
+                      </TouchableOpacity>
                     </View>
                   )}
                 </View>
@@ -2233,19 +2306,19 @@ const OrderCreation = ({navigation}) => {
               {selectedContainerIndex === 1 && (
                 <View style={{paddingHorizontal: 8}}>
                   {photoUris2[selectedContainerIndex] == null && (
-                                   <View style={{marginTop:16}}>
-                    <TouchableOpacity
-                      style={styles.photoInput}
-                      onPress={() => openCamera2()}>
-                      <Text>Insurance backPhoto</Text>
-                    </TouchableOpacity>
+                    <View style={{marginTop: 16}}>
+                      <TouchableOpacity
+                        style={styles.photoInput}
+                        onPress={() => openCamera2()}>
+                        <Text>Insurance backPhoto</Text>
+                      </TouchableOpacity>
                     </View>
                   )}
                 </View>
               )}
-                <View style={{paddingHorizontal: 12, marginTop:12}}>
-{photoUris[selectedContainerIndex] && (
-<TextInput
+              <View style={{paddingHorizontal: 12, marginTop: 12}}>
+                {photoUris[selectedContainerIndex] && (
+                  <TextInput
                     style={styles.photoInput}
                     placeholder="Enter remarks"
                     value={remarks[selectedContainerIndex]}
@@ -2253,10 +2326,10 @@ const OrderCreation = ({navigation}) => {
                       handleRemarksChange(text, selectedContainerIndex)
                     }
                   />
-)}
-</View>
+                )}
+              </View>
 
-              <View style={{paddingHorizontal: 8, marginTop:10}}>
+              <View style={{paddingHorizontal: 8, marginTop: 10}}>
                 <CustomButton title="Submit" onPress={handleOkPress} />
               </View>
             </ScrollView>
@@ -2280,24 +2353,28 @@ const OrderCreation = ({navigation}) => {
               showsVerticalScrollIndicator={false}>
               {photoUrisCarPhotos[selectedContainerIndex1] ? (
                 <View style={{paddingHorizontal: 12, marginTop: 12}}>
-                  <View style={{position:"relative"}}>
-           <Image
-                    source={{uri: photoUrisCarPhotos[selectedContainerIndex1]}}
-                    style={styles.uploadedImage}
-                  />
-                      <TouchableOpacity
+                  <View style={{position: 'relative'}}>
+                    <Image
+                      source={{
+                        uri: photoUrisCarPhotos[selectedContainerIndex1],
+                      }}
+                      style={styles.uploadedImage}
+                    />
+                    <TouchableOpacity
                       style={{
                         position: 'absolute',
                         top: 0,
                         right: 0,
                         backgroundColor: 'black',
-                      //  borderRadius: 15,
+                        //  borderRadius: 15,
                         width: 60,
                         height: 30,
                         justifyContent: 'center',
                         alignItems: 'center',
                       }}
-                      onPress={() =>handleClosePressCarPhotos(selectedContainerIndex1)}>
+                      onPress={() =>
+                        handleClosePressCarPhotos(selectedContainerIndex1)
+                      }>
                       <Text style={{fontSize: 14, color: 'white'}}>Cancel</Text>
                     </TouchableOpacity>
                   </View>
@@ -2668,9 +2745,15 @@ const OrderCreation = ({navigation}) => {
             )} */}
 
               {switchStateForMechanicalInspection.map((state, index) => (
-                <View style={{marginTop:0}}>
+                <View style={{marginTop: 0}}>
                   {selectedInspectionIndex === index && (
-                    <View style={{alignItems: 'center', marginLeft: 20,marginRight:20,marginBottom:20,marginTop:34,}}>
+                    <View
+                      style={{
+                        marginLeft: 9,
+                        marginRight: 9,
+                        marginBottom: 20,
+                        marginTop: 34,
+                      }}>
                       <CustomSwitch
                         selectionMode={state}
                         roundCorner={false}
@@ -2691,31 +2774,33 @@ const OrderCreation = ({navigation}) => {
                 {inspectionPhotos[selectedInspectionIndex] ? (
                   <>
                     <View style={styles.photoContainer}>
-                      <View style={{position:"relative"}}>
-
-                     
-                      <Image
-                        source={{
-                          uri: inspectionPhotos[selectedInspectionIndex],
-                        }}
-                        style={styles.uploadedImage}
-                      />
+                      <View style={{position: 'relative'}}>
+                        <Image
+                          source={{
+                            uri: inspectionPhotos[selectedInspectionIndex],
+                          }}
+                          style={styles.uploadedImage}
+                        />
                         <TouchableOpacity
-                      style={{
-                        position: 'absolute',
-                        top: 0,
-                        right: 0,
-                        backgroundColor: 'black',
-                      //  borderRadius: 15,
-                        width: 60,
-                        height: 30,
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                      }}
-                      onPress={() =>handleInspectionClosePress(selectedInspectionIndex)}>
-                      <Text style={{fontSize: 14, color: 'white'}}>Cancel</Text>
-                    </TouchableOpacity>
-                       </View>
+                          style={{
+                            position: 'absolute',
+                            top: 0,
+                            right: 0,
+                            backgroundColor: 'black',
+                            //  borderRadius: 15,
+                            width: 60,
+                            height: 30,
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                          }}
+                          onPress={() =>
+                            handleInspectionClosePress(selectedInspectionIndex)
+                          }>
+                          <Text style={{fontSize: 14, color: 'white'}}>
+                            Cancel
+                          </Text>
+                        </TouchableOpacity>
+                      </View>
 
                       {selectedValuesForCondition[selectedInspectionIndex] !==
                         undefined && (
@@ -2739,26 +2824,29 @@ const OrderCreation = ({navigation}) => {
                           {/* Add other items as needed */}
                         </Picker>
                       )}
-    <View style={{marginTop:20}}>
-                      <TextInput
-                        style={styles.photoInput}
-                        placeholder="Enter remarks"
-                        value={inspectionRemarks[selectedInspectionIndex]}
-                        onChangeText={text =>
-                          handleInspectionRemarks(text, selectedInspectionIndex)
-                        }
-                      />
+                      <View style={{marginTop: 20}}>
+                        <TextInput
+                          style={styles.photoInput}
+                          placeholder="Enter remarks"
+                          value={inspectionRemarks[selectedInspectionIndex]}
+                          onChangeText={text =>
+                            handleInspectionRemarks(
+                              text,
+                              selectedInspectionIndex,
+                            )
+                          }
+                        />
                       </View>
                     </View>
-
-                    
                   </>
                 ) : (
                   <View style={{paddingHorizontal: 0}}>
                     <TouchableOpacity
                       style={styles.photoInput}
                       onPress={() => openCameraForInspection()}>
-                      <Text>{mechanicalInspectionList[selectedInspectionIndex]}</Text>
+                      <Text>
+                        {mechanicalInspectionList[selectedInspectionIndex]}
+                      </Text>
                     </TouchableOpacity>
                   </View>
                 )}
@@ -2815,7 +2903,13 @@ const OrderCreation = ({navigation}) => {
               {switchStateForBodyInspection.map((state, index) => (
                 <>
                   {selectedBodyInspectionIndex === index && (
-                    <View style={{alignItems: 'center', margin: 20}}>
+                    <View
+                      style={{
+                        marginTop: 20,
+                        marginBottom: 20,
+                        marginLeft: 9,
+                        marginRight: 9,
+                      }}>
                       <CustomSwitch
                         selectionMode={state}
                         roundCorner={false}
@@ -2832,7 +2926,7 @@ const OrderCreation = ({navigation}) => {
                 </>
               ))}
 
-<View style={{paddingHorizontal: 8}}>
+              <View style={{paddingHorizontal: 8}}>
                 {bodyInspectionPhotos[selectedBodyInspectionIndex] && (
                   <View style={styles.photoContainer}>
                     <View style={{position: 'relative'}}>
@@ -2850,7 +2944,7 @@ const OrderCreation = ({navigation}) => {
                           top: 0,
                           right: 0,
                           backgroundColor: 'black',
-                        //  borderRadius: 15,
+                          //  borderRadius: 15,
                           width: 60,
                           height: 30,
                           justifyContent: 'center',
@@ -2869,7 +2963,7 @@ const OrderCreation = ({navigation}) => {
 
                     {/* {bodyInspectionValues[selectedBodyInspectionIndex] !==
                       undefined && ( */}
-                 
+
                     <View>
                       {/* <TouchableOpacity
                         style={styles.closeButton}
@@ -2884,7 +2978,6 @@ const OrderCreation = ({navigation}) => {
                   </View>
                 )}
               </View>
-
 
               <View style={{paddingHorizontal: 8}}>
                 {bodyInspectionDoor1[selectedBodyInspectionIndex] && (
@@ -2901,7 +2994,7 @@ const OrderCreation = ({navigation}) => {
                         top: 0,
                         right: 0,
                         backgroundColor: 'black',
-                     //   borderRadius: 15,
+                        //   borderRadius: 15,
                         width: 60,
                         height: 30,
                         justifyContent: 'center',
@@ -2929,7 +3022,7 @@ const OrderCreation = ({navigation}) => {
                         top: 0,
                         right: 0,
                         backgroundColor: 'black',
-                     //   borderRadius: 15,
+                        //   borderRadius: 15,
                         width: 60,
                         height: 30,
                         justifyContent: 'center',
@@ -2957,7 +3050,7 @@ const OrderCreation = ({navigation}) => {
                         top: 0,
                         right: 0,
                         backgroundColor: 'black',
-                     //   borderRadius: 15,
+                        //   borderRadius: 15,
                         width: 60,
                         height: 30,
                         justifyContent: 'center',
@@ -2985,7 +3078,7 @@ const OrderCreation = ({navigation}) => {
                         top: 0,
                         right: 0,
                         backgroundColor: 'black',
-                       // borderRadius: 15,
+                        // borderRadius: 15,
                         width: 60,
                         height: 30,
                         justifyContent: 'center',
@@ -3019,7 +3112,7 @@ const OrderCreation = ({navigation}) => {
                         top: 0,
                         right: 0,
                         backgroundColor: 'black',
-                       // borderRadius: 15,
+                        // borderRadius: 15,
                         width: 60,
                         height: 30,
                         justifyContent: 'center',
@@ -3053,7 +3146,7 @@ const OrderCreation = ({navigation}) => {
                         top: 0,
                         right: 0,
                         backgroundColor: 'black',
-                     //   borderRadius: 15,
+                        //   borderRadius: 15,
                         width: 60,
                         height: 30,
                         justifyContent: 'center',
@@ -3087,7 +3180,7 @@ const OrderCreation = ({navigation}) => {
                         top: 0,
                         right: 0,
                         backgroundColor: 'black',
-                     //   borderRadius: 15,
+                        //   borderRadius: 15,
                         width: 60,
                         height: 30,
                         justifyContent: 'center',
@@ -3121,7 +3214,7 @@ const OrderCreation = ({navigation}) => {
                         top: 0,
                         right: 0,
                         backgroundColor: 'black',
-                      //  borderRadius: 15,
+                        //  borderRadius: 15,
                         width: 60,
                         height: 30,
                         justifyContent: 'center',
@@ -3155,7 +3248,7 @@ const OrderCreation = ({navigation}) => {
                         top: 0,
                         right: 0,
                         backgroundColor: 'black',
-                      //  borderRadius: 15,
+                        //  borderRadius: 15,
                         width: 60,
                         height: 30,
                         justifyContent: 'center',
@@ -3172,7 +3265,6 @@ const OrderCreation = ({navigation}) => {
                 )}
               </View>
 
-            
               <View style={{paddingHorizontal: 8}}>
                 {selectedBodyInspectionIndex === 1 ||
                 selectedBodyInspectionIndex === 2 ||
@@ -3184,22 +3276,24 @@ const OrderCreation = ({navigation}) => {
                   <>
                     {bodyInspectionPhotos[selectedBodyInspectionIndex] ==
                       null && (
-                        <View style={{marginTop:16}}>
-                      <TouchableOpacity
-                        style={styles.photoInput}
-                        onPress={() => openCameraForBodyInspection()}>
-                        <Text>{bodyInspectionList[selectedBodyInspectionIndex]}</Text>
-                      </TouchableOpacity>
+                      <View style={{marginTop: 16}}>
+                        <TouchableOpacity
+                          style={styles.photoInput}
+                          onPress={() => openCameraForBodyInspection()}>
+                          <Text>
+                            {bodyInspectionList[selectedBodyInspectionIndex]}
+                          </Text>
+                        </TouchableOpacity>
                       </View>
                     )}
                     {bodyInspectionPhotos2[selectedBodyInspectionIndex] ==
                       null && (
-                        <View style={{marginTop:16}}>
-                      <TouchableOpacity
-                        style={styles.photoInput}
-                        onPress={() => openCameraForBodyInspection2()}>
-                        <Text>Upload</Text>
-                      </TouchableOpacity>
+                      <View style={{marginTop: 16}}>
+                        <TouchableOpacity
+                          style={styles.photoInput}
+                          onPress={() => openCameraForBodyInspection2()}>
+                          <Text>Upload</Text>
+                        </TouchableOpacity>
                       </View>
                     )}
                     {/* <TouchableOpacity
@@ -3215,7 +3309,9 @@ const OrderCreation = ({navigation}) => {
                       <TouchableOpacity
                         style={styles.photoInput}
                         onPress={() => openCameraForBodyInspection()}>
-                        <Text>{bodyInspectionList[selectedBodyInspectionIndex]}</Text>
+                        <Text>
+                          {bodyInspectionList[selectedBodyInspectionIndex]}
+                        </Text>
                       </TouchableOpacity>
                     )}
                   </>
@@ -3228,59 +3324,59 @@ const OrderCreation = ({navigation}) => {
                     {bodyInspectionPhotosForPillars[
                       selectedBodyInspectionIndex
                     ] == null && (
-                      <View style={{marginTop:16}}>
-                      <TouchableOpacity
-                        style={styles.photoInput}
-                        onPress={() => openCameraForBodyInspectionPillars1()}>
-                        <Text>Pillars A RightSide Photo</Text>
-                      </TouchableOpacity>
+                      <View style={{marginTop: 16}}>
+                        <TouchableOpacity
+                          style={styles.photoInput}
+                          onPress={() => openCameraForBodyInspectionPillars1()}>
+                          <Text>Pillars A RightSide Photo</Text>
+                        </TouchableOpacity>
                       </View>
                     )}
 
                     {bodyInspectionPhotosForPillars2[
                       selectedBodyInspectionIndex
                     ] == null && (
-                      <View style={{marginTop:16}}>
-                      <TouchableOpacity
-                        style={styles.photoInput}
-                        onPress={() => openCameraForBodyInspectionPillars2()}>
-                        <Text>Pillars B LeftSide Photo</Text>
-                      </TouchableOpacity>
+                      <View style={{marginTop: 16}}>
+                        <TouchableOpacity
+                          style={styles.photoInput}
+                          onPress={() => openCameraForBodyInspectionPillars2()}>
+                          <Text>Pillars B LeftSide Photo</Text>
+                        </TouchableOpacity>
                       </View>
                     )}
 
                     {bodyInspectionPhotosForPillars3[
                       selectedBodyInspectionIndex
                     ] == null && (
-                      <View style={{marginTop:16}}>
-                      <TouchableOpacity
-                        style={styles.photoInput}
-                        onPress={() => openCameraForBodyInspectionPillars3()}>
-                        <Text>Pillars B RightSide Photo</Text>
-                      </TouchableOpacity>
+                      <View style={{marginTop: 16}}>
+                        <TouchableOpacity
+                          style={styles.photoInput}
+                          onPress={() => openCameraForBodyInspectionPillars3()}>
+                          <Text>Pillars B RightSide Photo</Text>
+                        </TouchableOpacity>
                       </View>
                     )}
                     {bodyInspectionPhotosForPillars4[
                       selectedBodyInspectionIndex
                     ] == null && (
-                      <View style={{marginTop:16}}>
-                      <TouchableOpacity
-                        style={styles.photoInput}
-                        onPress={() => openCameraForBodyInspectionPillars4()}>
-                        <Text>Pillars C LeftSide Photo</Text>
-                      </TouchableOpacity>
+                      <View style={{marginTop: 16}}>
+                        <TouchableOpacity
+                          style={styles.photoInput}
+                          onPress={() => openCameraForBodyInspectionPillars4()}>
+                          <Text>Pillars C LeftSide Photo</Text>
+                        </TouchableOpacity>
                       </View>
                     )}
 
                     {bodyInspectionPhotosForPillars5[
                       selectedBodyInspectionIndex
                     ] == null && (
-                      <View style={{marginTop:16}}>
-                      <TouchableOpacity
-                        style={styles.photoInput}
-                        onPress={() => openCameraForBodyInspectionPillars5()}>
-                        <Text>Pillars C RightSide Photo</Text>
-                      </TouchableOpacity>
+                      <View style={{marginTop: 16}}>
+                        <TouchableOpacity
+                          style={styles.photoInput}
+                          onPress={() => openCameraForBodyInspectionPillars5()}>
+                          <Text>Pillars C RightSide Photo</Text>
+                        </TouchableOpacity>
                       </View>
                     )}
                   </>
@@ -3293,34 +3389,34 @@ const OrderCreation = ({navigation}) => {
                   <>
                     {bodyInspectionDoor1[selectedBodyInspectionIndex] ==
                       null && (
-                        <View style={{marginTop:16}}>
-                      <TouchableOpacity
-                        style={styles.photoInput}
-                        onPress={() => openCameraForBodyInspetionDoor1()}>
-                        <Text>Upload</Text>
-                      </TouchableOpacity>
+                      <View style={{marginTop: 16}}>
+                        <TouchableOpacity
+                          style={styles.photoInput}
+                          onPress={() => openCameraForBodyInspetionDoor1()}>
+                          <Text>Upload</Text>
+                        </TouchableOpacity>
                       </View>
                     )}
 
                     {bodyInspectionDoor2[selectedBodyInspectionIndex] ==
                       null && (
-                        <View style={{marginTop:16}}>
-                      <TouchableOpacity
-                        style={styles.photoInput}
-                        onPress={() => openCameraForBodyInspectionDoor2()}>
-                        <Text>Upload</Text>
-                      </TouchableOpacity>
+                      <View style={{marginTop: 16}}>
+                        <TouchableOpacity
+                          style={styles.photoInput}
+                          onPress={() => openCameraForBodyInspectionDoor2()}>
+                          <Text>Upload</Text>
+                        </TouchableOpacity>
                       </View>
                     )}
 
                     {bodyInspectionDoor3[selectedBodyInspectionIndex] ==
                       null && (
-                        <View style={{marginTop:16}}>
-                      <TouchableOpacity
-                        style={styles.photoInput}
-                        onPress={() => openCameraForBodyInspectionDoor3()}>
-                        <Text>Upload</Text>
-                      </TouchableOpacity>
+                      <View style={{marginTop: 16}}>
+                        <TouchableOpacity
+                          style={styles.photoInput}
+                          onPress={() => openCameraForBodyInspectionDoor3()}>
+                          <Text>Upload</Text>
+                        </TouchableOpacity>
                       </View>
                     )}
                   </>
@@ -3330,27 +3426,26 @@ const OrderCreation = ({navigation}) => {
               </View>
 
               {bodyInspectionPhotos[selectedBodyInspectionIndex] && (
-            <View style={{paddingHorizontal: 8,marginTop:20}}>
-              <Picker
-                      style={styles.picker}
-                      selectedValue={
-                        bodyInspectionValues[selectedBodyInspectionIndex]
-                      }
-                      onValueChange={itemValue =>
-                        handleBodyInspectionDropDown(
-                          itemValue,
-                          selectedBodyInspectionIndex,
-                        )
-                      }>
-                      <Picker.Item label="Select Condition" value="" />
-                      <Picker.Item label="Damaged" value="Damaged" />
-                      <Picker.Item label="Rusting" value="Rusting" />
-                      <Picker.Item label="Replaced" value="Replaced" />
-                      <Picker.Item label="Repaired" valeu="Repaired" />
-                      {/* Add other items as needed */}
-                    </Picker>
-                    <View style={{marginTop:12}}>
-
+                <View style={{paddingHorizontal: 8, marginTop: 20}}>
+                  <Picker
+                    style={styles.picker}
+                    selectedValue={
+                      bodyInspectionValues[selectedBodyInspectionIndex]
+                    }
+                    onValueChange={itemValue =>
+                      handleBodyInspectionDropDown(
+                        itemValue,
+                        selectedBodyInspectionIndex,
+                      )
+                    }>
+                    <Picker.Item label="Select Condition" value="" />
+                    <Picker.Item label="Damaged" value="Damaged" />
+                    <Picker.Item label="Rusting" value="Rusting" />
+                    <Picker.Item label="Replaced" value="Replaced" />
+                    <Picker.Item label="Repaired" valeu="Repaired" />
+                    {/* Add other items as needed */}
+                  </Picker>
+                  <View style={{marginTop: 12}}>
                     <TextInput
                       style={styles.photoInput}
                       placeholder="Enter remarks"
@@ -3362,8 +3457,8 @@ const OrderCreation = ({navigation}) => {
                         )
                       }
                     />
-                    </View>
-                    </View>
+                  </View>
+                </View>
               )}
               <View style={{paddingHorizontal: 8, marginTop: 18}}>
                 <CustomButton
@@ -3430,12 +3525,26 @@ const OrderCreation = ({navigation}) => {
               {switchStateForCarDetails.map((state, index) => (
                 <>
                   {carDetailsIndex === index && (
-                    <View style={{alignItems: 'center', margin: 20}}>
+                    <View
+                      style={{
+                        marginTop: 20,
+                        marginBottom: 20,
+                        marginLeft: 9,
+                        marginRight: 9,
+                      }}>
                       <CustomSwitch
                         selectionMode={state}
                         roundCorner={false}
-                        option1={'Yes'}
-                        option2={'No'}
+                        option1={
+                          index === 3 || index === 4 || index === 5
+                            ? 'Available'
+                            : 'Yes'
+                        }
+                        option2={
+                          index === 3 || index === 4 || index === 5
+                            ? 'Not Available'
+                            : 'No'
+                        }
                         onSelectSwitch={val => handleSwitchChange(index, val)}
                         selectionColor={'#007BFF'}
                         index={index} // Pass the index as a prop
@@ -3445,94 +3554,85 @@ const OrderCreation = ({navigation}) => {
                 </>
               ))}
 
-
-             
-            
-
-
               <View style={{paddingHorizontal: 8}}>
                 {carDetailsPhoto[carDetailsIndex] && (
                   <View style={styles.photoContainer}>
-                                      <View style={{position: 'relative'}}>
-                    <Image
-                      source={{
-                        uri: carDetailsPhoto[carDetailsIndex],
-                      }}
-                      style={styles.uploadedImage}
-                    />
+                    <View style={{position: 'relative'}}>
+                      <Image
+                        source={{
+                          uri: carDetailsPhoto[carDetailsIndex],
+                        }}
+                        style={styles.uploadedImage}
+                      />
 
-<TouchableOpacity
-                      style={{
-                        position: 'absolute',
-                        top: 0,
-                        right: 0,
-                        backgroundColor: 'black',
-                       // borderRadius: 15,
-                        width: 60,
-                        height: 30,
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                      }}
-                      onPress={() =>
-                        handleCarDetailsClosePress(carDetailsIndex)
-                      }>
-                      <Text
+                      <TouchableOpacity
                         style={{
-                          color: 'white',
-                          fontSize: 14,
-                          //  fontWeight: 'bold',
-                        }}>
-                        Cancel
-                      </Text>
-                    </TouchableOpacity>
-
-                  </View>
-                    <View>
-
+                          position: 'absolute',
+                          top: 0,
+                          right: 0,
+                          backgroundColor: 'black',
+                          // borderRadius: 15,
+                          width: 60,
+                          height: 30,
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                        }}
+                        onPress={() =>
+                          handleCarDetailsClosePress(carDetailsIndex)
+                        }>
+                        <Text
+                          style={{
+                            color: 'white',
+                            fontSize: 14,
+                            //  fontWeight: 'bold',
+                          }}>
+                          Cancel
+                        </Text>
+                      </TouchableOpacity>
                     </View>
+                    <View></View>
                   </View>
                 )}
               </View>
               <View style={{paddingHorizontal: 10}}>
                 {carDetailsIndex === 2 ? (
                   <>
-               <View style={{marginTop:16}}>
-                    {carDetailsPhoto[carDetailsIndex] == null && (
-                      <TouchableOpacity
-                        style={styles.photoInput}
-                        onPress={() => openCameraForCarDetails()}>
-                        <Text>FrontTyre Photo Right Side</Text>
-                      </TouchableOpacity>
-                    )}
+                    <View style={{marginTop: 16}}>
+                      {carDetailsPhoto[carDetailsIndex] == null && (
+                        <TouchableOpacity
+                          style={styles.photoInput}
+                          onPress={() => openCameraForCarDetails()}>
+                          <Text>FrontTyre Photo Right Side</Text>
+                        </TouchableOpacity>
+                      )}
                     </View>
-  <View style={{marginTop:16}}>
-                    {carDetailsPhoto2[carDetailsIndex] == null && (
-                      <TouchableOpacity
-                        style={styles.photoInput}
-                        onPress={() => openCameraForCarDetailsTwo()}>
-                        <Text>FrontTyre Photo Left Side</Text>
-                      </TouchableOpacity>
-                    )}
+                    <View style={{marginTop: 16}}>
+                      {carDetailsPhoto2[carDetailsIndex] == null && (
+                        <TouchableOpacity
+                          style={styles.photoInput}
+                          onPress={() => openCameraForCarDetailsTwo()}>
+                          <Text>FrontTyre Photo Left Side</Text>
+                        </TouchableOpacity>
+                      )}
                     </View>
-  <View style={{marginTop:16}}>
-                    {carDetailsPhoto3[carDetailsIndex] == null && (
-                      <TouchableOpacity
-                        style={styles.photoInput}
-                        onPress={() => openCameraForCarDetailsThree()}>
-                        <Text>RearTyre Photo Right Side</Text>
-                      </TouchableOpacity>
-                    )}
+                    <View style={{marginTop: 16}}>
+                      {carDetailsPhoto3[carDetailsIndex] == null && (
+                        <TouchableOpacity
+                          style={styles.photoInput}
+                          onPress={() => openCameraForCarDetailsThree()}>
+                          <Text>RearTyre Photo Right Side</Text>
+                        </TouchableOpacity>
+                      )}
                     </View>
-                     <View style={{marginTop:16}}>
-                    {carDetailsPhoto4[carDetailsIndex] == null && (
-                      <TouchableOpacity
-                        style={styles.photoInput}
-                        onPress={() => openCameraForCarDetailsFour()}>
-                        <Text>RearTyre Photo Left Side</Text>
-                      </TouchableOpacity>
-                    )}
+                    <View style={{marginTop: 16}}>
+                      {carDetailsPhoto4[carDetailsIndex] == null && (
+                        <TouchableOpacity
+                          style={styles.photoInput}
+                          onPress={() => openCameraForCarDetailsFour()}>
+                          <Text>RearTyre Photo Left Side</Text>
+                        </TouchableOpacity>
+                      )}
                     </View>
-                  
                   </>
                 ) : (
                   <>
@@ -3548,19 +3648,18 @@ const OrderCreation = ({navigation}) => {
               </View>
 
               {carDetailsIndex === 5 && (
-                                <View style={{paddingHorizontal: 8,marginTop:16}}>
-                    {carDetailsPhoto5[carDetailsIndex] == null && (
-                      <TouchableOpacity
-                        style={styles.photoInput}
-                        onPress={() => openCameraForCarDetailsFive()}>
-                        <Text>Primary Key</Text>
-                      </TouchableOpacity>
-                    )}
-                    </View>
+                <View style={{paddingHorizontal: 8, marginTop: 16}}>
+                  {carDetailsPhoto5[carDetailsIndex] == null && (
+                    <TouchableOpacity
+                      style={styles.photoInput}
+                      onPress={() => openCameraForCarDetailsFive()}>
+                      <Text>Primary Key</Text>
+                    </TouchableOpacity>
+                  )}
+                </View>
               )}
 
-            
-                {carDetailsPhoto2[carDetailsIndex] && (
+              {carDetailsPhoto2[carDetailsIndex] && (
                 <View style={{paddingHorizontal: 8}}>
                   <View style={{position: 'relative'}}>
                     <Image
@@ -3595,7 +3694,7 @@ const OrderCreation = ({navigation}) => {
                 </View>
               )}
 
-{carDetailsPhoto3[carDetailsIndex] && (
+              {carDetailsPhoto3[carDetailsIndex] && (
                 <View style={{paddingHorizontal: 8}}>
                   <View style={{position: 'relative'}}>
                     <Image
@@ -3630,7 +3729,7 @@ const OrderCreation = ({navigation}) => {
                 </View>
               )}
 
-{carDetailsPhoto4[carDetailsIndex] && (
+              {carDetailsPhoto4[carDetailsIndex] && (
                 <View style={{paddingHorizontal: 8}}>
                   <View style={{position: 'relative'}}>
                     <Image
@@ -3649,7 +3748,9 @@ const OrderCreation = ({navigation}) => {
                         justifyContent: 'center',
                         alignItems: 'center',
                       }}
-                      onPress={() => handleCarDetailsClosePress4(carDetailsIndex)}>
+                      onPress={() =>
+                        handleCarDetailsClosePress4(carDetailsIndex)
+                      }>
                       <Text
                         style={{
                           color: 'white',
@@ -3663,7 +3764,7 @@ const OrderCreation = ({navigation}) => {
                 </View>
               )}
 
-{carDetailsPhoto5[carDetailsIndex] && (
+              {carDetailsPhoto5[carDetailsIndex] && (
                 <View style={{paddingHorizontal: 8}}>
                   <View style={{position: 'relative'}}>
                     <Image
@@ -3676,13 +3777,15 @@ const OrderCreation = ({navigation}) => {
                         top: 0,
                         right: 0,
                         backgroundColor: 'black',
-                      //  borderRadius: 15,
+                        //  borderRadius: 15,
                         width: 60,
                         height: 30,
                         justifyContent: 'center',
                         alignItems: 'center',
                       }}
-                      onPress={() => handleCarDetailsClosePress5(carDetailsIndex)}>
+                      onPress={() =>
+                        handleCarDetailsClosePress5(carDetailsIndex)
+                      }>
                       <Text
                         style={{
                           color: 'white',
@@ -3695,31 +3798,25 @@ const OrderCreation = ({navigation}) => {
                   </View>
                 </View>
               )}
-              
-
 
               {carDetailsPhoto[carDetailsIndex] && (
-              <View style={{paddingHorizontal:12,marginTop:0}}>
-  {carDetailsValues[carDetailsIndex] !== undefined && (
-                      <Picker
-                        style={styles.photoInput}
-                        selectedValue={carDetailsValues[carDetailsIndex]}
-                        onValueChange={itemValue =>
-                          handleCarDetailsDropDown(itemValue, carDetailsIndex)
-                        }>
-                        <Picker.Item label="Select Condition" value="" />
-                        <Picker.Item label="Pad" value="Pad" />
-                        <Picker.Item label="Disc" value="disc" />
-                        {/* Add other items as needed */}
-                      </Picker>
-                    )}
-                
-                    
-<View style={{marginTop:20}}>
+                <View style={{paddingHorizontal: 12, marginTop: 0}}>
+                  {carDetailsValues[carDetailsIndex] !== undefined && (
+                    <Picker
+                      style={styles.photoInput}
+                      selectedValue={carDetailsValues[carDetailsIndex]}
+                      onValueChange={itemValue =>
+                        handleCarDetailsDropDown(itemValue, carDetailsIndex)
+                      }>
+                      <Picker.Item label="Select Condition" value="" />
+                      <Picker.Item label="Pad" value="Pad" />
+                      <Picker.Item label="Disc" value="disc" />
+                      {/* Add other items as needed */}
+                    </Picker>
+                  )}
 
-
-
-                <TextInput
+                  <View style={{marginTop: 20}}>
+                    <TextInput
                       style={styles.photoInput}
                       placeholder="Enter remarks"
                       value={carDetailsRemarks[carDetailsIndex]}
@@ -3727,10 +3824,9 @@ const OrderCreation = ({navigation}) => {
                         handleCarDetailsRemarks(text, carDetailsIndex)
                       }
                     />
-
-                              </View>
-                              </View>
-                              )}
+                  </View>
+                </View>
+              )}
 
               <View style={{paddingHorizontal: 8, marginTop: 18}}>
                 <CustomButton
@@ -3782,37 +3878,10 @@ const OrderCreation = ({navigation}) => {
 
           <ScrollView showsVerticalScrollIndicator={false}>
             <View style={styles.wrapperContainer}>
-              {/* {[
-                'Make',
-                'Model',
-                'Year of Manufacture',
-                'variant',
-                'Mileage',
-                'Color',
-                'Transmission',
-                'Fuel type',
-                'Number of Owners',
-                'Hypothicated by',
-                'Road tax is valid',
-              ].map((label, index) => (
-                <CustomTextInput
-                  key={index}
-                  label={label}
-                  value={
-                    carDetailsFormData[label.replace(/ /g, '').toLowerCase()]
-                  }
-                  onChangeText={text =>
-                    handleInputChange(
-                      text,
-                      label.replace(/ /g, '').toLowerCase(),
-                    )
-                  }
-                  placeholder={`Enter your ${label.toLowerCase()}`}
-                />
-              ))} */}
               <CustomTextInput
                 label="Make"
                 value={make}
+                editible={true}
                 onChangeText={value => setMake(value)}
                 placeholder="Enter your Make"
               />
@@ -3820,30 +3889,46 @@ const OrderCreation = ({navigation}) => {
               <CustomTextInput
                 label="Model"
                 value={model}
+                editible={false}
                 onChangeText={value => setModel(value)}
                 placeholder="Enter the Model"
               />
 
+              {/* <Slider
+        style={styles.slider}
+        minimumValue={0}
+        maximumValue={1}
+        value={sliderValue}
+        onValueChange={setSliderValue}
+        minimumTrackTintColor={getTrackColor(sliderValue)}
+        maximumTrackTintColor="#000000"
+        thumbTintColor="#000000"
+      /> */}
+
               <CustomTextInput
                 label="Year of Manufacture"
                 value={year}
+                editible={false}
                 onChangeText={value => setModel(value)}
                 placeholder="Enter the Year of Manufacture"
               />
               <CustomTextInput
                 label="Variant"
                 value={variant}
+                editible={false}
                 onChangeText={value => setVariant(value)}
                 placeholder="Enter the Variant"
               />
               <CustomTextInput
                 label="Mileage"
+                keyboardType="numeric"
                 value={mileage}
                 onChangeText={value => setMileage(value)}
                 placeholder="Enter the Mileage"
               />
               <CustomTextInput
                 label="Color"
+                editible={false}
                 value={color}
                 onChangeText={value => setColor(value)}
                 placeholder="Enter the Color"
@@ -3876,6 +3961,7 @@ const OrderCreation = ({navigation}) => {
               <CustomTextInput
                 label="Number of Owners"
                 value={owners}
+                editible={false}
                 onChangeText={value => setOwners(value)}
                 placeholder="Enter the Number of Owners"
               />
@@ -3891,6 +3977,7 @@ const OrderCreation = ({navigation}) => {
 
               <CustomTextInput
                 label="Hypothicated by"
+                editible={false}
                 value={hypothecatedBy}
                 onChangeText={value => setHypothecatedBy(value)}
                 placeholder="Enter the Hypothicated by"
@@ -3924,6 +4011,7 @@ const OrderCreation = ({navigation}) => {
               <CustomTextInput
                 label="Cubic Capacity"
                 value={cubicapacity}
+                editible={false}
                 onChangeText={value => setCubicCapacity(value)}
                 placeholder="Enter the Cubic Capacity"
               />
@@ -3950,6 +4038,7 @@ const OrderCreation = ({navigation}) => {
             <View style={styles.wrapperContainer}>
               <CustomTextInput
                 label="Number of seats"
+                editible={false}
                 value={numberOfSeats}
                 onChangeText={setNumberOfSeats}
                 placeholder="Enter number of seats"
@@ -3965,6 +4054,7 @@ const OrderCreation = ({navigation}) => {
                 value={registrationDate}
                 onChangeText={setRegistrationDate}
                 placeholder="Enter registration date"
+                editible={false}
               />
               <SingleSwitch
                 selectionMode={selectedOption6}
@@ -3976,12 +4066,14 @@ const OrderCreation = ({navigation}) => {
               />
               <CustomTextInput
                 label="Insurance Company"
+                editable={false}
                 value={insuranceCompany}
                 onChangeText={setInsuranceCompany}
                 placeholder="Enter insurance company"
               />
               <CustomTextInput
                 label="Insurance Validity"
+                editible={false}
                 value={insuranceValidity}
                 onChangeText={setInsuranceValidity}
                 placeholder="Enter insurance validity"
@@ -3989,6 +4081,7 @@ const OrderCreation = ({navigation}) => {
               <CustomTextInput
                 label="Challan Details"
                 value={challanDetails}
+                editible={false}
                 onChangeText={setChallanDetails}
                 placeholder="Enter challan details"
               />
@@ -4002,6 +4095,7 @@ const OrderCreation = ({navigation}) => {
               />
               <CustomTextInput
                 label="Chassis Number"
+                editible={false}
                 value={chassisNumber}
                 onChangeText={setChassisNumber}
                 placeholder="Enter chassis number"
@@ -4105,27 +4199,26 @@ const OrderCreation = ({navigation}) => {
           <ScrollView showsVerticalScrollIndicator={false}>
             <View style={styles.wrapperContainer}>
               {photoTitles.map((title, index) => (
-              <View key={index} style={styles.photoContainer}>
-              <Text style={styles.label}>{title}</Text>
-              <TouchableOpacity
-                style={styles.photoInput}
-                onPress={() => handleSelectContainerPress(index)}>
-                <View style={styles.touchableContent}>
-                  <Text style={styles.touchableText}>
-                    {validations[index] ? 'Update / View' : 'Select'}
-                  </Text>
-                  <Text style={styles.icon}>
-                    {validations[index] ? '✅' : '☒'}
-                  </Text>
+                <View key={index} style={styles.photoContainer}>
+                  <Text style={styles.label}>{title}</Text>
+                  <TouchableOpacity
+                    style={styles.photoInput}
+                    onPress={() => handleSelectContainerPress(index)}>
+                    <View style={styles.touchableContent}>
+                      <Text style={styles.touchableText}>
+                        {validations[index] ? 'Update / View' : 'Upload'}
+                      </Text>
+                      <Text style={styles.icon}>
+                        {validations[index] ? '✅' : '☒'}
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
                 </View>
-              </TouchableOpacity>
-            </View>
-            
               ))}
 
-              <View style={{bottom: 25, marginTop: 20}}>
-                <CustomButton title="Next" onPress={handleNext} />
-              </View>
+<View style={{bottom: 0,marginTop:410}}>
+    <CustomButton title="Next" onPress={handleNext} />
+  </View>
             </View>
           </ScrollView>
         </View>
@@ -4145,24 +4238,25 @@ const OrderCreation = ({navigation}) => {
             <View style={styles.wrapperContainer}>
               {carPhotos.map((title, index) => (
                 <View key={index} style={styles.photoContainer}>
-  <Text style={styles.label}>{title}</Text>
-  <TouchableOpacity
-    style={styles.photoInput}
-    onPress={() => handleSelectContainerPress1(index)}>
-    <View style={styles.touchableContent}>
-      <Text style={styles.touchableText}>
-        {carPhotovalidations[index] ? 'Update / View' : 'Select'}
-      </Text>
-      <Text style={styles.icon}>
-        {carPhotovalidations[index] ? '✅' : '☒'}
-      </Text>
-    </View>
-  </TouchableOpacity>
-</View>
-
+                  <Text style={styles.label}>{title}</Text>
+                  <TouchableOpacity
+                    style={styles.photoInput}
+                    onPress={() => handleSelectContainerPress1(index)}>
+                    <View style={styles.touchableContent}>
+                      <Text style={styles.touchableText}>
+                        {carPhotovalidations[index]
+                          ? 'Update / View'
+                          : 'Upload'}
+                      </Text>
+                      <Text style={styles.icon}>
+                        {carPhotovalidations[index] ? '✅' : '☒'}
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                </View>
               ))}
 
-              <View style={{bottom: 25, marginTop: 20}}>
+              <View style={{bottom: 25, marginTop: 25}}>
                 <CustomButton title="Next" onPress={handleNext} />
               </View>
             </View>
@@ -4182,24 +4276,24 @@ const OrderCreation = ({navigation}) => {
           <ScrollView showsVerticalScrollIndicator={false}>
             <View style={styles.wrapperContainer}>
               {carDetails.map((title, index) => (
-               <View key={index} style={styles.photoContainer}>
-               <Text style={styles.label}>{title}</Text>
-               <TouchableOpacity
-                 style={styles.photoInput}
-                 onPress={() => carDetailsContainerPress(index)}>
-                 <View style={styles.touchableContent}>
-                   <Text style={styles.touchableText}>
-                     {carValidation[index] ? 'Update / View' : 'Select'}
-                   </Text>
-                   <Text style={styles.icon}>
-                     {carValidation[index] ? '✅' : '☒'}
-                   </Text>
-                 </View>
-               </TouchableOpacity>
-             </View>
+                <View key={index} style={styles.photoContainer}>
+                  <Text style={styles.label}>{title}</Text>
+                  <TouchableOpacity
+                    style={styles.photoInput}
+                    onPress={() => carDetailsContainerPress(index)}>
+                    <View style={styles.touchableContent}>
+                      <Text style={styles.touchableText}>
+                        {carValidation[index] ? 'Update / View' : 'Upload'}
+                      </Text>
+                      <Text style={styles.icon}>
+                        {carValidation[index] ? '✅' : '☒'}
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                </View>
               ))}
 
-              <View style={{bottom: 25, marginTop: 20}}>
+              <View style={{bottom: 25, marginTop:140}}>
                 <CustomButton title="Next" onPress={handleNext} />
               </View>
             </View>
@@ -4219,21 +4313,21 @@ const OrderCreation = ({navigation}) => {
           <ScrollView showsVerticalScrollIndicator={false}>
             <View style={styles.wrapperContainer}>
               {bodyInspection.map((title, index) => (
-               <View key={index} style={styles.photoContainer}>
-               <Text style={styles.label}>{title}</Text>
-               <TouchableOpacity
-                 style={styles.photoInput}
-                 onPress={() => handleBodyInspectionContainerPress(index)}>
-                 <View style={styles.touchableContent}>
-                   <Text style={styles.touchableText}>
-                     {thirdValidation[index] ? 'Update / View' : 'Select'}
-                   </Text>
-                   <Text style={styles.icon}>
-                     {thirdValidation[index] ? '✅' : '☒'}
-                   </Text>
-                 </View>
-               </TouchableOpacity>
-             </View>
+                <View key={index} style={styles.photoContainer}>
+                  <Text style={styles.label}>{title}</Text>
+                  <TouchableOpacity
+                    style={styles.photoInput}
+                    onPress={() => handleBodyInspectionContainerPress(index)}>
+                    <View style={styles.touchableContent}>
+                      <Text style={styles.touchableText}>
+                        {thirdValidation[index] ? 'Update / View' : 'Upload'}
+                      </Text>
+                      <Text style={styles.icon}>
+                        {thirdValidation[index] ? '✅' : '☒'}
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                </View>
               ))}
 
               <View style={{bottom: 25, marginTop: 20}}>
@@ -4256,27 +4350,28 @@ const OrderCreation = ({navigation}) => {
           <ScrollView showsVerticalScrollIndicator={false}>
             <View style={styles.wrapperContainer}>
               {mechanicalInspection.map((title, index) => (
-              <View key={index} style={styles.photoContainer}>
-  <Text style={styles.label}>{title}</Text>
-  <TouchableOpacity
-    style={styles.photoInput}
-    onPress={() => handleMechanicalInspectionPress(index)}>
-    <View style={styles.touchableContent}>
-      <Text style={styles.touchableText}>
-        {secondValidation[index] ? 'Update / View' : 'Select'}
-      </Text>
-      <Text style={styles.icon}>
-        {secondValidation[index] ? '✅' : '☒'}
-      </Text>
-    </View>
-  </TouchableOpacity>
-</View>
+                <View key={index} style={styles.photoContainer}>
+                  <Text style={styles.label}>{title}</Text>
+                  <TouchableOpacity
+                    style={styles.photoInput}
+                    onPress={() => handleMechanicalInspectionPress(index)}>
+                    <View style={styles.touchableContent}>
+                      <Text style={styles.touchableText}>
+                        {secondValidation[index] ? 'Update / View' : 'Upload'}
+                      </Text>
+                      <Text style={styles.icon}>
+                        {secondValidation[index] ? '✅' : '☒'}
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                </View>
               ))}
 
               <View style={{bottom: 25, marginTop: 20}}>
                 <CustomButton
                   title="Submit"
-                  onPress={() => handleDocuments()}
+                  onPress={handleDocuments}
+                  loading={loading}
                 />
               </View>
             </View>
@@ -4427,7 +4522,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop:9,
+    marginTop: 9,
   },
   touchableContent: {
     flexDirection: 'row',
@@ -4438,6 +4533,7 @@ const styles = StyleSheet.create({
   },
   touchableText: {
     flexGrow: 1,
+    textAlign:"center"
   },
   icon: {
     textAlign: 'right',
@@ -4464,6 +4560,10 @@ const styles = StyleSheet.create({
     height: 40,
     marginVertical: 10,
     width: '100%',
+  },
+  slider: {
+    width: 300,
+    height: 40,
   },
   profileContainer: {
     flexDirection: 'row',

@@ -32,13 +32,14 @@ const CustomSwitch = ({
       <View
         style={{
           height: 44,
-          width: 310,
+          width:"100%",
           backgroundColor: 'white',
           borderRadius: roundCorner ? 25 : 0,
           borderWidth: 1,
           borderColor: selectionColor,
           flexDirection: 'row',
           justifyContent: 'center',
+        //  marginHorizontal:25
           padding: 2,
         }}>
       

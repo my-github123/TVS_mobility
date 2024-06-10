@@ -7,17 +7,24 @@ import {
   TextInput,
   RefreshControl,
   ActivityIndicator,
+  TouchableWithoutFeedback,
   Text,
   StatusBar,
   Modal,
   FlatList,
   TouchableOpacity,
 } from 'react-native';
+
 import CustomBox from '../../components/CustomBox';
+import CustomTextInput from "../../components/customTextInput";
 import moment from 'moment';
 import {apiGetWithToken} from '../../services/apiService';
 import {getItem, setItem, deleteItem} from '../../utils/asyncStorageUtils';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation, useRoute,CommonActions } from '@react-navigation/native';
+import User from '../../../assets/images/user.svg';
+
+
+import CustomButton from '../../components/customTextButton';
 
 const Dashboard = ({navigation}) => {
 
@@ -93,6 +100,19 @@ const Dashboard = ({navigation}) => {
     }
   };
 
+  const handleLogout =async () => {
+    // Handle logout functionality here
+    await deleteItem('token');
+    navigation.dispatch(
+      CommonActions.reset({
+        index: 0,
+        routes: [{ name: 'Login' }],
+      })
+    );
+  
+    setModalVisible(false);
+  };
+
 
   const onRefresh = () => {
     setRefreshing(true);
@@ -162,6 +182,10 @@ const Dashboard = ({navigation}) => {
 
   }
 
+  const handleImageClick = () => {
+    setModalVisible(true);
+  };
+
 
   const renderItem = ({ item }) => (
     <TouchableOpacity style={styles.card}  onPress={()=>callInitiated(item)}>
@@ -173,7 +197,7 @@ const Dashboard = ({navigation}) => {
       </View>
       <View style={styles.row}>
         <Text style={styles.makeModel}>{item.make===""?"-":item.make} | {item.model===""?"-":item.model}</Text>
-        <TouchableOpacity onPress={() => alert(`Dealer: ${item.dealerName}\nLocation: ${item.dealerLocation}\nPhone: ${item.dealerPhoneNumber}`)}>
+        <TouchableOpacity onPress={() => alert(`Dealer: ${item.dealerName===""?"-":item.dealerName}\nLocation: ${item.dealerLocation===""?"-":item.dealerLocation}\nPhone: ${item.dealerPhoneNumber===""?"-":item.dealerPhoneNumber}`)}>
           <Text style={styles.hyperlink}>Dealer details</Text>
         </TouchableOpacity>
       </View>
@@ -187,7 +211,7 @@ const Dashboard = ({navigation}) => {
 
   return (
     <View style={styles.topContainer}>
-      <Modal
+      {/* <Modal
         animationType="slide"
         transparent={true}
         visible={modalVisible}
@@ -215,6 +239,31 @@ const Dashboard = ({navigation}) => {
             </TouchableOpacity>
           </View>
         </View>
+      </Modal> */}
+
+<Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
+          <View style={styles.modalContainer}>
+            <TouchableWithoutFeedback>
+              <View style={styles.modalContent}>
+                <View style={{ alignItems: "center" }}>
+                  <User height={100} width={100} style={styles.profileImage} />
+                </View>
+                <CustomTextInput
+                  label="Username"
+                  value={userName}
+                  editable={false}
+                />
+                <CustomButton title="Logout" onPress={handleLogout} />
+              </View>
+            </TouchableWithoutFeedback>
+          </View>
+        </TouchableWithoutFeedback>
       </Modal>
       <StatusBar barStyle="dark-content" backgroundColor="#fff" />
       <View
@@ -224,13 +273,15 @@ const Dashboard = ({navigation}) => {
           marginTop: 10,
           paddingHorizontal: 8,
         }}>
+          {/* <TouchableOpacity onPress={()=>handleImageClick()}>
         <Image
           source={require('../../../assets/images/menu.png')}
           style={{width: 30, height: 23}}
         />
+        </TouchableOpacity> */}
         <Image
           source={require('../../../assets/images/tvs_fit.png')}
-          style={{width: 160, height: 23}}
+          style={{width: 160, height: 23,left:5}}
         />
         <View style={styles.rightIconsContainer}>
           <TouchableOpacity onPress={() => onRefresh()}>
@@ -239,7 +290,7 @@ const Dashboard = ({navigation}) => {
               style={{width: 25, height: 25, right: 24}}
             />
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+          <TouchableOpacity onPress={() => handleLogout()}>
             <Image
               source={require('../../../assets/images/logout.png')}
               style={{width: 25, height: 25}}
@@ -459,13 +510,14 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginHorizontal: 12,
     marginTop: 15,
-    paddingHorizontal: 10,
+    paddingHorizontal: 16,
+   // padding: 16,
     fontSize: 16,
   },
   card: {
     backgroundColor: 'white',
     borderRadius: 8,
-   padding: 16,
+    padding: 16,
     marginVertical: 8,
     marginHorizontal: 16,
     shadowColor: '#000',
@@ -477,7 +529,9 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 8,
+    marginTop:8,
+    fontSize:12
+   // marginBottom: 8,
   },
   vechNumber: {
     fontSize: 16,
@@ -502,7 +556,7 @@ const styles = StyleSheet.create({
   divider: {
     height: 1,
     backgroundColor: '#eee',
-    marginVertical:4,
+    marginTop:4,
   },
   createdBy: {
     fontSize: 12,
@@ -511,6 +565,7 @@ const styles = StyleSheet.create({
   createdDate: {
     fontSize: 12,
     color: '#666',
+    marginTop:4
   },
   // name: {
   //   color: 'black',
@@ -552,17 +607,27 @@ const styles = StyleSheet.create({
   },
   modalContainer: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'flex-end',
     alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
+
   modalContent: {
-    width: '80%',
-    backgroundColor: '#fff',
+    width: '100%',
+    backgroundColor: 'white',
     padding: 20,
-    borderRadius: 5,
-    alignItems: 'center',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+  //  alignItems: 'center',
   },
+  profileImage: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    marginBottom: 20,
+  },
+
+
   modalTitle: {
     fontSize: 18,
     fontWeight: 'bold',

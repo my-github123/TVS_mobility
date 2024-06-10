@@ -136,21 +136,13 @@ export default function DealerList({navigation}) {
   };
 
  
-    const handlePhonePress = (phoneNumber) => {
-      if (!phoneNumber) {
-        Alert.alert('No phone number available');
-        return;
-      }
-      const cleanedNumber = phoneNumber.replace(/\D/g, ''); // Remove all non-digit characters
-      const args = {
-        number:`+919940193812`, // String value with the number to call
-        prompt: true, // Optional boolean property. Determines if the user should be prompted prior to the call
-      };
-      call(args).catch((error) => {
-        console.error(error);
-        Alert.alert('Failed to make the call');
-      });
+  const handleCall = (phoneNumber) => {
+    const args = {
+      number: phoneNumber,
+      prompt: true,
     };
+    call(args).catch(console.error);
+  };
   
 
   const renderItem = ({item}) => (
@@ -162,7 +154,7 @@ export default function DealerList({navigation}) {
           <Text style={styles.date}>{item.dealerLocation==null?"-":item.dealerLocation}</Text>
         </View>
         <TouchableOpacity style={styles.phoneIconContainer}
-          onPress={() => handlePhonePress(item.dealerPhoneNumber)}
+          onPress={() => handleCall(item.dealerPhoneNumber)}
         >
           <Image
             source={require('../../../assets/images/phone.png')}
@@ -360,7 +352,8 @@ const styles = StyleSheet.create({
     height: 40,
     backgroundColor: '#f7f8f9',
     borderRadius: 8,
-    marginHorizontal: 12,
+   // marginHorizontal: 12,
+    marginHorizontal: 16,
     marginTop: 15,
     paddingHorizontal: 10,
     fontSize: 16,

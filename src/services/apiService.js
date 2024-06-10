@@ -111,3 +111,40 @@ export const apiDeleteWithToken = async endpoint => {
     throw error;
   }
 };
+
+
+
+
+
+// useEffect(() => {
+//   return () => {
+//     saveData('base64CarDetailsPhoto', base64CarDetailsPhoto);
+//   };
+// }, [base64CarDetailsPhoto]);
+
+
+// useEffect(() => {
+//   const fetchData = async () => {
+//     const data = await loadData('base64CarDetailsPhoto');
+//     if (data) {
+//       setBase64CarDetailsPhoto(data);
+//     }
+//   };
+//   fetchData();
+// }, []);
+
+
+// const loadData = async (key) => {
+//   try {
+//     const jsonData = await AsyncStorage.getItem(key);
+//     if (jsonData) {
+//       const data = JSON.parse(jsonData);
+//       console.log('Data loaded successfully');
+//       return data;
+//     }
+//     return null;
+//   } catch (e) {
+//     console.error('Failed to load data:', e);
+//     return null;
+//   }
+// };
