@@ -33,7 +33,7 @@ import {launchCamera} from 'react-native-image-picker';
 import {Picker} from '@react-native-picker/picker';
 import RNFS from 'react-native-fs';
 import {useNavigation, useRoute, CommonActions} from '@react-navigation/native';
-import {apiPostWithToken} from '../../services/apiService';
+import {apiPostWithToken, apiGetWithToken} from '../../services/apiService';
 import {getItem} from '../../utils/asyncStorageUtils';
 
 const {width} = Dimensions.get('window');
@@ -56,6 +56,7 @@ const OrderCreation = ({navigation}) => {
     registerDate,
     vechicleNumber,
     financer,
+    id,
   } = route.params;
 
   console.log(vechicleNumber, 'VECHICLE NUMBER');
@@ -88,7 +89,7 @@ const OrderCreation = ({navigation}) => {
   const [rcStatus, setRcStatus] = useState('');
   const [stateNoc, setStateNoc] = useState('');
   const [flood, setFlood] = useState('');
-
+  const [updateOrderList, setUpdateOrderList] = useState({});
   const [selectedOption, setSelectedOption] = useState(1);
   const [selectedOption1, setSelectedOption1] = useState(1);
   const [selectedOption2, setSelectedOption2] = useState(1);
@@ -251,6 +252,573 @@ const OrderCreation = ({navigation}) => {
     'WindShield FrontTyre Photo',
   ];
 
+  const [suspensionPhoto, setSuspensionPhoto] = useState(
+    Array.from({length: 7}, () => ''),
+  );
+  const [suspensionRemarks, setSuspensionRemarks] = useState(
+    Array.from({length: 7}, () => ''),
+  );
+  const [suspensionBase64, setSuspensionBase64] = useState(
+    Array.from({length: 7}, () => ''),
+  );
+  const [suspensionSwitch, setSuspensionSwitch] = useState(
+    Array.from({length: 7}, () => false),
+  );
+  const [suspensionDropdown, setSuspensionDropdown] = useState(
+    Array.from({length: 7}, () => ''),
+  );
+
+  const [steeringPhoto, setSteeringPhoto] = useState(
+    Array.from({length: 4}, () => ''),
+  );
+  const [steeringBase64, setSteeringBase64] = useState(
+    Array.from({length: 4}, () => ''),
+  );
+  const [steeringRemarks, setSteeringRemarks] = useState(
+    Array.from({length: 4}, () => ''),
+  );
+  const [steeringSwitch, setSteeringSwitch] = useState(
+    Array.from({length: 4}, () => ''),
+  );
+  const [steeringDropdown, setSteeringDropdown] = useState(
+    Array.from({length: 4}, () => ''),
+  );
+
+  const [brakePhoto, setBrakePhoto] = useState(
+    Array.from({length: 6}, () => ''),
+  );
+  const [brakeBase64, setBrake64] = useState(Array.from({lenght: 6}, () => ''));
+  const [brakeRemarks, setBrakeRemarks] = useState(
+    Array.from({length: 6}, () => ''),
+  );
+  const [brakeSwitch, setBrakeSwitch] = useState(
+    Array.from({length: 6}, () => ''),
+  );
+  const [brakeDropdown, setBrakeDropdown] = useState(
+    Array.from({length: 6}, () => ''),
+  );
+
+  const [transmissionPhoto, setTransmissionPhoto] = useState(
+    Array.from({length: 8}, () => ''),
+  );
+  const [transmissionBase64, setTransmissionBase64] = useState(
+    Array.from({length: 8}, () => ''),
+  );
+  const [transmissionRemarks, setTransmissionRemarks] = useState(
+    Array.from({length: 8}, () => ''),
+  );
+  const [transmissionSwitch, setTransmissionSwitch] = useState(
+    Array.from({length: 8}, () => ''),
+  );
+  const [transmissionDropdown, setTransmissionDropdown] = useState(
+    Array.from({length: 8}, () => ''),
+  );
+
+  const [enginePhoto, setEnginePhoto] = useState(
+    Array.from({length: 19}, () => ''),
+  );
+  const [engineBase64, setEngineBase64] = useState(
+    Array.from({length: 19}, () => ''),
+  );
+  const [engineRemarks, setEngineRemarks] = useState(
+    Array.from({length: 19}, () => ''),
+  );
+  const [engineSwitch, setEngineSwitch] = useState(
+    Array.from({length: 19}, () => ''),
+  );
+  const [engineDropdown, setEngineDropdown] = useState(
+    Array.from({length: 19}, () => ''),
+  );
+
+  const [electricalPhoto, setElectricalPhoto] = useState(
+    Array.from({length: 15}, () => ''),
+  );
+  const [electricalBase64, setElectricalBase64] = useState(
+    Array.from({length: 15}, () => ''),
+  );
+  const [electricalRemarks, setElectricalRemarks] = useState(
+    Array.from({length: 15}, () => ''),
+  );
+  const [electricalSwitch, setElectricalSwitch] = useState(
+    Array.from({length: 15}, () => ''),
+  );
+  const [electricalDropdown, setElectricalDropdown] = useState(
+    Array.from({length: 15}, () => ''),
+  );
+  const [roadTestRemarks, setRoadTestRemarks] = useState('');
+
+  const [acPhoto, setAcPhoto] = useState(Array.from({length: 6}, () => ''));
+  const [acBase64, setAcBase64] = useState(Array.from({length: 6}, () => ''));
+  const [acRemarks, setAcRemarks] = useState(Array.from({length: 6}, () => ''));
+  const [acSwitch, setAcSwitch] = useState(Array.from({length: 6}, () => ''));
+  const [acDropdown, setAcDropdown] = useState(
+    Array.from({length: 6}, () => ''),
+  );
+
+  const [accessoriesPhoto, setAccessoriesPhoto] = useState(
+    Array.from({length: 11}, () => ''),
+  );
+  const [accessoriesBase64, setAccessoriesBase64] = useState(
+    Array.from({length: 11}, () => ''),
+  );
+  const [accessoriesRemarks, setAccessoriesRemarks] = useState(
+    Array.from({length: 11}, () => ''),
+  );
+  const [accessoriesSwitch, setAccessoriesSwitch] = useState(
+    Array.from({length: 11}, () => ''),
+  );
+  const [accessoriesDropdown, setAccessoriesDropdown] = useState(
+    Array.from({length: 11}, () => ''),
+  );
+
+  const suspensionList = [
+    'Strut',
+    'Lower Arm',
+    'Link Rod',
+    'Stablizer Bar',
+    'shok absorber',
+    'coil spring',
+    'leaf spring',
+  ];
+
+  const steeringList = [
+    'Rack and Pinion',
+    'Steering Coloum',
+    'Hardness',
+    'Ball joint end',
+  ];
+
+  const brakeList = [
+    'Pad',
+    'Disc',
+    'Shoe',
+    'Drum',
+    'Wheel Cylinder',
+    'MC Booster',
+  ];
+
+  const transmissionList = [
+    'Clutch',
+    'Gear Shifting',
+    'Drive Shaft',
+    'Axle',
+    'Propeller Shaft',
+    'Differential',
+    'bearing',
+    'Mounting',
+  ];
+
+  const engineList = [
+    'Smoke',
+    'Turbo',
+    'Misfiring',
+    'Tappet',
+    'Knocking',
+    'Exhaust',
+    'Belts',
+    'Tensioner',
+    'Mounting',
+    'Fuel Pump',
+    'High Presure Pump',
+    'Commonrail',
+    'Injector',
+    'Fuel Tank',
+    'hose',
+    'Radiator',
+    'fan',
+    'Over Heating',
+    'All Bearings',
+  ];
+
+  const electricalList = [
+    'Battery',
+    'Alternator',
+    'Self motor',
+    'Wiring Harness',
+    'ECM',
+    'All Sensors',
+    'Wiper Motor',
+    'Cluster',
+    'Head Lights and DRL',
+    'Tail Light',
+    'Cabin Light',
+    'Combination Switch',
+    'ABS',
+    'Air Bag',
+    'All Power windows',
+  ];
+
+  const ACList = [
+    'Cooling',
+    'Blower, Condenser',
+    'fan',
+    'Control Switch',
+    'Vent',
+  ];
+
+  const accessoriesList = [
+    'Music System',
+    'Parking Sensor',
+    'Reverse Camera',
+    'OVRM Adjuster',
+    'Seat Height Adjuster',
+    'Seat belt',
+    'Sun Roof',
+    'Roof Rail',
+    'Spoiler',
+    'Skirt',
+    'Steering Controls',
+  ];
+
+  const pillarsList = [
+    'Pillar A LeftSide Photo',
+    'Pillar A RightSide Photo',
+    'Pillar B LeftSide Photo',
+    'Pillar B RightSide Photo',
+    'Pillar C LeftSide Photo',
+    'Pillar C RightSide Photo',
+  ];
+  const apronList = ['Apron LeftSide Photo', 'Apron RightSide Photo'];
+  const fendersList = ['Fenders LeftSide Photo', 'Fenders RightSide Photo'];
+  const quarterPanelsList = [
+    'QuarterPanles LeftSide Photo',
+    'QuarterPanles RightSide Photo',
+  ];
+  const runningBoardList = [
+    'RunningBoard LeftSide Photo',
+    'RunningBoard RightSide Photo',
+  ];
+  const doorsList = [
+    'Door front LeftSide Photo',
+    'Door front RightSide Photo',
+    'Door Rear LeftSide Photo',
+    'Door Rear RightSide Photo',
+  ];
+  const dickyDoorList = ['Boot Photo'];
+  const dickySkirtList = ['Boot Skirt Photo'];
+  const bonetList = ['Bonet Photo'];
+  const supportMembersList = [
+    'SupportMember Upper Photo',
+    'SupportMember Lower Photo',
+    'Headlamp SupportRightSide Photo',
+    'Headlamp SupportLeftSide Photo',
+  ];
+  const bumberList = ['Bumber FrontSide Photo', 'Bumber RearSide Photo'];
+  const wheelTypeList = ['Wheel TypeAlloy Photo', 'Wheel TypeDrum Photo'];
+  const WindshieldList = ['WindShield Front Photo', 'WindShield Rear Photo'];
+
+  const [pillarsPhoto, setPillarsPhoto] = useState(
+    Array.from({length: 6}, () => ''),
+  );
+  const [pillarsPhotoRemarks, setPillarsPhotoRemarks] = useState(
+    Array.from({length: 6}, () => ''),
+  );
+  const [pillarBase64, setPillarBase64] = useState(
+    Array.from({length: 6}, () => ''),
+  );
+  const [pillarSwitch, setPillarSwitch] = useState(
+    Array.from({length: 6}, () => false),
+  );
+  const [pillarsCondition, setPillarsCondition] = useState(
+    Array.from({length: 6}, () => ''),
+  );
+
+  const [apronPhoto, setApronPhoto] = useState(
+    Array.from({length: 2}, () => ''),
+  );
+  const [apronRemarks, setApronRemarks] = useState(
+    Array.from({length: 2}, () => ''),
+  );
+  const [apronBase64, setApronBase64] = useState(
+    Array.from({length: 2}, () => ''),
+  );
+  const [apronSwitch, setApronSwitch] = useState(
+    Array.from({length: 2}, () => false),
+  );
+  const [apronCondition, setApronCondition] = useState(
+    Array.from({length: 2}, () => ''),
+  );
+
+  const [fenderPhoto, setFendersPhoto] = useState(
+    Array.from({length: 2}, () => ''),
+  );
+  const [fenderRemarks, setFenderRemarks] = useState(
+    Array.from({length: 2}, () => ''),
+  );
+  const [fennderBase64, setFenderBase64] = useState(
+    Array.from({length: 2}, () => ''),
+  );
+  const [fenderSwitch, setFenderSwitch] = useState(
+    Array.from({length: 2}, () => false),
+  );
+  const [fenderCondition, setFenderCondition] = useState(
+    Array.from({length: 2}, () => ''),
+  );
+
+  const [quarterPanlesPhoto, setQuarterPanlesPhoto] = useState(
+    Array.from({length: 2}, () => ''),
+  );
+  const [quarterPanlesRemarks, setQuarterPanlesRemarks] = useState(
+    Array.from({length: 2}, () => ''),
+  );
+  const [quarterPanlesBase64, setQuarterPanlesBase64] = useState(
+    Array.from({length: 2}, () => ''),
+  );
+  const [quarterPanlesSwitch, setQuarterPanlesSwitch] = useState(
+    Array.from({length: 2}, () => false),
+  );
+  const [quarterPanlesCondition, setQuarterPanlesCondition] = useState(
+    Array.from({length: 2}, () => ''),
+  );
+
+  const [runningBoardPhoto, setRunningBoardPhoto] = useState(
+    Array.from({length: 2}, () => ''),
+  );
+  const [runningBoardRemarks, setRunningBoardRemarks] = useState(
+    Array.from({length: 2}, () => ''),
+  );
+  const [runningBoardBase64, setRunningBoardBase64] = useState(
+    Array.from({length: 2}, () => ''),
+  );
+  const [runningBoardSwitch, setRunningBoardSwitch] = useState(
+    Array.from({length: 2}, () => false),
+  );
+  const [runnningBoardCondition, setRunningBoardCondition] = useState(
+    Array.from({length: 2}, () => ''),
+  );
+
+  const [doorPhoto, setDoorPhoto] = useState(Array.from({length: 4}, () => ''));
+  const [doorRemarks, setDoorRemarks] = useState(
+    Array.from({length: 4}, () => ''),
+  );
+  const [doorBase64, setDoorBase64] = useState(
+    Array.from({length: 4}, () => ''),
+  );
+  const [doorSwitch, setDoorSwitch] = useState(
+    Array.from({length: 4}, () => false),
+  );
+  const [doorCondition, setDoorCondition] = useState(
+    Array.from({length: 4}, () => ''),
+  );
+
+  const [dickyDoorPhoto, setDickyDoorPhoto] = useState(
+    Array.from({length: 1}, () => ''),
+  );
+  const [dickyDoorRemarks, setDickyDoorRemarks] = useState(
+    Array.from({length: 1}, () => ''),
+  );
+  const [dickyDoorBase64, setDickyDoorBase64] = useState(
+    Array.from({length: 1}, () => ''),
+  );
+  const [dickyDoorSwitch, setDickyDoorSwitch] = useState(
+    Array.from({length: 1}, () => false),
+  );
+  const [dickyDoorCondition, setDickyDoorCondition] = useState(
+    Array.from({length: 1}, () => ''),
+  );
+
+  const [dickySkirtPhoto, setDickySkirtPhoto] = useState(
+    Array.from({length: 1}, () => ''),
+  );
+  const [dickySkirtRemarks, setDickySkirtRemarks] = useState(
+    Array.from({length: 1}, () => ''),
+  );
+  const [dickySkirtBase64, setDickySkirtBase64] = useState(
+    Array.from({length: 1}, () => ''),
+  );
+  const [dickySkirtSwitch, setDickySkirtSwitch] = useState(
+    Array.from({length: 1}, () => false),
+  );
+  const [dickySkirtCondition, setDickySkirtCondition] = useState(
+    Array.from({length: 1}, () => ''),
+  );
+
+  const [bonetPhoto, setBonetPhoto] = useState(
+    Array.from({length: 1}, () => ''),
+  );
+  const [bonetRemarks, setBonetRemarks] = useState(
+    Array.from({length: 1}, () => ''),
+  );
+  const [bonetBase64, setBonetBase64] = useState(
+    Array.from({length: 1}, () => ''),
+  );
+  const [bonetSwitch, setBonetSwitch] = useState(
+    Array.from({length: 1}, () => false),
+  );
+  const [bonetCondition, setBonetCondition] = useState(
+    Array.from({length: 1}, () => ''),
+  );
+
+  const [supportMembersPhoto, setSupportMembersPhoto] = useState(
+    Array.from({length: 4}, () => ''),
+  );
+  const [supportMembersRemarks, setSupportMembersRemarks] = useState(
+    Array.from({length: 4}, () => ''),
+  );
+  const [supportMembersBase64, setSupportMembersBase64] = useState(
+    Array.from({length: 4}, () => ''),
+  );
+  const [supportMembersSwitch, setSupportMembersSwitch] = useState(
+    Array.from({length: 4}, () => false),
+  );
+  const [supportMembersCondition, setSupportMembersCondition] = useState(
+    Array.from({length: 4}, () => ''),
+  );
+
+  const [bumperPhoto, setBumperPhoto] = useState(
+    Array.from({length: 2}, () => ''),
+  );
+  const [bumperRemarks, setBumperRemarks] = useState(
+    Array.from({length: 2}, () => ''),
+  );
+  const [bumperBase64, setBumperBase64] = useState(
+    Array.from({length: 2}, () => ''),
+  );
+  const [bumperSwitch, setBumperSwitch] = useState(
+    Array.from({length: 2}, () => false),
+  );
+  const [bumperCondition, setBumperCondition] = useState(
+    Array.from({length: 2}, () => ''),
+  );
+
+  const [wheelTypePhoto, setWheelTypePhoto] = useState(
+    Array.from({length: 2}, () => ''),
+  );
+  const [wheelTypeRemarks, setWheelTypeRemarks] = useState(
+    Array.from({length: 2}, () => ''),
+  );
+  const [wheelTypeBase64, setWheelTypeBase64] = useState(
+    Array.from({length: 2}, () => ''),
+  );
+  const [wheelTypeSwitch, setWheelTypeSwitch] = useState(
+    Array.from({length: 2}, () => false),
+  );
+  const [wheelTypeCondition, setWheelTypeCondition] = useState(
+    Array.from({length: 2}, () => ''),
+  );
+
+  const [windShieldPhoto, setWindShieldPhoto] = useState(
+    Array.from({length: 3}, () => ''),
+  );
+  const [windShieldRemarks, setWindShieldRemarks] = useState(
+    Array.from({length: 3}, () => ''),
+  );
+  const [windShieldBase64, setWindShieldBase64] = useState(
+    Array.from({length: 3}, () => ''),
+  );
+  const [windShieldSwitch, setWindShieldSwitch] = useState(
+    Array.from({length: 3}, () => false),
+  );
+  const [windShieldCondition, setWindShieldCondition] = useState(
+    Array.from({length: 3}, () => ''),
+  );
+
+  const chassisList = ['Chassis Punch'];
+  const vinPlateList = ['Vin  Plate'];
+  const tyresList = [
+    'FrontTyre Left',
+    'FrontTyre Right',
+    'RearTyre Left',
+    'RearTyre Right',
+  ];
+  const spareWheelList = ['SpareWheel'];
+  const toolList = ['ToolKit'];
+  const keyList = ['Primary Key', 'Spare Key'];
+
+  const [chassisPunchPhoto, setChassisPunchPhoto] = useState(
+    Array.from({length: 1}, () => ''),
+  );
+  const [chassisRemarks, setChassisRemarks] = useState(
+    Array.from({length: 1}, () => ''),
+  );
+  const [chassisBase64, setChassisBase64] = useState(
+    Array.from({length: 1}, () => ''),
+  );
+  const [chassisSwitch, setChassisSwitch] = useState(
+    Array.from({length: 1}, () => false),
+  );
+  const [chassisCondition, setChasisCondition] = useState(
+    Array.from({length: 1}, () => ''),
+  );
+
+  const [vinPlatePunchPhoto, setVinPlatePunchPhoto] = useState(
+    Array.from({length: 1}, () => ''),
+  );
+  const [vinPlateRemarks, setVinPlateRemarks] = useState(
+    Array.from({length: 1}, () => ''),
+  );
+  const [vinPlateBase64, setVinPlateBase64] = useState(
+    Array.from({length: 1}, () => ''),
+  );
+  const [vinPlateSwitch, setVinPlateSwitch] = useState(
+    Array.from({length: 1}, () => false),
+  );
+  const [vinPlateCondition, setVinPlateCondition] = useState(
+    Array.from({length: 1}, () => ''),
+  );
+
+  const [tyrePunchPhoto, setTyrePunchPhoto] = useState(
+    Array.from({length: 4}, () => ''),
+  );
+  const [tyreRemarks, setTyreRemarks] = useState(
+    Array.from({length: 4}, () => ''),
+  );
+  const [tyreBase64, setTyreBase64] = useState(
+    Array.from({length: 4}, () => ''),
+  );
+  const [tyreSwitch, setTyreSwitch] = useState(
+    Array.from({length: 4}, () => false),
+  );
+  const [tyreCondition, setTyreCondition] = useState(
+    Array.from({length: 4}, () => ''),
+  );
+
+  const [spareWheelPunchPhoto, setSpareWheelPunchPhoto] = useState(
+    Array.from({length: 1}, () => ''),
+  );
+  const [spareWheelRemarks, setSpareWheelRemarks] = useState(
+    Array.from({length: 1}, () => ''),
+  );
+  const [spareWheelBase64, setSpareWheelBase64] = useState(
+    Array.from({length: 1}, () => ''),
+  );
+  const [spareWheelSwitch, setSpareWheelSwitch] = useState(
+    Array.from({length: 1}, () => false),
+  );
+  const [spareWheelCondition, setSpareWheelCondition] = useState(
+    Array.from({length: 1}, () => ''),
+  );
+
+  const [toolKitPunchPhoto, setToolkitPunchPhoto] = useState(
+    Array.from({length: 1}, () => ''),
+  );
+  const [toolKitRemarks, setToolkitRemarks] = useState(
+    Array.from({length: 1}, () => ''),
+  );
+  const [toolKitBase64, setToolkitBase64] = useState(
+    Array.from({length: 1}, () => ''),
+  );
+  const [toolKitSwitch, setToolkitSwitch] = useState(
+    Array.from({length: 1}, () => false),
+  );
+  const [toolKitCondition, setToolkitCondition] = useState(
+    Array.from({length: 1}, () => ''),
+  );
+
+  const [keyPunchPhoto, setKeyPunchPhoto] = useState(
+    Array.from({length: 2}, () => ''),
+  );
+  const [keyRemarks, setKeyRemarks] = useState(
+    Array.from({length: 2}, () => ''),
+  );
+  const [keyBase64, setKeyBase64] = useState(Array.from({length: 2}, () => ''));
+  const [keySwitch, setKeySwitch] = useState(
+    Array.from({length: 2}, () => false),
+  );
+  const [keyCondition, setKeyCondition] = useState(
+    Array.from({length: 2}, () => ''),
+  );
+
   const [modalVisible, setModalVisible] = useState(false);
   const [modalVisible1, setModalVisible1] = useState(false);
   const [inspectionVisible, setInspectionVisible] = useState(false);
@@ -262,11 +830,7 @@ const OrderCreation = ({navigation}) => {
     Array.from({length: 3}, () => null),
   );
 
-  useEffect(() => {
-    if (base64CarPhotos[2]) {
-      console.log(base64CarPhotos[0].substring(0, 25));
-    }
-  }, [base64CarPhotos]);
+  const isCameraOpen = useRef(false);
 
   const [
     base64StringsForMechanicalInspection,
@@ -761,8 +1325,6 @@ const OrderCreation = ({navigation}) => {
     setUploadStatus(updatedUploadStatus);
   };
 
-  
-
   const openCamera = () => {
     launchCamera({mediaType: 'photo'}, response => {
       if (response.assets && response.assets.length > 0) {
@@ -807,9 +1369,9 @@ const OrderCreation = ({navigation}) => {
   //       const newPhotoUris = [...photoUris];
   //       newPhotoUris[selectedContainerIndex] = response.assets[0].uri;
   //       setPhotoUris(newPhotoUris);
-  
+
   //       const uri = newPhotoUris[selectedContainerIndex];
-  
+
   //       // Resize and compress the image with quality set to 10
   //       ImageResizer.createResizedImage(uri, 400, 300, 'JPEG', 10) // Quality set to 10
   //         .then(compressedImage => {
@@ -817,7 +1379,7 @@ const OrderCreation = ({navigation}) => {
   //           const currentDateTime = new Date();
   //           const date = currentDateTime.toLocaleDateString();
   //           const time = currentDateTime.toLocaleTimeString();
-  
+
   //           // Overlay date and time on the image
   //           Marker.markText({
   //             src: compressedImage.uri,
@@ -835,13 +1397,13 @@ const OrderCreation = ({navigation}) => {
   //               RNFS.readFile(markedImagePath, 'base64')
   //                 .then(base64 => {
   //                   const imageType = getImageType(base64);
-  
+
   //                   if (imageType) {
   //                     const base64Image = `data:image/${imageType};base64,${base64}`;
-  
+
   //                     const newBase64Strings = [...base64Strings];
   //                     newBase64Strings[selectedContainerIndex] = base64Image;
-  
+
   //                     setBase64Strings(newBase64Strings);
   //                   } else {
   //                     console.log('Unknown image type');
@@ -1021,16 +1583,25 @@ const OrderCreation = ({navigation}) => {
     });
   };
 
-  const openCameraForInspection = () => {
-    launchCamera({mediaType: 'photo'}, response => {
+  const openCameraForInspection = index => {
+    if (isCameraOpen.current) return;
+    isCameraOpen.current = true;
+
+    const handleCameraResponse = (
+      response,
+      photoState,
+      base64State,
+      setPhotoState,
+      setBase64State,
+    ) => {
       if (response.assets && response.assets.length > 0) {
-        const newPhotoUris = [...inspectionPhotos];
-        newPhotoUris[selectedInspectionIndex] = response.assets[0].uri;
-        setInspectionPhotos(newPhotoUris);
+        const newPhotoUris = [...photoState];
+        newPhotoUris[index] = response.assets[0].uri;
+        setPhotoState(newPhotoUris);
 
         // Resize and compress the image with quality set to 10
         ImageResizer.createResizedImage(
-          newPhotoUris[selectedInspectionIndex],
+          newPhotoUris[index],
           400,
           300,
           'JPEG',
@@ -1043,13 +1614,9 @@ const OrderCreation = ({navigation}) => {
 
                 if (imageType) {
                   const base64Image = `data:image/${imageType};base64,${base64}`;
-
-                  const newBase64Strings = [
-                    ...base64StringsForMechanicalInspection,
-                  ];
-                  newBase64Strings[selectedInspectionIndex] = base64Image;
-
-                  setBase64StringsForMechanicalInspection(newBase64Strings);
+                  const newBase64Strings = [...base64State];
+                  newBase64Strings[index] = base64Image;
+                  setBase64State(newBase64Strings);
                 } else {
                   console.log('Unknown image type');
                 }
@@ -1060,21 +1627,115 @@ const OrderCreation = ({navigation}) => {
           })
           .catch(error => {
             console.log('Error resizing image:', error);
+          })
+          .finally(() => {
+            isCameraOpen.current = false;
           });
+      } else {
+        isCameraOpen.current = false;
+      }
+    };
+
+    launchCamera({mediaType: 'photo'}, response => {
+      switch (selectedInspectionIndex) {
+        case 0:
+          handleCameraResponse(
+            response,
+            suspensionPhoto,
+            suspensionBase64,
+            setSuspensionPhoto,
+            setSuspensionBase64,
+          );
+          break;
+        case 1:
+          handleCameraResponse(
+            response,
+            steeringPhoto,
+            steeringBase64,
+            setSteeringPhoto,
+            setSteeringBase64,
+          );
+          break;
+        case 2:
+          handleCameraResponse(
+            response,
+            brakePhoto,
+            brakeBase64,
+            setBrakePhoto,
+            setBrakeBase64,
+          );
+          break;
+        case 3:
+          handleCameraResponse(
+            response,
+            transmissionPhoto,
+            transmissionBase64,
+            setTransmissionPhoto,
+            setTransmissionBase64,
+          );
+          break;
+        case 4:
+          handleCameraResponse(
+            response,
+            enginePhoto,
+            engineBase64,
+            setEnginePhoto,
+            setEngineBase64,
+          );
+          break;
+        case 5:
+          handleCameraResponse(
+            response,
+            electricalPhoto,
+            electricalBase64,
+            setElectricalPhoto,
+            setElectricalBase64,
+          );
+          break;
+        case 6:
+          handleCameraResponse(
+            response,
+            acPhoto,
+            acBase64,
+            setAcPhoto,
+            setAcBase64,
+          );
+          break;
+        case 7:
+          handleCameraResponse(
+            response,
+            accessoriesPhoto,
+            accessoriesBase64,
+            setAccessoriesPhoto,
+            setAccessoriesBase64,
+          );
+          break;
+        default:
+          console.log('Invalid inspection index');
+          isCameraOpen.current = false;
       }
     });
   };
 
-  const openCameraForBodyInspection = () => {
-    launchCamera({mediaType: 'photo'}, response => {
+  const openCameraForBodyInspection = index => {
+    if (isCameraOpen.current) return;
+    isCameraOpen.current = true;
+
+    const handleCameraResponse = (
+      response,
+      photoState,
+      base64State,
+      setPhotoState,
+      setBase64State,
+    ) => {
       if (response.assets && response.assets.length > 0) {
-        const newPhotoUris = [...bodyInspectionPhotos];
-        newPhotoUris[selectedBodyInspectionIndex] = response.assets[0].uri;
-        setBodyInspectionPhotos(newPhotoUris);
+        const newPhotoUris = [...photoState];
+        newPhotoUris[index] = response.assets[0].uri;
+        setPhotoState(newPhotoUris);
 
         // Resize and compress the image with quality set to 10
         ImageResizer.createResizedImage(
-          newPhotoUris[selectedBodyInspectionIndex],
+          newPhotoUris[index],
           400,
           300,
           'JPEG',
@@ -1087,11 +1748,9 @@ const OrderCreation = ({navigation}) => {
 
                 if (imageType) {
                   const base64Image = `data:image/${imageType};base64,${base64}`;
-
-                  const newBase64Strings = [...base64BodyInspection];
-                  newBase64Strings[selectedBodyInspectionIndex] = base64Image;
-
-                  setBase64BodyInspection(newBase64Strings);
+                  const newBase64Strings = [...base64State];
+                  newBase64Strings[index] = base64Image;
+                  setBase64State(newBase64Strings);
                 } else {
                   console.log('Unknown image type');
                 }
@@ -1102,10 +1761,706 @@ const OrderCreation = ({navigation}) => {
           })
           .catch(error => {
             console.log('Error resizing image:', error);
+          })
+          .finally(() => {
+            isCameraOpen.current = false;
           });
+      } else {
+        isCameraOpen.current = false;
+      }
+    };
+
+    launchCamera({mediaType: 'photo'}, response => {
+      switch (selectedBodyInspectionIndex) {
+        case 0:
+          handleCameraResponse(
+            response,
+            pillarsPhoto,
+            pillarBase64,
+            setPillarsPhoto,
+            setPillarBase64,
+          );
+          break;
+        case 1:
+          handleCameraResponse(
+            response,
+            apronPhoto,
+            apronBase64,
+            setApronPhoto,
+            setApronBase64,
+          );
+          break;
+        case 2:
+          handleCameraResponse(
+            response,
+            fenderPhoto,
+            fennderBase64,
+            setFendersPhoto,
+            setFenderBase64,
+          );
+          break;
+        case 3:
+          handleCameraResponse(
+            response,
+            quarterPanlesPhoto,
+            quarterPanlesBase64,
+            setQuarterPanlesPhoto,
+            setQuarterPanlesBase64,
+          );
+          break;
+        case 4:
+          handleCameraResponse(
+            response,
+            runningBoardPhoto,
+            runningBoardBase64,
+            setRunningBoardPhoto,
+            setRunningBoardBase64,
+          );
+          break;
+        case 5:
+          handleCameraResponse(
+            response,
+            doorPhoto,
+            doorBase64,
+            setDoorPhoto,
+            setDoorBase64,
+          );
+          break;
+        case 6:
+          handleCameraResponse(
+            response,
+            dickyDoorPhoto,
+            dickyDoorBase64,
+            setDickyDoorPhoto,
+            setDickyDoorBase64,
+          );
+          break;
+        case 7:
+          handleCameraResponse(
+            response,
+            dickySkirtPhoto,
+            dickySkirtBase64,
+            setDickyDoorPhoto,
+            setDickyDoorBase64,
+          );
+          break;
+        case 8:
+          handleCameraResponse(
+            response,
+            bonetPhoto,
+            bonetBase64,
+            setBonetPhoto,
+            setBonetBase64,
+          );
+          break;
+        case 9:
+          handleCameraResponse(
+            response,
+            supportMembersPhoto,
+            supportMembersBase64,
+            setSupportMembersPhoto,
+            setSupportMembersBase64,
+          );
+          break;
+        case 10:
+          handleCameraResponse(
+            response,
+            bumperPhoto,
+            bumperBase64,
+            setBumperPhoto,
+            setBumperBase64,
+          );
+          break;
+        case 11:
+          handleCameraResponse(
+            response,
+            wheelTypePhoto,
+            wheelTypeBase64,
+            setWheelTypePhoto,
+            setWheelTypeBase64,
+          );
+          break;
+        case 12:
+          handleCameraResponse(
+            response,
+            windShieldPhoto,
+            windShieldBase64,
+            setWindShieldPhoto,
+            setWindShieldBase64,
+          );
+          break;
+        // Add cases for other indices
+        default:
+          console.log('Invalid inspection index');
+          isCameraOpen.current = false;
       }
     });
   };
+
+
+  const openCameraForCarDetails = index => {
+    if (isCameraOpen.current) return;
+    isCameraOpen.current = true;
+
+    const handleCameraResponse = (
+      response,
+      photoState,
+      base64State,
+      setPhotoState,
+      setBase64State,
+    ) => {
+      if (response.assets && response.assets.length > 0) {
+        const newPhotoUris = [...photoState];
+        newPhotoUris[index] = response.assets[0].uri;
+        setPhotoState(newPhotoUris);
+
+        // Resize and compress the image with quality set to 10
+        ImageResizer.createResizedImage(
+          newPhotoUris[index],
+          400,
+          300,
+          'JPEG',
+          10,
+        )
+          .then(resizedImage => {
+            RNFS.readFile(resizedImage.uri, 'base64')
+              .then(base64 => {
+                const imageType = getImageType(base64);
+
+                if (imageType) {
+                  const base64Image = `data:image/${imageType};base64,${base64}`;
+                  const newBase64Strings = [...base64State];
+                  newBase64Strings[index] = base64Image;
+                  setBase64State(newBase64Strings);
+                } else {
+                  console.log('Unknown image type');
+                }
+              })
+              .catch(e => {
+                console.log('Error converting file to base64', e);
+              });
+          })
+          .catch(error => {
+            console.log('Error resizing image:', error);
+          })
+          .finally(() => {
+            isCameraOpen.current = false;
+          });
+      } else {
+        isCameraOpen.current = false;
+      }
+    };
+
+    launchCamera({mediaType: 'photo'}, response => {
+      switch (carDetailsIndex) {
+        case 0:
+          handleCameraResponse(
+            response,
+            chassisPunchPhoto,
+            chassisBase64,
+            setChassisPunchPhoto,
+            setChassisBase64,
+          );
+          break;
+        case 1:
+          handleCameraResponse(
+            response,
+            vinPlatePunchPhoto,
+            vinPlateBase64,
+            setVinPlatePunchPhoto,
+            setVinPlateBase64,
+          );
+          break;
+        case 2:
+          handleCameraResponse(
+            response,
+            tyrePunchPhoto,
+            tyreBase64,
+            setTyrePunchPhoto,
+            setTyreBase64,
+          );
+          break;
+        case 3:
+          handleCameraResponse(
+            response,
+            spareWheelPunchPhoto,
+            spareWheelBase64,
+            setSpareWheelPunchPhoto,
+            setSpareWheelBase64,
+          );
+          break;
+        case 4:
+          handleCameraResponse(
+            response,
+            toolKitPunchPhoto,
+            toolKitBase64,
+            setToolkitPunchPhoto,
+            setToolkitBase64,
+          );
+          break;
+        case 5:
+          handleCameraResponse(
+            response,
+            keyPunchPhoto,
+            keyBase64,
+            setKeyPunchPhoto,
+            setKeyBase64,
+          );
+          break;
+      
+        // Add cases for other indices
+        default:
+          console.log('Invalid inspection index');
+          isCameraOpen.current = false;
+      }
+    });
+  };
+
+
+  // const openCameraForInspection = (index) => {
+
+  //   if(selectedInspectionIndex===0) {
+  //     launchCamera({mediaType: 'photo'}, response => {
+  //       if (response.assets && response.assets.length > 0) {
+  //         const newPhotoUris = [...suspensionPhoto];
+  //         newPhotoUris[index] = response.assets[0].uri;
+  //         setSuspensionPhoto(newPhotoUris);
+
+  //         // Resize and compress the image with quality set to 10
+  //         ImageResizer.createResizedImage(
+  //           newPhotoUris[index],
+  //           400,
+  //           300,
+  //           'JPEG',
+  //           10,
+  //         )
+  //           .then(resizedImage => {
+  //             RNFS.readFile(resizedImage.uri, 'base64')
+  //               .then(base64 => {
+  //                 const imageType = getImageType(base64);
+
+  //                 if (imageType) {
+  //                   const base64Image = `data:image/${imageType};base64,${base64}`;
+
+  //                   const newBase64Strings = [
+  //                     ...suspensionBase64,
+  //                   ];
+  //                   newBase64Strings[index] = base64Image;
+
+  //                   setSuspensionBase64(newBase64Strings);
+  //                 } else {
+  //                   console.log('Unknown image type');
+  //                 }
+  //               })
+  //               .catch(e => {
+  //                 console.log('Error converting file to base64', e);
+  //               });
+  //           })
+  //           .catch(error => {
+  //             console.log('Error resizing image:', error);
+  //           });
+  //       }
+  //     });
+
+  //   }
+
+  //   if(selectedInspectionIndex===1) {
+  //     launchCamera({mediaType: 'photo'}, response => {
+  //       if (response.assets && response.assets.length > 0) {
+  //         const newPhotoUris = [...steeringPhoto];
+  //         newPhotoUris[index] = response.assets[0].uri;
+  //         setSteeringPhoto(newPhotoUris);
+
+  //         // Resize and compress the image with quality set to 10
+  //         ImageResizer.createResizedImage(
+  //           newPhotoUris[index],
+  //           400,
+  //           300,
+  //           'JPEG',
+  //           10,
+  //         )
+  //           .then(resizedImage => {
+  //             RNFS.readFile(resizedImage.uri, 'base64')
+  //               .then(base64 => {
+  //                 const imageType = getImageType(base64);
+
+  //                 if (imageType) {
+  //                   const base64Image = `data:image/${imageType};base64,${base64}`;
+
+  //                   const newBase64Strings = [
+  //                     ...steeringBase64,
+  //                   ];
+  //                   newBase64Strings[index] = base64Image;
+
+  //                   setSteeringBase64(newBase64Strings);
+  //                 } else {
+  //                   console.log('Unknown image type');
+  //                 }
+  //               })
+  //               .catch(e => {
+  //                 console.log('Error converting file to base64', e);
+  //               });
+  //           })
+  //           .catch(error => {
+  //             console.log('Error resizing image:', error);
+  //           });
+  //       }
+  //     });
+
+  //   }
+
+  //   if(selectedInspectionIndex===2) {
+  //     launchCamera({mediaType: 'photo'}, response => {
+  //       if (response.assets && response.assets.length > 0) {
+  //         const newPhotoUris = [...brakePhoto];
+  //         newPhotoUris[index] = response.assets[0].uri;
+  //         setBrakePhoto(newPhotoUris);
+
+  //         // Resize and compress the image with quality set to 10
+  //         ImageResizer.createResizedImage(
+  //           newPhotoUris[index],
+  //           400,
+  //           300,
+  //           'JPEG',
+  //           10,
+  //         )
+  //           .then(resizedImage => {
+  //             RNFS.readFile(resizedImage.uri, 'base64')
+  //               .then(base64 => {
+  //                 const imageType = getImageType(base64);
+
+  //                 if (imageType) {
+  //                   const base64Image = `data:image/${imageType};base64,${base64}`;
+
+  //                   const newBase64Strings = [
+  //                     ...brakeBase64,
+  //                   ];
+  //                   newBase64Strings[index] = base64Image;
+
+  //                   setBrake64(newBase64Strings);
+  //                 } else {
+  //                   console.log('Unknown image type');
+  //                 }
+  //               })
+  //               .catch(e => {
+  //                 console.log('Error converting file to base64', e);
+  //               });
+  //           })
+  //           .catch(error => {
+  //             console.log('Error resizing image:', error);
+  //           });
+  //       }
+  //     });
+
+  //   }
+
+  //   if(selectedInspectionIndex===3) {
+  //     launchCamera({mediaType: 'photo'}, response => {
+  //       if (response.assets && response.assets.length > 0) {
+  //         const newPhotoUris = [...transmissionPhoto];
+  //         newPhotoUris[index] = response.assets[0].uri;
+  //         setTransmissionPhoto(newPhotoUris);
+
+  //         // Resize and compress the image with quality set to 10
+  //         ImageResizer.createResizedImage(
+  //           newPhotoUris[index],
+  //           400,
+  //           300,
+  //           'JPEG',
+  //           10,
+  //         )
+  //           .then(resizedImage => {
+  //             RNFS.readFile(resizedImage.uri, 'base64')
+  //               .then(base64 => {
+  //                 const imageType = getImageType(base64);
+
+  //                 if (imageType) {
+  //                   const base64Image = `data:image/${imageType};base64,${base64}`;
+
+  //                   const newBase64Strings = [
+  //                     ...transmissionBase64,
+  //                   ];
+  //                   newBase64Strings[index] = base64Image;
+
+  //                   setTransmissionBase64(newBase64Strings);
+  //                 } else {
+  //                   console.log('Unknown image type');
+  //                 }
+  //               })
+  //               .catch(e => {
+  //                 console.log('Error converting file to base64', e);
+  //               });
+  //           })
+  //           .catch(error => {
+  //             console.log('Error resizing image:', error);
+  //           });
+  //       }
+  //     });
+  //   }
+
+  //   if(selectedInspectionIndex===3) {
+  //     launchCamera({mediaType: 'photo'}, response => {
+  //       if (response.assets && response.assets.length > 0) {
+  //         const newPhotoUris = [...transmissionPhoto];
+  //         newPhotoUris[index] = response.assets[0].uri;
+  //         setTransmissionPhoto(newPhotoUris);
+
+  //         // Resize and compress the image with quality set to 10
+  //         ImageResizer.createResizedImage(
+  //           newPhotoUris[index],
+  //           400,
+  //           300,
+  //           'JPEG',
+  //           10,
+  //         )
+  //           .then(resizedImage => {
+  //             RNFS.readFile(resizedImage.uri, 'base64')
+  //               .then(base64 => {
+  //                 const imageType = getImageType(base64);
+
+  //                 if (imageType) {
+  //                   const base64Image = `data:image/${imageType};base64,${base64}`;
+
+  //                   const newBase64Strings = [
+  //                     ...transmissionBase64,
+  //                   ];
+  //                   newBase64Strings[index] = base64Image;
+
+  //                   setTransmissionBase64(newBase64Strings);
+  //                 } else {
+  //                   console.log('Unknown image type');
+  //                 }
+  //               })
+  //               .catch(e => {
+  //                 console.log('Error converting file to base64', e);
+  //               });
+  //           })
+  //           .catch(error => {
+  //             console.log('Error resizing image:', error);
+  //           });
+  //       }
+  //     });
+  //   }
+
+  //   if(selectedInspectionIndex===4) {
+  //     launchCamera({mediaType: 'photo'}, response => {
+  //       if (response.assets && response.assets.length > 0) {
+  //         const newPhotoUris = [...enginePhoto];
+  //         newPhotoUris[index] = response.assets[0].uri;
+  //         setEnginePhoto(newPhotoUris);
+
+  //         // Resize and compress the image with quality set to 10
+  //         ImageResizer.createResizedImage(
+  //           newPhotoUris[index],
+  //           400,
+  //           300,
+  //           'JPEG',
+  //           10,
+  //         )
+  //           .then(resizedImage => {
+  //             RNFS.readFile(resizedImage.uri, 'base64')
+  //               .then(base64 => {
+  //                 const imageType = getImageType(base64);
+
+  //                 if (imageType) {
+  //                   const base64Image = `data:image/${imageType};base64,${base64}`;
+
+  //                   const newBase64Strings = [
+  //                     ...engineBase64,
+  //                   ];
+  //                   newBase64Strings[index] = base64Image;
+
+  //                   setEngineBase64(newBase64Strings);
+  //                 } else {
+  //                   console.log('Unknown image type');
+  //                 }
+  //               })
+  //               .catch(e => {
+  //                 console.log('Error converting file to base64', e);
+  //               });
+  //           })
+  //           .catch(error => {
+  //             console.log('Error resizing image:', error);
+  //           });
+  //       }
+  //     });
+  //   }
+
+  //   if(selectedInspectionIndex===5) {
+  //     launchCamera({mediaType: 'photo'}, response => {
+  //       if (response.assets && response.assets.length > 0) {
+  //         const newPhotoUris = [...electricalPhoto];
+  //         newPhotoUris[index] = response.assets[0].uri;
+  //         setElectricalPhoto(newPhotoUris);
+
+  //         // Resize and compress the image with quality set to 10
+  //         ImageResizer.createResizedImage(
+  //           newPhotoUris[index],
+  //           400,
+  //           300,
+  //           'JPEG',
+  //           10,
+  //         )
+  //           .then(resizedImage => {
+  //             RNFS.readFile(resizedImage.uri, 'base64')
+  //               .then(base64 => {
+  //                 const imageType = getImageType(base64);
+
+  //                 if (imageType) {
+  //                   const base64Image = `data:image/${imageType};base64,${base64}`;
+
+  //                   const newBase64Strings = [
+  //                     ...electricalBase64,
+  //                   ];
+  //                   newBase64Strings[index] = base64Image;
+
+  //                   setElectricalBase64(newBase64Strings);
+  //                 } else {
+  //                   console.log('Unknown image type');
+  //                 }
+  //               })
+  //               .catch(e => {
+  //                 console.log('Error converting file to base64', e);
+  //               });
+  //           })
+  //           .catch(error => {
+  //             console.log('Error resizing image:', error);
+  //           });
+  //       }
+  //     });
+  //   }
+
+  //   if(selectedInspectionIndex===6) {
+  //     launchCamera({mediaType: 'photo'}, response => {
+  //       if (response.assets && response.assets.length > 0) {
+  //         const newPhotoUris = [...acPhoto];
+  //         newPhotoUris[index] = response.assets[0].uri;
+  //         setAcPhoto(newPhotoUris);
+
+  //         // Resize and compress the image with quality set to 10
+  //         ImageResizer.createResizedImage(
+  //           newPhotoUris[index],
+  //           400,
+  //           300,
+  //           'JPEG',
+  //           10,
+  //         )
+  //           .then(resizedImage => {
+  //             RNFS.readFile(resizedImage.uri, 'base64')
+  //               .then(base64 => {
+  //                 const imageType = getImageType(base64);
+
+  //                 if (imageType) {
+  //                   const base64Image = `data:image/${imageType};base64,${base64}`;
+
+  //                   const newBase64Strings = [
+  //                     ...acBase64,
+  //                   ];
+  //                   newBase64Strings[index] = base64Image;
+
+  //                   setAcBase64(newBase64Strings);
+  //                 } else {
+  //                   console.log('Unknown image type');
+  //                 }
+  //               })
+  //               .catch(e => {
+  //                 console.log('Error converting file to base64', e);
+  //               });
+  //           })
+  //           .catch(error => {
+  //             console.log('Error resizing image:', error);
+  //           });
+  //       }
+  //     });
+  //   }
+
+  //   if(selectedInspectionIndex===7) {
+  //     launchCamera({mediaType: 'photo'}, response => {
+  //       if (response.assets && response.assets.length > 0) {
+  //         const newPhotoUris = [...accessoriesPhoto];
+  //         newPhotoUris[index] = response.assets[0].uri;
+  //         setAccessoriesPhoto(newPhotoUris);
+
+  //         // Resize and compress the image with quality set to 10
+  //         ImageResizer.createResizedImage(
+  //           newPhotoUris[index],
+  //           400,
+  //           300,
+  //           'JPEG',
+  //           10,
+  //         )
+  //           .then(resizedImage => {
+  //             RNFS.readFile(resizedImage.uri, 'base64')
+  //               .then(base64 => {
+  //                 const imageType = getImageType(base64);
+
+  //                 if (imageType) {
+  //                   const base64Image = `data:image/${imageType};base64,${base64}`;
+
+  //                   const newBase64Strings = [
+  //                     ...accessoriesBase64,
+  //                   ];
+  //                   newBase64Strings[index] = base64Image;
+
+  //                   setAccessoriesBase64(newBase64Strings);
+  //                 } else {
+  //                   console.log('Unknown image type');
+  //                 }
+  //               })
+  //               .catch(e => {
+  //                 console.log('Error converting file to base64', e);
+  //               });
+  //           })
+  //           .catch(error => {
+  //             console.log('Error resizing image:', error);
+  //           });
+  //       }
+  //     });
+  //   }
+
+  // };
+
+  // const openCameraForBodyInspection = () => {
+  //   launchCamera({mediaType: 'photo'}, response => {
+  //     if (response.assets && response.assets.length > 0) {
+  //       const newPhotoUris = [...bodyInspectionPhotos];
+  //       newPhotoUris[selectedBodyInspectionIndex] = response.assets[0].uri;
+  //       setBodyInspectionPhotos(newPhotoUris);
+
+  //       // Resize and compress the image with quality set to 10
+  //       ImageResizer.createResizedImage(
+  //         newPhotoUris[selectedBodyInspectionIndex],
+  //         400,
+  //         300,
+  //         'JPEG',
+  //         10,
+  //       )
+  //         .then(resizedImage => {
+  //           RNFS.readFile(resizedImage.uri, 'base64')
+  //             .then(base64 => {
+  //               const imageType = getImageType(base64);
+
+  //               if (imageType) {
+  //                 const base64Image = `data:image/${imageType};base64,${base64}`;
+
+  //                 const newBase64Strings = [...base64BodyInspection];
+  //                 newBase64Strings[selectedBodyInspectionIndex] = base64Image;
+
+  //                 setBase64BodyInspection(newBase64Strings);
+  //               } else {
+  //                 console.log('Unknown image type');
+  //               }
+  //             })
+  //             .catch(e => {
+  //               console.log('Error converting file to base64', e);
+  //             });
+  //         })
+  //         .catch(error => {
+  //           console.log('Error resizing image:', error);
+  //         });
+  //     }
+  //   });
+  // };
 
   const openCameraForBodyInspectionPillars1 = () => {
     launchCamera({mediaType: 'photo'}, response => {
@@ -1466,47 +2821,47 @@ const OrderCreation = ({navigation}) => {
     });
   };
 
-  const openCameraForCarDetails = () => {
-    launchCamera({mediaType: 'photo'}, response => {
-      if (response.assets && response.assets.length > 0) {
-        const newPhotoUris = [...carDetailsPhoto];
-        newPhotoUris[carDetailsIndex] = response.assets[0].uri;
-        setCarDetailsPhoto(newPhotoUris);
+  // const openCameraForCarDetails = () => {
+  //   launchCamera({mediaType: 'photo'}, response => {
+  //     if (response.assets && response.assets.length > 0) {
+  //       const newPhotoUris = [...carDetailsPhoto];
+  //       newPhotoUris[carDetailsIndex] = response.assets[0].uri;
+  //       setCarDetailsPhoto(newPhotoUris);
 
-        // Resize and compress the image with quality set to 10
-        ImageResizer.createResizedImage(
-          newPhotoUris[carDetailsIndex],
-          400,
-          300,
-          'JPEG',
-          10,
-        )
-          .then(resizedImage => {
-            RNFS.readFile(resizedImage.uri, 'base64')
-              .then(base64 => {
-                const imageType = getImageType(base64);
+  //       // Resize and compress the image with quality set to 10
+  //       ImageResizer.createResizedImage(
+  //         newPhotoUris[carDetailsIndex],
+  //         400,
+  //         300,
+  //         'JPEG',
+  //         10,
+  //       )
+  //         .then(resizedImage => {
+  //           RNFS.readFile(resizedImage.uri, 'base64')
+  //             .then(base64 => {
+  //               const imageType = getImageType(base64);
 
-                if (imageType) {
-                  const base64Image = `data:image/${imageType};base64,${base64}`;
+  //               if (imageType) {
+  //                 const base64Image = `data:image/${imageType};base64,${base64}`;
 
-                  const newBase64Strings = [...base64CarDetailsPhoto];
-                  newBase64Strings[carDetailsIndex] = base64Image;
+  //                 const newBase64Strings = [...base64CarDetailsPhoto];
+  //                 newBase64Strings[carDetailsIndex] = base64Image;
 
-                  setBase64CarDetailsPhoto(newBase64Strings);
-                } else {
-                  console.log('Unknown image type');
-                }
-              })
-              .catch(e => {
-                console.log('Error converting file to base64', e);
-              });
-          })
-          .catch(error => {
-            console.log('Error resizing image:', error);
-          });
-      }
-    });
-  };
+  //                 setBase64CarDetailsPhoto(newBase64Strings);
+  //               } else {
+  //                 console.log('Unknown image type');
+  //               }
+  //             })
+  //             .catch(e => {
+  //               console.log('Error converting file to base64', e);
+  //             });
+  //         })
+  //         .catch(error => {
+  //           console.log('Error resizing image:', error);
+  //         });
+  //     }
+  //   });
+  // };
 
   const openCameraForCarDetailsTwo = () => {
     launchCamera({mediaType: 'photo'}, response => {
@@ -1689,13 +3044,13 @@ const OrderCreation = ({navigation}) => {
   };
 
   const handleInspectionOkPress = () => {
-    if (
-      switchStateForMechanicalInspection[selectedInspectionIndex] === 2 &&
-      !inspectionPhotos[selectedInspectionIndex]
-    ) {
-      ToastAndroid.show('Photo fields are required', ToastAndroid.SHORT);
-      return;
-    }
+    // if (
+    //   switchStateForMechanicalInspection[selectedInspectionIndex] === 2 &&
+    //   !inspectionPhotos[selectedInspectionIndex]
+    // ) {
+    //   ToastAndroid.show('Photo fields are required', ToastAndroid.SHORT);
+    //   return;
+    // }
     setInspectionVisible(false);
     const newValidations = [...secondValidation];
     // Assume validatePhotoAndRemarks is a function that returns true if both photo and remarks are valid
@@ -1706,13 +3061,13 @@ const OrderCreation = ({navigation}) => {
   };
 
   const handleBodyInspectionOkPress = () => {
-    if (
-      switchStateForBodyInspection[selectedBodyInspectionIndex] === 2 &&
-      !bodyInspectionPhotos[selectedBodyInspectionIndex]
-    ) {
-      ToastAndroid.show('Photo fields are required', ToastAndroid.SHORT);
-      return;
-    }
+    // if (
+    //   switchStateForBodyInspection[selectedBodyInspectionIndex] === 2 &&
+    //   !bodyInspectionPhotos[selectedBodyInspectionIndex]
+    // ) {
+    //   ToastAndroid.show('Photo fields are required', ToastAndroid.SHORT);
+    //   return;
+    // }
 
     setBodyInspectionVisible(false);
     const newValidations = [...thirdValidation];
@@ -1776,24 +3131,140 @@ const OrderCreation = ({navigation}) => {
     setPhotoUris2(newPhotoUris);
   };
 
-  const handleInspectionClosePress = index => {
-    const newPhotoUris = [...inspectionPhotos];
-    newPhotoUris[index] = null;
-    const newRemarks = [...inspectionRemarks];
-    newRemarks[index] = '';
-    setInspectionPhotos(newPhotoUris);
-    setInspectionRemarks(newRemarks);
+  const handleSuspensionClosePress = index => {
+    let newPhotoUris;
+
+    switch (selectedInspectionIndex) {
+      case 0:
+        newPhotoUris = [...suspensionPhoto];
+        newPhotoUris[index] = null;
+        setSuspensionPhoto(newPhotoUris);
+        break;
+      case 1:
+        newPhotoUris = [...steeringPhoto];
+        newPhotoUris[index] = null;
+        setSteeringPhoto(newPhotoUris);
+        break;
+      case 2:
+        newPhotoUris = [...brakePhoto];
+        newPhotoUris[index] = null;
+        setBrakePhoto(newPhotoUris);
+        break;
+      case 3:
+        newPhotoUris = [...transmissionPhoto];
+        newPhotoUris[index] = null;
+        setTransmissionPhoto(newPhotoUris);
+        break;
+      case 4:
+        newPhotoUris = [...enginePhoto];
+        newPhotoUris[index] = null;
+        setEnginePhoto(newPhotoUris);
+        break;
+      case 5:
+        newPhotoUris = [...electricalPhoto];
+        newPhotoUris[index] = null;
+        setElectricalPhoto(newPhotoUris);
+        break;
+      case 6:
+        newPhotoUris = [...acPhoto];
+        newPhotoUris[index] = null;
+        setAcPhoto(newPhotoUris);
+        break;
+      case 7:
+        newPhotoUris = [...accessoriesPhoto];
+        newPhotoUris[index] = null;
+        setAccessoriesPhoto(newPhotoUris);
+        break;
+      default:
+        console.log('Invalid inspection index');
+        break;
+    }
   };
 
   const handleBodyInspectionClosePress = index => {
-    const newPhotoUris = [...bodyInspectionPhotos];
-    newPhotoUris[index] = null;
-    const newRemarks = [...bodyInspectionRemarks];
-    newRemarks[index] = '';
+    let newPhotoUris;
 
-    setBodyInspectionPhotos(newPhotoUris);
-    setBodyInspectionRemarks(newRemarks);
+    switch (selectedBodyInspectionIndex) {
+      case 0:
+        newPhotoUris = [...pillarsPhoto];
+        newPhotoUris[index] = null;
+        setPillarsPhoto(newPhotoUris);
+        break;
+      case 1:
+        newPhotoUris = [...apronPhoto];
+        newPhotoUris[index] = null;
+        setApronPhoto(newPhotoUris);
+        break;
+      case 2:
+        newPhotoUris = [...fenderPhoto];
+        newPhotoUris[index] = null;
+        setFendersPhoto(newPhotoUris);
+        break;
+      case 3:
+        newPhotoUris = [...quarterPanlesPhoto];
+        newPhotoUris[index] = null;
+        setQuarterPanlesPhoto(newPhotoUris);
+        break;
+      case 4:
+        newPhotoUris = [...runningBoardPhoto];
+        newPhotoUris[index] = null;
+        setRunningBoardPhoto(newPhotoUris);
+        break;
+      case 5:
+        newPhotoUris = [...doorPhoto];
+        newPhotoUris[index] = null;
+        setDoorPhoto(newPhotoUris);
+        break;
+      case 6:
+        newPhotoUris = [...dickyDoorPhoto];
+        newPhotoUris[index] = null;
+        setDickyDoorPhoto(newPhotoUris);
+        break;
+      case 7:
+        newPhotoUris = [...dickySkirtPhoto];
+        newPhotoUris[index] = null;
+        setDickySkirtPhoto(newPhotoUris);
+        break;
+      case 8:
+        newPhotoUris = [...bonetPhoto];
+        newPhotoUris[index] = null;
+        setBonetPhoto(newPhotoUris);
+        break;
+      case 9:
+        newPhotoUris = [...supportMembersPhoto];
+        newPhotoUris[index] = null;
+        setSupportMembersPhoto(newPhotoUris);
+        break;
+      case 10:
+        newPhotoUris = [...bumperPhoto];
+        newPhotoUris[index] = null;
+        setBumperPhoto(newPhotoUris);
+        break;
+      case 11:
+        newPhotoUris = [...wheelTypePhoto];
+        newPhotoUris[index] = null;
+        setWheelTypePhoto(newPhotoUris);
+        break;
+      case 12:
+        newPhotoUris = [...windShieldPhoto];
+        newPhotoUris[index] = null;
+        setWindShieldPhoto(newPhotoUris);
+        break;
+      default:
+        console.log('Invalid inspection index');
+        break;
+    }
   };
+
+  // const handleBodyInspectionClosePress = index => {
+  //   const newPhotoUris = [...bodyInspectionPhotos];
+  //   newPhotoUris[index] = null;
+  //   const newRemarks = [...bodyInspectionRemarks];
+  //   newRemarks[index] = '';
+
+  //   setBodyInspectionPhotos(newPhotoUris);
+  //   setBodyInspectionRemarks(newRemarks);
+  // };
 
   const handleBodyInspectionClosePress2 = index => {
     const newPhotoUris = [...bodyInspectionPhotos2];
@@ -1987,18 +3458,190 @@ const OrderCreation = ({navigation}) => {
     newRemarks[index] = text;
     setInspectionRemarks(newRemarks);
   };
+  const handleSuspensionRemarks = (text, index) => {
+    let newRemarks;
+
+    switch (selectedInspectionIndex) {
+      case 0:
+        newRemarks = [...suspensionRemarks];
+        newRemarks[index] = text;
+        setSuspensionRemarks(newRemarks);
+        break;
+      case 1:
+        newRemarks = [...steeringRemarks];
+        newRemarks[index] = text;
+        setSteeringRemarks(newRemarks);
+        break;
+      case 2:
+        newRemarks = [...brakeRemarks];
+        newRemarks[index] = text;
+        setBrakeRemarks(newRemarks);
+        break;
+      case 3:
+        newRemarks = [...transmissionRemarks];
+        newRemarks[index] = text;
+        setTransmissionRemarks(newRemarks);
+        break;
+      case 4:
+        newRemarks = [...engineRemarks];
+        newRemarks[index] = text;
+        setEngineRemarks(newRemarks);
+        break;
+      case 5:
+        newRemarks = [...electricalRemarks];
+        newRemarks[index] = text;
+        setElectricalRemarks(newRemarks);
+        break;
+      case 6:
+        newRemarks = [...acRemarks];
+        newRemarks[index] = text;
+        setAcRemarks(newRemarks);
+        break;
+      case 7:
+        newRemarks = [...accessoriesRemarks];
+        newRemarks[index] = text;
+        setAccessoriesRemarks(newRemarks);
+        break;
+      case 8:
+        setRoadTestRemarks(text);
+        break;
+      default:
+        console.log('Invalid inspection index');
+        break;
+    }
+  };
 
   const handleBodyInspectionRemarks = (text, index) => {
-    const newRemarks = [...bodyInspectionRemarks];
-    newRemarks[index] = text;
-    setBodyInspectionRemarks(newRemarks);
+    let newRemarks;
+
+    switch (selectedBodyInspectionIndex) {
+      case 0:
+        newRemarks = [...pillarsPhotoRemarks];
+        newRemarks[index] = text;
+        setPillarsPhotoRemarks(newRemarks);
+        break;
+      case 1:
+        newRemarks = [...apronRemarks];
+        newRemarks[index] = text;
+        setApronRemarks(newRemarks);
+        break;
+      case 2:
+        newRemarks = [...fenderRemarks];
+        newRemarks[index] = text;
+        setFenderRemarks(newRemarks);
+        break;
+      case 3:
+        newRemarks = [...quarterPanlesRemarks];
+        newRemarks[index] = text;
+        setQuarterPanlesRemarks(newRemarks);
+        break;
+      case 4:
+        newRemarks = [...runningBoardRemarks];
+        newRemarks[index] = text;
+        setRunningBoardRemarks(newRemarks);
+        break;
+      case 5:
+        newRemarks = [...doorRemarks];
+        newRemarks[index] = text;
+        setDoorRemarks(newRemarks);
+        break;
+      case 6:
+        newRemarks = [...dickyDoorRemarks];
+        newRemarks[index] = text;
+        setDickyDoorRemarks(newRemarks);
+        break;
+      case 7:
+        newRemarks = [...dickySkirtRemarks];
+        newRemarks[index] = text;
+        setDickySkirtRemarks(newRemarks);
+        break;
+      case 8:
+        newRemarks = [...bonetRemarks];
+        newRemarks[index] = text;
+        setBonetRemarks(newRemarks);
+        break;
+
+      case 9:
+        newRemarks = [...supportMembersRemarks];
+        newRemarks[index] = text;
+        setSupportMembersRemarks(newRemarks);
+        break;
+      case 10:
+        newRemarks = [...bumperRemarks];
+        newRemarks[index] = text;
+        setBumperRemarks(newRemarks);
+        break;
+      case 11:
+        newRemarks = [...wheelTypeRemarks];
+        newRemarks[index] = text;
+        setWheelTypeRemarks(newRemarks);
+        break;
+      case 12:
+        newRemarks = [...windShieldRemarks];
+        newRemarks[index] = text;
+        setWindShieldRemarks(newRemarks);
+        break;
+
+      default:
+        console.log('Invalid inspection index');
+        break;
+    }
   };
 
+
   const handleCarDetailsRemarks = (text, index) => {
-    const newRemarks = [...carDetailsRemarks];
-    newRemarks[index] = text;
-    setCarDetailsRemarks(newRemarks);
+    let newRemarks;
+
+    switch (carDetailsIndex) {
+      case 0:
+        newRemarks = [...chassisRemarks];
+        newRemarks[index] = text;
+        setChassisRemarks(newRemarks);
+        break;
+      case 1:
+        newRemarks = [...vinPlateRemarks];
+        newRemarks[index] = text;
+        setVinPlateRemarks(newRemarks);
+        break;
+      case 2:
+        newRemarks = [...tyreRemarks];
+        newRemarks[index] = text;
+        setTyreRemarks(newRemarks);
+        break;
+      case 3:
+        newRemarks = [...spareWheelRemarks];
+        newRemarks[index] = text;
+        setSpareWheelRemarks(newRemarks);
+        break;
+      case 4:
+        newRemarks = [...toolKitRemarks];
+        newRemarks[index] = text;
+        setToolkitRemarks(newRemarks);
+        break;
+      case 5:
+        newRemarks = [...keyRemarks];
+        newRemarks[index] = text;
+        setKeyRemarks(newRemarks);
+        break;
+     
+
+      default:
+        console.log('Invalid inspection index');
+        break;
+    }
   };
+
+  // const handleBodyInspectionRemarks = (text, index) => {
+  //   const newRemarks = [...bodyInspectionRemarks];
+  //   newRemarks[index] = text;
+  //   setBodyInspectionRemarks(newRemarks);
+  // };
+
+  // const handleCarDetailsRemarks = (text, index) => {
+  //   const newRemarks = [...carDetailsRemarks];
+  //   newRemarks[index] = text;
+  //   setCarDetailsRemarks(newRemarks);
+  // };
 
   const handleInputChange = (text, key) => {
     setCarDetailsFormData(prevState => ({
@@ -2045,21 +3688,188 @@ const OrderCreation = ({navigation}) => {
     setSelectedValues(newSelectedValues);
   };
 
-  const handleBodyInspectionDropDown = (value, index) => {
-    const newSelectedValues = [...bodyInspectionValues];
-    newSelectedValues[index] = value;
-    setBodyInspectionValues(newSelectedValues);
-  };
+  // const handleBodyInspectionDropDown = (value, index) => {
+  //   const newSelectedValues = [...bodyInspectionValues];
+  //   newSelectedValues[index] = value;
+  //   setBodyInspectionValues(newSelectedValues);
+  // };
 
-  const handleCarDetailsDropDown = (value, index) => {
-    const newSelectionValues = [...carDetailsValues];
-    newSelectionValues[index] = value;
-    setCarDetailsValues(newSelectionValues);
-  };
+  // const handleCarDetailsDropDown = (value, index) => {
+  //   const newSelectionValues = [...carDetailsValues];
+  //   newSelectionValues[index] = value;
+  //   setCarDetailsValues(newSelectionValues);
+  // };
   const handleDropDownForCondition = (value, index) => {
     const newSelectedValues = [...selectedValuesForCondition];
     newSelectedValues[index] = value;
     setSelectedValuesForCondition(newSelectedValues);
+  };
+
+  const handleSuspensionDropDownChange = (value, index) => {
+    let newSelectedValues;
+
+    switch (selectedInspectionIndex) {
+      case 0:
+        newSelectedValues = [...suspensionDropdown];
+        newSelectedValues[index] = value;
+        setSuspensionDropdown(newSelectedValues);
+        break;
+      case 1:
+        newSelectedValues = [...steeringDropdown];
+        newSelectedValues[index] = value;
+        setSteeringDropdown(newSelectedValues);
+        break;
+      case 2:
+        newSelectedValues = [...brakeDropdown];
+        newSelectedValues[index] = value;
+        setBrakeDropdown(newSelectedValues);
+        break;
+      case 3:
+        newSelectedValues = [...transmissionDropdown];
+        newSelectedValues[index] = value;
+        setTransmissionDropdown(newSelectedValues);
+        break;
+      case 4:
+        newSelectedValues = [...engineDropdown];
+        newSelectedValues[index] = value;
+        setEngineDropdown(newSelectedValues);
+        break;
+      case 5:
+        newSelectedValues = [...electricalDropdown];
+        newSelectedValues[index] = value;
+        setElectricalDropdown(newSelectedValues);
+        break;
+      case 6:
+        newSelectedValues = [...acDropdown];
+        newSelectedValues[index] = value;
+        setAcDropdown(newSelectedValues);
+        break;
+      case 7:
+        newSelectedValues = [...accessoriesDropdown];
+        newSelectedValues[index] = value;
+        setAccessoriesDropdown(newSelectedValues);
+        break;
+      default:
+        console.log('Invalid inspection index');
+        break;
+    }
+  };
+
+  const handleBodyInspectionDropDown = (value, index) => {
+    let newSelectedValues;
+
+    switch (selectedBodyInspectionIndex) {
+      case 0:
+        newSelectedValues = [...pillarsCondition];
+        newSelectedValues[index] = value;
+        setPillarsCondition(newSelectedValues);
+        break;
+      case 1:
+        newSelectedValues = [...apronCondition];
+        newSelectedValues[index] = value;
+        setApronCondition(newSelectedValues);
+        break;
+      case 2:
+        newSelectedValues = [...fenderCondition];
+        newSelectedValues[index] = value;
+        setFenderCondition(newSelectedValues);
+        break;
+      case 3:
+        newSelectedValues = [...quarterPanlesCondition];
+        newSelectedValues[index] = value;
+        setQuarterPanlesCondition(newSelectedValues);
+        break;
+      case 4:
+        newSelectedValues = [...runnningBoardCondition];
+        newSelectedValues[index] = value;
+        setRunningBoardCondition(newSelectedValues);
+        break;
+      case 5:
+        newSelectedValues = [...doorCondition];
+        newSelectedValues[index] = value;
+        setDoorCondition(newSelectedValues);
+        break;
+      case 6:
+        newSelectedValues = [...dickyDoorCondition];
+        newSelectedValues[index] = value;
+        setDickyDoorCondition(newSelectedValues);
+        break;
+      case 7:
+        newSelectedValues = [...dickySkirtCondition];
+        newSelectedValues[index] = value;
+        setDickySkirtCondition(newSelectedValues);
+        break;
+      case 8:
+        newSelectedValues = [...bonetCondition];
+        newSelectedValues[index] = value;
+        setBonetCondition(newSelectedValues);
+        break;
+      case 9:
+        newSelectedValues = [...supportMembersCondition];
+        newSelectedValues[index] = value;
+        setSupportMembersCondition(newSelectedValues);
+        break;
+      case 10:
+        newSelectedValues = [...bumperCondition];
+        newSelectedValues[index] = value;
+        setBumperCondition(newSelectedValues);
+        break;
+      case 11:
+        newSelectedValues = [...wheelTypeCondition];
+        newSelectedValues[index] = value;
+        setWheelTypeCondition(newSelectedValues);
+        break;
+      case 12:
+        newSelectedValues = [...windShieldCondition];
+        newSelectedValues[index] = value;
+        setWindShieldCondition(newSelectedValues);
+        break;
+      default:
+        console.log('Invalid inspection index');
+        break;
+    }
+  };
+
+
+  const handleCarDetailsDropDown = (value, index) => {
+    let newSelectedValues;
+
+    switch (carDetailsIndex) {
+      case 0:
+        newSelectedValues = [...chassisCondition];
+        newSelectedValues[index] = value;
+        setChasisCondition(newSelectedValues);
+        break;
+      case 1:
+        newSelectedValues = [...vinPlateCondition];
+        newSelectedValues[index] = value;
+        setVinPlateCondition(newSelectedValues);
+        break;
+      case 2:
+        newSelectedValues = [...tyreCondition];
+        newSelectedValues[index] = value;
+        setTyreCondition(newSelectedValues);
+        break;
+      case 3:
+        newSelectedValues = [...spareWheelCondition];
+        newSelectedValues[index] = value;
+        setSpareWheelCondition(newSelectedValues);
+        break;
+      case 4:
+        newSelectedValues = [...toolKitCondition];
+        newSelectedValues[index] = value;
+        setToolkitCondition(newSelectedValues);
+        break;
+      case 5:
+        newSelectedValues = [...keyCondition];
+        newSelectedValues[index] = value;
+        setKeyCondition(newSelectedValues);
+        break;
+    
+      default:
+        console.log('Invalid inspection index');
+        break;
+    }
   };
 
   const handleSwitchChange = (index, value) => {
@@ -2074,10 +3884,172 @@ const OrderCreation = ({navigation}) => {
     setSwitchForBodyInspection(newState);
   };
 
-  const handleMechanicalInspectionChange = (index, value) => {
-    const newState = [...switchStateForMechanicalInspection];
-    newState[index] = value; // 1 for Yes and 2 for No
-    setSwitchStateForMechanicalInspection(newState);
+  const handleSuspensionChange = (index, value) => {
+    let newState;
+
+    switch (selectedInspectionIndex) {
+      case 0:
+        newState = [...suspensionSwitch];
+        newState[index] = value; // 1 for Yes and 2 for No
+        setSuspensionSwitch(newState);
+        break;
+      case 1:
+        newState = [...steeringSwitch];
+        newState[index] = value; // 1 for Yes and 2 for No
+        setSteeringSwitch(newState);
+        break;
+      case 2:
+        newState = [...brakeSwitch];
+        newState[index] = value; // 1 for Yes and 2 for No
+        setBrakeSwitch(newState);
+        break;
+      case 3:
+        newState = [...transmissionSwitch];
+        newState[index] = value; // 1 for Yes and 2 for No
+        setTransmissionSwitch(newState);
+        break;
+      case 4:
+        newState = [...engineSwitch];
+        newState[index] = value; // 1 for Yes and 2 for No
+        setEngineSwitch(newState);
+        break;
+      case 5:
+        newState = [...electricalSwitch];
+        newState[index] = value; // 1 for Yes and 2 for No
+        setElectricalSwitch(newState);
+        break;
+      case 6:
+        newState = [...acSwitch];
+        newState[index] = value; // 1 for Yes and 2 for No
+        setAcSwitch(newState);
+        break;
+      case 7:
+        newState = [...accessoriesSwitch];
+        newState[index] = value; // 1 for Yes and 2 for No
+        setAccessoriesSwitch(newState);
+        break;
+      default:
+        console.log('Invalid inspection index');
+        break;
+    }
+  };
+
+  const handleBodyInspectionChannge = (index, value) => {
+    let newState;
+
+    switch (selectedBodyInspectionIndex) {
+      case 0:
+        newState = [...pillarSwitch];
+        newState[index] = value; // 1 for Yes and 2 for No
+        setPillarSwitch(newState);
+        break;
+      case 1:
+        newState = [...apronSwitch];
+        newState[index] = value; // 1 for Yes and 2 for No
+        setApronSwitch(newState);
+        break;
+      case 2:
+        newState = [...fenderSwitch];
+        newState[index] = value; // 1 for Yes and 2 for No
+        setFenderSwitch(newState);
+        break;
+      case 3:
+        newState = [...quarterPanlesSwitch];
+        newState[index] = value; // 1 for Yes and 2 for No
+        setQuarterPanlesSwitch(newState);
+        break;
+      case 4:
+        newState = [...runningBoardSwitch];
+        newState[index] = value; // 1 for Yes and 2 for No
+        setRunningBoardSwitch(newState);
+        break;
+      case 5:
+        newState = [...doorSwitch];
+        newState[index] = value; // 1 for Yes and 2 for No
+        setDoorSwitch(newState);
+        break;
+      case 6:
+        newState = [...dickyDoorSwitch];
+        newState[index] = value; // 1 for Yes and 2 for No
+        setAcsetDickyDoorSwitchSwitch(newState);
+        break;
+      case 7:
+        newState = [...dickySkirtSwitch];
+        newState[index] = value; // 1 for Yes and 2 for No
+        setDickySkirtSwitch(newState);
+        break;
+      case 8:
+        newState = [...bonetSwitch];
+        newState[index] = value; // 1 for Yes and 2 for No
+        setBonetSwitch(newState);
+        break;
+
+      case 9:
+        newState = [...supportMembersSwitch];
+        newState[index] = value; // 1 for Yes and 2 for No
+        setSupportMembersSwitch(newState);
+        break;
+      case 10:
+        newState = [...bumperSwitch];
+        newState[index] = value; // 1 for Yes and 2 for No
+        setBumperSwitch(newState);
+        break;
+      case 11:
+        newState = [...wheelTypeSwitch];
+        newState[index] = value; // 1 for Yes and 2 for No
+        setWheelTypeSwitch(newState);
+        break;
+
+      case 12:
+        newState = [...windShieldSwitch];
+        newState[index] = value; // 1 for Yes and 2 for No
+        setWindShieldSwitch(newState);
+        break;
+      default:
+        console.log('Invalid inspection index');
+        break;
+    }
+  };
+
+  const handleCarDetailsChange = (index, value) => {
+    let newState;
+
+    switch (carDetailsIndex) {
+      case 0:
+        newState = [...chassisSwitch];
+        newState[index] = value; // 1 for Yes and 2 for No
+        setChassisSwitch(newState);
+        break;
+      case 1:
+        newState = [...vinPlateSwitch];
+        newState[index] = value; // 1 for Yes and 2 for No
+        setVinPlateSwitch(newState);
+        break;
+      case 2:
+        newState = [...tyreSwitch];
+        newState[index] = value; // 1 for Yes and 2 for No
+        setTyreSwitch(newState);
+        break;
+      case 3:
+        newState = [...spareWheelSwitch];
+        newState[index] = value; // 1 for Yes and 2 for No
+        setSpareWheelSwitch(newState);
+        break;
+      case 4:
+        newState = [...toolKitSwitch];
+        newState[index] = value; // 1 for Yes and 2 for No
+        setToolkitSwitch(newState);
+        break;
+      case 5:
+        newState = [...keySwitch];
+        newState[index] = value; // 1 for Yes and 2 for No
+        setKeySwitch(newState);
+        break;
+     
+      default:
+        console.log('Invalid inspection index');
+        break;
+    }
   };
 
   const photoTitles = ['RC', 'Insurance', 'NOC'];
@@ -2104,6 +4076,7 @@ const OrderCreation = ({navigation}) => {
     'Electrical',
     'AC',
     'Accesssories',
+    'Road Test',
   ];
 
   const bodyInspection = [
@@ -2162,6 +4135,12 @@ const OrderCreation = ({navigation}) => {
   };
 
   useEffect(() => {
+    if (id) {
+      getOrder(id);
+    }
+  }, [id]);
+
+  useEffect(() => {
     const handleBackPress = () => {
       if (currentIndex === 0) {
         navigation.goBack();
@@ -2180,6 +4159,59 @@ const OrderCreation = ({navigation}) => {
 
     return () => backHandler.remove(); // Clean up event listener
   }, [navigation, swiperRef, currentIndex]);
+
+  const getOrder = async () => {
+    try {
+      const response = await apiGetWithToken(`getOneOrder?id=${id}`);
+
+      setMake(response.data.make);
+      setModel(response.data.model);
+      setYear(response.data.year);
+      setVariant(response.data.variant);
+      setMileage(response.data.mileage);
+      setColor(response.data.color);
+      setSelectedOption(response.data.transmission === 'Automatic' ? 1 : 2);
+      setSelectedOption1(
+        response.data.fuelType === 'Diesel'
+          ? 1
+          : response.data.fuelType === 'Petrol'
+          ? 2
+          : response.data.fuelType === 'EV'
+          ? 3
+          : response.data.fuelType === 'CNG'
+          ? 4
+          : 5,
+      );
+      setOwners(response.data.owners);
+      setSelectedOption2(response.data.hasHypothecated === 'No' ? 2 : 1);
+      setHypothecatedBy(response.data.hypothecatedBy);
+      setSelectedOption3(response.data.noc === 'No' ? 2 : 1);
+      setRoadTaxValid(response.data.roadTaxValid);
+      setSelectedOption4(response.data.reRegistered === 'No' ? 2 : 1);
+      setCubicCapacity(response.data.cubicCapacity);
+      setNumberOfSeats(response.data.numberOfSeats);
+      setRegistrationType(response.data.registrationType);
+      setRegistrationDate(response.data.registrationDate);
+      setInsurance(response.data.insurance === 'No' ? 2 : 1);
+      setInsuranceCompany(response.data.insuranceCompany);
+      setInsuranceValidity(response.data.insuranceValidity);
+      setChallanDetails(response.data.challanDetails);
+      setBlacklisted(response.data.blacklisted == 'No' ? 2 : 1);
+      setChassisNumber(response.data.chassisNumber);
+      setEngineNumber(response.data.engineNumber);
+      setRcStatus(response.data.rcStatus === 'Original' ? 1 : 2);
+      setStateNoc(response.data.stateNoc === 'No' ? 2 : 1);
+      setFlood(response.data.flood === 'No' ? 2 : 1);
+
+      setUpdateOrderList(response.data);
+
+      // setRefreshing(false);
+      // setLoading(false);
+      console.log(response.data, 'COUNT INNDIA');
+    } catch (error) {
+      console.error('GET error:', error);
+    }
+  };
 
   return (
     <>
@@ -2430,392 +4462,75 @@ const OrderCreation = ({navigation}) => {
             <ScrollView
               contentContainerStyle={styles.scrollViewContent}
               showsVerticalScrollIndicator={false}>
-              {selectedValues[selectedInspectionIndex] !== undefined && (
-                <View style={{paddingHorizontal: 8}}>
-                  <Picker
-                    style={styles.photoInput}
-                    selectedValue={selectedValues[selectedInspectionIndex]}
-                    onValueChange={itemValue =>
-                      handleDropdownChange(itemValue, selectedInspectionIndex)
-                    }>
-                    <Picker.Item label="Select Condition" value="" />
+              <View style={{paddingHorizontal: 0}}>
+                {selectedInspectionIndex === 0 &&
+                  suspensionList.map((item, index) => (
+                    <View key={index} style={styles.itemContainer}>
+                      <Text>{item}</Text>
 
-                    <Picker.Item
-                      label={
-                        selectedInspectionIndex === 0
-                          ? 'Strut'
-                          : selectedInspectionIndex === 1
-                          ? 'Rack and Pinion'
-                          : selectedInspectionIndex === 2
-                          ? 'Pad'
-                          : selectedInspectionIndex === 3
-                          ? 'Clutch'
-                          : selectedInspectionIndex === 4
-                          ? 'Smoke'
-                          : selectedInspectionIndex === 5
-                          ? 'Battery'
-                          : selectedInspectionIndex === 6
-                          ? 'Cooling'
-                          : selectedInspectionIndex === 7
-                          ? 'Music System'
-                          : 'asas'
-                      }
-                      value={
-                        selectedInspectionIndex === 0
-                          ? 'Strut'
-                          : selectedInspectionIndex === 1
-                          ? 'Rack and Pinion'
-                          : selectedInspectionIndex === 2
-                          ? 'Pad'
-                          : selectedInspectionIndex === 3
-                          ? 'Clutch'
-                          : selectedInspectionIndex === 4
-                          ? 'Smoke'
-                          : selectedInspectionIndex === 5
-                          ? 'Battery'
-                          : selectedInspectionIndex === 6
-                          ? 'Cooling'
-                          : selectedInspectionIndex === 7
-                          ? 'Music System'
-                          : 'asas'
-                      }
-                    />
-
-                    <Picker.Item
-                      label={
-                        selectedInspectionIndex === 0
-                          ? 'Lower Arm'
-                          : selectedInspectionIndex === 1
-                          ? 'Steering Coloum'
-                          : selectedInspectionIndex === 2
-                          ? 'Disc'
-                          : selectedInspectionIndex === 3
-                          ? 'Gear'
-                          : selectedInspectionIndex === 4
-                          ? 'Turbo'
-                          : selectedInspectionIndex === 5
-                          ? 'Alternator'
-                          : selectedInspectionIndex === 6
-                          ? 'Blower'
-                          : selectedInspectionIndex === 7
-                          ? 'Parking Sensor'
-                          : 'asas'
-                      }
-                      value={
-                        selectedInspectionIndex === 0
-                          ? 'Lower Arm'
-                          : selectedInspectionIndex === 1
-                          ? 'Steering Coloum'
-                          : selectedInspectionIndex === 2
-                          ? 'Disc'
-                          : selectedInspectionIndex === 3
-                          ? 'Gear'
-                          : selectedInspectionIndex === 4
-                          ? 'Turbo'
-                          : selectedInspectionIndex === 5
-                          ? 'Alternator'
-                          : selectedInspectionIndex === 6
-                          ? 'Blower'
-                          : selectedInspectionIndex === 7
-                          ? 'Parking Sensor'
-                          : 'asas'
-                      }
-                    />
-                    <Picker.Item
-                      label={
-                        selectedInspectionIndex === 0
-                          ? 'Link Rod'
-                          : selectedInspectionIndex === 1
-                          ? 'Hardness'
-                          : selectedInspectionIndex === 2
-                          ? 'Shoe'
-                          : selectedInspectionIndex === 3
-                          ? 'Shifting'
-                          : selectedInspectionIndex === 4
-                          ? 'Misfiring'
-                          : selectedInspectionIndex === 5
-                          ? 'self motor'
-                          : selectedInspectionIndex === 6
-                          ? 'Condenser'
-                          : selectedInspectionIndex === 7
-                          ? 'Reverse Camera'
-                          : 'asas'
-                      }
-                      value={
-                        selectedInspectionIndex === 0
-                          ? 'Link Rod'
-                          : selectedInspectionIndex === 1
-                          ? 'Hardness'
-                          : selectedInspectionIndex === 2
-                          ? 'Shoe'
-                          : selectedInspectionIndex === 3
-                          ? 'Shifting'
-                          : selectedInspectionIndex === 4
-                          ? 'Misfiring'
-                          : selectedInspectionIndex === 5
-                          ? 'self motor'
-                          : selectedInspectionIndex === 6
-                          ? 'Condenser'
-                          : selectedInspectionIndex === 7
-                          ? 'Reverse Camera'
-                          : 'asas'
-                      }
-                    />
-                    <Picker.Item
-                      label={
-                        selectedInspectionIndex === 0
-                          ? 'Stablizer Bar'
-                          : selectedInspectionIndex === 1
-                          ? 'Ball joint end'
-                          : selectedInspectionIndex === 2
-                          ? 'Drum'
-                          : selectedInspectionIndex === 3
-                          ? 'Drive Shaff'
-                          : selectedInspectionIndex === 4
-                          ? 'Tappet'
-                          : selectedInspectionIndex === 5
-                          ? 'Wiring Harness'
-                          : selectedInspectionIndex === 6
-                          ? 'fan'
-                          : selectedInspectionIndex === 7
-                          ? 'OVRM Adjuster'
-                          : 'asas'
-                      }
-                      value={
-                        selectedInspectionIndex === 0
-                          ? 'Stablizer Bar'
-                          : selectedInspectionIndex === 1
-                          ? 'Ball joint end'
-                          : selectedInspectionIndex === 2
-                          ? 'Drum'
-                          : selectedInspectionIndex === 3
-                          ? 'Drive Shaft'
-                          : selectedInspectionIndex === 4
-                          ? 'Tappet'
-                          : selectedInspectionIndex === 5
-                          ? 'Wiring Harness'
-                          : selectedInspectionIndex === 6
-                          ? 'fan'
-                          : selectedInspectionIndex === 7
-                          ? 'OVRM Adjuster'
-                          : 'asas'
-                      }
-                    />
-                    {/* <Picker.Item
-  label={
-    selectedInspectionIndex === 0
-      ? "shok absorber"
-      : selectedInspectionIndex === 1
-      ? ""
-      : selectedInspectionIndex === 2
-      ? "psdddd"
-      : selectedInspectionIndex === 3
-      ? "sdsdsd"
-      : selectedInspectionIndex === 4
-      ? "dsd"
-      : selectedInspectionIndex === 5
-      ? "aa"
-      : selectedInspectionIndex === 6
-      ? "aaxxz"
-      : selectedInspectionIndex === 7
-      ? "ss"
-      : "asas"
-  }
-  value={
-    selectedInspectionIndex === 0
-      ? "shok absorber"
-      : selectedInspectionIndex === 1
-      ? ""
-      : selectedInspectionIndex === 2
-      ? "psdddd"
-      : selectedInspectionIndex === 3
-      ? "sdsdsd"
-      : selectedInspectionIndex === 4
-      ? "dsd"
-      : selectedInspectionIndex === 5
-      ? "aa"
-      : selectedInspectionIndex === 6
-      ? "aaxxz"
-      : selectedInspectionIndex === 7
-      ? "ss"
-      : "asas"
-  }
-/>
-          <Picker.Item
-  label={
-    selectedInspectionIndex === 0
-      ? "coil spring"
-      : selectedInspectionIndex === 1
-      ? ""
-      : selectedInspectionIndex === 2
-      ? "psdddd"
-      : selectedInspectionIndex === 3
-      ? "sdsdsd"
-      : selectedInspectionIndex === 4
-      ? "dsd"
-      : selectedInspectionIndex === 5
-      ? "aa"
-      : selectedInspectionIndex === 6
-      ? "aaxxz"
-      : selectedInspectionIndex === 7
-      ? "ss"
-      : "asas"
-  }
-  value={
-    selectedInspectionIndex === 0
-      ? "coil spring,"
-      : selectedInspectionIndex === 1
-      ? ""
-      : selectedInspectionIndex === 2
-      ? "psdddd"
-      : selectedInspectionIndex === 3
-      ? "sdsdsd"
-      : selectedInspectionIndex === 4
-      ? "dsd"
-      : selectedInspectionIndex === 5
-      ? "aa"
-      : selectedInspectionIndex === 6
-      ? "aaxxz"
-      : selectedInspectionIndex === 7
-      ? "ss"
-      : "asas"
-  }
-/>
-<Picker.Item
-  label={
-    selectedInspectionIndex === 0
-      ? "leaf spring"
-      : selectedInspectionIndex === 1
-      ? ""
-      : selectedInspectionIndex === 2
-      ? "psdddd"
-      : selectedInspectionIndex === 3
-      ? "sdsdsd"
-      : selectedInspectionIndex === 4
-      ? "dsd"
-      : selectedInspectionIndex === 5
-      ? "aa"
-      : selectedInspectionIndex === 6
-      ? "aaxxz"
-      : selectedInspectionIndex === 7
-      ? "ss"
-      : "asas"
-  }
-  value={
-    selectedInspectionIndex === 0
-      ? "leaf spring"
-      : selectedInspectionIndex === 1
-      ? ""
-      : selectedInspectionIndex === 2
-      ? "psdddd"
-      : selectedInspectionIndex === 3
-      ? "sdsdsd"
-      : selectedInspectionIndex === 4
-      ? "dsd"
-      : selectedInspectionIndex === 5
-      ? "aa"
-      : selectedInspectionIndex === 6
-      ? "aaxxz"
-      : selectedInspectionIndex === 7
-      ? "ss"
-      : "asas"
-  }
-/> */}
-                    {/* Add other items as needed */}
-                  </Picker>
-                </View>
-              )}
-              {/* {switchStates[selectedInspectionIndex] !== undefined && (
-              <View style={styles.switchRow}>
-                <View style={styles.switchButton}>
-                  <Switch
-                    trackColor={{ false: '#767577', true: '#81b0ff' }}
-                    thumbColor={switchStates[selectedInspectionIndex] ? '#f5dd4b' : '#f4f3f4'}
-                    ios_backgroundColor="#3e3e3e"
-                    onValueChange={() => toggleSwitch(selectedInspectionIndex)}
-                    value={switchStates[selectedInspectionIndex]}
-                  />
-                </View>
-                <View style={styles.switchButton}>
-                  <Text style={styles.switchText}>
-                    {switchStates[selectedInspectionIndex] ? 'Yes' : 'No'}
-                  </Text>
-                </View>
-              </View>
-            )} */}
-
-              {switchStateForMechanicalInspection.map((state, index) => (
-                <View style={{marginTop: 0}}>
-                  {selectedInspectionIndex === index && (
-                    <View
-                      style={{
-                        marginLeft: 9,
-                        marginRight: 9,
-                        marginBottom: 20,
-                        marginTop: 34,
-                      }}>
-                      <CustomSwitch
-                        selectionMode={state}
-                        roundCorner={false}
-                        option1={'Yes'}
-                        option2={'No'}
-                        onSelectSwitch={val =>
-                          handleMechanicalInspectionChange(index, val)
-                        }
-                        selectionColor={'#007BFF'}
-                        index={index} // Pass the index as a prop
-                      />
-                    </View>
-                  )}
-                </View>
-              ))}
-
-              <View style={{paddingHorizontal: 8}}>
-                {inspectionPhotos[selectedInspectionIndex] ? (
-                  <>
-                    <View style={styles.photoContainer}>
-                      <View style={{position: 'relative'}}>
-                        <Image
-                          source={{
-                            uri: inspectionPhotos[selectedInspectionIndex],
-                          }}
-                          style={styles.uploadedImage}
+                      <View
+                        style={{
+                          // marginLeft: 9,
+                          // marginRight: 9,
+                          // marginBottom: 20,
+                          marginTop: 5,
+                        }}>
+                        <CustomSwitch
+                          selectionMode={item}
+                          roundCorner={false}
+                          option1={'Ok'}
+                          option2={'Not Ok'}
+                          onSelectSwitch={val =>
+                            handleSuspensionChange(index, val)
+                          }
+                          selectionColor={'#007BFF'}
+                          index={index} // Pass the index as a prop
                         />
-                        <TouchableOpacity
-                          style={{
-                            position: 'absolute',
-                            top: 0,
-                            right: 0,
-                            backgroundColor: 'black',
-                            //  borderRadius: 15,
-                            width: 60,
-                            height: 30,
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                          }}
-                          onPress={() =>
-                            handleInspectionClosePress(selectedInspectionIndex)
-                          }>
-                          <Text style={{fontSize: 14, color: 'white'}}>
-                            Cancel
-                          </Text>
-                        </TouchableOpacity>
                       </View>
+                      {suspensionPhoto[index] && (
+                        <View stylle={{position: 'relative'}}>
+                          <Image
+                            source={{uri: suspensionPhoto[index]}}
+                            style={styles.uploadedImage}
+                          />
+                          <TouchableOpacity
+                            style={{
+                              position: 'absolute',
+                              top: 20,
+                              right: 0,
+                              backgroundColor: 'black',
+                              // borderRadius: 15,
+                              width: 60,
+                              height: 30,
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                            }}
+                            onPress={() => handleSuspensionClosePress(index)}>
+                            <Text style={{fontSize: 14, color: 'white'}}>
+                              Cancel
+                            </Text>
+                          </TouchableOpacity>
+                        </View>
+                      )}
 
-                      {selectedValuesForCondition[selectedInspectionIndex] !==
-                        undefined && (
+                      <View style={{marginTop: 14}}>
+                        <TextInput
+                          style={styles.photoInput}
+                          placeholder="Enter remarks"
+                          value={suspensionRemarks[index]}
+                          onChangeText={text =>
+                            handleSuspensionRemarks(text, index)
+                          }
+                        />
+                      </View>
+                      <View style={{marginTop: 14}}>
                         <Picker
                           style={styles.photoInput}
-                          selectedValue={
-                            selectedValuesForCondition[selectedInspectionIndex]
-                          }
+                          selectedValue={suspensionDropdown[index]}
                           onValueChange={itemValue =>
-                            handleDropDownForCondition(
-                              itemValue,
-                              selectedInspectionIndex,
-                            )
+                            handleSuspensionDropDownChange(itemValue, index)
                           }>
-                          <Picker.Item label="Select DropDown" value="" />
+                          <Picker.Item label="Select Condition" value="" />
                           <Picker.Item label="Level" value="Level" />
                           <Picker.Item label="Noise" value="Noise" />
                           <Picker.Item label="Leak" value="Leak" />
@@ -2823,38 +4538,666 @@ const OrderCreation = ({navigation}) => {
 
                           {/* Add other items as needed */}
                         </Picker>
+                      </View>
+                      <View style={{marginTop: 14}}>
+                        {!suspensionPhoto[index] && (
+                          <TouchableOpacity
+                            style={styles.photoInput}
+                            onPress={() => openCameraForInspection(index)}>
+                            <Text>{item}</Text>
+                          </TouchableOpacity>
+                        )}
+                      </View>
+                    </View>
+                  ))}
+              </View>
+
+              <View style={{paddingHorizontal: 0}}>
+                {selectedInspectionIndex === 1 &&
+                  steeringList.map((item, index) => (
+                    <View key={index} style={styles.itemContainer}>
+                      <Text>{item}</Text>
+
+                      <View
+                        style={{
+                          // marginLeft: 9,
+                          // marginRight: 9,
+                          // marginBottom: 20,
+                          marginTop: 5,
+                        }}>
+                        <CustomSwitch
+                          selectionMode={item}
+                          roundCorner={false}
+                          option1={'Ok'}
+                          option2={'Not Ok'}
+                          onSelectSwitch={val =>
+                            handleSuspensionChange(index, val)
+                          }
+                          selectionColor={'#007BFF'}
+                          index={index} // Pass the index as a prop
+                        />
+                      </View>
+                      {steeringPhoto[index] && (
+                        <View style={{position: 'relative'}}>
+                          <Image
+                            source={{uri: steeringPhoto[index]}}
+                            style={styles.uploadedImage}
+                          />
+                          <TouchableOpacity
+                            style={{
+                              position: 'absolute',
+                              top: 20,
+                              right: 0,
+                              backgroundColor: 'black',
+                              // borderRadius: 15,
+                              width: 60,
+                              height: 30,
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                            }}
+                            onPress={() => handleSuspensionClosePress(index)}>
+                            <Text style={{fontSize: 14, color: 'white'}}>
+                              Cancel
+                            </Text>
+                          </TouchableOpacity>
+                        </View>
                       )}
-                      <View style={{marginTop: 20}}>
+
+                      <View style={{marginTop: 14}}>
                         <TextInput
                           style={styles.photoInput}
                           placeholder="Enter remarks"
-                          value={inspectionRemarks[selectedInspectionIndex]}
+                          value={steeringRemarks[index]}
                           onChangeText={text =>
-                            handleInspectionRemarks(
-                              text,
-                              selectedInspectionIndex,
-                            )
+                            handleSuspensionRemarks(text, index)
                           }
                         />
                       </View>
+                      <View style={{marginTop: 14}}>
+                        <Picker
+                          style={styles.photoInput}
+                          selectedValue={steeringDropdown[index]}
+                          onValueChange={itemValue =>
+                            handleSuspensionDropDownChange(itemValue, index)
+                          }>
+                          <Picker.Item label="Select Condition" value="" />
+                          <Picker.Item label="Level" value="Level" />
+                          <Picker.Item label="Noise" value="Noise" />
+                          <Picker.Item label="Leak" value="Leak" />
+                          <Picker.Item label="Damaged" value="Damaged" />
+
+                          {/* Add other items as needed */}
+                        </Picker>
+                      </View>
+                      <View style={{marginTop: 14}}>
+                        {!steeringPhoto[index] && (
+                          <TouchableOpacity
+                            style={styles.photoInput}
+                            onPress={() => openCameraForInspection(index)}>
+                            <Text>{item}</Text>
+                          </TouchableOpacity>
+                        )}
+                      </View>
                     </View>
-                  </>
-                ) : (
-                  <View style={{paddingHorizontal: 0}}>
-                    <TouchableOpacity
+                  ))}
+              </View>
+
+              <View style={{paddingHorizontal: 0}}>
+                {selectedInspectionIndex === 2 &&
+                  brakeList.map((item, index) => (
+                    <View key={index} style={styles.itemContainer}>
+                      <Text>{item}</Text>
+
+                      <View
+                        style={{
+                          // marginLeft: 9,
+                          // marginRight: 9,
+                          // marginBottom: 20,
+                          marginTop: 5,
+                        }}>
+                        <CustomSwitch
+                          selectionMode={item}
+                          roundCorner={false}
+                          option1={'Ok'}
+                          option2={'Not Ok'}
+                          onSelectSwitch={val =>
+                            handleSuspensionChange(index, val)
+                          }
+                          selectionColor={'#007BFF'}
+                          index={index} // Pass the index as a prop
+                        />
+                      </View>
+                      {brakePhoto[index] && (
+                        <View style={{position: 'relative'}}>
+                          <Image
+                            source={{uri: brakePhoto[index]}}
+                            style={styles.uploadedImage}
+                          />
+
+                          <TouchableOpacity
+                            style={{
+                              position: 'absolute',
+                              top: 20,
+                              right: 0,
+                              backgroundColor: 'black',
+                              // borderRadius: 15,
+                              width: 60,
+                              height: 30,
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                            }}
+                            onPress={() => handleSuspensionClosePress(index)}>
+                            <Text style={{fontSize: 14, color: 'white'}}>
+                              Cancel
+                            </Text>
+                          </TouchableOpacity>
+                        </View>
+                      )}
+
+                      <View style={{marginTop: 14}}>
+                        <TextInput
+                          style={styles.photoInput}
+                          placeholder="Enter remarks"
+                          value={brakeRemarks[index]}
+                          onChangeText={text =>
+                            handleSuspensionRemarks(text, index)
+                          }
+                        />
+                      </View>
+                      <View style={{marginTop: 14}}>
+                        <Picker
+                          style={styles.photoInput}
+                          selectedValue={brakeDropdown[index]}
+                          onValueChange={itemValue =>
+                            handleSuspensionDropDownChange(itemValue, index)
+                          }>
+                          <Picker.Item label="Select Condition" value="" />
+                          <Picker.Item label="Level" value="Level" />
+                          <Picker.Item label="Noise" value="Noise" />
+                          <Picker.Item label="Leak" value="Leak" />
+                          <Picker.Item label="Damaged" value="Damaged" />
+
+                          {/* Add other items as needed */}
+                        </Picker>
+                      </View>
+                      <View style={{marginTop: 14}}>
+                        {!brakePhoto[index] && (
+                          <TouchableOpacity
+                            style={styles.photoInput}
+                            onPress={() => openCameraForInspection(index)}>
+                            <Text>{item}</Text>
+                          </TouchableOpacity>
+                        )}
+                      </View>
+                    </View>
+                  ))}
+              </View>
+
+              <View style={{paddingHorizontal: 0}}>
+                {selectedInspectionIndex === 3 &&
+                  transmissionList.map((item, index) => (
+                    <View key={index} style={styles.itemContainer}>
+                      <Text>{item}</Text>
+
+                      <View
+                        style={{
+                          // marginLeft: 9,
+                          // marginRight: 9,
+                          // marginBottom: 20,
+                          marginTop: 5,
+                        }}>
+                        <CustomSwitch
+                          selectionMode={item}
+                          roundCorner={false}
+                          option1={'Ok'}
+                          option2={'Not Ok'}
+                          onSelectSwitch={val =>
+                            handleSuspensionChange(index, val)
+                          }
+                          selectionColor={'#007BFF'}
+                          index={index} // Pass the index as a prop
+                        />
+                      </View>
+                      {transmissionPhoto[index] && (
+                        <View style={{position: 'relative'}}>
+                          <Image
+                            source={{uri: transmissionPhoto[index]}}
+                            style={styles.uploadedImage}
+                          />
+                          <TouchableOpacity
+                            style={{
+                              position: 'absolute',
+                              top: 20,
+                              right: 0,
+                              backgroundColor: 'black',
+                              // borderRadius: 15,
+                              width: 60,
+                              height: 30,
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                            }}
+                            onPress={() => handleSuspensionClosePress(index)}>
+                            <Text style={{fontSize: 14, color: 'white'}}>
+                              Cancel
+                            </Text>
+                          </TouchableOpacity>
+                        </View>
+                      )}
+
+                      <View style={{marginTop: 14}}>
+                        <TextInput
+                          style={styles.photoInput}
+                          placeholder="Enter remarks"
+                          value={transmissionRemarks[index]}
+                          onChangeText={text =>
+                            handleSuspensionRemarks(text, index)
+                          }
+                        />
+                      </View>
+                      <View style={{marginTop: 14}}>
+                        <Picker
+                          style={styles.photoInput}
+                          selectedValue={transmissionDropdown[index]}
+                          onValueChange={itemValue =>
+                            handleSuspensionDropDownChange(itemValue, index)
+                          }>
+                          <Picker.Item label="Select Condition" value="" />
+                          <Picker.Item label="Level" value="Level" />
+                          <Picker.Item label="Noise" value="Noise" />
+                          <Picker.Item label="Leak" value="Leak" />
+                          <Picker.Item label="Damaged" value="Damaged" />
+
+                          {/* Add other items as needed */}
+                        </Picker>
+                      </View>
+                      <View style={{marginTop: 14}}>
+                        {!transmissionPhoto[index] && (
+                          <TouchableOpacity
+                            style={styles.photoInput}
+                            onPress={() => openCameraForInspection(index)}>
+                            <Text>{item}</Text>
+                          </TouchableOpacity>
+                        )}
+                      </View>
+                    </View>
+                  ))}
+              </View>
+
+              <View style={{paddingHorizontal: 0}}>
+                {selectedInspectionIndex === 4 &&
+                  engineList.map((item, index) => (
+                    <View key={index} style={styles.itemContainer}>
+                      <Text>{item}</Text>
+
+                      <View
+                        style={{
+                          // marginLeft: 9,
+                          // marginRight: 9,
+                          // marginBottom: 20,
+                          marginTop: 5,
+                        }}>
+                        <CustomSwitch
+                          selectionMode={item}
+                          roundCorner={false}
+                          option1={'Ok'}
+                          option2={'Not Ok'}
+                          onSelectSwitch={val =>
+                            handleSuspensionChange(index, val)
+                          }
+                          selectionColor={'#007BFF'}
+                          index={index} // Pass the index as a prop
+                        />
+                      </View>
+                      {enginePhoto[index] && (
+                        <View style={{position: 'relative'}}>
+                          <Image
+                            source={{uri: enginePhoto[index]}}
+                            style={styles.uploadedImage}
+                          />
+                          <TouchableOpacity
+                            style={{
+                              position: 'absolute',
+                              top: 20,
+                              right: 0,
+                              backgroundColor: 'black',
+                              // borderRadius: 15,
+                              width: 60,
+                              height: 30,
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                            }}
+                            onPress={() => handleSuspensionClosePress(index)}>
+                            <Text style={{fontSize: 14, color: 'white'}}>
+                              Cancel
+                            </Text>
+                          </TouchableOpacity>
+                        </View>
+                      )}
+
+                      <View style={{marginTop: 14}}>
+                        <TextInput
+                          style={styles.photoInput}
+                          placeholder="Enter remarks"
+                          value={engineRemarks[index]}
+                          onChangeText={text =>
+                            handleSuspensionRemarks(text, index)
+                          }
+                        />
+                      </View>
+                      <View style={{marginTop: 14}}>
+                        <Picker
+                          style={styles.photoInput}
+                          selectedValue={engineDropdown[index]}
+                          onValueChange={itemValue =>
+                            handleSuspensionDropDownChange(itemValue, index)
+                          }>
+                          <Picker.Item label="Select Condition" value="" />
+                          <Picker.Item label="Level" value="Level" />
+                          <Picker.Item label="Noise" value="Noise" />
+                          <Picker.Item label="Leak" value="Leak" />
+                          <Picker.Item label="Damaged" value="Damaged" />
+
+                          {/* Add other items as needed */}
+                        </Picker>
+                      </View>
+                      <View style={{marginTop: 14}}>
+                        {!enginePhoto[index] && (
+                          <TouchableOpacity
+                            style={styles.photoInput}
+                            onPress={() => openCameraForInspection(index)}>
+                            <Text>{item}</Text>
+                          </TouchableOpacity>
+                        )}
+                      </View>
+                    </View>
+                  ))}
+              </View>
+
+              <View style={{paddingHorizontal: 0}}>
+                {selectedInspectionIndex === 5 &&
+                  electricalList.map((item, index) => (
+                    <View key={index} style={styles.itemContainer}>
+                      <Text>{item}</Text>
+
+                      <View
+                        style={{
+                          // marginLeft: 9,
+                          // marginRight: 9,
+                          // marginBottom: 20,
+                          marginTop: 5,
+                        }}>
+                        <CustomSwitch
+                          selectionMode={item}
+                          roundCorner={false}
+                          option1={'Ok'}
+                          option2={'Not Ok'}
+                          onSelectSwitch={val =>
+                            handleSuspensionChange(index, val)
+                          }
+                          selectionColor={'#007BFF'}
+                          index={index} // Pass the index as a prop
+                        />
+                      </View>
+                      {electricalPhoto[index] && (
+                        <View style={{position: 'relative'}}>
+                          <Image
+                            source={{uri: electricalPhoto[index]}}
+                            style={styles.uploadedImage}
+                          />
+                          <TouchableOpacity
+                            style={{
+                              position: 'absolute',
+                              top: 20,
+                              right: 0,
+                              backgroundColor: 'black',
+                              // borderRadius: 15,
+                              width: 60,
+                              height: 30,
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                            }}
+                            onPress={() => handleSuspensionClosePress(index)}>
+                            <Text style={{fontSize: 14, color: 'white'}}>
+                              Cancel
+                            </Text>
+                          </TouchableOpacity>
+                        </View>
+                      )}
+
+                      <View style={{marginTop: 14}}>
+                        <TextInput
+                          style={styles.photoInput}
+                          placeholder="Enter remarks"
+                          value={electricalRemarks[index]}
+                          onChangeText={text =>
+                            handleSuspensionRemarks(text, index)
+                          }
+                        />
+                      </View>
+                      <View style={{marginTop: 14}}>
+                        <Picker
+                          style={styles.photoInput}
+                          selectedValue={electricalDropdown[index]}
+                          onValueChange={itemValue =>
+                            handleSuspensionDropDownChange(itemValue, index)
+                          }>
+                          <Picker.Item label="Select Condition" value="" />
+                          <Picker.Item label="Level" value="Level" />
+                          <Picker.Item label="Noise" value="Noise" />
+                          <Picker.Item label="Leak" value="Leak" />
+                          <Picker.Item label="Damaged" value="Damaged" />
+
+                          {/* Add other items as needed */}
+                        </Picker>
+                      </View>
+                      <View style={{marginTop: 14}}>
+                        {!electricalPhoto[index] && (
+                          <TouchableOpacity
+                            style={styles.photoInput}
+                            onPress={() => openCameraForInspection(index)}>
+                            <Text>{item}</Text>
+                          </TouchableOpacity>
+                        )}
+                      </View>
+                    </View>
+                  ))}
+              </View>
+              <View style={{paddingHorizontal: 0}}>
+                {selectedInspectionIndex === 6 &&
+                  ACList.map((item, index) => (
+                    <View key={index} style={styles.itemContainer}>
+                      <Text>{item}</Text>
+
+                      <View
+                        style={{
+                          // marginLeft: 9,
+                          // marginRight: 9,
+                          // marginBottom: 20,
+                          marginTop: 5,
+                        }}>
+                        <CustomSwitch
+                          selectionMode={item}
+                          roundCorner={false}
+                          option1={'Ok'}
+                          option2={'Not Ok'}
+                          onSelectSwitch={val =>
+                            handleSuspensionChange(index, val)
+                          }
+                          selectionColor={'#007BFF'}
+                          index={index} // Pass the index as a prop
+                        />
+                      </View>
+                      {acPhoto[index] && (
+                        <View style={{position: 'relative'}}>
+                          <Image
+                            source={{uri: acPhoto[index]}}
+                            style={styles.uploadedImage}
+                          />
+                          <TouchableOpacity
+                            style={{
+                              position: 'absolute',
+                              top: 20,
+                              right: 0,
+                              backgroundColor: 'black',
+                              // borderRadius: 15,
+                              width: 60,
+                              height: 30,
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                            }}
+                            onPress={() => handleSuspensionClosePress(index)}>
+                            <Text style={{fontSize: 14, color: 'white'}}>
+                              Cancel
+                            </Text>
+                          </TouchableOpacity>
+                        </View>
+                      )}
+
+                      <View style={{marginTop: 14}}>
+                        <TextInput
+                          style={styles.photoInput}
+                          placeholder="Enter remarks"
+                          value={acRemarks[index]}
+                          onChangeText={text =>
+                            handleSuspensionRemarks(text, index)
+                          }
+                        />
+                      </View>
+                      <View style={{marginTop: 14}}>
+                        <Picker
+                          style={styles.photoInput}
+                          selectedValue={acDropdown[index]}
+                          onValueChange={itemValue =>
+                            handleSuspensionDropDownChange(itemValue, index)
+                          }>
+                          <Picker.Item label="Select Condition" value="" />
+                          <Picker.Item label="Level" value="Level" />
+                          <Picker.Item label="Noise" value="Noise" />
+                          <Picker.Item label="Leak" value="Leak" />
+                          <Picker.Item label="Damaged" value="Damaged" />
+
+                          {/* Add other items as needed */}
+                        </Picker>
+                      </View>
+                      <View style={{marginTop: 14}}>
+                        {!acPhoto[index] && (
+                          <TouchableOpacity
+                            style={styles.photoInput}
+                            onPress={() => openCameraForInspection(index)}>
+                            <Text>{item}</Text>
+                          </TouchableOpacity>
+                        )}
+                      </View>
+                    </View>
+                  ))}
+              </View>
+              <View style={{paddingHorizontal: 0}}>
+                {selectedInspectionIndex === 7 &&
+                  accessoriesList.map((item, index) => (
+                    <View key={index} style={styles.itemContainer}>
+                      <Text>{item}</Text>
+
+                      <View
+                        style={{
+                          // marginLeft: 9,
+                          // marginRight: 9,
+                          // marginBottom: 20,
+                          marginTop: 5,
+                        }}>
+                        <CustomSwitch
+                          selectionMode={item}
+                          roundCorner={false}
+                          option1={'Ok'}
+                          option2={'Not Ok'}
+                          onSelectSwitch={val =>
+                            handleSuspensionChange(index, val)
+                          }
+                          selectionColor={'#007BFF'}
+                          index={index} // Pass the index as a prop
+                        />
+                      </View>
+                      {accessoriesPhoto[index] && (
+                        <View style={{position: 'relative'}}>
+                          <Image
+                            source={{uri: accessoriesPhoto[index]}}
+                            style={styles.uploadedImage}
+                          />
+                          <TouchableOpacity
+                            style={{
+                              position: 'absolute',
+                              top: 20,
+                              right: 0,
+                              backgroundColor: 'black',
+                              // borderRadius: 15,
+                              width: 60,
+                              height: 30,
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                            }}
+                            onPress={() => handleSuspensionClosePress(index)}>
+                            <Text style={{fontSize: 14, color: 'white'}}>
+                              Cancel
+                            </Text>
+                          </TouchableOpacity>
+                        </View>
+                      )}
+
+                      <View style={{marginTop: 14}}>
+                        <TextInput
+                          style={styles.photoInput}
+                          placeholder="Enter remarks"
+                          value={accessoriesRemarks[index]}
+                          onChangeText={text =>
+                            handleSuspensionRemarks(text, index)
+                          }
+                        />
+                      </View>
+                      <View style={{marginTop: 14}}>
+                        <Picker
+                          style={styles.photoInput}
+                          selectedValue={accessoriesDropdown[index]}
+                          onValueChange={itemValue =>
+                            handleSuspensionDropDownChange(itemValue, index)
+                          }>
+                          <Picker.Item label="Select Condition" value="" />
+                          <Picker.Item label="Level" value="Level" />
+                          <Picker.Item label="Noise" value="Noise" />
+                          <Picker.Item label="Leak" value="Leak" />
+                          <Picker.Item label="Damaged" value="Damaged" />
+
+                          {/* Add other items as needed */}
+                        </Picker>
+                      </View>
+                      <View style={{marginTop: 14}}>
+                        {!accessoriesPhoto[index] && (
+                          <TouchableOpacity
+                            style={styles.photoInput}
+                            onPress={() => openCameraForInspection(index)}>
+                            <Text>{item}</Text>
+                          </TouchableOpacity>
+                        )}
+                      </View>
+                    </View>
+                  ))}
+              </View>
+              <View style={{paddingHorizontal: 0}}>
+                {selectedInspectionIndex === 8 && (
+                  <View style={{marginTop: 14}}>
+                    <TextInput
                       style={styles.photoInput}
-                      onPress={() => openCameraForInspection()}>
-                      <Text>
-                        {mechanicalInspectionList[selectedInspectionIndex]}
-                      </Text>
-                    </TouchableOpacity>
+                      placeholder="Enter remarks"
+                      value={roadTestRemarks}
+                      onChangeText={text =>
+                        handleSuspensionRemarks(text, index)
+                      }
+                    />
                   </View>
                 )}
               </View>
               <View style={{paddingHorizontal: 8, marginTop: 5}}>
                 <CustomButton
                   title="Submit"
-                  onPress={handleInspectionOkPress}
+                  onPress={() => handleInspectionOkPress()}
                 />
               </View>
             </ScrollView>
@@ -2875,591 +5218,1119 @@ const OrderCreation = ({navigation}) => {
             <ScrollView
               contentContainerStyle={styles.scrollViewContent}
               showsVerticalScrollIndicator={false}>
-              {/* {switchStateForBodyInspection[selectedBodyInspectionIndex] !== undefined && (
-                <View style={styles.switchContainer}>
-                  <Switch
-                    trackColor={{ false: '#767577', true: '#81b0ff' }}
-                    thumbColor={
-                      switchStateForBodyInspection[selectedBodyInspectionIndex]
-                        ? '#f5dd4b'
-                        : '#f4f3f4'
-                    }
-                    ios_backgroundColor="#3e3e3e"
-                    onValueChange={() =>
-                      toggleWitchForBodyInspection(selectedBodyInspectionIndex)
-                    }
-                    value={
-                      switchStateForBodyInspection[selectedBodyInspectionIndex]
-                    }
-                  />
-                  <Text>
-                    {switchStateForBodyInspection[selectedBodyInspectionIndex]
-                      ? 'Yes'
-                      : 'No'}
-                  </Text>
-                </View>
-              )} */}
+              <View style={{paddingHorizontal: 0}}>
+                {selectedBodyInspectionIndex === 0 &&
+                  pillarsList.map((item, index) => (
+                    <View key={index} style={styles.itemContainer}>
+                      <Text>{item}</Text>
 
-              {switchStateForBodyInspection.map((state, index) => (
-                <>
-                  {selectedBodyInspectionIndex === index && (
-                    <View
-                      style={{
-                        marginTop: 20,
-                        marginBottom: 20,
-                        marginLeft: 9,
-                        marginRight: 9,
-                      }}>
-                      <CustomSwitch
-                        selectionMode={state}
-                        roundCorner={false}
-                        option1={'Yes'}
-                        option2={'No'}
-                        onSelectSwitch={val =>
-                          handleBodyInspectionChange(index, val)
-                        }
-                        selectionColor={'#007BFF'}
-                        index={index} // Pass the index as a prop
-                      />
-                    </View>
-                  )}
-                </>
-              ))}
-
-              <View style={{paddingHorizontal: 8}}>
-                {bodyInspectionPhotos[selectedBodyInspectionIndex] && (
-                  <View style={styles.photoContainer}>
-                    <View style={{position: 'relative'}}>
-                      <Image
-                        source={{
-                          uri: bodyInspectionPhotos[
-                            selectedBodyInspectionIndex
-                          ],
-                        }}
-                        style={styles.uploadedImage}
-                      />
-                      <TouchableOpacity
+                      <View
                         style={{
-                          position: 'absolute',
-                          top: 0,
-                          right: 0,
-                          backgroundColor: 'black',
-                          //  borderRadius: 15,
-                          width: 60,
-                          height: 30,
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                        }}
-                        onPress={() =>
-                          handleBodyInspectionClosePress(
-                            selectedBodyInspectionIndex,
-                          )
-                        }>
-                        <Text style={{fontSize: 14, color: 'white'}}>
-                          Cancel
-                        </Text>
-                      </TouchableOpacity>
+                          // marginLeft: 9,
+                          // marginRight: 9,
+                          // marginBottom: 20,
+                          marginTop: 5,
+                        }}>
+                        <CustomSwitch
+                          selectionMode={item}
+                          roundCorner={false}
+                          option1={'Ok'}
+                          option2={'Not Ok'}
+                          onSelectSwitch={val =>
+                            handleBodyInspectionChannge(index, val)
+                          }
+                          selectionColor={'#007BFF'}
+                          index={index} // Pass the index as a prop
+                        />
+                      </View>
+                      {pillarsPhoto[index] && (
+                        <View style={{position: 'relative'}}>
+                          <Image
+                            source={{uri: pillarsPhoto[index]}}
+                            style={styles.uploadedImage}
+                          />
+                          <TouchableOpacity
+                            style={{
+                              position: 'absolute',
+                              top: 20,
+                              right: 0,
+                              backgroundColor: 'black',
+                              // borderRadius: 15,
+                              width: 60,
+                              height: 30,
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                            }}
+                            onPress={() => handleBodyInspectionClosePress(index)}>
+                            <Text style={{fontSize: 14, color: 'white'}}>
+                              Cancel
+                            </Text>
+                          </TouchableOpacity>
+                        </View>
+                      )}
+
+                      <View style={{marginTop: 14}}>
+                        <TextInput
+                          style={styles.photoInput}
+                          placeholder="Enter remarks"
+                          value={pillarsPhotoRemarks[index]}
+                          onChangeText={text =>
+                            handleBodyInspectionRemarks(text, index)
+                          }
+                        />
+                      </View>
+                      <View style={{marginTop: 14}}>
+                        <Picker
+                          style={styles.photoInput}
+                          selectedValue={pillarsCondition[index]}
+                          onValueChange={itemValue =>
+                            handleBodyInspectionDropDown(itemValue, index)
+                          }>
+                          <Picker.Item label="Select Condition" value="" />
+                          <Picker.Item label="Level" value="Level" />
+                          <Picker.Item label="Noise" value="Noise" />
+                          <Picker.Item label="Leak" value="Leak" />
+                          <Picker.Item label="Damaged" value="Damaged" />
+
+                          {/* Add other items as needed */}
+                        </Picker>
+                      </View>
+                      <View style={{marginTop: 14}}>
+                        {!pillarsPhoto[index] && (
+                          <TouchableOpacity
+                            style={styles.photoInput}
+                            onPress={() => openCameraForBodyInspection(index)}>
+                            <Text>{item}</Text>
+                          </TouchableOpacity>
+                        )}
+                      </View>
                     </View>
+                  ))}
+              </View>
 
-                    {/* {bodyInspectionValues[selectedBodyInspectionIndex] !==
-                      undefined && ( */}
+              <View style={{paddingHorizontal: 0}}>
+                {selectedBodyInspectionIndex === 1 &&
+                  apronList.map((item, index) => (
+                    <View key={index} style={styles.itemContainer}>
+                      <Text>{item}</Text>
 
-                    <View>
-                      {/* <TouchableOpacity
-                        style={styles.closeButton}
-                        onPress={() =>
-                          handleBodyInspectionClosePress(
-                            selectedBodyInspectionIndex,
-                          )
-                        }>
-                        <Text style={styles.closeButtonText}>Cancel</Text>
-                      </TouchableOpacity> */}
+                      <View
+                        style={{
+                          // marginLeft: 9,
+                          // marginRight: 9,
+                          // marginBottom: 20,
+                          marginTop: 5,
+                        }}>
+                        <CustomSwitch
+                          selectionMode={item}
+                          roundCorner={false}
+                          option1={'Ok'}
+                          option2={'Not Ok'}
+                          onSelectSwitch={val =>
+                            handleBodyInspectionChannge(index, val)
+                          }
+                          selectionColor={'#007BFF'}
+                          index={index} // Pass the index as a prop
+                        />
+                      </View>
+                      {apronPhoto[index] && (
+                        <View style={{position:"relative"}}>
+                        <Image
+                          source={{uri: apronPhoto[index]}}
+                          style={styles.uploadedImage}
+                        />
+                        <TouchableOpacity
+                            style={{
+                              position: 'absolute',
+                              top: 20,
+                              right: 0,
+                              backgroundColor: 'black',
+                              // borderRadius: 15,
+                              width: 60,
+                              height: 30,
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                            }}
+                            onPress={() => handleBodyInspectionClosePress(index)}>
+                            <Text style={{fontSize: 14, color: 'white'}}>
+                              Cancel
+                            </Text>
+                          </TouchableOpacity>
+                          </View>
+                      )}
+
+                      <View style={{marginTop: 14}}>
+                        <TextInput
+                          style={styles.photoInput}
+                          placeholder="Enter remarks"
+                          value={apronRemarks[index]}
+                          onChangeText={text =>
+                            handleBodyInspectionRemarks(text, index)
+                          }
+                        />
+                      </View>
+                      <View style={{marginTop: 14}}>
+                        <Picker
+                          style={styles.photoInput}
+                          selectedValue={apronCondition[index]}
+                          onValueChange={itemValue =>
+                            handleBodyInspectionDropDown(itemValue, index)
+                          }>
+                          <Picker.Item label="Select Condition" value="" />
+                          <Picker.Item label="Level" value="Level" />
+                          <Picker.Item label="Noise" value="Noise" />
+                          <Picker.Item label="Leak" value="Leak" />
+                          <Picker.Item label="Damaged" value="Damaged" />
+
+                          {/* Add other items as needed */}
+                        </Picker>
+                      </View>
+                      <View style={{marginTop: 14}}>
+                        {!apronPhoto[index] && (
+                          <TouchableOpacity
+                            style={styles.photoInput}
+                            onPress={() => openCameraForBodyInspection(index)}>
+                            <Text>{item}</Text>
+                          </TouchableOpacity>
+                        )}
+                      </View>
                     </View>
-                  </View>
-                )}
+                  ))}
               </View>
 
-              <View style={{paddingHorizontal: 8}}>
-                {bodyInspectionDoor1[selectedBodyInspectionIndex] && (
-                  <View style={{position: 'relative'}}>
-                    <Image
-                      source={{
-                        uri: bodyInspectionDoor1[selectedBodyInspectionIndex],
-                      }}
-                      style={styles.uploadedImage}
-                    />
-                    <TouchableOpacity
-                      style={{
-                        position: 'absolute',
-                        top: 0,
-                        right: 0,
-                        backgroundColor: 'black',
-                        //   borderRadius: 15,
-                        width: 60,
-                        height: 30,
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                      }}
-                      onPress={() =>
-                        handleBodyInspectionDoor1(selectedBodyInspectionIndex)
-                      }>
-                      <Text style={{fontSize: 14, color: 'white'}}>Cancel</Text>
-                    </TouchableOpacity>
-                  </View>
-                )}
+              <View style={{paddingHorizontal: 0}}>
+                {selectedBodyInspectionIndex === 2 &&
+                  fendersList.map((item, index) => (
+                    <View key={index} style={styles.itemContainer}>
+                      <Text>{item}</Text>
 
-                {bodyInspectionDoor2[selectedBodyInspectionIndex] && (
-                  <View style={{position: 'relative'}}>
-                    <Image
-                      source={{
-                        uri: bodyInspectionDoor2[selectedBodyInspectionIndex],
-                      }}
-                      style={styles.uploadedImage}
-                    />
-                    <TouchableOpacity
-                      style={{
-                        position: 'absolute',
-                        top: 0,
-                        right: 0,
-                        backgroundColor: 'black',
-                        //   borderRadius: 15,
-                        width: 60,
-                        height: 30,
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                      }}
-                      onPress={() =>
-                        handleBodyInspectionDoor2(selectedBodyInspectionIndex)
-                      }>
-                      <Text style={{fontSize: 14, color: 'white'}}>Cancel</Text>
-                    </TouchableOpacity>
-                  </View>
-                )}
+                      <View
+                        style={{
+                          // marginLeft: 9,
+                          // marginRight: 9,
+                          // marginBottom: 20,
+                          marginTop: 5,
+                        }}>
+                        <CustomSwitch
+                          selectionMode={item}
+                          roundCorner={false}
+                          option1={'Ok'}
+                          option2={'Not Ok'}
+                          onSelectSwitch={val =>
+                            handleBodyInspectionChannge(index, val)
+                          }
+                          selectionColor={'#007BFF'}
+                          index={index} // Pass the index as a prop
+                        />
+                      </View>
+                      {fenderPhoto[index] && (
+                        <Image
+                          source={{uri: fenderPhoto[index]}}
+                          style={styles.uploadedImage}
+                        />
+                      )}
 
-                {bodyInspectionDoor3[selectedBodyInspectionIndex] && (
-                  <View style={{position: 'relative'}}>
-                    <Image
-                      source={{
-                        uri: bodyInspectionDoor3[selectedBodyInspectionIndex],
-                      }}
-                      style={styles.uploadedImage}
-                    />
-                    <TouchableOpacity
-                      style={{
-                        position: 'absolute',
-                        top: 0,
-                        right: 0,
-                        backgroundColor: 'black',
-                        //   borderRadius: 15,
-                        width: 60,
-                        height: 30,
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                      }}
-                      onPress={() =>
-                        handleBodyInspectionDoor3(selectedBodyInspectionIndex)
-                      }>
-                      <Text style={{fontSize: 14, color: 'white'}}>Cancel</Text>
-                    </TouchableOpacity>
-                  </View>
-                )}
+                      <View style={{marginTop: 14}}>
+                        <TextInput
+                          style={styles.photoInput}
+                          placeholder="Enter remarks"
+                          value={fenderRemarks[index]}
+                          onChangeText={text =>
+                            handleBodyInspectionRemarks(text, index)
+                          }
+                        />
+                      </View>
+                      <View style={{marginTop: 14}}>
+                        <Picker
+                          style={styles.photoInput}
+                          selectedValue={fenderCondition[index]}
+                          onValueChange={itemValue =>
+                            handleBodyInspectionDropDown(itemValue, index)
+                          }>
+                          <Picker.Item label="Select Condition" value="" />
+                          <Picker.Item label="Level" value="Level" />
+                          <Picker.Item label="Noise" value="Noise" />
+                          <Picker.Item label="Leak" value="Leak" />
+                          <Picker.Item label="Damaged" value="Damaged" />
 
-                {bodyInspectionPhotos2[selectedBodyInspectionIndex] && (
-                  <View style={{position: 'relative'}}>
-                    <Image
-                      source={{
-                        uri: bodyInspectionPhotos2[selectedBodyInspectionIndex],
-                      }}
-                      style={styles.uploadedImage}
-                    />
-                    <TouchableOpacity
-                      style={{
-                        position: 'absolute',
-                        top: 0,
-                        right: 0,
-                        backgroundColor: 'black',
-                        // borderRadius: 15,
-                        width: 60,
-                        height: 30,
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                      }}
-                      onPress={() =>
-                        handleBodyInspectionClosePress2(
-                          selectedBodyInspectionIndex,
-                        )
-                      }>
-                      <Text style={{fontSize: 14, color: 'white'}}>Cancel</Text>
-                    </TouchableOpacity>
-                  </View>
-                )}
-
-                {bodyInspectionPhotosForPillars[
-                  selectedBodyInspectionIndex
-                ] && (
-                  <View style={{position: 'relative'}}>
-                    <Image
-                      source={{
-                        uri: bodyInspectionPhotosForPillars[
-                          selectedBodyInspectionIndex
-                        ],
-                      }}
-                      style={styles.uploadedImage}
-                    />
-                    <TouchableOpacity
-                      style={{
-                        position: 'absolute',
-                        top: 0,
-                        right: 0,
-                        backgroundColor: 'black',
-                        // borderRadius: 15,
-                        width: 60,
-                        height: 30,
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                      }}
-                      onPress={() =>
-                        handleBodyInspectionPhotosForPillar1(
-                          selectedBodyInspectionIndex,
-                        )
-                      }>
-                      <Text style={{fontSize: 14, color: 'white'}}>Cancel</Text>
-                    </TouchableOpacity>
-                  </View>
-                )}
-
-                {bodyInspectionPhotosForPillars2[
-                  selectedBodyInspectionIndex
-                ] && (
-                  <View style={{position: 'relative'}}>
-                    <Image
-                      source={{
-                        uri: bodyInspectionPhotosForPillars2[
-                          selectedBodyInspectionIndex
-                        ],
-                      }}
-                      style={styles.uploadedImage}
-                    />
-                    <TouchableOpacity
-                      style={{
-                        position: 'absolute',
-                        top: 0,
-                        right: 0,
-                        backgroundColor: 'black',
-                        //   borderRadius: 15,
-                        width: 60,
-                        height: 30,
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                      }}
-                      onPress={() =>
-                        handleBodyInspectionPhotosForPillar2(
-                          selectedBodyInspectionIndex,
-                        )
-                      }>
-                      <Text style={{fontSize: 14, color: 'white'}}>Cancel</Text>
-                    </TouchableOpacity>
-                  </View>
-                )}
-
-                {bodyInspectionPhotosForPillars3[
-                  selectedBodyInspectionIndex
-                ] && (
-                  <View style={{position: 'relative'}}>
-                    <Image
-                      source={{
-                        uri: bodyInspectionPhotosForPillars3[
-                          selectedBodyInspectionIndex
-                        ],
-                      }}
-                      style={styles.uploadedImage}
-                    />
-                    <TouchableOpacity
-                      style={{
-                        position: 'absolute',
-                        top: 0,
-                        right: 0,
-                        backgroundColor: 'black',
-                        //   borderRadius: 15,
-                        width: 60,
-                        height: 30,
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                      }}
-                      onPress={() =>
-                        handleBodyInspectionPhotosForPillar3(
-                          selectedBodyInspectionIndex,
-                        )
-                      }>
-                      <Text style={{fontSize: 14, color: 'white'}}>Cancel</Text>
-                    </TouchableOpacity>
-                  </View>
-                )}
-
-                {bodyInspectionPhotosForPillars4[
-                  selectedBodyInspectionIndex
-                ] && (
-                  <View style={{position: 'relative'}}>
-                    <Image
-                      source={{
-                        uri: bodyInspectionPhotosForPillars4[
-                          selectedBodyInspectionIndex
-                        ],
-                      }}
-                      style={styles.uploadedImage}
-                    />
-                    <TouchableOpacity
-                      style={{
-                        position: 'absolute',
-                        top: 0,
-                        right: 0,
-                        backgroundColor: 'black',
-                        //  borderRadius: 15,
-                        width: 60,
-                        height: 30,
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                      }}
-                      onPress={() =>
-                        handleBodyInspectionPhotosForPillar4(
-                          selectedBodyInspectionIndex,
-                        )
-                      }>
-                      <Text style={{fontSize: 14, color: 'white'}}>Cancel</Text>
-                    </TouchableOpacity>
-                  </View>
-                )}
-
-                {bodyInspectionPhotosForPillars5[
-                  selectedBodyInspectionIndex
-                ] && (
-                  <View style={{position: 'relative'}}>
-                    <Image
-                      source={{
-                        uri: bodyInspectionPhotosForPillars5[
-                          selectedBodyInspectionIndex
-                        ],
-                      }}
-                      style={styles.uploadedImage}
-                    />
-                    <TouchableOpacity
-                      style={{
-                        position: 'absolute',
-                        top: 0,
-                        right: 0,
-                        backgroundColor: 'black',
-                        //  borderRadius: 15,
-                        width: 60,
-                        height: 30,
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                      }}
-                      onPress={() =>
-                        handleBodyInspectionPhotosForPillar5(
-                          selectedBodyInspectionIndex,
-                        )
-                      }>
-                      <Text style={{fontSize: 14, color: 'white'}}>Cancel</Text>
-                    </TouchableOpacity>
-                  </View>
-                )}
+                          {/* Add other items as needed */}
+                        </Picker>
+                      </View>
+                      <View style={{marginTop: 14}}>
+                        {!fenderPhoto[index] && (
+                          <TouchableOpacity
+                            style={styles.photoInput}
+                            onPress={() => openCameraForBodyInspection(index)}>
+                            <Text>{item}</Text>
+                          </TouchableOpacity>
+                        )}
+                      </View>
+                    </View>
+                  ))}
               </View>
 
-              <View style={{paddingHorizontal: 8}}>
-                {selectedBodyInspectionIndex === 1 ||
-                selectedBodyInspectionIndex === 2 ||
-                selectedBodyInspectionIndex === 3 ||
-                selectedBodyInspectionIndex === 4 ||
-                selectedBodyInspectionIndex === 10 ||
-                selectedBodyInspectionIndex === 11 ||
-                selectedBodyInspectionIndex === 12 ? (
-                  <>
-                    {bodyInspectionPhotos[selectedBodyInspectionIndex] ==
-                      null && (
-                      <View style={{marginTop: 16}}>
-                        <TouchableOpacity
-                          style={styles.photoInput}
-                          onPress={() => openCameraForBodyInspection()}>
-                          <Text>
-                            {bodyInspectionList[selectedBodyInspectionIndex]}
-                          </Text>
-                        </TouchableOpacity>
+              <View style={{paddingHorizontal: 0}}>
+                {selectedBodyInspectionIndex === 3 &&
+                  quarterPanelsList.map((item, index) => (
+                    <View key={index} style={styles.itemContainer}>
+                      <Text>{item}</Text>
+
+                      <View
+                        style={{
+                          // marginLeft: 9,
+                          // marginRight: 9,
+                          // marginBottom: 20,
+                          marginTop: 5,
+                        }}>
+                        <CustomSwitch
+                          selectionMode={item}
+                          roundCorner={false}
+                          option1={'Ok'}
+                          option2={'Not Ok'}
+                          onSelectSwitch={val =>
+                            handleBodyInspectionChannge(index, val)
+                          }
+                          selectionColor={'#007BFF'}
+                          index={index} // Pass the index as a prop
+                        />
                       </View>
-                    )}
-                    {bodyInspectionPhotos2[selectedBodyInspectionIndex] ==
-                      null && (
-                      <View style={{marginTop: 16}}>
+                      {quarterPanlesPhoto[index] && (
+                        <View style={{position:"relative"}}>
+                        <Image
+                          source={{uri: quarterPanlesPhoto[index]}}
+                          style={styles.uploadedImage}
+                        />
                         <TouchableOpacity
+                            style={{
+                              position: 'absolute',
+                              top: 20,
+                              right: 0,
+                              backgroundColor: 'black',
+                              // borderRadius: 15,
+                              width: 60,
+                              height: 30,
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                            }}
+                            onPress={() => handleBodyInspectionClosePress(index)}>
+                            <Text style={{fontSize: 14, color: 'white'}}>
+                              Cancel
+                            </Text>
+                          </TouchableOpacity>
+                          </View>
+                      )}
+
+                      <View style={{marginTop: 14}}>
+                        <TextInput
                           style={styles.photoInput}
-                          onPress={() => openCameraForBodyInspection2()}>
-                          <Text>Upload</Text>
-                        </TouchableOpacity>
+                          placeholder="Enter remarks"
+                          value={quarterPanlesRemarks[index]}
+                          onChangeText={text =>
+                            handleBodyInspectionRemarks(text, index)
+                          }
+                        />
                       </View>
-                    )}
-                    {/* <TouchableOpacity
-                       style={styles.photoInput}
-                       onPress={() => openCameraForCarDetails()}>
-                       <Text>Upload</Text>
-                     </TouchableOpacity> */}
-                  </>
-                ) : (
-                  <>
-                    {bodyInspectionPhotos[selectedBodyInspectionIndex] ==
-                      null && (
-                      <TouchableOpacity
-                        style={styles.photoInput}
-                        onPress={() => openCameraForBodyInspection()}>
-                        <Text>
-                          {bodyInspectionList[selectedBodyInspectionIndex]}
-                        </Text>
-                      </TouchableOpacity>
-                    )}
-                  </>
-                )}
+                      <View style={{marginTop: 14}}>
+                        <Picker
+                          style={styles.photoInput}
+                          selectedValue={quarterPanlesCondition[index]}
+                          onValueChange={itemValue =>
+                            handleBodyInspectionDropDown(itemValue, index)
+                          }>
+                          <Picker.Item label="Select Condition" value="" />
+                          <Picker.Item label="Level" value="Level" />
+                          <Picker.Item label="Noise" value="Noise" />
+                          <Picker.Item label="Leak" value="Leak" />
+                          <Picker.Item label="Damaged" value="Damaged" />
+
+                          {/* Add other items as needed */}
+                        </Picker>
+                      </View>
+                      <View style={{marginTop: 14}}>
+                        {!quarterPanlesPhoto[index] && (
+                          <TouchableOpacity
+                            style={styles.photoInput}
+                            onPress={() => openCameraForBodyInspection(index)}>
+                            <Text>{item}</Text>
+                          </TouchableOpacity>
+                        )}
+                      </View>
+                    </View>
+                  ))}
               </View>
 
-              <View style={{paddingHorizontal: 8}}>
-                {selectedBodyInspectionIndex === 0 && (
-                  <>
-                    {bodyInspectionPhotosForPillars[
-                      selectedBodyInspectionIndex
-                    ] == null && (
-                      <View style={{marginTop: 16}}>
-                        <TouchableOpacity
-                          style={styles.photoInput}
-                          onPress={() => openCameraForBodyInspectionPillars1()}>
-                          <Text>Pillars A RightSide Photo</Text>
-                        </TouchableOpacity>
-                      </View>
-                    )}
+              <View style={{paddingHorizontal: 0}}>
+                {selectedBodyInspectionIndex === 4 &&
+                  runningBoardList.map((item, index) => (
+                    <View key={index} style={styles.itemContainer}>
+                      <Text>{item}</Text>
 
-                    {bodyInspectionPhotosForPillars2[
-                      selectedBodyInspectionIndex
-                    ] == null && (
-                      <View style={{marginTop: 16}}>
-                        <TouchableOpacity
-                          style={styles.photoInput}
-                          onPress={() => openCameraForBodyInspectionPillars2()}>
-                          <Text>Pillars B LeftSide Photo</Text>
-                        </TouchableOpacity>
+                      <View
+                        style={{
+                          // marginLeft: 9,
+                          // marginRight: 9,
+                          // marginBottom: 20,
+                          marginTop: 5,
+                        }}>
+                        <CustomSwitch
+                          selectionMode={item}
+                          roundCorner={false}
+                          option1={'Ok'}
+                          option2={'Not Ok'}
+                          onSelectSwitch={val =>
+                            handleBodyInspectionChannge(index, val)
+                          }
+                          selectionColor={'#007BFF'}
+                          index={index} // Pass the index as a prop
+                        />
                       </View>
-                    )}
+                      {runningBoardPhoto[index] && (
+                        <View style={{position:"relative"}}>
+                        <Image
+                          source={{uri: runningBoardPhoto[index]}}
+                          style={styles.uploadedImage}
+                        />
+                        <TouchableOpacity
+                            style={{
+                              position: 'absolute',
+                              top: 20,
+                              right: 0,
+                              backgroundColor: 'black',
+                              // borderRadius: 15,
+                              width: 60,
+                              height: 30,
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                            }}
+                            onPress={() => handleBodyInspectionClosePress(index)}>
+                            <Text style={{fontSize: 14, color: 'white'}}>
+                              Cancel
+                            </Text>
+                          </TouchableOpacity>
+                          </View>
+                      )}
 
-                    {bodyInspectionPhotosForPillars3[
-                      selectedBodyInspectionIndex
-                    ] == null && (
-                      <View style={{marginTop: 16}}>
-                        <TouchableOpacity
+                      <View style={{marginTop: 14}}>
+                        <TextInput
                           style={styles.photoInput}
-                          onPress={() => openCameraForBodyInspectionPillars3()}>
-                          <Text>Pillars B RightSide Photo</Text>
-                        </TouchableOpacity>
+                          placeholder="Enter remarks"
+                          value={runningBoardRemarks[index]}
+                          onChangeText={text =>
+                            handleBodyInspectionRemarks(text, index)
+                          }
+                        />
                       </View>
-                    )}
-                    {bodyInspectionPhotosForPillars4[
-                      selectedBodyInspectionIndex
-                    ] == null && (
-                      <View style={{marginTop: 16}}>
-                        <TouchableOpacity
+                      <View style={{marginTop: 14}}>
+                        <Picker
                           style={styles.photoInput}
-                          onPress={() => openCameraForBodyInspectionPillars4()}>
-                          <Text>Pillars C LeftSide Photo</Text>
-                        </TouchableOpacity>
-                      </View>
-                    )}
+                          selectedValue={runnningBoardCondition[index]}
+                          onValueChange={itemValue =>
+                            handleBodyInspectionDropDown(itemValue, index)
+                          }>
+                          <Picker.Item label="Select Condition" value="" />
+                          <Picker.Item label="Level" value="Level" />
+                          <Picker.Item label="Noise" value="Noise" />
+                          <Picker.Item label="Leak" value="Leak" />
+                          <Picker.Item label="Damaged" value="Damaged" />
 
-                    {bodyInspectionPhotosForPillars5[
-                      selectedBodyInspectionIndex
-                    ] == null && (
-                      <View style={{marginTop: 16}}>
-                        <TouchableOpacity
-                          style={styles.photoInput}
-                          onPress={() => openCameraForBodyInspectionPillars5()}>
-                          <Text>Pillars C RightSide Photo</Text>
-                        </TouchableOpacity>
+                          {/* Add other items as needed */}
+                        </Picker>
                       </View>
-                    )}
-                  </>
-                )}
+                      <View style={{marginTop: 14}}>
+                        {!runningBoardPhoto[index] && (
+                          <TouchableOpacity
+                            style={styles.photoInput}
+                            onPress={() => openCameraForBodyInspection(index)}>
+                            <Text>{item}</Text>
+                          </TouchableOpacity>
+                        )}
+                      </View>
+                    </View>
+                  ))}
               </View>
 
-              <View style={{paddingHorizontal: 8}}>
-                {selectedBodyInspectionIndex === 5 ||
-                selectedBodyInspectionIndex === 9 ? (
-                  <>
-                    {bodyInspectionDoor1[selectedBodyInspectionIndex] ==
-                      null && (
-                      <View style={{marginTop: 16}}>
-                        <TouchableOpacity
-                          style={styles.photoInput}
-                          onPress={() => openCameraForBodyInspetionDoor1()}>
-                          <Text>Upload</Text>
-                        </TouchableOpacity>
-                      </View>
-                    )}
+              <View style={{paddingHorizontal: 0}}>
+                {selectedBodyInspectionIndex === 5 &&
+                  doorsList.map((item, index) => (
+                    <View key={index} style={styles.itemContainer}>
+                      <Text>{item}</Text>
 
-                    {bodyInspectionDoor2[selectedBodyInspectionIndex] ==
-                      null && (
-                      <View style={{marginTop: 16}}>
-                        <TouchableOpacity
-                          style={styles.photoInput}
-                          onPress={() => openCameraForBodyInspectionDoor2()}>
-                          <Text>Upload</Text>
-                        </TouchableOpacity>
+                      <View
+                        style={{
+                          // marginLeft: 9,
+                          // marginRight: 9,
+                          // marginBottom: 20,
+                          marginTop: 5,
+                        }}>
+                        <CustomSwitch
+                          selectionMode={item}
+                          roundCorner={false}
+                          option1={'Ok'}
+                          option2={'Not Ok'}
+                          onSelectSwitch={val =>
+                            handleBodyInspectionChannge(index, val)
+                          }
+                          selectionColor={'#007BFF'}
+                          index={index} // Pass the index as a prop
+                        />
                       </View>
-                    )}
+                      {doorPhoto[index] && (
+                        <Image
+                          source={{uri: doorPhoto[index]}}
+                          style={styles.uploadedImage}
+                        />
+                      )}
 
-                    {bodyInspectionDoor3[selectedBodyInspectionIndex] ==
-                      null && (
-                      <View style={{marginTop: 16}}>
-                        <TouchableOpacity
+                      <View style={{marginTop: 14}}>
+                        <TextInput
                           style={styles.photoInput}
-                          onPress={() => openCameraForBodyInspectionDoor3()}>
-                          <Text>Upload</Text>
-                        </TouchableOpacity>
+                          placeholder="Enter remarks"
+                          value={doorRemarks[index]}
+                          onChangeText={text =>
+                            handleBodyInspectionRemarks(text, index)
+                          }
+                        />
                       </View>
-                    )}
-                  </>
-                ) : (
-                  <></>
-                )}
+                      <View style={{marginTop: 14}}>
+                        <Picker
+                          style={styles.photoInput}
+                          selectedValue={doorCondition[index]}
+                          onValueChange={itemValue =>
+                            handleBodyInspectionDropDown(itemValue, index)
+                          }>
+                          <Picker.Item label="Select Condition" value="" />
+                          <Picker.Item label="Level" value="Level" />
+                          <Picker.Item label="Noise" value="Noise" />
+                          <Picker.Item label="Leak" value="Leak" />
+                          <Picker.Item label="Damaged" value="Damaged" />
+
+                          {/* Add other items as needed */}
+                        </Picker>
+                      </View>
+                      <View style={{marginTop: 14}}>
+                        {!doorPhoto[index] && (
+                          <TouchableOpacity
+                            style={styles.photoInput}
+                            onPress={() => openCameraForBodyInspection(index)}>
+                            <Text>{item}</Text>
+                          </TouchableOpacity>
+                        )}
+                      </View>
+                    </View>
+                  ))}
               </View>
 
-              {bodyInspectionPhotos[selectedBodyInspectionIndex] && (
-                <View style={{paddingHorizontal: 8, marginTop: 20}}>
-                  <Picker
-                    style={styles.picker}
-                    selectedValue={
-                      bodyInspectionValues[selectedBodyInspectionIndex]
-                    }
-                    onValueChange={itemValue =>
-                      handleBodyInspectionDropDown(
-                        itemValue,
-                        selectedBodyInspectionIndex,
-                      )
-                    }>
-                    <Picker.Item label="Select Condition" value="" />
-                    <Picker.Item label="Damaged" value="Damaged" />
-                    <Picker.Item label="Rusting" value="Rusting" />
-                    <Picker.Item label="Replaced" value="Replaced" />
-                    <Picker.Item label="Repaired" valeu="Repaired" />
-                    {/* Add other items as needed */}
-                  </Picker>
-                  <View style={{marginTop: 12}}>
-                    <TextInput
-                      style={styles.photoInput}
-                      placeholder="Enter remarks"
-                      value={bodyInspectionRemarks[selectedBodyInspectionIndex]}
-                      onChangeText={text =>
-                        handleBodyInspectionRemarks(
-                          text,
-                          selectedBodyInspectionIndex,
-                        )
-                      }
-                    />
-                  </View>
-                </View>
-              )}
+              <View style={{paddingHorizontal: 0}}>
+                {selectedBodyInspectionIndex === 6 &&
+                  dickyDoorList.map((item, index) => (
+                    <View key={index} style={styles.itemContainer}>
+                      <Text>{item}</Text>
+
+                      <View
+                        style={{
+                          // marginLeft: 9,
+                          // marginRight: 9,
+                          // marginBottom: 20,
+                          marginTop: 5,
+                        }}>
+                        <CustomSwitch
+                          selectionMode={item}
+                          roundCorner={false}
+                          option1={'Ok'}
+                          option2={'Not Ok'}
+                          onSelectSwitch={val =>
+                            handleBodyInspectionChannge(index, val)
+                          }
+                          selectionColor={'#007BFF'}
+                          index={index} // Pass the index as a prop
+                        />
+                      </View>
+                      {dickyDoorPhoto[index] && (
+                        <View style={{position:"relative"}}>
+                        <Image
+                          source={{uri: dickyDoorPhoto[index]}}
+                          style={styles.uploadedImage}
+                        />
+                        <TouchableOpacity
+                            style={{
+                              position: 'absolute',
+                              top: 20,
+                              right: 0,
+                              backgroundColor: 'black',
+                              // borderRadius: 15,
+                              width: 60,
+                              height: 30,
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                            }}
+                            onPress={() => handleBodyInspectionClosePress(index)}>
+                            <Text style={{fontSize: 14, color: 'white'}}>
+                              Cancel
+                            </Text>
+                          </TouchableOpacity>
+                          </View>
+                      )}
+
+                      <View style={{marginTop: 14}}>
+                        <TextInput
+                          style={styles.photoInput}
+                          placeholder="Enter remarks"
+                          value={dickyDoorRemarks[index]}
+                          onChangeText={text =>
+                            handleBodyInspectionRemarks(text, index)
+                          }
+                        />
+                      </View>
+                      <View style={{marginTop: 14}}>
+                        <Picker
+                          style={styles.photoInput}
+                          selectedValue={dickyDoorCondition[index]}
+                          onValueChange={itemValue =>
+                            handleBodyInspectionDropDown(itemValue, index)
+                          }>
+                          <Picker.Item label="Select Condition" value="" />
+                          <Picker.Item label="Level" value="Level" />
+                          <Picker.Item label="Noise" value="Noise" />
+                          <Picker.Item label="Leak" value="Leak" />
+                          <Picker.Item label="Damaged" value="Damaged" />
+
+                          {/* Add other items as needed */}
+                        </Picker>
+                      </View>
+                      <View style={{marginTop: 14}}>
+                        {!dickyDoorPhoto[index] && (
+                          <TouchableOpacity
+                            style={styles.photoInput}
+                            onPress={() => openCameraForBodyInspection(index)}>
+                            <Text>{item}</Text>
+                          </TouchableOpacity>
+                        )}
+                      </View>
+                    </View>
+                  ))}
+              </View>
+
+              <View style={{paddingHorizontal: 0}}>
+                {selectedBodyInspectionIndex === 7 &&
+                  dickySkirtList.map((item, index) => (
+                    <View key={index} style={styles.itemContainer}>
+                      <Text>{item}</Text>
+
+                      <View
+                        style={{
+                          // marginLeft: 9,
+                          // marginRight: 9,
+                          // marginBottom: 20,
+                          marginTop: 5,
+                        }}>
+                        <CustomSwitch
+                          selectionMode={item}
+                          roundCorner={false}
+                          option1={'Ok'}
+                          option2={'Not Ok'}
+                          onSelectSwitch={val =>
+                            handleBodyInspectionChannge(index, val)
+                          }
+                          selectionColor={'#007BFF'}
+                          index={index} // Pass the index as a prop
+                        />
+                      </View>
+                      {dickySkirtPhoto[index] && (
+                        <View style={{position:"relative"}}>
+                        <Image
+                          source={{uri: dickySkirtPhoto[index]}}
+                          style={styles.uploadedImage}
+                        />
+                        <TouchableOpacity
+                            style={{
+                              position: 'absolute',
+                              top: 20,
+                              right: 0,
+                              backgroundColor: 'black',
+                              // borderRadius: 15,
+                              width: 60,
+                              height: 30,
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                            }}
+                            onPress={() => handleBodyInspectionClosePress(index)}>
+                            <Text style={{fontSize: 14, color: 'white'}}>
+                              Cancel
+                            </Text>
+                          </TouchableOpacity>
+                          </View>
+                      )}
+
+                      <View style={{marginTop: 14}}>
+                        <TextInput
+                          style={styles.photoInput}
+                          placeholder="Enter remarks"
+                          value={dickySkirtRemarks[index]}
+                          onChangeText={text =>
+                            handleBodyInspectionRemarks(text, index)
+                          }
+                        />
+                      </View>
+                      <View style={{marginTop: 14}}>
+                        <Picker
+                          style={styles.photoInput}
+                          selectedValue={dickySkirtCondition[index]}
+                          onValueChange={itemValue =>
+                            handleBodyInspectionDropDown(itemValue, index)
+                          }>
+                          <Picker.Item label="Select Condition" value="" />
+                          <Picker.Item label="Level" value="Level" />
+                          <Picker.Item label="Noise" value="Noise" />
+                          <Picker.Item label="Leak" value="Leak" />
+                          <Picker.Item label="Damaged" value="Damaged" />
+
+                          {/* Add other items as needed */}
+                        </Picker>
+                      </View>
+                      <View style={{marginTop: 14}}>
+                        {!dickySkirtPhoto[index] && (
+                          <TouchableOpacity
+                            style={styles.photoInput}
+                            onPress={() => openCameraForBodyInspection(index)}>
+                            <Text>{item}</Text>
+                          </TouchableOpacity>
+                        )}
+                      </View>
+                    </View>
+                  ))}
+              </View>
+
+              <View style={{paddingHorizontal: 0}}>
+                {selectedBodyInspectionIndex === 8 &&
+                  bonetList.map((item, index) => (
+                    <View key={index} style={styles.itemContainer}>
+                      <Text>{item}</Text>
+
+                      <View
+                        style={{
+                          // marginLeft: 9,
+                          // marginRight: 9,
+                          // marginBottom: 20,
+                          marginTop: 5,
+                        }}>
+                        <CustomSwitch
+                          selectionMode={item}
+                          roundCorner={false}
+                          option1={'Ok'}
+                          option2={'Not Ok'}
+                          onSelectSwitch={val =>
+                            handleBodyInspectionChannge(index, val)
+                          }
+                          selectionColor={'#007BFF'}
+                          index={index} // Pass the index as a prop
+                        />
+                      </View>
+                      {bonetPhoto[index] && (
+                        <View style={{position:"relative"}}>
+                        <Image
+                          source={{uri: bonetPhoto[index]}}
+                          style={styles.uploadedImage}
+                        />
+                        <TouchableOpacity
+                            style={{
+                              position: 'absolute',
+                              top: 20,
+                              right: 0,
+                              backgroundColor: 'black',
+                              // borderRadius: 15,
+                              width: 60,
+                              height: 30,
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                            }}
+                            onPress={() => handleBodyInspectionClosePress(index)}>
+                            <Text style={{fontSize: 14, color: 'white'}}>
+                              Cancel
+                            </Text>
+                          </TouchableOpacity>
+                          </View>
+                      )}
+
+                      <View style={{marginTop: 14}}>
+                        <TextInput
+                          style={styles.photoInput}
+                          placeholder="Enter remarks"
+                          value={bonetRemarks[index]}
+                          onChangeText={text =>
+                            handleBodyInspectionRemarks(text, index)
+                          }
+                        />
+                      </View>
+                      <View style={{marginTop: 14}}>
+                        <Picker
+                          style={styles.photoInput}
+                          selectedValue={bonetCondition[index]}
+                          onValueChange={itemValue =>
+                            handleBodyInspectionDropDown(itemValue, index)
+                          }>
+                          <Picker.Item label="Select Condition" value="" />
+                          <Picker.Item label="Level" value="Level" />
+                          <Picker.Item label="Noise" value="Noise" />
+                          <Picker.Item label="Leak" value="Leak" />
+                          <Picker.Item label="Damaged" value="Damaged" />
+
+                          {/* Add other items as needed */}
+                        </Picker>
+                      </View>
+                      <View style={{marginTop: 14}}>
+                        {!bonetPhoto[index] && (
+                          <TouchableOpacity
+                            style={styles.photoInput}
+                            onPress={() => openCameraForBodyInspection(index)}>
+                            <Text>{item}</Text>
+                          </TouchableOpacity>
+                        )}
+                      </View>
+                    </View>
+                  ))}
+              </View>
+
+              <View style={{paddingHorizontal: 0}}>
+                {selectedBodyInspectionIndex === 9 &&
+                  supportMembersList.map((item, index) => (
+                    <View key={index} style={styles.itemContainer}>
+                      <Text>{item}</Text>
+
+                      <View
+                        style={{
+                          // marginLeft: 9,
+                          // marginRight: 9,
+                          // marginBottom: 20,
+                          marginTop: 5,
+                        }}>
+                        <CustomSwitch
+                          selectionMode={item}
+                          roundCorner={false}
+                          option1={'Ok'}
+                          option2={'Not Ok'}
+                          onSelectSwitch={val =>
+                            handleBodyInspectionChannge(index, val)
+                          }
+                          selectionColor={'#007BFF'}
+                          index={index} // Pass the index as a prop
+                        />
+                      </View>
+                      {supportMembersPhoto[index] && (
+                        <Image
+                          source={{uri: supportMembersPhoto[index]}}
+                          style={styles.uploadedImage}
+                        />
+                      )}
+
+                      <View style={{marginTop: 14}}>
+                        <TextInput
+                          style={styles.photoInput}
+                          placeholder="Enter remarks"
+                          value={supportMembersRemarks[index]}
+                          onChangeText={text =>
+                            handleBodyInspectionRemarks(text, index)
+                          }
+                        />
+                      </View>
+                      <View style={{marginTop: 14}}>
+                        <Picker
+                          style={styles.photoInput}
+                          selectedValue={supportMembersCondition[index]}
+                          onValueChange={itemValue =>
+                            handleBodyInspectionDropDown(itemValue, index)
+                          }>
+                          <Picker.Item label="Select Condition" value="" />
+                          <Picker.Item label="Level" value="Level" />
+                          <Picker.Item label="Noise" value="Noise" />
+                          <Picker.Item label="Leak" value="Leak" />
+                          <Picker.Item label="Damaged" value="Damaged" />
+
+                          {/* Add other items as needed */}
+                        </Picker>
+                      </View>
+                      <View style={{marginTop: 14}}>
+                        {!supportMembersPhoto[index] && (
+                          <TouchableOpacity
+                            style={styles.photoInput}
+                            onPress={() => openCameraForBodyInspection(index)}>
+                            <Text>{item}</Text>
+                          </TouchableOpacity>
+                        )}
+                      </View>
+                    </View>
+                  ))}
+              </View>
+
+              <View style={{paddingHorizontal: 0}}>
+                {selectedBodyInspectionIndex === 10 &&
+                  bumberList.map((item, index) => (
+                    <View key={index} style={styles.itemContainer}>
+                      <Text>{item}</Text>
+
+                      <View
+                        style={{
+                          // marginLeft: 9,
+                          // marginRight: 9,
+                          // marginBottom: 20,
+                          marginTop: 5,
+                        }}>
+                        <CustomSwitch
+                          selectionMode={item}
+                          roundCorner={false}
+                          option1={'Ok'}
+                          option2={'Not Ok'}
+                          onSelectSwitch={val =>
+                            handleBodyInspectionChannge(index, val)
+                          }
+                          selectionColor={'#007BFF'}
+                          index={index} // Pass the index as a prop
+                        />
+                      </View>
+                      {bumperPhoto[index] && (
+                        <View style={{position:"relative"}}>
+                        <Image
+                          source={{uri: bumperPhoto[index]}}
+                          style={styles.uploadedImage}
+                        />
+                        <TouchableOpacity
+                            style={{
+                              position: 'absolute',
+                              top: 20,
+                              right: 0,
+                              backgroundColor: 'black',
+                              // borderRadius: 15,
+                              width: 60,
+                              height: 30,
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                            }}
+                            onPress={() => handleBodyInspectionClosePress(index)}>
+                            <Text style={{fontSize: 14, color: 'white'}}>
+                              Cancel
+                            </Text>
+                          </TouchableOpacity>
+                          </View>
+                      )}
+
+                      <View style={{marginTop: 14}}>
+                        <TextInput
+                          style={styles.photoInput}
+                          placeholder="Enter remarks"
+                          value={bumperRemarks[index]}
+                          onChangeText={text =>
+                            handleBodyInspectionRemarks(text, index)
+                          }
+                        />
+                      </View>
+                      <View style={{marginTop: 14}}>
+                        <Picker
+                          style={styles.photoInput}
+                          selectedValue={bumperCondition[index]}
+                          onValueChange={itemValue =>
+                            handleBodyInspectionDropDown(itemValue, index)
+                          }>
+                          <Picker.Item label="Select DropDown" value="" />
+                          <Picker.Item label="Level" value="Level" />
+                          <Picker.Item label="Noise" value="Noise" />
+                          <Picker.Item label="Leak" value="Leak" />
+                          <Picker.Item label="Damaged" value="Damaged" />
+
+                          {/* Add other items as needed */}
+                        </Picker>
+                      </View>
+                      <View style={{marginTop: 14}}>
+                        {!bumperPhoto[index] && (
+                          <TouchableOpacity
+                            style={styles.photoInput}
+                            onPress={() => openCameraForBodyInspection(index)}>
+                            <Text>{item}</Text>
+                          </TouchableOpacity>
+                        )}
+                      </View>
+                    </View>
+                  ))}
+              </View>
+
+              <View style={{paddingHorizontal: 0}}>
+                {selectedBodyInspectionIndex === 11 &&
+                  wheelTypeList.map((item, index) => (
+                    <View key={index} style={styles.itemContainer}>
+                      <Text>{item}</Text>
+
+                      <View
+                        style={{
+                          // marginLeft: 9,
+                          // marginRight: 9,
+                          // marginBottom: 20,
+                          marginTop: 5,
+                        }}>
+                        <CustomSwitch
+                          selectionMode={item}
+                          roundCorner={false}
+                          option1={'Ok'}
+                          option2={'Not Ok'}
+                          onSelectSwitch={val =>
+                            handleBodyInspectionChannge(index, val)
+                          }
+                          selectionColor={'#007BFF'}
+                          index={index} // Pass the index as a prop
+                        />
+                      </View>
+                      {wheelTypePhoto[index] && (
+                        <View style={{position:"relative"}}>
+                        <Image
+                          source={{uri: wheelTypePhoto[index]}}
+                          style={styles.uploadedImage}
+                        />
+                        <TouchableOpacity
+                            style={{
+                              position: 'absolute',
+                              top: 20,
+                              right: 0,
+                              backgroundColor: 'black',
+                              // borderRadius: 15,
+                              width: 60,
+                              height: 30,
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                            }}
+                            onPress={() => handleBodyInspectionClosePress(index)}>
+                            <Text style={{fontSize: 14, color: 'white'}}>
+                              Cancel
+                            </Text>
+                          </TouchableOpacity>
+                          </View>
+                      )}
+
+                      <View style={{marginTop: 14}}>
+                        <TextInput
+                          style={styles.photoInput}
+                          placeholder="Enter remarks"
+                          value={wheelTypeRemarks[index]}
+                          onChangeText={text =>
+                            handleBodyInspectionRemarks(text, index)
+                          }
+                        />
+                      </View>
+                      <View style={{marginTop: 14}}>
+                        <Picker
+                          style={styles.photoInput}
+                          selectedValue={wheelTypeCondition[index]}
+                          onValueChange={itemValue =>
+                            handleBodyInspectionDropDown(itemValue, index)
+                          }>
+                          <Picker.Item label="Select Condition" value="" />
+                          <Picker.Item label="Level" value="Level" />
+                          <Picker.Item label="Noise" value="Noise" />
+                          <Picker.Item label="Leak" value="Leak" />
+                          <Picker.Item label="Damaged" value="Damaged" />
+
+                          {/* Add other items as needed */}
+                        </Picker>
+                      </View>
+                      <View style={{marginTop: 14}}>
+                        {!wheelTypePhoto[index] && (
+                          <TouchableOpacity
+                            style={styles.photoInput}
+                            onPress={() => openCameraForBodyInspection(index)}>
+                            <Text>{item}</Text>
+                          </TouchableOpacity>
+                        )}
+                      </View>
+                    </View>
+                  ))}
+              </View>
+
+              <View style={{paddingHorizontal: 0}}>
+                {selectedBodyInspectionIndex === 12 &&
+                  WindshieldList.map((item, index) => (
+                    <View key={index} style={styles.itemContainer}>
+                      <Text>{item}</Text>
+
+                      <View
+                        style={{
+                          // marginLeft: 9,
+                          // marginRight: 9,
+                          // marginBottom: 20,
+                          marginTop: 5,
+                        }}>
+                        <CustomSwitch
+                          selectionMode={item}
+                          roundCorner={false}
+                          option1={'Ok'}
+                          option2={'Not Ok'}
+                          onSelectSwitch={val =>
+                            handleBodyInspectionChannge(index, val)
+                          }
+                          selectionColor={'#007BFF'}
+                          index={index} // Pass the index as a prop
+                        />
+                      </View>
+                      {windShieldPhoto[index] && (
+                        <View style={{position:"relative"}}>
+                        <Image
+                          source={{uri: windShieldPhoto[index]}}
+                          style={styles.uploadedImage}
+                        />
+                        <TouchableOpacity
+                            style={{
+                              position: 'absolute',
+                              top: 20,
+                              right: 0,
+                              backgroundColor: 'black',
+                              // borderRadius: 15,
+                              width: 60,
+                              height: 30,
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                            }}
+                            onPress={() => handleBodyInspectionClosePress(index)}>
+                            <Text style={{fontSize: 14, color: 'white'}}>
+                              Cancel
+                            </Text>
+                          </TouchableOpacity>
+                          </View>
+                      )}
+
+                      <View style={{marginTop: 14}}>
+                        <TextInput
+                          style={styles.photoInput}
+                          placeholder="Enter remarks"
+                          value={windShieldRemarks[index]}
+                          onChangeText={text =>
+                            handleBodyInspectionRemarks(text, index)
+                          }
+                        />
+                      </View>
+                      <View style={{marginTop: 14}}>
+                        <Picker
+                          style={styles.photoInput}
+                          selectedValue={windShieldCondition[index]}
+                          onValueChange={itemValue =>
+                            handleBodyInspectionDropDown(itemValue, index)
+                          }>
+                          <Picker.Item label="Select Condition" value="" />
+                          <Picker.Item label="Level" value="Level" />
+                          <Picker.Item label="Noise" value="Noise" />
+                          <Picker.Item label="Leak" value="Leak" />
+                          <Picker.Item label="Damaged" value="Damaged" />
+
+                          {/* Add other items as needed */}
+                        </Picker>
+                      </View>
+                      <View style={{marginTop: 14}}>
+                        {!windShieldPhoto[index] && (
+                          <TouchableOpacity
+                            style={styles.photoInput}
+                            onPress={() => openCameraForBodyInspection(index)}>
+                            <Text>{item}</Text>
+                          </TouchableOpacity>
+                        )}
+                      </View>
+                    </View>
+                  ))}
+              </View>
+
               <View style={{paddingHorizontal: 8, marginTop: 18}}>
                 <CustomButton
                   title="Submit"
@@ -3484,351 +6355,427 @@ const OrderCreation = ({navigation}) => {
             <ScrollView
               contentContainerStyle={styles.scrollViewContent}
               showsVerticalScrollIndicator={false}>
-              {/* {switchStateForBodyInspection[selectedBodyInspectionIndex] !== undefined && (
-                <View style={styles.switchContainer}>
-                  <Switch
-                    trackColor={{ false: '#767577', true: '#81b0ff' }}
-                    thumbColor={
-                      switchStateForBodyInspection[selectedBodyInspectionIndex]
-                        ? '#f5dd4b'
-                        : '#f4f3f4'
-                    }
-                    ios_backgroundColor="#3e3e3e"
-                    onValueChange={() =>
-                      toggleWitchForBodyInspection(selectedBodyInspectionIndex)
-                    }
-                    value={
-                      switchStateForBodyInspection[selectedBodyInspectionIndex]
-                    }
-                  />
-                  <Text>
-                    {switchStateForBodyInspection[selectedBodyInspectionIndex]
-                      ? 'Yes'
-                      : 'No'}
-                  </Text>
-                </View>
-              )} */}
-              {/* {switchStateForBodyInspection[carDetailsIndex] !== undefined && (
-        <View key={carDetailsIndex} style={{ alignItems: 'center', margin: 20 }}>
-          <CustomSwitch
-            selectionMode={2}
-            roundCorner={false}
-            option1={'Yes'}
-            option2={'No'}
-            onSelectSwitch={(val) => handleSwitchChange(carDetailsIndex, val)}
-            selectionColor={'#007BFF'}
-            index={carDetailsIndex} // Pass the index as a prop
-          />
-        </View>
-      )} */}
-
-              {switchStateForCarDetails.map((state, index) => (
-                <>
-                  {carDetailsIndex === index && (
-                    <View
-                      style={{
-                        marginTop: 20,
-                        marginBottom: 20,
-                        marginLeft: 9,
-                        marginRight: 9,
-                      }}>
-                      <CustomSwitch
-                        selectionMode={state}
-                        roundCorner={false}
-                        option1={
-                          index === 3 || index === 4 || index === 5
-                            ? 'Available'
-                            : 'Yes'
-                        }
-                        option2={
-                          index === 3 || index === 4 || index === 5
-                            ? 'Not Available'
-                            : 'No'
-                        }
-                        onSelectSwitch={val => handleSwitchChange(index, val)}
-                        selectionColor={'#007BFF'}
-                        index={index} // Pass the index as a prop
-                      />
-                    </View>
-                  )}
-                </>
-              ))}
-
-              <View style={{paddingHorizontal: 8}}>
-                {carDetailsPhoto[carDetailsIndex] && (
-                  <View style={styles.photoContainer}>
-                    <View style={{position: 'relative'}}>
-                      <Image
-                        source={{
-                          uri: carDetailsPhoto[carDetailsIndex],
-                        }}
-                        style={styles.uploadedImage}
-                      />
-
-                      <TouchableOpacity
-                        style={{
-                          position: 'absolute',
-                          top: 0,
-                          right: 0,
-                          backgroundColor: 'black',
-                          // borderRadius: 15,
-                          width: 60,
-                          height: 30,
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                        }}
-                        onPress={() =>
-                          handleCarDetailsClosePress(carDetailsIndex)
-                        }>
-                        <Text
-                          style={{
-                            color: 'white',
-                            fontSize: 14,
-                            //  fontWeight: 'bold',
-                          }}>
-                          Cancel
-                        </Text>
-                      </TouchableOpacity>
-                    </View>
-                    <View></View>
-                  </View>
-                )}
-              </View>
-              <View style={{paddingHorizontal: 10}}>
-                {carDetailsIndex === 2 ? (
-                  <>
-                    <View style={{marginTop: 16}}>
-                      {carDetailsPhoto[carDetailsIndex] == null && (
-                        <TouchableOpacity
-                          style={styles.photoInput}
-                          onPress={() => openCameraForCarDetails()}>
-                          <Text>FrontTyre Photo Right Side</Text>
-                        </TouchableOpacity>
-                      )}
-                    </View>
-                    <View style={{marginTop: 16}}>
-                      {carDetailsPhoto2[carDetailsIndex] == null && (
-                        <TouchableOpacity
-                          style={styles.photoInput}
-                          onPress={() => openCameraForCarDetailsTwo()}>
-                          <Text>FrontTyre Photo Left Side</Text>
-                        </TouchableOpacity>
-                      )}
-                    </View>
-                    <View style={{marginTop: 16}}>
-                      {carDetailsPhoto3[carDetailsIndex] == null && (
-                        <TouchableOpacity
-                          style={styles.photoInput}
-                          onPress={() => openCameraForCarDetailsThree()}>
-                          <Text>RearTyre Photo Right Side</Text>
-                        </TouchableOpacity>
-                      )}
-                    </View>
-                    <View style={{marginTop: 16}}>
-                      {carDetailsPhoto4[carDetailsIndex] == null && (
-                        <TouchableOpacity
-                          style={styles.photoInput}
-                          onPress={() => openCameraForCarDetailsFour()}>
-                          <Text>RearTyre Photo Left Side</Text>
-                        </TouchableOpacity>
-                      )}
-                    </View>
-                  </>
-                ) : (
-                  <>
-                    {carDetailsPhoto[carDetailsIndex] == null && (
-                      <TouchableOpacity
-                        style={styles.photoInput}
-                        onPress={() => openCameraForCarDetails()}>
-                        <Text>{carDetailsPhotosList[carDetailsIndex]}</Text>
-                      </TouchableOpacity>
-                    )}
-                  </>
-                )}
-              </View>
-
-              {carDetailsIndex === 5 && (
-                <View style={{paddingHorizontal: 8, marginTop: 16}}>
-                  {carDetailsPhoto5[carDetailsIndex] == null && (
-                    <TouchableOpacity
-                      style={styles.photoInput}
-                      onPress={() => openCameraForCarDetailsFive()}>
-                      <Text>Primary Key</Text>
-                    </TouchableOpacity>
-                  )}
-                </View>
-              )}
-
-              {carDetailsPhoto2[carDetailsIndex] && (
-                <View style={{paddingHorizontal: 8}}>
-                  <View style={{position: 'relative'}}>
-                    <Image
-                      source={{uri: carDetailsPhoto2[carDetailsIndex]}}
-                      style={styles.uploadedImage}
-                    />
-                    <TouchableOpacity
-                      style={{
-                        position: 'absolute',
-                        top: 0,
-                        right: 0,
-                        backgroundColor: 'black',
-                        borderRadius: 15,
-                        width: 60,
-                        height: 30,
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                      }}
-                      onPress={() =>
-                        handleCarDetailsClosePress2(carDetailsIndex)
-                      }>
-                      <Text
-                        style={{
-                          color: 'white',
-                          fontSize: 14,
-                          //  fontWeight: 'bold',
-                        }}>
-                        Cancel
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
-                </View>
-              )}
-
-              {carDetailsPhoto3[carDetailsIndex] && (
-                <View style={{paddingHorizontal: 8}}>
-                  <View style={{position: 'relative'}}>
-                    <Image
-                      source={{uri: carDetailsPhoto3[carDetailsIndex]}}
-                      style={styles.uploadedImage}
-                    />
-                    <TouchableOpacity
-                      style={{
-                        position: 'absolute',
-                        top: 0,
-                        right: 0,
-                        backgroundColor: 'black',
-                        borderRadius: 15,
-                        width: 60,
-                        height: 30,
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                      }}
-                      onPress={() =>
-                        handleCarDetailsClosePress3(carDetailsIndex)
-                      }>
-                      <Text
-                        style={{
-                          color: 'white',
-                          fontSize: 14,
-                          //  fontWeight: 'bold',
-                        }}>
-                        Cancel
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
-                </View>
-              )}
-
-              {carDetailsPhoto4[carDetailsIndex] && (
-                <View style={{paddingHorizontal: 8}}>
-                  <View style={{position: 'relative'}}>
-                    <Image
-                      source={{uri: carDetailsPhoto4[carDetailsIndex]}}
-                      style={styles.uploadedImage}
-                    />
-                    <TouchableOpacity
-                      style={{
-                        position: 'absolute',
-                        top: 0,
-                        right: 0,
-                        backgroundColor: 'black',
-                        borderRadius: 15,
-                        width: 60,
-                        height: 30,
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                      }}
-                      onPress={() =>
-                        handleCarDetailsClosePress4(carDetailsIndex)
-                      }>
-                      <Text
-                        style={{
-                          color: 'white',
-                          fontSize: 14,
-                          //  fontWeight: 'bold',
-                        }}>
-                        Cancel
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
-                </View>
-              )}
-
-              {carDetailsPhoto5[carDetailsIndex] && (
-                <View style={{paddingHorizontal: 8}}>
-                  <View style={{position: 'relative'}}>
-                    <Image
-                      source={{uri: carDetailsPhoto5[carDetailsIndex]}}
-                      style={styles.uploadedImage}
-                    />
-                    <TouchableOpacity
-                      style={{
-                        position: 'absolute',
-                        top: 0,
-                        right: 0,
-                        backgroundColor: 'black',
-                        //  borderRadius: 15,
-                        width: 60,
-                        height: 30,
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                      }}
-                      onPress={() =>
-                        handleCarDetailsClosePress5(carDetailsIndex)
-                      }>
-                      <Text
-                        style={{
-                          color: 'white',
-                          fontSize: 14,
-                          //  fontWeight: 'bold',
-                        }}>
-                        Cancel
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
-                </View>
-              )}
-
-              {carDetailsPhoto[carDetailsIndex] && (
-                <View style={{paddingHorizontal: 12, marginTop: 0}}>
-                  {carDetailsValues[carDetailsIndex] !== undefined && (
-                    <Picker
-                      style={styles.photoInput}
-                      selectedValue={carDetailsValues[carDetailsIndex]}
-                      onValueChange={itemValue =>
-                        handleCarDetailsDropDown(itemValue, carDetailsIndex)
-                      }>
-                      <Picker.Item label="Select Condition" value="" />
-                      <Picker.Item label="Pad" value="Pad" />
-                      <Picker.Item label="Disc" value="disc" />
-                      {/* Add other items as needed */}
-                    </Picker>
-                  )}
-
-                  <View style={{marginTop: 20}}>
-                    <TextInput
-                      style={styles.photoInput}
-                      placeholder="Enter remarks"
-                      value={carDetailsRemarks[carDetailsIndex]}
-                      onChangeText={text =>
-                        handleCarDetailsRemarks(text, carDetailsIndex)
-                      }
-                    />
-                  </View>
-                </View>
-              )}
-
               <View style={{paddingHorizontal: 8, marginTop: 18}}>
+              <View style={{paddingHorizontal: 0}}>
+                {carDetailsIndex === 0 &&
+                  chassisList.map((item, index) => (
+                    <View key={index} style={styles.itemContainer}>
+                      <Text>{item}</Text>
+
+                      <View
+                        style={{
+                          // marginLeft: 9,
+                          // marginRight: 9,
+                          // marginBottom: 20,
+                          marginTop: 5,
+                        }}>
+                        <CustomSwitch
+                          selectionMode={item}
+                          roundCorner={false}
+                          option1={'Ok'}
+                          option2={'Not Ok'}
+                          onSelectSwitch={val =>
+                            handleCarDetailsChange(index, val)
+                          }
+                          selectionColor={'#007BFF'}
+                          index={index} // Pass the index as a prop
+                        />
+                      </View>
+                      {chassisPunchPhoto[index] && (
+                        <Image
+                          source={{uri: chassisPunchPhoto[index]}}
+                          style={styles.uploadedImage}
+                        />
+                      )}
+
+                      <View style={{marginTop: 14}}>
+                        <TextInput
+                          style={styles.photoInput}
+                          placeholder="Enter remarks"
+                          value={chassisRemarks[index]}
+                          onChangeText={text =>
+                            handleCarDetailsRemarks(text, index)
+                          }
+                        />
+                      </View>
+                      <View style={{marginTop: 14}}>
+                        <Picker
+                          style={styles.photoInput}
+                          selectedValue={chassisCondition[index]}
+                          onValueChange={itemValue =>
+                            handleCarDetailsDropDown(itemValue, index)
+                          }>
+                          
+                          <Picker.Item label="Select Condition" value="" />
+                          <Picker.Item label="Re Punched" value="Re Punched" />
+                          <Picker.Item label="Rusted" value="Rusted" />
+                       
+
+                          {/* Add other items as needed */}
+                        </Picker>
+                      </View>
+                      <View style={{marginTop: 14}}>
+                        {!chassisPunchPhoto[index] && (
+                          <TouchableOpacity
+                            style={styles.photoInput}
+                            onPress={() => openCameraForCarDetails(index)}>
+                            <Text>{item}</Text>
+                          </TouchableOpacity>
+                        )}
+                      </View>
+                    </View>
+                  ))}
+              </View>
+              <View style={{paddingHorizontal: 0}}>
+                {carDetailsIndex === 1 &&
+                  vinPlateList.map((item, index) => (
+                    <View key={index} style={styles.itemContainer}>
+                      <Text>{item}</Text>
+
+                      <View
+                        style={{
+                          // marginLeft: 9,
+                          // marginRight: 9,
+                          // marginBottom: 20,
+                          marginTop: 5,
+                        }}>
+                        <CustomSwitch
+                          selectionMode={item}
+                          roundCorner={false}
+                          option1={'Ok'}
+                          option2={'Not Ok'}
+                          onSelectSwitch={val =>
+                            handleCarDetailsChange(index, val)
+                          }
+                          selectionColor={'#007BFF'}
+                          index={index} // Pass the index as a prop
+                        />
+                      </View>
+                      {vinPlatePunchPhoto[index] && (
+                        <Image
+                          source={{uri: vinPlatePunchPhoto[index]}}
+                          style={styles.uploadedImage}
+                        />
+                      )}
+
+                      <View style={{marginTop: 14}}>
+                        <TextInput
+                          style={styles.photoInput}
+                          placeholder="Enter remarks"
+                          value={vinPlateRemarks[index]}
+                          onChangeText={text =>
+                            handleCarDetailsChange(text, index)
+                          }
+                        />
+                      </View>
+                      <View style={{marginTop: 14}}>
+                        <Picker
+                          style={styles.photoInput}
+                          selectedValue={vinPlateCondition[index]}
+                          onValueChange={itemValue =>
+                            handleCarDetailsDropDown(itemValue, index)
+                          }>
+                          
+                          <Picker.Item label="Select Condition" value="" />
+                          <Picker.Item label="Re Punched" value="Re Punched" />
+                          <Picker.Item label="Rusted" value="Rusted" />
+                       
+
+                          {/* Add other items as needed */}
+                        </Picker>
+                      </View>
+                      <View style={{marginTop: 14}}>
+                        {!vinPlatePunchPhoto[index] && (
+                          <TouchableOpacity
+                            style={styles.photoInput}
+                            onPress={() => openCameraForCarDetails(index)}>
+                            <Text>{item}</Text>
+                          </TouchableOpacity>
+                        )}
+                      </View>
+                    </View>
+                  ))}
+              </View>
+              <View style={{paddingHorizontal: 0}}>
+                {carDetailsIndex === 2 &&
+                  tyresList.map((item, index) => (
+                    <View key={index} style={styles.itemContainer}>
+                      <Text>{item}</Text>
+
+                      <View
+                        style={{
+                          // marginLeft: 9,
+                          // marginRight: 9,
+                          // marginBottom: 20,
+                          marginTop: 5,
+                        }}>
+                        <CustomSwitch
+                          selectionMode={item}
+                          roundCorner={false}
+                          option1={'Ok'}
+                          option2={'Not Ok'}
+                          onSelectSwitch={val =>
+                            handleCarDetailsChange(index, val)
+                          }
+                          selectionColor={'#007BFF'}
+                          index={index} // Pass the index as a prop
+                        />
+                      </View>
+                      {tyrePunchPhoto[index] && (
+                        <Image
+                          source={{uri: tyrePunchPhoto[index]}}
+                          style={styles.uploadedImage}
+                        />
+                      )}
+
+                      <View style={{marginTop: 14}}>
+                        <TextInput
+                          style={styles.photoInput}
+                          placeholder="Enter remarks"
+                          value={tyreRemarks[index]}
+                          onChangeText={text =>
+                            handleCarDetailsRemarks(text, index)
+                          }
+                        />
+                      </View>
+                      <View style={{marginTop: 14}}>
+                        <Picker
+                          style={styles.photoInput}
+                          selectedValue={tyreCondition[index]}
+                          onValueChange={itemValue =>
+                            handleCarDetailsDropDown(itemValue, index)
+                          }>
+                          
+                          <Picker.Item label="Select Condition" value="" />
+                          <Picker.Item label="Re Punched" value="Re Punched" />
+                          <Picker.Item label="Rusted" value="Rusted" />
+                       
+
+                          {/* Add other items as needed */}
+                        </Picker>
+                      </View>
+                      <View style={{marginTop: 14}}>
+                        {!tyrePunchPhoto[index] && (
+                          <TouchableOpacity
+                            style={styles.photoInput}
+                            onPress={() => openCameraForCarDetails(index)}>
+                            <Text>{item}</Text>
+                          </TouchableOpacity>
+                        )}
+                      </View>
+                    </View>
+                  ))}
+              </View>
+              <View style={{paddingHorizontal: 0}}>
+                {carDetailsIndex === 3 &&
+                  spareWheelList.map((item, index) => (
+                    <View key={index} style={styles.itemContainer}>
+                      <Text>{item}</Text>
+
+                      <View
+                        style={{
+                          // marginLeft: 9,
+                          // marginRight: 9,
+                          // marginBottom: 20,
+                          marginTop: 5,
+                        }}>
+                        <CustomSwitch
+                          selectionMode={item}
+                          roundCorner={false}
+                          option1={'Ok'}
+                          option2={'Not Ok'}
+                          onSelectSwitch={val =>
+                            handleCarDetailsChange(index, val)
+                          }
+                          selectionColor={'#007BFF'}
+                          index={index} // Pass the index as a prop
+                        />
+                      </View>
+                      {spareWheelPunchPhoto[index] && (
+                        <Image
+                          source={{uri: spareWheelPunchPhoto[index]}}
+                          style={styles.uploadedImage}
+                        />
+                      )}
+
+                      <View style={{marginTop: 14}}>
+                        <TextInput
+                          style={styles.photoInput}
+                          placeholder="Enter remarks"
+                          value={spareWheelRemarks[index]}
+                          onChangeText={text =>
+                            handleCarDetailsRemarks(text, index)
+                          }
+                        />
+                      </View>
+                      <View style={{marginTop: 14}}>
+                        <Picker
+                          style={styles.photoInput}
+                          selectedValue={spareWheelCondition[index]}
+                          onValueChange={itemValue =>
+                            handleCarDetailsDropDown(itemValue, index)
+                          }>
+                          
+                          <Picker.Item label="Select Condition" value="" />
+                          <Picker.Item label="Re Punched" value="Re Punched" />
+                          <Picker.Item label="Rusted" value="Rusted" />
+                       
+
+                          {/* Add other items as needed */}
+                        </Picker>
+                      </View>
+                      <View style={{marginTop: 14}}>
+                        {!spareWheelPunchPhoto[index] && (
+                          <TouchableOpacity
+                            style={styles.photoInput}
+                            onPress={() => openCameraForCarDetails(index)}>
+                            <Text>{item}</Text>
+                          </TouchableOpacity>
+                        )}
+                      </View>
+                    </View>
+                  ))}
+              </View>
+              <View style={{paddingHorizontal: 0}}>
+                {carDetailsIndex === 4 &&
+                  toolList.map((item, index) => (
+                    <View key={index} style={styles.itemContainer}>
+                      <Text>{item}</Text>
+
+                      <View
+                        style={{
+                          // marginLeft: 9,
+                          // marginRight: 9,
+                          // marginBottom: 20,
+                          marginTop: 5,
+                        }}>
+                        <CustomSwitch
+                          selectionMode={item}
+                          roundCorner={false}
+                          option1={'Ok'}
+                          option2={'Not Ok'}
+                          onSelectSwitch={val =>
+                            handleCarDetailsChange(index, val)
+                          }
+                          selectionColor={'#007BFF'}
+                          index={index} // Pass the index as a prop
+                        />
+                      </View>
+                      {toolKitPunchPhoto[index] && (
+                        <Image
+                          source={{uri:toolKitPunchPhoto[index]}}
+                          style={styles.uploadedImage}
+                        />
+                      )}
+
+                      <View style={{marginTop: 14}}>
+                        <TextInput
+                          style={styles.photoInput}
+                          placeholder="Enter remarks"
+                          value={toolKitRemarks[index]}
+                          onChangeText={text =>
+                            handleCarDetailsRemarks(text, index)
+                          }
+                        />
+                      </View>
+                      <View style={{marginTop: 14}}>
+                        <Picker
+                          style={styles.photoInput}
+                          selectedValue={toolKitCondition[index]}
+                          onValueChange={itemValue =>
+                            handleCarDetailsDropDown(itemValue, index)
+                          }>
+                          
+                          <Picker.Item label="Select Condition" value="" />
+                          <Picker.Item label="Re Punched" value="Re Punched" />
+                          <Picker.Item label="Rusted" value="Rusted" />
+                       
+
+                          {/* Add other items as needed */}
+                        </Picker>
+                      </View>
+                      <View style={{marginTop: 14}}>
+                        {!toolKitPunchPhoto[index] && (
+                          <TouchableOpacity
+                            style={styles.photoInput}
+                            onPress={() => openCameraForCarDetails(index)}>
+                            <Text>{item}</Text>
+                          </TouchableOpacity>
+                        )}
+                      </View>
+                    </View>
+                  ))}
+              </View>
+              <View style={{paddingHorizontal: 0}}>
+                {carDetailsIndex === 5 &&
+                  keyList.map((item, index) => (
+                    <View key={index} style={styles.itemContainer}>
+                      <Text>{item}</Text>
+
+                      <View
+                        style={{
+                          // marginLeft: 9,
+                          // marginRight: 9,
+                          // marginBottom: 20,
+                          marginTop: 5,
+                        }}>
+                        <CustomSwitch
+                          selectionMode={item}
+                          roundCorner={false}
+                          option1={'Ok'}
+                          option2={'Not Ok'}
+                          onSelectSwitch={val =>
+                            handleCarDetailsChange(index, val)
+                          }
+                          selectionColor={'#007BFF'}
+                          index={index} // Pass the index as a prop
+                        />
+                      </View>
+                      {keyPunchPhoto[index] && (
+                        <Image
+                          source={{uri:keyPunchPhoto[index]}}
+                          style={styles.uploadedImage}
+                        />
+                      )}
+
+                      <View style={{marginTop: 14}}>
+                        <TextInput
+                          style={styles.photoInput}
+                          placeholder="Enter remarks"
+                          value={keyRemarks[index]}
+                          onChangeText={text =>
+                            handleCarDetailsRemarks(text, index)
+                          }
+                        />
+                      </View>
+                      <View style={{marginTop: 14}}>
+                        <Picker
+                          style={styles.photoInput}
+                          selectedValue={doorCondition[index]}
+                          onValueChange={itemValue =>
+                            handleCarDetailsDropDown(itemValue, index)
+                          }>
+                          
+                          <Picker.Item label="Select Condition" value="" />
+                          <Picker.Item label="Re Punched" value="Re Punched" />
+                          <Picker.Item label="Rusted" value="Rusted" />
+                       
+
+                          {/* Add other items as needed */}
+                        </Picker>
+                      </View>
+                      <View style={{marginTop: 14}}>
+                        {!keyPunchPhoto[index] && (
+                          <TouchableOpacity
+                            style={styles.photoInput}
+                            onPress={() => openCameraForCarDetails(index)}>
+                            <Text>{item}</Text>
+                          </TouchableOpacity>
+                        )}
+                      </View>
+                    </View>
+                  ))}
+              </View>
                 <CustomButton
                   title="Submit"
                   onPress={handleCarDetailsOkPress}
@@ -4216,9 +7163,9 @@ const OrderCreation = ({navigation}) => {
                 </View>
               ))}
 
-<View style={{bottom: 0,marginTop:410}}>
-    <CustomButton title="Next" onPress={handleNext} />
-  </View>
+              <View style={{bottom: 0, marginTop: 410}}>
+                <CustomButton title="Next" onPress={handleNext} />
+              </View>
             </View>
           </ScrollView>
         </View>
@@ -4293,7 +7240,7 @@ const OrderCreation = ({navigation}) => {
                 </View>
               ))}
 
-              <View style={{bottom: 25, marginTop:140}}>
+              <View style={{bottom: 25, marginTop: 140}}>
                 <CustomButton title="Next" onPress={handleNext} />
               </View>
             </View>
@@ -4445,7 +7392,8 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 320,
     resizeMode: 'cover',
-    marginBottom: 20,
+    // marginBottom: 20,
+    marginTop: 20,
   },
   scrollViewContent: {
     paddingBottom: 20,
@@ -4533,7 +7481,7 @@ const styles = StyleSheet.create({
   },
   touchableText: {
     flexGrow: 1,
-    textAlign:"center"
+    textAlign: 'center',
   },
   icon: {
     textAlign: 'right',
@@ -4546,6 +7494,10 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     borderColor: '#e8ecf4',
     borderWidth: 1,
+  },
+  itemContainer: {
+    paddingHorizontal: 8,
+    marginVertical: 30,
   },
   label: {
     fontSize: 16,
