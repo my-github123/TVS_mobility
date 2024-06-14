@@ -148,3 +148,47 @@ export const apiDeleteWithToken = async endpoint => {
 //     return null;
 //   }
 // };
+
+
+
+// const originalParams = {
+//   dealerId:1,
+//   vechNumber:2,
+//   make:"hii",
+//   model:"hi",
+//   year:2,
+//   variant: 3,
+//   mileage: 3,
+//   color: 33,
+//   transmission: 3,
+//   fuelType:3,
+//   alteration:2,
+//   owners:1,
+// };
+
+// // New values entered by the user (including empty fields)
+// const updatedParams = {
+//   dealerId:1,
+//   vechNumber:2,
+//   make:"hii",
+//   model:"hi",
+//   year:2,
+//   variant: 3,
+//   mileage: 3,
+//   color: 33,
+//   transmission: 3,
+//   fuelType:"",
+//   alteration:2,
+//   owners:1,
+// };
+
+// // Create an array to store only the updated or cleared fields
+// const updatedFields = {};
+
+// Object.keys(updatedParams).forEach(key => {
+//   if (originalParams[key] !== updatedParams[key] || updatedParams[key] === "") {
+//     updatedFields[key] = updatedParams[key];
+//   }
+// });
+
+// console.log('Updated Fields:', updatedFields);

@@ -90,17 +90,17 @@ const OrderCreation = ({navigation}) => {
   const [stateNoc, setStateNoc] = useState('');
   const [flood, setFlood] = useState('');
   const [updateOrderList, setUpdateOrderList] = useState({});
-  const [selectedOption, setSelectedOption] = useState(1);
-  const [selectedOption1, setSelectedOption1] = useState(1);
-  const [selectedOption2, setSelectedOption2] = useState(1);
-  const [selectedOption3, setSelectedOption3] = useState(2);
-  const [selectedOption4, setSelectedOption4] = useState(1);
-  const [selectedOption5, setSelectedOption5] = useState(1);
-  const [selectedOption6, setSelectedOption6] = useState(1);
-  const [selectedOption7, setSelectedOption7] = useState(1);
-  const [selectedOption8, setSelectedOption8] = useState(1);
-  const [selectedOption9, setSelectedOption9] = useState(1);
-  const [selectedOption10, setSelectedOption10] = useState(1);
+  const [selectedOption, setSelectedOption] = useState("");
+  const [selectedOption1, setSelectedOption1] = useState("");
+  const [selectedOption2, setSelectedOption2] = useState("");
+  const [selectedOption3, setSelectedOption3] = useState("");
+  const [selectedOption4, setSelectedOption4] = useState("");
+  const [selectedOption5, setSelectedOption5] = useState("");
+  const [selectedOption6, setSelectedOption6] = useState("");
+  const [selectedOption7, setSelectedOption7] = useState("");
+  const [selectedOption8, setSelectedOption8] = useState("");
+  const [selectedOption9, setSelectedOption9] = useState("");
+  const [selectedOption10, setSelectedOption10] = useState("");
 
   const handleChange = option => {
     setSelectedOption(option);
@@ -196,7 +196,18 @@ const OrderCreation = ({navigation}) => {
     engineNumber: '',
   });
 
-  const [sliderValue, setSliderValue] = useState(0);
+  const [sliderValues, setSliderValues] = useState([0, 0, 0, 0]);
+
+  const handleValueChange = (value, index) => {
+    const newValues = [...sliderValues];
+    newValues[index] = value;
+    setSliderValues(newValues);
+  };
+
+ 
+
+
+  const [spareTyreValue,setSpareTyreValue]=useState(Array.from({length:1},()=>0));
 
   const getTrackColor = value => {
     if (value < 0.25) return 'red';
@@ -713,6 +724,44 @@ const OrderCreation = ({navigation}) => {
     Array.from({length: 3}, () => ''),
   );
 
+
+  const rcList=["RC FrontPhoto","RCBackPhoto","Others"];
+  const insuranceList=["Insurance OwnDamage Photo","Insurance ThirdParty Photo","Others"];
+  const nocList=["NOC Photo","NOC Others"];
+
+
+  const [rcPhoto, setRcPhoto] = useState(
+    Array.from({length:3}, () => ''),
+  );
+
+  const [rcBase64,setRcBase64] = useState(
+    Array.from({length:3}, () => ''),
+  );
+
+  const [insurancePhoto,setInsuracePhoto] = useState(
+    Array.from({length:3}, () => ''),
+  );
+
+  const [insuranceBase64,setInsuraceBase64] = useState(
+    Array.from({length:3}, () => ''),
+  );
+
+
+  const [nocPhoto,setNOCPhoto] = useState(
+    Array.from({length:3}, () => ''),
+  );
+
+  const [nocBase64,setNOCBase64] = useState(
+    Array.from({length:3}, () => ''),
+  );
+
+
+  const [rcRemarks,setRCRemarks]=useState("");
+  const [insuranceRemarks,setInsuranceRemarks]=useState("");
+  const [nocRemarks,setNocRemarks]=useState("");
+
+
+
   const chassisList = ['Chassis Punch'];
   const vinPlateList = ['Vin  Plate'];
   const tyresList = [
@@ -824,7 +873,7 @@ const OrderCreation = ({navigation}) => {
   const [inspectionVisible, setInspectionVisible] = useState(false);
   const [bodyInspectionVisible, setBodyInspectionVisible] = useState(false);
   const [carDetailsInspection, setCarDetailsInspection] = useState(false);
-  const [remarks, setRemarks] = useState(Array.from({length: 3}, () => ''));
+  const [remarks, setRemarks] = useState("");
 
   const [base64Strings, setBase64Strings] = useState(
     Array.from({length: 3}, () => null),
@@ -1086,139 +1135,564 @@ const OrderCreation = ({navigation}) => {
       rcStatus: selectedOption8 == 1 ? 'Original' : 'Duplicate',
       stateNoc: selectedOption9 == 1 ? 'Yes' : 'No',
       flood: selectedOption10 == 1 ? 'Yes' : 'No',
-      rcFrontPhoto: base64Strings[0],
-      rcBackPhoto: base64Strings1,
-      rcRemarks: remarks[0],
-      insuranceOwnDamagePhoto: base64Strings[1],
-      insuranceThirdPartyPhoto: base64Strings2,
-      insuranceRemarks: remarks[1],
-      nocPhoto: base64Strings[2],
-      nocRemarks: remarks[2],
-      frontViewPhoto: base64CarPhotos[0],
-      frontViewRemarks: carPhotosRemarks[0],
-      rearViewPhoto: base64CarPhotos[1],
-      rearViewRemarks: carPhotosRemarks[1],
-      lhsViewPhoto: base64CarPhotos[2],
-      lhsViewRemarks: carPhotosRemarks[2],
-      rhsViewPhoto: base64CarPhotos[3],
-      rhsViewRemarks: carPhotosRemarks[3],
-      odometerPhoto: base64CarPhotos[4],
-      odometerRemarks: carPhotosRemarks[4],
-      roofPhoto: base64CarPhotos[5],
-      roofRemarks: carPhotosRemarks[5],
-      interiorPhoto: base64CarPhotos[6],
-      interiorRemarks: carPhotosRemarks[6],
-      underChassisPhoto: base64CarPhotos[7],
-      underChassisRemarks: carPhotosRemarks[7],
-      engineRoomPhoto: base64CarPhotos[8],
-      engineRoomRemarks: carPhotosRemarks[8],
-      trunkBootPhoto: base64CarPhotos[9],
-      trunkBootRemarks: carPhotosRemarks[9],
-      chassisPunchPhoto: base64CarDetailsPhoto[0],
-      chasisPunchCondition: carDetailsValues[0],
-      chassisPunchRemarks: carDetailsRemarks[0],
-      vinPlatePhoto: base64CarDetailsPhoto[1],
-      vinPlateCondition: carDetailsValues[1],
-      vinPlateRemarks: carDetailsRemarks[1],
-      spareWheelPhoto: base64CarDetailsPhoto[3],
-      spareWheelCondition: carDetailsValues[3],
-      spareWheelRemarks: carDetailsRemarks[3],
-      toolKitJackPhoto: base64CarDetailsPhoto[4],
-      toolKitJackCondition: carDetailsValues[4],
-      toolKitRemarks: carDetailsRemarks[4],
-      primaryKeyPhoto: base64CarDetailsPhoto[5],
-      primaryKeyCondition: carDetailsValues[5],
-      primarKeyRemarks: carDetailsRemarks[5],
-      spareKeyPhoto: base64CarDetailsPhoto5,
-      pillarALeftSidePhoto: base64BodyInspection[0],
-      pillarARightSidePhoto: base64StringsPillars,
-      pillarBLeftSidePhoto: base64StringsPillars2,
-      pillarBRightSidePhoto: base64StringsPillars3,
-      pillarCLeftSidePhoto: base64StringsPillars4,
-      pillarCRightSidePhoto: base64StringsPillars5,
-      pillarCondition: bodyInspectionValues[0],
-      pillarRemarks: bodyInspectionRemarks[0],
-      apronLeftSidePhoto: base64BodyInspection[1],
-      apronRightSidePhoto: base64BodyInspectionPhotos2[0],
-      apronCondition: bodyInspectionValues[1],
-      apronRemarks: bodyInspectionRemarks[1],
-      fendersRightSidePhoto: base64BodyInspection[2],
-      fendersLeftSidePhoto: base64BodyInspectionPhotos2[1],
-      fendersCondition: bodyInspectionValues[2],
-      fendersRemarks: bodyInspectionRemarks[2],
-      quarterPanelsLeftSidePhoto: base64BodyInspection[3],
-      quarterPanelsRightSidePhoto: base64BodyInspectionPhotos2[2],
-      quarterPanelsCondition: bodyInspectionValues[3],
-      quarterPanelsRemarks: bodyInspectionRemarks[3],
-      runningBoardLeftSidePhoto: base64BodyInspection[4],
-      runningBoardRightSidePhoto: base64BodyInspectionPhotos2[3],
-      runningBoardCondition: bodyInspectionValues[4],
-      runningBoardRemarks: bodyInspectionRemarks[4],
-      doorsFrontRightSidePhoto: base64BodyInspection[5],
-      doorsFrontLeftSidePhoto: base64BodyInspectionDoor1[0],
-      doorsRearRightSidePhoto: base64BodyInspectionDoor2[0],
-      doorsRearLeftSidePhoto: base64BodyInspectionDoor3[0],
-      doorConditon: bodyInspectionValues[5],
-      doorRemarks: bodyInspectionRemarks[5],
-      bootPhoto: base64BodyInspection[6],
-      bootCondition: bodyInspectionValues[6],
-      bootRemarks: bodyInspectionRemarks[6],
-      bootSkirtPhoto: base64BodyInspection[7],
-      bootSkirtCondition: bodyInspectionValues[7],
-      bootSkirtRemarks: bodyInspectionRemarks[7],
-      bonetPhoto: base64BodyInspection[8],
-      bonetCondition: bodyInspectionValues[8],
-      bonetRemarks: bodyInspectionRemarks[8],
-      supportMemberUpperPhoto: base64BodyInspection[9],
-      supportMemberLowerPhoto: base64BodyInspectionDoor1[1],
-      headLampSupportRightSidePhoto: base64BodyInspectionDoor2[1],
-      headLampSupportLeftSidePhoto: base64BodyInspectionDoor3[1],
-      supportMembersCondition: bodyInspectionValues[9],
-      supportMembersRemarks: bodyInspectionRemarks[9],
-      bumperFrontPhoto: base64BodyInspection[10],
-      bumperRearPhoto: base64BodyInspectionPhotos2[4],
-      bumberCondition: bodyInspectionValues[10],
-      bumberRemarks: bodyInspectionRemarks[10],
-      wheelTypeAlloyPhoto: base64BodyInspection[11],
-      wheelTypeDrumPhoto: base64BodyInspectionPhotos2[5],
-      wheelCondition: bodyInspectionValues[11],
-      wheelRemarks: bodyInspectionRemarks[11],
-      windShieldFrontTyrePhoto: base64BodyInspection[12],
-      windShieldRearTyrePhoto: base64BodyInspectionPhotos2[6],
-      windShieldCondition: bodyInspectionValues[12],
-      windShieldRemarks: bodyInspectionRemarks[12],
-      suspensionPhoto: base64StringsForMechanicalInspection[0],
-      suspensionCondition: selectedValuesForCondition[0],
-      suspensionDropDown: selectedValues[0],
-      suspensionRemarks: inspectionRemarks[0],
-      steeringPhoto: base64StringsForMechanicalInspection[1],
-      steeringCondition: selectedValuesForCondition[1],
-      steeringDropDown: selectedValues[1],
-      steeringRemarks: inspectionRemarks[1],
-      brakePhoto: base64StringsForMechanicalInspection[2],
-      brakeCondition: selectedValuesForCondition[2],
-      brakeDropDown: selectedValues[2],
-      brakeRemarks: inspectionRemarks[2],
-      transmissionPhoto: base64StringsForMechanicalInspection[3],
-      transmissionCondition: selectedValuesForCondition[3],
-      transmissionDropDown: selectedValues[3],
-      transmissionRemarks: inspectionRemarks[3],
-      enginePhoto: base64StringsForMechanicalInspection[4],
-      engineCondition: selectedValuesForCondition[4],
-      engineDropDown: selectedValues[4],
-      engineRemarks: inspectionRemarks[4],
-      electricalPhoto: base64StringsForMechanicalInspection[5],
-      electricalCondition: selectedValuesForCondition[5],
-      electricalDropDown: selectedValues[5],
-      electricalRemarks: inspectionRemarks[5],
-      acPhoto: base64StringsForMechanicalInspection[6],
-      acCondition: selectedValuesForCondition[6],
-      acDropDown: selectedValues[6],
-      acRemarks: inspectionRemarks[6],
-      accessoriesPhoto: base64StringsForMechanicalInspection[7],
-      accessoriesCondition: selectedValuesForCondition[7],
-      accessoriesDropDown: selectedValues[7],
-      accessoriesRemarks: inspectionRemarks[7],
+      rcFrontPhoto:rcBase64[0],
+      rcBackPhoto:rcBase64[1],
+      RCOthers:rcBase64[2],
+      rcRemarks:remarks,
+      insuranceOwnDamagePhoto:insuranceBase64[0],
+      insuranceThirdPartyPhoto:insuranceBase64[1],
+      insuranceOthers:insuranceBase64[2],
+      insuranceRemarks:remarks,
+      nocPhoto:nocBase64[0],
+      nocOthers:nocBase64[1],
+      nocRemarks:remarks,
+      frontViewPhoto:base64CarPhotos[0],
+      frontViewRemarks:carPhotosRemarks[0],
+      rearViewPhoto:base64CarPhotos[1],
+      rearViewRemarks:carPhotosRemarks[1],
+      lhsViewPhoto:base64CarPhotos[2],
+      lhsViewRemarks:carPhotosRemarks[2],
+      rhsViewPhoto:base64CarPhotos[3],
+      rhsViewRemarks:carPhotosRemarks[3],
+      odometerPhoto:base64CarPhotos[4],
+      odometerRemarks:carPhotosRemarks[4],
+      roofPhoto:base64CarPhotos[5],
+      roofRemarks:carPhotosRemarks[5],
+      interiorPhoto:base64CarPhotos[6],
+      interiorRemarks:carPhotosRemarks[6],
+      underChassisPhoto:base64CarPhotos[7],
+      underChassisRemarks:carPhotosRemarks[7],
+      engineRoomPhoto:base64CarPhotos[8],
+      engineRoomRemarks:carPhotosRemarks[8],
+      trunkBootPhoto:base64CarPhotos[9],
+      trunkBootRemarks:carPhotosRemarks[9],
+      chassisPunchPhoto:chassisBase64[0],
+      chasisPunchStatus:chassisSwitch[0],
+      chassisPunchCondition:chassisCondition[0],
+      chassisPunchRemarks:chassisRemarks[0],
+      vinPlatePhoto:vinPlateBase64[0],
+      vinPlateStatus:vinPlateSwitch[0],
+      vinPlateCondition:vinPlateCondition[0],
+      vinPlateRemarks:vinPlateRemarks[0],
+      frontTyreLeftPhoto:tyreBase64[0],
+      frontTyreLeftStatus:tyreSwitch[0],
+      frontTyreLeftPercentage:tyreCondition[0],
+      frontTyreLeftRemarks:tyreRemarks[0],
+
+      frontTyreRightPhoto:tyreBase64[1],
+      frontTyreRightStatus:tyreSwitch[1],
+      frontTyreRightPercentage:tyreCondition[1],
+      frontTyreRightRemarks:tyreRemarks[1],
+      rearTyreLeftPhoto:tyreBase64[2],
+      rearTyreLeftStatus:tyreSwitch[2],
+      rearTyreLeftPercentage:tyreCondition[2],
+      rearTyreLeftRemarks:tyreRemarks[2],
+      rearTyreRightPhoto: tyreBase64[3],
+      rearTyreRightStatus:tyreSwitch[3],
+      rearTyreRightPercentage:tyreCondition[3],
+      rearTyreRightRemarks:tyreRemarks[3],
+      spareWheelPhoto:spareWheelBase64[0],
+      spareWheelStatus:spareWheelSwitch[0],
+      spareWheelPercentage:spareWheelCondition[0],
+      spareWheelRemarks:spareWheelRemarks[0],
+      toolKitJackPhoto:toolKitBase64[0],
+      toolKitJackStatus:toolKitSwitch[0],
+      toolKitCondition:toolKitCondition[0],
+      toolKitRemarks:toolKitRemarks[0],
+      primaryKeyPhoto:keyBase64[0],
+      primaryKeyStatus:keySwitch[0],
+      primaryKeyCondition:keyCondition[0],
+      primaryKeyRemarks:keyRemarks[0],
+      spareKeyPhoto:keyBase64[1],
+      spareKeyStatus:keySwitch[1],
+      spareKeyCondition:keyCondition[1],
+      spareKeyRemarks:keyRemarks[1],
+      pillarALeftSidePhoto:pillarBase64[0],
+      pillarALeftSideStatus:pillarSwitch[0],
+      pillarALeftSideCondition:pillarsCondition[0],
+      pillarALeftSideRemarks:pillarsPhotoRemarks[0],
+pillarARightSidePhoto:pillarBase64[1],
+pillarARightSideStatus:pillarSwitch[1],
+pillarARightSideCondition:pillarsCondition[1],
+pillarARightSideRemarks:pillarsPhotoRemarks[1],
+pillarBLeftSidePhoto:pillarBase64[2],
+pillarBLeftSideStatus:pillarSwitch[2],
+pillarBLeftSideCondition:pillarsCondition[2],
+pillarBLeftSideRemarks:pillarsPhotoRemarks[2],
+pillarBRightSidePhoto:pillarBase64[3],
+pillarBRightSideStatus:pillarSwitch[3],
+pillarBRightSideCondition:pillarsCondition[3],
+pillarBRightSideRemarks:pillarsPhotoRemarks[3],
+pillarCLeftSidePhoto:pillarBase64[4],
+pillarCLeftSideStatus:pillarSwitch[4],
+pillarCLeftSideCondition:pillarsCondition[4],
+pillarCLeftSideRemarks:pillarsPhotoRemarks[4],
+pillarCRightSidePhoto:pillarBase64[5],
+pillarCRightSideStatus:pillarSwitch[5],
+pillarCRightSideCondition:pillarsCondition[5],
+pillarCRightSideRemarks:pillarsPhotoRemarks[5],
+
+      apronLeftSidePhoto:apronBase64[0],
+      apronLeftSideStatus:apronSwitch[0],
+      apronLeftSideCondition:apronCondition[0],
+      apronLeftSideRemarks:apronRemarks[0],
+      apronRightSidePhoto:apronBase64[1],
+      apronRightSideStatus:apronSwitch[1],
+      apronRightSideCondition:apronCondition[1],
+      apronRightSideRemarks:apronRemarks[1],
+      fendersRightSidePhoto:fennderBase64[0],
+      fendersRightSideStatus:fenderSwitch[0],
+      fendersRightSideCondition:fenderCondition[0],
+      fendersRightSideRemarks:fenderRemarks[0],
+      fendersLeftSidePhoto:fennderBase64[1],
+      fendersLeftSideStatus:fenderSwitch[1],
+      fendersLeftSideCondition:fenderCondition[1],
+      fendersLeftSideRemarks:fenderRemarks[1],
+      quarterPanelsLeftSidePhoto:quarterPanlesBase64[0],
+      quarterPanelsLeftSideStatus:quarterPanlesSwitch[0],
+      quarterPanelsLeftSideCondition:quarterPanlesCondition[0],
+      quarterPanelsLeftSideRemarks:quarterPanlesRemarks[0],
+      quarterPanelsRightSidePhoto:quarterPanlesBase64[1],
+      quarterPanelsRightSideStatus:quarterPanlesSwitch[1],
+      quarterPanelsRightSideCondition:quarterPanlesCondition[1],
+      quarterPanelsRightSideRemarks:quarterPanlesRemarks[1],
+      doorsFrontRightSidePhoto:doorBase64[0],
+      doorsFrontRightSideStatus:doorSwitch[0],
+      doorsFrontRightSideCondition:doorSwitch[0],
+      doorsFrontRightSideRemarks:doorRemarks[0],
+      doorsFrontLeftSidePhoto:doorBase64[1],
+      doorsFrontLeftSideStatus:doorSwitch[1],
+      doorsFrontLeftSideCondition:doorCondition[1],
+      doorsFrontLeftSideRemarks:doorRemarks[1],
+      doorsRearRightSidePhoto:doorBase64[2],
+      doorsRearRightSideStatus:doorSwitch[2],
+      doorsRearRightSideCondition:doorCondition[2],
+      doorsRearRightSideRemarks:doorRemarks[2],
+      doorsRearLeftSidePhoto:doorBase64[3],
+      doorsRearLeftSideStatus:doorSwitch[3],
+      doorsRearLeftSideCondition:doorCondition[3],
+      doorsRearLeftSideRemarks:doorRemarks[3],
+      runningBoardLeftSidePhoto:runningBoardBase64[0],
+      runningBoardLeftSideStatus:runningBoardSwitch[0],
+      runningBoardLeftSideCondition:runnningBoardCondition[0],
+      runningBoardLeftSideRemarks:runningBoardRemarks[0],
+      runningBoardRightSidePhoto:runningBoardBase64[1],
+      runningBoardRightSideStatus:runningBoardSwitch[1],
+      runningBoardRightSideCondition:runnningBoardCondition[1],
+      runningBoardRightSideRemarks:runningBoardRemarks[1],
+      bootPhoto:dickyDoorBase64[0],
+      bootStatus:dickyDoorSwitch[0],
+      bootCondition:dickyDoorCondition[0],
+      bootRemarks:dickyDoorRemarks[0],
+      bootSkirtPhoto:dickySkirtBase64[0],
+      bootSkirtStatus:dickySkirtSwitch[0],
+      bootSkirtCondition:dickySkirtCondition[0],
+      bootSkirtRemarks:dickySkirtRemarks[0],
+      bonetPhoto:bonetBase64[0],
+      bonetStatus:bonetSwitch[0],
+      bonetCondition: bonetCondition[0],
+      bonetRemarks:bonetRemarks[0],
+      supportMemberUpperPhoto:supportMembersBase64[0],
+      supportMemberUpperStatus:supportMembersSwitch[0],
+      suportMemberUpperCondition:supportMembersCondition[0],
+      supportMemberUpperRemarks:supportMembersRemarks[0],
+      supportMemberLowerPhoto:supportMembersBase64[1],
+      supportMemberLowerStatus:supportMembersSwitch[1],
+      supportMemberLowerCondition:supportMembersCondition[1],
+      supportMemberLowerRemarks:supportMembersRemarks[1],
+      headLampSupportRightSidePhoto:supportMembersBase64[2],
+      headLampSupportRightSideStatus:supportMembersSwitch[2],
+      headLampSupportRightSideCondition:supportMembersCondition[2],
+      headLampSupportRightSideRemarks:supportMembersRemarks[2],
+      headLampSupportLeftSidePhoto:supportMembersBase64[3],
+      headLampSupportLeftSideStatus:supportMembersSwitch[3],
+      headLampSupportLeftSideCondition:supportMembersCondition[3],
+      headLampSupportLeftSideRemarks:supportMembersRemarks[3],
+      wheelTypeAlloyPhoto: wheelTypeBase64[0],
+      wheelTypeAlloyStatus:wheelTypeSwitch[0],
+      wheelTypeAlloyCondition:wheelTypeCondition[0],
+      wheelTypeAlloyRemarks:wheelTypeRemarks[0],
+      wheelTypeDrumPhoto:wheelTypeBase64[1],
+      wheelTypeDrumStatus:wheelTypeSwitch[1],
+      wheelTypeDrumCondition:wheelTypeCondition[1],
+      wheelTypeDrumRemarks:wheelTypeRemarks[1],
+      windShieldFrontTyrePhoto:windShieldBase64[0],
+      windShieldFrontTyreStatus:windShieldSwitch[0],
+      windShieldFrontTyreCondition:windShieldCondition[0],
+      windShieldFrontTyreRemarks:windShieldRemarks[0],
+      windShieldRearTyrePhoto:windShieldBase64[1],
+      windShieldRearTyreStatus:windShieldSwitch[1],
+      windShieldRearTyreCondition:windShieldCondition[1],
+      windShieldRearTyreRemarks:windShieldRemarks[1],
+      bumperFrontPhoto:bumperBase64[0],
+      bumperFrontStatus:bumperSwitch[0],
+      bumperFrontCondition:bumperCondition[0],
+      bumperFrontRemarks:bumperRemarks[0],
+      bumperRearPhoto:bumperBase64[1],
+      bumperRearStatus:bumperSwitch[1],
+      bumperRearCondition:bumperCondition[1],
+      bumperRearRemarks:bumperRemarks[1],
+      strutPhoto:suspensionBase64[0],
+      strutStatus:suspensionSwitch[0],
+      strutCondition:suspensionDropdown[0],
+      strutRemarks:suspensionRemarks[0],
+      lowerArmPhoto:suspensionBase64[1],
+      lowerArmStatus:suspensionSwitch[1],
+      lowerArmCondition:suspensionDropdown[1],
+      lowerArmRemarks:suspensionRemarks[1],
+      linkRodPhoto:suspensionBase64[2],
+      linkRodStatus:suspensionSwitch[2],
+      linkRodCondition:suspensionDropdown[2],
+      linkRodRemarks:suspensionRemarks[2],
+      stabilizerBarPhoto:suspensionBase64[3],
+      stabilizerBarStatus:suspensionSwitch[3],
+      stabilizerBarCondition:suspensionDropdown[3],
+      stabilizerBarRemarks:suspensionRemarks[3],
+      shockAbsorberPhoto:suspensionBase64[4],
+      shockAbsorberStatus:suspensionSwitch[4],
+      shockAbsorberCondition:suspensionDropdown[4],
+      shockAbsorberRemarks:suspensionRemarks[4],
+      coilSpringPhoto:suspensionBase64[5],
+      coilSpringStatus:suspensionSwitch[5],
+      coilSpringCondition:suspensionDropdown[5],
+      coilSpringRemarks:suspensionRemarks[5],
+      leafSpringPhoto:suspensionBase64[6],
+      leafSpringStatus:suspensionSwitch[6],
+      leafSpringCondition:suspensionDropdown[6],
+      leafSpringRemarks:suspensionRemarks[6],
+      
+      rackAndPinionPhoto:steeringBase64[0],
+      rackAndPinionStatus:steeringSwitch[0],
+      rackAndPinionCondition:steeringDropdown[0],
+      rackAndPinionRemarks:steeringRemarks[0],
+      steeringColumnPhoto:steeringBase64[1],
+      steeringColumnStatus:steeringSwitch[1],
+      steeringColumnCondition:steeringDropdown[1],
+      steeringColumnRemarks:steeringRemarks[1],
+      hardnessPhoto:steeringBase64[2],
+      hardnessStatus:steeringSwitch[2],
+      hardnessCondition:steeringDropdown[2],
+      hardnessRemarks:steeringRemarks[2],
+      ballJointEndPhoto:steeringBase64[3],
+      ballJointEndStatus:steeringSwitch[3],
+      ballJointEndCondition:steeringDropdown[3],
+      ballJointEndRemarks:steeringRemarks[3],
+      
+      padPhoto:brakeBase64[0],
+      padStatus:brakeSwitch[0],
+      padCondition:brakeDropdown[0],
+      padRemarks:brakeRemarks[0],
+      discPhoto:brakeBase64[1],
+      discStatus:brakeSwitch[1],
+      discCondition:brakeDropdown[1],
+      discRemarks:brakeRemarks[1],
+      shoePhoto:brakeBase64[2],
+      shoeStatus:brakeSwitch[2],
+      shoeCondition:brakeDropdown[2],
+      shoeRemarks:brakeRemarks[2],
+      drumPhoto:brakeBase64[3],
+      drumStatus:brakeSwitch[3],
+      drumCondition:brakeDropdown[3],
+      drumRemarks:brakeRemarks[3],
+      wheelCylinderPhoto:brakeBase64[4],
+      wheelCylinderStatus:brakeSwitch[4],
+      wheelCylinderCondition:brakeDropdown[4],
+      wheelCylinderRemarks:brakeRemarks[4],
+      mcBoosterPhoto: brakeBase64[5],
+      mcBoosterStatus:brakeSwitch[5],
+      mcBoosterCondition:brakeDropdown[5],
+      mcBoosterRemarks:brakeRemarks[5],
+      
+      clutchPhoto: transmissionBase64[0],
+      clutchStatus: transmissionSwitch[0],
+      clutchCondition:transmissionSwitch[0],
+      clutchRemarks:transmissionRemarks[0],
+      
+      gearShiftingPhoto: transmissionBase64[1],
+      gearShiftingStatus: transmissionSwitch[1],
+      gearShiftingCondition:transmissionDropdown[1],
+      gearShiftingRemarks:transmissionRemarks[1],
+      
+      driveShaftPhoto: transmissionBase64[2],
+      driveShaftStatus: transmissionSwitch[2],
+      driveShaftCondition:transmissionDropdown[2],
+      driveShaftRemarks:transmissionRemarks[2],
+      
+      axlePhoto: transmissionBase64[3],
+      axleStatus: transmissionSwitch[3],
+      axleCondition:transmissionDropdown[3],
+      axleRemarks:transmissionDropdown[3],
+      
+      propellerShaftPhoto: transmissionBase64[4],
+      propellerShaftStatus: transmissionSwitch[4],
+      propellerShaftCondition:transmissionDropdown[4],
+      propellerShaftRemarks:transmissionRemarks[4],
+      
+      differentialPhoto: transmissionBase64[5],
+      differentialStatus: transmissionSwitch[5],
+      differentialCondition:transmissionDropdown[5],
+      differentialRemarks:transmissionRemarks[5],
+      
+      bearingPhoto: transmissionBase64[6],
+      bearingStatus: transmissionSwitch[6],
+      bearingCondition:transmissionDropdown[6],
+      bearingRemarks:transmissionRemarks[6],
+      
+      mountingPhoto: transmissionBase64[7],
+      mountingStatus: transmissionSwitch[7],
+      mountingCondition:transmissionDropdown[7],
+      mountingRemarks:transmissionRemarks[7],
+      
+      smokePhoto: engineBase64[0],
+      smokeStatus: engineSwitch[0],
+      smokeCondition: engineDropdown[0],
+      smokeRemarks: engineRemarks[0],
+    
+      turboPhoto: engineBase64[1],
+      turboStatus: engineSwitch[1],
+      turboCondition: engineDropdown[1],
+      turboRemarks: engineRemarks[1],
+    
+      misfiringPhoto: engineBase64[2],
+      misfiringStatus: engineSwitch[2],
+      misfiringCondition: engineDropdown[2],
+      misfiringRemarks: engineRemarks[2],
+    
+      tappetPhoto: engineBase64[3],
+      tappetStatus: engineSwitch[3],
+      tappetCondition: engineDropdown[3],
+      tappetRemarks: engineRemarks[3],
+    
+      knockingPhoto: engineBase64[4],
+      knockingStatus: engineSwitch[4],
+      knockingCondition: engineDropdown[4],
+      knockingRemarks: engineRemarks[4],
+    
+      exhaustPhoto: engineBase64[5],
+      exhaustStatus: engineSwitch[5],
+      exhaustCondition: engineDropdown[5],
+      exhaustRemarks: engineRemarks[5],
+    
+      beltsPhoto: engineBase64[6],
+      beltsStatus: engineSwitch[6],
+      beltsCondition: engineDropdown[6],
+      beltsRemarks: engineRemarks[6],
+    
+      tensionerPhoto: engineBase64[7],
+      tensionerStatus: engineSwitch[7],
+      tensionerCondition: engineDropdown[7],
+      tensionerRemarks: engineRemarks[7],
+    
+      mountingPhoto: engineBase64[8],
+      mountingStatus: engineSwitch[8],
+      mountingCondition: engineDropdown[8],
+      mountingRemarks: engineRemarks[8],
+    
+      fuelPumpPhoto: engineBase64[9],
+      fuelPumpStatus: engineSwitch[9],
+      fuelPumpCondition: engineDropdown[9],
+      fuelPumpRemarks: engineRemarks[9],
+    
+      highPressurePumpPhoto: engineBase64[10],
+      highPressurePumpStatus: engineSwitch[10],
+      highPressurePumpCondition: engineDropdown[10],
+      highPressurePumpRemarks: engineRemarks[10],
+    
+      commonrailPhoto: engineBase64[11],
+      commonrailStatus: engineSwitch[11],
+      commonrailCondition: engineDropdown[11],
+      commonrailRemarks: engineRemarks[11],
+    
+      injectorPhoto: engineBase64[12],
+      injectorStatus: engineSwitch[12],
+      injectorCondition: engineDropdown[12],
+      injectorRemarks: engineRemarks[12],
+    
+      fuelTankPhoto: engineBase64[13],
+      fuelTankStatus: engineSwitch[13],
+      fuelTankCondition: engineDropdown[13],
+      fuelTankRemarks: engineRemarks[13],
+    
+      hosePhoto: engineBase64[14],
+      hoseStatus: engineSwitch[14],
+      hoseCondition: engineDropdown[14],
+      hoseRemarks: engineRemarks[14],
+    
+      radiatorPhoto: engineBase64[15],
+      radiatorStatus: engineSwitch[15],
+      radiatorCondition: engineDropdown[15],
+      radiatorRemarks: engineRemarks[15],
+    
+      fanPhoto: engineBase64[16],
+      fanStatus: engineSwitch[16],
+      fanCondition: engineDropdown[16],
+      fanRemarks: engineRemarks[16],
+    
+      overHeatingPhoto: engineBase64[17],
+      overHeatingStatus: engineSwitch[17],
+      overHeatingCondition: engineDropdown[17],
+      overHeatingRemarks: engineRemarks[17],
+    
+      allBearingsPhoto: engineBase64[18],
+      allBearingsStatus: engineSwitch[18],
+      allBearingsCondition: engineDropdown[18],
+      allBearingsRemarks: engineRemarks[18],
+      
+      batteryPhoto: electricalBase64[0],
+      batteryStatus: electricalSwitch[0],
+      batteryCondition: electricalDropdown[0],
+      batteryRemarks: electricalRemarks[0],
+    
+      alternatorPhoto: electricalBase64[1],
+      alternatorStatus: electricalSwitch[1],
+      alternatorCondition: electricalDropdown[1],
+      alternatorRemarks: electricalRemarks[1],
+    
+      selfMotorPhoto: electricalBase64[2],
+      selfMotorStatus: electricalSwitch[2],
+      selfMotorCondition: electricalDropdown[2],
+      selfMotorRemarks: electricalRemarks[2],
+    
+      wiringHarnessPhoto: electricalBase64[3],
+      wiringHarnessStatus: electricalSwitch[3],
+      wiringHarnessCondition: electricalDropdown[3],
+      wiringHarnessRemarks: electricalRemarks[3],
+    
+      ecmPhoto: electricalBase64[4],
+      ecmStatus: electricalSwitch[4],
+      ecmCondition: electricalDropdown[4],
+      ecmRemarks: electricalRemarks[4],
+    
+      allSensorsPhoto: electricalBase64[5],
+      allSensorsStatus: electricalSwitch[5],
+      allSensorsCondition: electricalDropdown[5],
+      allSensorsRemarks: electricalRemarks[5],
+    
+      wiperMotorPhoto: electricalBase64[6],
+      wiperMotorStatus: electricalSwitch[6],
+      wiperMotorCondition: electricalDropdown[6],
+      wiperMotorRemarks: electricalRemarks[6],
+    
+      clusterPhoto: electricalBase64[7],
+      clusterStatus: electricalSwitch[7],
+      clusterCondition: electricalDropdown[7],
+      clusterRemarks: electricalRemarks[7],
+    
+      headLightsAndDrlPhoto: electricalBase64[8],
+      headLightsAndDrlStatus: electricalSwitch[8],
+      headLightsAndDrlCondition: electricalDropdown[8],
+      headLightsAndDrlRemarks: electricalRemarks[8],
+    
+      tailLightPhoto: electricalBase64[9],
+      tailLightStatus: electricalSwitch[9],
+      tailLightCondition: electricalDropdown[9],
+      tailLightRemarks: electricalRemarks[9],
+    
+      cabinLightPhoto: electricalBase64[10],
+      cabinLightStatus: electricalSwitch[10],
+      cabinLightCondition: electricalDropdown[10],
+      cabinLightRemarks: electricalRemarks[10],
+    
+      combinationSwitchPhoto: electricalBase64[11],
+      combinationSwitchStatus: electricalSwitch[11],
+      combinationSwitchCondition: electricalDropdown[11],
+      combinationSwitchRemarks: electricalRemarks[11],
+    
+      absPhoto: electricalBase64[12],
+      absStatus: electricalSwitch[12],
+      absCondition: electricalDropdown[12],
+      absRemarks: electricalRemarks[12],
+    
+      airBagPhoto: electricalBase64[13],
+      airBagStatus: electricalSwitch[13],
+      airBagCondition: electricalDropdown[13],
+      airBagRemarks: electricalRemarks[13],
+    
+      powerWindowsPhoto: electricalBase64[14],
+      powerWindowsStatus: electricalSwitch[14],
+      powerWindowsCondition: electricalDropdown[14],
+      powerWindowsRemarks: electricalRemarks[14],
+      
+      coolingPhoto: acBase64[0],
+      coolingStatus: acSwitch[0],
+      coolingCondition: acDropdown[0],
+      coolingRemarks: acRemarks[0],
+    
+      blowerCondenserPhoto: acBase64[1],
+      blowerCondenserStatus: acSwitch[1],
+      blowerCondenserCondition: acDropdown[1],
+      blowerCondenserRemarks: acRemarks[1],
+    
+      fanPhoto: acBase64[2],
+      fanStatus: acSwitch[2],
+      fanCondition: acDropdown[2],
+      fanRemarks: acRemarks[2],
+    
+      controlSwitchPhoto: acBase64[3],
+      controlSwitchStatus: acSwitch[3],
+      controlSwitchCondition: acDropdown[3],
+      controlSwitchRemarks: acRemarks[3],
+    
+      ventPhoto: acBase64[4],
+      ventStatus: acSwitch[4],
+      ventCondition: acDropdown[4],
+      ventRemarks: acRemarks[4],
+      musicSystemPhoto: accessoriesBase64[0],
+      musicSystemStatus: accessoriesSwitch[0],
+      musicSystemCondition: accessoriesDropdown[0],
+      musicSystemRemarks: accessoriesRemarks[0],
+    
+      parkingSensorPhoto: accessoriesBase64[1],
+      parkingSensorStatus: accessoriesSwitch[1],
+      parkingSensorCondition: accessoriesDropdown[1],
+      parkingSensorRemarks: accessoriesRemarks[1],
+    
+      reverseCameraPhoto: accessoriesBase64[2],
+      reverseCameraStatus: accessoriesSwitch[2],
+      reverseCameraCondition: accessoriesDropdown[2],
+      reverseCameraRemarks: accessoriesRemarks[2],
+    
+      ovrmAdjusterPhoto: accessoriesBase64[3],
+      ovrmAdjusterStatus: accessoriesSwitch[3],
+      ovrmAdjusterCondition: accessoriesDropdown[3],
+      ovrmAdjusterRemarks: accessoriesRemarks[3],
+    
+      seatHeightAdjusterPhoto: accessoriesBase64[4],
+      seatHeightAdjusterStatus: accessoriesSwitch[4],
+      seatHeightAdjusterCondition: accessoriesDropdown[4],
+      seatHeightAdjusterRemarks: accessoriesRemarks[4],
+    
+      seatBeltPhoto: accessoriesBase64[5],
+      seatBeltStatus: accessoriesSwitch[5],
+      seatBeltCondition: accessoriesDropdown[5],
+      seatBeltRemarks: accessoriesRemarks[5],
+    
+      sunRoofPhoto: accessoriesBase64[6],
+      sunRoofStatus: accessoriesSwitch[6],
+      sunRoofCondition: accessoriesDropdown[6],
+      sunRoofRemarks: accessoriesRemarks[6],
+    
+      roofRailPhoto: accessoriesBase64[7],
+      roofRailStatus: accessoriesSwitch[7],
+      roofRailCondition: accessoriesDropdown[7],
+      roofRailRemarks: accessoriesRemarks[7],
+    
+      spoilerPhoto: accessoriesBase64[8],
+      spoilerStatus: accessoriesSwitch[8],
+      spoilerCondition: accessoriesDropdown[8],
+      spoilerRemarks: accessoriesRemarks[8],
+    
+      skirtPhoto: accessoriesBase64[9],
+      skirtStatus: accessoriesSwitch[9],
+      skirtCondition: accessoriesDropdown[9],
+      skirtRemarks: accessoriesRemarks[9],
+    
+      steeringControlsPhoto: accessoriesBase64[10],
+      steeringControlsStatus: accessoriesSwitch[10],
+      steeringControlsCondition: accessoriesDropdown[10],
+      steeringControlsRemarks: accessoriesRemarks[10],
+      roadTestRemarks:roadTestRemarks
+      
     };
 
     try {
@@ -1662,7 +2136,7 @@ const OrderCreation = ({navigation}) => {
             brakePhoto,
             brakeBase64,
             setBrakePhoto,
-            setBrakeBase64,
+            setBrake64,
           );
           break;
         case 3:
@@ -1710,6 +2184,97 @@ const OrderCreation = ({navigation}) => {
             setAccessoriesBase64,
           );
           break;
+        default:
+          console.log('Invalid inspection index');
+          isCameraOpen.current = false;
+      }
+    });
+  };
+
+
+  const openCamaraForCarDocuments = index => {
+    if (isCameraOpen.current) return;
+    isCameraOpen.current = true;
+
+    const handleCameraResponse = (
+      response,
+      photoState,
+      base64State,
+      setPhotoState,
+      setBase64State,
+    ) => {
+      if (response.assets && response.assets.length > 0) {
+        const newPhotoUris = [...photoState];
+        newPhotoUris[index] = response.assets[0].uri;
+        setPhotoState(newPhotoUris);
+
+        // Resize and compress the image with quality set to 10
+        ImageResizer.createResizedImage(
+          newPhotoUris[index],
+          400,
+          300,
+          'JPEG',
+          10,
+        )
+          .then(resizedImage => {
+            RNFS.readFile(resizedImage.uri, 'base64')
+              .then(base64 => {
+                const imageType = getImageType(base64);
+
+                if (imageType) {
+                  const base64Image = `data:image/${imageType};base64,${base64}`;
+                  const newBase64Strings = [...base64State];
+                  newBase64Strings[index] = base64Image;
+                  setBase64State(newBase64Strings);
+                } else {
+                  console.log('Unknown image type');
+                }
+              })
+              .catch(e => {
+                console.log('Error converting file to base64', e);
+              });
+          })
+          .catch(error => {
+            console.log('Error resizing image:', error);
+          })
+          .finally(() => {
+            isCameraOpen.current = false;
+          });
+      } else {
+        isCameraOpen.current = false;
+      }
+    };
+
+    launchCamera({mediaType: 'photo'}, response => {
+      switch (selectedContainerIndex) {
+        case 0:
+          handleCameraResponse(
+            response,
+            rcPhoto,
+            rcBase64,
+            setRcPhoto,
+            setRcBase64,
+          );
+          break;
+        case 1:
+          handleCameraResponse(
+            response,
+            insurancePhoto,
+            insuranceBase64,
+            setInsuracePhoto,
+            setInsuraceBase64,
+          );
+          break;
+        case 2:
+          handleCameraResponse(
+            response,
+            nocPhoto,
+            nocBase64,
+            setNOCPhoto,
+            setNOCBase64,
+          );
+          break;
+
         default:
           console.log('Invalid inspection index');
           isCameraOpen.current = false;
@@ -3016,10 +3581,10 @@ const OrderCreation = ({navigation}) => {
   };
 
   const handleOkPress = () => {
-    if (!photoUris[selectedContainerIndex]) {
-      ToastAndroid.show('Photo fields are required', ToastAndroid.SHORT);
-      return;
-    }
+    // if (!photoUris[selectedContainerIndex]) {
+    //   ToastAndroid.show('Photo fields are required', ToastAndroid.SHORT);
+    //   return;
+    // }
     const newValidations = [...validations];
     // Assume validatePhotoAndRemarks is a function that returns true if both photo and remarks are valid
     newValidations[selectedContainerIndex] = validatePhotoAndRemarks(
@@ -3079,13 +3644,13 @@ const OrderCreation = ({navigation}) => {
   };
 
   const handleCarDetailsOkPress = () => {
-    if (
-      switchStateForCarDetails[carDetailsIndex] === 2 &&
-      !carDetailsPhoto[carDetailsIndex]
-    ) {
-      ToastAndroid.show('Photo fields are required', ToastAndroid.SHORT);
-      return;
-    }
+    // if (
+    //   switchStateForCarDetails[carDetailsIndex] === 2 &&
+    //   !carDetailsPhoto[carDetailsIndex]
+    // ) {
+    //   ToastAndroid.show('Photo fields are required', ToastAndroid.SHORT);
+    //   return;
+    // }
     setCarDetailsInspection(false);
     const newValidations = [...carValidation];
     // Assume validatePhotoAndRemarks is a function that returns true if both photo and remarks are valid
@@ -3129,6 +3694,32 @@ const OrderCreation = ({navigation}) => {
     newPhotoUris[index] = null;
 
     setPhotoUris2(newPhotoUris);
+  };
+
+  const handleCarDocumentsClosePress = index => {
+    let newPhotoUris;
+
+    switch (selectedContainerIndex) {
+      case 0:
+        newPhotoUris = [...rcPhoto];
+        newPhotoUris[index] = null;
+        setRcPhoto(newPhotoUris);
+        break;
+      case 1:
+        newPhotoUris = [...insurancePhoto];
+        newPhotoUris[index] = null;
+        setInsuracePhoto(newPhotoUris);
+        break;
+      case 2:
+        newPhotoUris = [...nocPhoto];
+        newPhotoUris[index] = null;
+        setNOCPhoto(newPhotoUris);
+        break;
+     
+      default:
+        console.log('Invalid inspection index');
+        break;
+    }
   };
 
   const handleSuspensionClosePress = index => {
@@ -3250,6 +3841,46 @@ const OrderCreation = ({navigation}) => {
         newPhotoUris[index] = null;
         setWindShieldPhoto(newPhotoUris);
         break;
+      default:
+        console.log('Invalid inspection index');
+        break;
+    }
+  };
+  const carDetailsClosePress = index => {
+    let newPhotoUris;
+
+    switch (carDetailsIndex) {
+      case 0:
+        newPhotoUris = [...chassisPunchPhoto];
+        newPhotoUris[index] = null;
+        setChassisPunchPhoto(newPhotoUris);
+        break;
+      case 1:
+        newPhotoUris = [...vinPlatePunchPhoto];
+        newPhotoUris[index] = null;
+        setVinPlatePunchPhoto(newPhotoUris);
+        break;
+      case 2:
+        newPhotoUris = [...tyrePunchPhoto];
+        newPhotoUris[index] = null;
+        setTyrePunchPhoto(newPhotoUris);
+        break;
+      case 3:
+        newPhotoUris = [...spareWheelPunchPhoto];
+        newPhotoUris[index] = null;
+        setSpareWheelPunchPhoto(newPhotoUris);
+        break;
+      case 4:
+        newPhotoUris = [...toolKitPunchPhoto];
+        newPhotoUris[index] = null;
+        setToolkitPunchPhoto(newPhotoUris);
+        break;
+      case 5:
+        newPhotoUris = [...keyPunchPhoto];
+        newPhotoUris[index] = null;
+        setKeyPunchPhoto(newPhotoUris);
+        break;
+     
       default:
         console.log('Invalid inspection index');
         break;
@@ -4229,137 +4860,181 @@ const OrderCreation = ({navigation}) => {
             <ScrollView
               contentContainerStyle={styles.scrollViewContent}
               showsVerticalScrollIndicator={false}>
-              {photoUris[selectedContainerIndex] ? (
-                <View style={{paddingHorizontal: 12, marginTop: 12}}>
-                  <View style={{position: 'relative'}}>
-                    <Image
-                      source={{uri: photoUris[selectedContainerIndex]}}
-                      style={styles.uploadedImage}
-                    />
-                    <TouchableOpacity
-                      style={{
-                        position: 'absolute',
-                        top: 0,
-                        right: 0,
-                        backgroundColor: 'black',
-                        // borderRadius: 15,
-                        width: 60,
-                        height: 30,
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                      }}
-                      onPress={() => handleClosePress(selectedContainerIndex)}>
-                      <Text style={{fontSize: 14, color: 'white'}}>Cancel</Text>
-                    </TouchableOpacity>
-                  </View>
-                  <View></View>
-                </View>
-              ) : (
-                <View style={{paddingHorizontal: 8}}>
-                  <TouchableOpacity
-                    style={styles.photoInput}
-                    onPress={() => openCamera()}>
-                    <Text>{photos[selectedContainerIndex]}</Text>
-                  </TouchableOpacity>
-                </View>
-              )}
+                 <View style={{paddingHorizontal: 0}}>
+                {selectedContainerIndex === 0 &&
+                  rcList.map((item, index) => (
+                    <View key={index} style={styles.itemContainer1}>
+                      <Text>{item}</Text>
 
-              {photoUris1[selectedContainerIndex] && (
-                <View style={{paddingHorizontal: 12, marginTop: 12}}>
-                  <View style={{position: 'relative'}}>
-                    <Image
-                      source={{
-                        uri: photoUris1[selectedContainerIndex],
-                      }}
-                      style={styles.uploadedImage}
-                    />
-                    <TouchableOpacity
-                      style={{
-                        position: 'absolute',
-                        top: 0,
-                        right: 0,
-                        backgroundColor: 'black',
-                        //  borderRadius: 15,
-                        width: 60,
-                        height: 30,
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                      }}
-                      onPress={() => handleClosePress1(selectedContainerIndex)}>
-                      <Text style={{fontSize: 14, color: 'white'}}>Cancel</Text>
-                    </TouchableOpacity>
-                  </View>
-                </View>
-              )}
+                     
+                      {rcPhoto[index] && (
+                        <View stylle={{position: 'relative'}}>
+                          <Image
+                            source={{uri: rcPhoto[index]}}
+                            style={styles.uploadedImage}
+                          />
+                          <TouchableOpacity
+                            style={{
+                              position: 'absolute',
+                              top: 20,
+                              right: 0,
+                              backgroundColor: 'black',
+                              // borderRadius: 15,
+                              width: 60,
+                              height: 30,
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                            }}
+                            onPress={() => handleCarDocumentsClosePress(index)}>
+                            <Text style={{fontSize: 14, color: 'white'}}>
+                              Cancel
+                            </Text>
+                          </TouchableOpacity>
+                        </View>
+                      )}
 
-              {photoUris2[selectedContainerIndex] && (
-                <View style={{paddingHorizontal: 12, marginTop: 12}}>
-                  <View style={{position: 'relative'}}>
-                    <Image
-                      source={{
-                        uri: photoUris2[selectedContainerIndex],
-                      }}
-                      style={styles.uploadedImage}
-                    />
 
-                    <TouchableOpacity
-                      style={{
-                        position: 'absolute',
-                        top: 0,
-                        right: 0,
-                        backgroundColor: 'black',
-                        //  borderRadius: 15,
-                        width: 60,
-                        height: 30,
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                      }}
-                      onPress={() => handleClosePress2(selectedContainerIndex)}>
-                      <Text style={{fontSize: 14, color: 'white'}}>Cancel</Text>
-                    </TouchableOpacity>
-                  </View>
-                </View>
-              )}
-
-              {selectedContainerIndex === 0 && (
-                <View style={{paddingHorizontal: 8}}>
-                  {photoUris1[selectedContainerIndex] == null && (
-                    <View style={{marginTop: 16}}>
-                      <TouchableOpacity
-                        style={styles.photoInput}
-                        onPress={() => openCamera1()}>
-                        <Text>RC backPhoto</Text>
-                      </TouchableOpacity>
+                      <View style={{marginTop:0}}>
+                        {!rcPhoto[index] && (
+                          <TouchableOpacity
+                            style={styles.photoInput}
+                            onPress={() => openCamaraForCarDocuments(index)}>
+                            <Text>{item}</Text>
+                          </TouchableOpacity>
+                        )}
+                      </View>
                     </View>
-                  )}
-                </View>
-              )}
-
-              {selectedContainerIndex === 1 && (
-                <View style={{paddingHorizontal: 8}}>
-                  {photoUris2[selectedContainerIndex] == null && (
-                    <View style={{marginTop: 16}}>
-                      <TouchableOpacity
-                        style={styles.photoInput}
-                        onPress={() => openCamera2()}>
-                        <Text>Insurance backPhoto</Text>
-                      </TouchableOpacity>
-                    </View>
-                  )}
-                </View>
-              )}
-              <View style={{paddingHorizontal: 12, marginTop: 12}}>
-                {photoUris[selectedContainerIndex] && (
-                  <TextInput
-                    style={styles.photoInput}
-                    placeholder="Enter remarks"
-                    value={remarks[selectedContainerIndex]}
-                    onChangeText={text =>
-                      handleRemarksChange(text, selectedContainerIndex)
-                    }
-                  />
-                )}
+                  ))}
               </View>
+
+              <View style={{paddingHorizontal: 0}}>
+                {selectedContainerIndex === 1 &&
+                  insuranceList.map((item, index) => (
+                    <View key={index} style={styles.itemContainer1}>
+                      <Text>{item}</Text>
+
+                     
+                      {insurancePhoto[index] && (
+                        <View stylle={{position: 'relative'}}>
+                          <Image
+                            source={{uri: insurancePhoto[index]}}
+                            style={styles.uploadedImage}
+                          />
+                          <TouchableOpacity
+                            style={{
+                              position: 'absolute',
+                              top: 20,
+                              right: 0,
+                              backgroundColor: 'black',
+                              // borderRadius: 15,
+                              width: 60,
+                              height: 30,
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                            }}
+                            onPress={() => handleCarDocumentsClosePress(index)}>
+                            <Text style={{fontSize: 14, color: 'white'}}>
+                              Cancel
+                            </Text>
+                          </TouchableOpacity>
+                        </View>
+                      )}
+
+                      {/* <View style={{marginTop: 14}}>
+                        <TextInput
+                          style={styles.photoInput}
+                          placeholder="Enter remarks"
+                          value={suspensionRemarks[index]}
+                          onChangeText={text =>
+                            handleSuspensionRemarks(text, index)
+                          }
+                        />
+                      </View> */}
+
+                      <View style={{marginTop:0}}>
+                        {!insurancePhoto[index] && (
+                          <TouchableOpacity
+                            style={styles.photoInput}
+                            onPress={() => openCamaraForCarDocuments(index)}>
+                            <Text>{item}</Text>
+                          </TouchableOpacity>
+                        )}
+                      </View>
+                    </View>
+                  ))}
+              </View>
+
+
+              <View style={{paddingHorizontal: 0}}>
+                {selectedContainerIndex === 2 &&
+                  nocList.map((item, index) => (
+                    <View key={index} style={styles.itemContainer1}>
+                      <Text>{item}</Text>
+
+                     
+                      {nocPhoto[index] && (
+                        <View stylle={{position: 'relative'}}>
+                          <Image
+                            source={{uri: nocPhoto[index]}}
+                            style={styles.uploadedImage}
+                          />
+                          <TouchableOpacity
+                            style={{
+                              position: 'absolute',
+                              top: 20,
+                              right: 0,
+                              backgroundColor: 'black',
+                              // borderRadius: 15,
+                              width: 60,
+                              height: 30,
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                            }}
+                            onPress={() => handleCarDocumentsClosePress(index)}>
+                            <Text style={{fontSize: 14, color: 'white'}}>
+                              Cancel
+                            </Text>
+                          </TouchableOpacity>
+                        </View>
+                      )}
+
+                      {/* <View style={{marginTop: 14}}>
+                        <TextInput
+                          style={styles.photoInput}
+                          placeholder="Enter remarks"
+                          value={suspensionRemarks[index]}
+                          onChangeText={text =>
+                            handleSuspensionRemarks(text, index)
+                          }
+                        />
+                      </View> */}
+
+                      <View style={{marginTop:0}}>
+                        {!nocPhoto[index] && (
+                          <TouchableOpacity
+                            style={styles.photoInput}
+                            onPress={() => openCamaraForCarDocuments(index)}>
+                            <Text>{item}</Text>
+                          </TouchableOpacity>
+                        )}
+                      </View>
+                    </View>
+                  ))}
+
+<View style={{marginTop:10,paddingHorizontal:8}}>
+                        <TextInput
+                          style={styles.photoInput}
+                          placeholder="Enter remarks"
+                          value={remarks}
+                          onChangeText={text =>
+                            setRemarks(text)
+                          }
+                        />
+                      </View>
+
+              </View>
+             
+             
 
               <View style={{paddingHorizontal: 8, marginTop: 10}}>
                 <CustomButton title="Submit" onPress={handleOkPress} />
@@ -4410,17 +5085,7 @@ const OrderCreation = ({navigation}) => {
                       <Text style={{fontSize: 14, color: 'white'}}>Cancel</Text>
                     </TouchableOpacity>
                   </View>
-                  <TextInput
-                    style={styles.photoInput}
-                    placeholder="Enter remarks"
-                    value={carPhotosRemarks[selectedContainerIndex1]}
-                    onChangeText={text =>
-                      handleRemarksChangeCarPhotos(
-                        text,
-                        selectedContainerIndex1,
-                      )
-                    }
-                  />
+                 
                   <View>
                     {/* <TouchableOpacity
                       style={styles.closeButton1}
@@ -4440,6 +5105,19 @@ const OrderCreation = ({navigation}) => {
                   </TouchableOpacity>
                 </View>
               )}
+                 <View style={{paddingHorizontal: 12, marginTop: 12}}>
+               <TextInput
+                    style={styles.photoInput}
+                    placeholder="Enter remarks"
+                    value={carPhotosRemarks[selectedContainerIndex1]}
+                    onChangeText={text =>
+                      handleRemarksChangeCarPhotos(
+                        text,
+                        selectedContainerIndex1,
+                      )
+                    }
+                  />
+                  </View>
 
               <View style={{paddingHorizontal: 8, marginTop: 20}}>
                 <CustomButton title="Submit" onPress={handleOkPressCarPhotos} />
@@ -6016,10 +6694,29 @@ const OrderCreation = ({navigation}) => {
                         />
                       </View>
                       {supportMembersPhoto[index] && (
+                        <View style={{position:"relative"}}>
                         <Image
                           source={{uri: supportMembersPhoto[index]}}
                           style={styles.uploadedImage}
                         />
+                        <TouchableOpacity
+                        style={{
+                          position: 'absolute',
+                          top: 20,
+                          right: 0,
+                          backgroundColor: 'black',
+                          // borderRadius: 15,
+                          width: 60,
+                          height: 30,
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                        }}
+                        onPress={() => handleBodyInspectionClosePress(index)}>
+                        <Text style={{fontSize: 14, color: 'white'}}>
+                          Cancel
+                        </Text>
+                      </TouchableOpacity>
+                      </View>
                       )}
 
                       <View style={{marginTop: 14}}>
@@ -6382,10 +7079,29 @@ const OrderCreation = ({navigation}) => {
                         />
                       </View>
                       {chassisPunchPhoto[index] && (
+                        <View style={{position:"relative"}}>
                         <Image
                           source={{uri: chassisPunchPhoto[index]}}
                           style={styles.uploadedImage}
                         />
+                        <TouchableOpacity
+                        style={{
+                          position: 'absolute',
+                          top: 20,
+                          right: 0,
+                          backgroundColor: 'black',
+                          // borderRadius: 15,
+                          width: 60,
+                          height: 30,
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                        }}
+                        onPress={() => carDetailsClosePress(index)}>
+                        <Text style={{fontSize: 14, color: 'white'}}>
+                          Cancel
+                        </Text>
+                      </TouchableOpacity>
+                      </View>
                       )}
 
                       <View style={{marginTop: 14}}>
@@ -6452,10 +7168,29 @@ const OrderCreation = ({navigation}) => {
                         />
                       </View>
                       {vinPlatePunchPhoto[index] && (
+                      <View style={{position:"relative"}}>
                         <Image
                           source={{uri: vinPlatePunchPhoto[index]}}
                           style={styles.uploadedImage}
                         />
+                        <TouchableOpacity
+                        style={{
+                          position: 'absolute',
+                          top: 20,
+                          right: 0,
+                          backgroundColor: 'black',
+                          // borderRadius: 15,
+                          width: 60,
+                          height: 30,
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                        }}
+                        onPress={() => carDetailsClosePress(index)}>
+                        <Text style={{fontSize: 14, color: 'white'}}>
+                          Cancel
+                        </Text>
+                      </TouchableOpacity>
+                      </View>
                       )}
 
                       <View style={{marginTop: 14}}>
@@ -6522,10 +7257,29 @@ const OrderCreation = ({navigation}) => {
                         />
                       </View>
                       {tyrePunchPhoto[index] && (
+                        <View style={{position:"relative"}}>
                         <Image
                           source={{uri: tyrePunchPhoto[index]}}
                           style={styles.uploadedImage}
                         />
+                        <TouchableOpacity
+                        style={{
+                          position: 'absolute',
+                          top: 20,
+                          right: 0,
+                          backgroundColor: 'black',
+                          // borderRadius: 15,
+                          width: 60,
+                          height: 30,
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                        }}
+                        onPress={() => carDetailsClosePress(index)}>
+                        <Text style={{fontSize: 14, color: 'white'}}>
+                          Cancel
+                        </Text>
+                      </TouchableOpacity>
+                      </View>
                       )}
 
                       <View style={{marginTop: 14}}>
@@ -6538,22 +7292,24 @@ const OrderCreation = ({navigation}) => {
                           }
                         />
                       </View>
-                      <View style={{marginTop: 14}}>
-                        <Picker
-                          style={styles.photoInput}
-                          selectedValue={tyreCondition[index]}
-                          onValueChange={itemValue =>
-                            handleCarDetailsDropDown(itemValue, index)
-                          }>
-                          
-                          <Picker.Item label="Select Condition" value="" />
-                          <Picker.Item label="Re Punched" value="Re Punched" />
-                          <Picker.Item label="Rusted" value="Rusted" />
-                       
+                      <View style={{ marginTop: 14 }}>
+       
+          {/* <View key={index} style={styles.sliderContainer}>
+            <Text style={styles.percentageText}>{Math.round(value * 100)}%</Text>
+            <Slider
+              style={styles.slider}
+              minimumValue={0}
+              maximumValue={1}
+              value={value}
+              onValueChange={(val) => handleValueChange(val, index)}
+              minimumTrackTintColor={getTrackColor(value)}
+              maximumTrackTintColor="#000000"
+              thumbTintColor="#007BFF"
+            />
+          </View> */}
+       
+      </View>
 
-                          {/* Add other items as needed */}
-                        </Picker>
-                      </View>
                       <View style={{marginTop: 14}}>
                         {!tyrePunchPhoto[index] && (
                           <TouchableOpacity
@@ -6592,10 +7348,29 @@ const OrderCreation = ({navigation}) => {
                         />
                       </View>
                       {spareWheelPunchPhoto[index] && (
+                        <View style={{position:"relative"}}>
                         <Image
                           source={{uri: spareWheelPunchPhoto[index]}}
                           style={styles.uploadedImage}
                         />
+                        <TouchableOpacity
+                        style={{
+                          position: 'absolute',
+                          top: 20,
+                          right: 0,
+                          backgroundColor: 'black',
+                          // borderRadius: 15,
+                          width: 60,
+                          height: 30,
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                        }}
+                        onPress={() => carDetailsClosePress(index)}>
+                        <Text style={{fontSize: 14, color: 'white'}}>
+                          Cancel
+                        </Text>
+                      </TouchableOpacity>
+                      </View>
                       )}
 
                       <View style={{marginTop: 14}}>
@@ -6608,22 +7383,18 @@ const OrderCreation = ({navigation}) => {
                           }
                         />
                       </View>
-                      <View style={{marginTop: 14}}>
-                        <Picker
-                          style={styles.photoInput}
-                          selectedValue={spareWheelCondition[index]}
-                          onValueChange={itemValue =>
-                            handleCarDetailsDropDown(itemValue, index)
-                          }>
-                          
-                          <Picker.Item label="Select Condition" value="" />
-                          <Picker.Item label="Re Punched" value="Re Punched" />
-                          <Picker.Item label="Rusted" value="Rusted" />
-                       
-
-                          {/* Add other items as needed */}
-                        </Picker>
-                      </View>
+                      {/* <View style={{marginTop: 14}}>
+                      <Slider
+        style={styles.slider}
+        minimumValue={0}
+        maximumValue={1}
+        value={spareTyreValue[index]}
+        onValueChange={setSliderValue}
+        minimumTrackTintColor={getTrackColor(spareTyreValue)}
+        maximumTrackTintColor="#000000"
+        thumbTintColor="#000000"
+      />
+                      </View> */}
                       <View style={{marginTop: 14}}>
                         {!spareWheelPunchPhoto[index] && (
                           <TouchableOpacity
@@ -6662,10 +7433,30 @@ const OrderCreation = ({navigation}) => {
                         />
                       </View>
                       {toolKitPunchPhoto[index] && (
+                        <View style={{position:"relative"}}>
                         <Image
                           source={{uri:toolKitPunchPhoto[index]}}
                           style={styles.uploadedImage}
                         />
+                        <TouchableOpacity
+                        style={{
+                          position: 'absolute',
+                          top: 20,
+                          right: 0,
+                          backgroundColor: 'black',
+                          // borderRadius: 15,
+                          width: 60,
+                          height: 30,
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                        }}
+                        onPress={() => carDetailsClosePress(index)}>
+                        <Text style={{fontSize: 14, color: 'white'}}>
+                          Cancel
+                        </Text>
+                      </TouchableOpacity>
+                      </View>
+                        
                       )}
 
                       <View style={{marginTop: 14}}>
@@ -6732,10 +7523,29 @@ const OrderCreation = ({navigation}) => {
                         />
                       </View>
                       {keyPunchPhoto[index] && (
+                        <View style={{position:"relative"}}>
                         <Image
                           source={{uri:keyPunchPhoto[index]}}
                           style={styles.uploadedImage}
                         />
+                        <TouchableOpacity
+                        style={{
+                          position: 'absolute',
+                          top: 20,
+                          right: 0,
+                          backgroundColor: 'black',
+                          // borderRadius: 15,
+                          width: 60,
+                          height: 30,
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                        }}
+                        onPress={() => carDetailsClosePress(index)}>
+                        <Text style={{fontSize: 14, color: 'white'}}>
+                          Cancel
+                        </Text>
+                      </TouchableOpacity>
+                      </View>
                       )}
 
                       <View style={{marginTop: 14}}>
@@ -6841,16 +7651,7 @@ const OrderCreation = ({navigation}) => {
                 placeholder="Enter the Model"
               />
 
-              {/* <Slider
-        style={styles.slider}
-        minimumValue={0}
-        maximumValue={1}
-        value={sliderValue}
-        onValueChange={setSliderValue}
-        minimumTrackTintColor={getTrackColor(sliderValue)}
-        maximumTrackTintColor="#000000"
-        thumbTintColor="#000000"
-      /> */}
+          
 
               <CustomTextInput
                 label="Year of Manufacture"
@@ -7405,6 +8206,11 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     padding: 5,
   },
+  sliderContainer: {
+    width: '80%',
+    alignItems: 'center',
+    marginVertical: 10,
+  },
   closeButton1: {
     position: 'absolute',
     bottom: 370,
@@ -7499,6 +8305,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     marginVertical: 30,
   },
+  itemContainer1: {
+    paddingHorizontal: 8,
+    marginTop:10,
+  },
   label: {
     fontSize: 16,
     fontWeight: 'bold',
@@ -7514,8 +8324,14 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   slider: {
-    width: 300,
+    width:"105%",
     height: 40,
+   
+  },
+  percentageText: {
+    marginTop: 10,
+    fontSize: 18,
+    fontWeight: 'bold',
   },
   profileContainer: {
     flexDirection: 'row',

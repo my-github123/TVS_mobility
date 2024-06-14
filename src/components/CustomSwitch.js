@@ -23,63 +23,59 @@ const CustomSwitch = ({
 
   return (
     <View>
-         {/* <Text style={{bottom:15}}>"jgjhgghg</Text> */}
-         {label && <Text style={{  fontSize: 16,
-    marginBottom:8,
-    fontWeight:"bold",
-    color:"black",
-    paddingHorizontal:3}}>{label}</Text>}
-      <View
-        style={{
-          height: 44,
-          width:"100%",
-          backgroundColor: 'white',
-          borderRadius: roundCorner ? 25 : 0,
-          borderWidth: 1,
-          borderColor: selectionColor,
-          flexDirection: 'row',
-          justifyContent: 'center',
-        //  marginHorizontal:25
-          padding: 2,
-        }}>
-      
+      {label && <Text style={styles.label}>{label}</Text>}
+      <View style={[styles.switchContainer, { borderRadius: roundCorner ? 25 : 0, borderColor: selectionColor }]}>
         <TouchableOpacity
           activeOpacity={1}
           onPress={() => updatedSwitchData(1)}
-          style={{
-            flex: 1,
-            backgroundColor: getSelectionMode == 1 ? selectionColor : 'white',
-            borderRadius: roundCorner ? 25 : 0,
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
-          <Text
-            style={{
-              color: getSelectionMode == 1 ? 'white' : selectionColor,
-            }}>
-            {option1}
-          </Text>
+          style={[
+            styles.option,
+            {
+              backgroundColor: getSelectionMode == 1 ? selectionColor : 'white',
+              borderRadius: roundCorner ? 25 : 0,
+            }
+          ]}>
+          <Text style={{ color: getSelectionMode == 1 ? 'white' : selectionColor }}>{option1}</Text>
         </TouchableOpacity>
         <TouchableOpacity
           activeOpacity={1}
           onPress={() => updatedSwitchData(2)}
-          style={{
-            flex: 1,
-            backgroundColor: getSelectionMode == 2 ? selectionColor : 'white',
-            borderRadius: roundCorner ? 25 : 0,
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
-          <Text
-            style={{
-              color: getSelectionMode == 2 ? 'white' : selectionColor,
-            }}>
-            {option2}
-          </Text>
+          style={[
+            styles.option,
+            {
+              backgroundColor: getSelectionMode == 2 ? selectionColor : 'white',
+              borderRadius: roundCorner ? 25 : 0,
+            }
+          ]}>
+          <Text style={{ color: getSelectionMode == 2 ? 'white' : selectionColor }}>{option2}</Text>
         </TouchableOpacity>
       </View>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  label: {
+    fontSize: 16,
+    marginBottom: 8,
+    fontWeight: 'bold',
+    color: 'black',
+    paddingHorizontal: 3,
+  },
+  switchContainer: {
+    height: 44,
+    width: '100%',
+    backgroundColor: 'white',
+    borderWidth: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    padding: 2,
+  },
+  option: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});
 
 export default CustomSwitch;
