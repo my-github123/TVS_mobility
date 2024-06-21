@@ -11,7 +11,8 @@ import DealerList from '../screen/dealer/DealerList';
 import SelectVehicle from '../screen/dealer/SelectVehicle';
 import CustomPhotoComponent from '../screen/auth/CustomPhotoComponent';
 import TakePhotoScreen from '../screen/auth/TakePhotoScreen';
-
+import { Provider } from 'react-redux';
+import store from "../redux/store";
 const Stack = createStackNavigator();
 
 export default function ScreenList() {
@@ -52,6 +53,7 @@ export default function ScreenList() {
   }
 
   return (
+    <Provider store={store}>
     <NavigationContainer>
       <Stack.Navigator
         initialRouteName={token ? 'Dashboard' : 'Login'}
@@ -71,5 +73,6 @@ export default function ScreenList() {
         <Stack.Screen name="ResetPassword" component={ResetPassword} />    */}
       </Stack.Navigator>
     </NavigationContainer>
+    </Provider>
   );
 }

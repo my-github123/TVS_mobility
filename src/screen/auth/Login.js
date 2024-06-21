@@ -26,9 +26,12 @@ export default function Login({navigation}) {
 
   const [password, setPassword] = useState('');
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [isPasswordDisabled, setIsPasswordDisabled] = useState(false);
+
 
   const togglePasswordVisibility = () => {
-    setIsPasswordVisible(prev => !prev);
+    setIsPasswordVisible(!isPasswordVisible);
+    setIsPasswordDisabled(!isPasswordDisabled);
   };
 
   const handlePress = async () => {
@@ -50,12 +53,20 @@ export default function Login({navigation}) {
       const token = data.data.data[0].token;
 
 
+      
+
+
 
       const userName = data.data.data[0].userData[0].user_name;
+
+      const role=data.data.data[0].userData[0].role;
 
       console.log(userName,"username is trr");
 
       await setItem('username',userName);
+
+
+      await setItem('role',role)
 
 
       await setItem('token', token);
@@ -99,6 +110,8 @@ export default function Login({navigation}) {
           value={password}
           onChangeText={value => setPassword(value)}
           placeholder="Enter your password"
+          secureTextEntry={!isPasswordVisible}
+        //  editable={!isPasswordDisabled}
         />
 
         <TouchableOpacity

@@ -27,22 +27,29 @@ const SingleSwitch = ({
       )}
       <View style={[styles.container, { borderRadius:0 }]}>
         {options.map((option, index) => (
-          <TouchableOpacity
-            key={index}
-            activeOpacity={1}
-            onPress={() => updatedSwitchData(index + 1)}
-            style={[
-              styles.option,
-              { 
-                backgroundColor: getSelectionMode == index + 1 ? selectionColor : 'white',
-                borderRadius:0 
-              }
-            ]}
-          >
-            <Text style={{ color: getSelectionMode == index + 1 ? 'white' : selectionColor }}>
-              {option}
-            </Text>
-          </TouchableOpacity>
+          <React.Fragment key={index}>
+            <TouchableOpacity
+              activeOpacity={1}
+              onPress={() => updatedSwitchData(index + 1)}
+              style={[
+                styles.option,
+                {
+                  backgroundColor: getSelectionMode === index + 1 ? selectionColor : 'white',
+               //   borderTopLeftRadius: index === 0 && roundCorner ? 10 : 0,
+                //  borderBottomLeftRadius: index === 0 && roundCorner ? 10 : 0,
+                //  borderTopRightRadius: index === options.length - 1 && roundCorner ? 10 : 0,
+                //  borderBottomRightRadius: index === options.length - 1 && roundCorner ? 10 : 0
+                }
+              ]}
+            >
+              <Text style={{ color: getSelectionMode === index + 1 ? 'white' : selectionColor }}>
+                {option}
+              </Text>
+            </TouchableOpacity>
+            {index < options.length - 1 && (
+              <View style={styles.verticalLine} />
+            )}
+          </React.Fragment>
         ))}
       </View>
     </View>
@@ -72,6 +79,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingVertical: 8
+  },
+  verticalLine: {
+    width: 1,
+    height: '100%',
+    backgroundColor: '#007BFF'
   }
 });
 

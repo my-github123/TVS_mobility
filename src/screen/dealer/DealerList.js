@@ -5,6 +5,7 @@ import {
   StyleSheet,
   StatusBar,
   FlatList,
+  BackHandler,
   TextInput,
   ToastAndroid,
   Platform,
@@ -16,8 +17,8 @@ import {
 } from 'react-native';
 import call from 'react-native-phone-call';
 import {apiGetWithToken, apiPostWithToken} from '../../services/apiService';
-import { storeData } from '../../utils/asyncStorageUtils';
-import {setItem} from "../../utils/asyncStorageUtils";
+import {storeData} from '../../utils/asyncStorageUtils';
+import {setItem,getItem} from '../../utils/asyncStorageUtils';
 
 import Icon from 'react-native-vector-icons/Ionicons';
 import User from '../../../assets/images/user.svg';
@@ -30,6 +31,20 @@ export default function DealerList({navigation}) {
   useEffect(() => {
     getDealerList();
   }, []);
+
+  useEffect(() => {
+    const backAction = () => {
+      navigation.goBack();
+      return true; // Prevent default behavior (exit the app)
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction,
+    );
+
+    return () => backHandler.remove(); // Remove the event listener on component unmount
+  }, [navigation]);
 
   useEffect(() => {
     // Update filtered data when the search query or dashboard details change
@@ -61,8 +76,10 @@ export default function DealerList({navigation}) {
   };
 
   const callSearch = async () => {
+
+    const itemId = await getItem('dealarId');
     if (!searchText) {
-      ToastAndroid.show("Please enter vehicle number", ToastAndroid.SHORT);
+      ToastAndroid.show('Please enter vehicle number', ToastAndroid.SHORT);
       return;
     }
     try {
@@ -70,17 +87,18 @@ export default function DealerList({navigation}) {
         vechicleNumber: searchText,
       };
       const data = await apiPostWithToken('getVahanData', params);
-  
-      console.log(data.data, "data is there///");
-  
-      if (data.data.message === "No Record Found") {
-        ToastAndroid.show("No Record Found", ToastAndroid.SHORT);
+
+      console.log(data.data, 'data is there///');
+
+      if (data.data.message === 'No Record Found') {
+        ToastAndroid.show('No Record Found', ToastAndroid.SHORT);
         setModalVisible(false);
-        setSearchText("");
+        setSearchText('');
       } else {
         storeData('vehicleDataList', data.data);
-  
+
         // Extract the values
+
         const vehicleMakeModel = data.data.vehicle_make_model;
         const vehicleMakerDescription = data.data.vehicle_maker_description;
         const vehicleManufacturedDate = data.data.vehicle_manufactured_date;
@@ -94,39 +112,98 @@ export default function DealerList({navigation}) {
         const expiryDate = data.data.insurance.expiry_date;
         const registerDate = data.data.rc_registration_date;
         const financer = data.data.financer;
+        const fuelType = data.data.vehicle_fuel_description;
+        const vehicleFinanced = data.data.vehicle_financed;
+        const blacklist = data.data.rc_blacklist_status;
+
+   
+
+        const params = {
+          dealerId: itemId,
+          orderStatus: 1,
+          vechNumber: searchText,
+          make: vehicleMakerDescription,
+          model: vehicleMakeModel,
+          year: vehicleManufacturedDate,
+          variant: vehicleMakeModel,
+          color: vehicleColor,
+
+          fuelType: fuelType,
+
+          owners: vehicleOwnerNumber,
+          hasHypothecated: vehicleFinanced == 'NA' ? 'No' : 'Yes',
+          hypothecatedBy: vehicleFinanced,
+
+          reRegistered: registerDate,
+          cubicCapacity: cubicCapacity,
+          numberOfSeats: vehicleSeatingCapacity,
+
+          registrationDate: registerDate,
+
+          insuranceCompany: insuranceCompany,
+          insuranceValidity: expiryDate,
+          blacklisted: blacklist,
+          chassisNumber: rcChassisNumber,
+          engineNumber: rcEngineNumber,
+        };
+
+        try {
+          const dataResponse = await apiPostWithToken('createOrder', params);
+          navigation.navigate('OrderCreation', {
+            vehicleMakeModel,
+            vehicleMakerDescription,
+            vehicleManufacturedDate,
+            vehicleColor,
+            vehicleOwnerNumber,
+            cubicCapacity,
+            vehicleSeatingCapacity,
+            rcEngineNumber,
+            rcChassisNumber,
+            insuranceCompanyName: insuranceCompany,
+            expiryDate,
+            registerDate,
+            vechicleNumber: searchText,
+            financer,
+            fuelType,
+            vehicleFinanced,
+            blacklist,
+            orderId:dataResponse.data.id
+          });
   
-        console.log(vehicleMakeModel, vehicleMakerDescription, vehicleOwnerNumber, cubicCapacity, "VEHICLE DETAILS");
-  
-        // Pass the values as navigation parameters
-        navigation.navigate('OrderCreation', {
+        
+          console.log(params,"DATA IS GGNERE");
+        } catch (error) {
+          // Handle errors here
+          console.error('Request failed:', error);
+        } finally {
+         
+        }
+
+        console.log(
           vehicleMakeModel,
           vehicleMakerDescription,
-          vehicleManufacturedDate,
-          vehicleColor,
           vehicleOwnerNumber,
           cubicCapacity,
-          vehicleSeatingCapacity,
-          rcEngineNumber,
-          rcChassisNumber,
-          insuranceCompanyName: insuranceCompany,
-          expiryDate,
-          registerDate,
-          vechicleNumber: searchText,
-          financer
-        });
-  
-        setSearchText("");
+          'VEHICLE DETAILS',
+        );
+
+        // Pass the values as navigation parameters
+        
+
+        setSearchText('');
         setModalVisible(false);
       }
     } catch (error) {
       // Handle errors here
       console.error('Request failed:', error);
-      ToastAndroid.show("An error occurred. Please try again.", ToastAndroid.SHORT);
+      ToastAndroid.show(
+        'An error occurred. Please try again.',
+        ToastAndroid.SHORT,
+      );
     }
   };
-  
 
-  const handlePress = async (item) => {
+  const handlePress = async item => {
     try {
       await setItem('dealarId', item.id.toString());
       setModalVisible(true);
@@ -135,15 +212,13 @@ export default function DealerList({navigation}) {
     }
   };
 
- 
-  const handleCall = (phoneNumber) => {
+  const handleCall = phoneNumber => {
     const args = {
       number: phoneNumber,
       prompt: true,
     };
     call(args).catch(console.error);
   };
-  
 
   const renderItem = ({item}) => (
     <TouchableOpacity style={styles.card} onPress={() => handlePress(item)}>
@@ -151,11 +226,13 @@ export default function DealerList({navigation}) {
         <User width={50} height={50} style={styles.avatar} />
         <View style={styles.textContainer}>
           <Text style={styles.vehicleNumber}>{item.dealerName}</Text>
-          <Text style={styles.date}>{item.dealerLocation==null?"-":item.dealerLocation}</Text>
+          <Text style={styles.date}>
+            {item.dealerLocation == null ? '-' : item.dealerLocation}
+          </Text>
         </View>
-        <TouchableOpacity style={styles.phoneIconContainer}
-          onPress={() => handleCall(item.dealerPhoneNumber)}
-        >
+        <TouchableOpacity
+          style={styles.phoneIconContainer}
+          onPress={() => handleCall(item.dealerPhoneNumber)}>
           <Image
             source={require('../../../assets/images/phone.png')}
             style={styles.phoneIcon}
@@ -211,7 +288,7 @@ export default function DealerList({navigation}) {
                   fontWeight: 'bold',
                   fontSize: 18,
                   bottom: 8,
-                //  textAlign:"left"
+                  //  textAlign:"left"
                 }}>
                 Vehicle Search
               </Text>
@@ -341,8 +418,8 @@ const styles = StyleSheet.create({
     width: '80%',
     height: 250,
     marginTop: 5,
-    alignItems:"center",
-    justifyContent:"center"
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 
   searchIcon: {
@@ -352,7 +429,7 @@ const styles = StyleSheet.create({
     height: 40,
     backgroundColor: '#f7f8f9',
     borderRadius: 8,
-   // marginHorizontal: 12,
+    // marginHorizontal: 12,
     marginHorizontal: 16,
     marginTop: 15,
     paddingHorizontal: 10,

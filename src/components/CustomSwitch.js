@@ -31,23 +31,26 @@ const CustomSwitch = ({
           style={[
             styles.option,
             {
-              backgroundColor: getSelectionMode == 1 ? selectionColor : 'white',
-              borderRadius: roundCorner ? 25 : 0,
+              backgroundColor: getSelectionMode === 1 ? selectionColor : 'white',
+              borderTopLeftRadius: roundCorner ? 25 : 0,
+              borderBottomLeftRadius: roundCorner ? 25 : 0,
             }
           ]}>
-          <Text style={{ color: getSelectionMode == 1 ? 'white' : selectionColor }}>{option1}</Text>
+          <Text style={{ color: getSelectionMode === 1 ? 'white' : selectionColor }}>{option1}</Text>
         </TouchableOpacity>
+        <View style={styles.verticalLine} />
         <TouchableOpacity
           activeOpacity={1}
           onPress={() => updatedSwitchData(2)}
           style={[
             styles.option,
             {
-              backgroundColor: getSelectionMode == 2 ? selectionColor : 'white',
-              borderRadius: roundCorner ? 25 : 0,
+              backgroundColor: getSelectionMode === 2 ? selectionColor : 'white',
+              borderTopRightRadius: roundCorner ? 25 : 0,
+              borderBottomRightRadius: roundCorner ? 25 : 0,
             }
           ]}>
-          <Text style={{ color: getSelectionMode == 2 ? 'white' : selectionColor }}>{option2}</Text>
+          <Text style={{ color: getSelectionMode === 2 ? 'white' : selectionColor }}>{option2}</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -76,6 +79,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  verticalLine: {
+    width: 1,
+    height: '100%',
+    backgroundColor: '#007BFF'
+  }
 });
 
 export default CustomSwitch;
