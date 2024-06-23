@@ -1807,21 +1807,21 @@ const OrderCreation = ({navigation}) => {
       const data = await apiPostWithToken('updateOrder', params);
 
 
-      // if(step ==7) {
-      //   navigation.dispatch(
-      //     CommonActions.reset({
-      //       index: 0,
-      //       routes: [{name: 'Dashboard'}],
-      //     }),
-      //   );
+      if(step ==8) {
+        navigation.dispatch(
+          CommonActions.reset({
+            index: 0,
+            routes: [{name: 'Dashboard'}],
+          }),
+        );
         
        
 
-      // } else {
+      } else {
         if (swiperRef.current) {
           swiperRef.current.scrollBy(1);
         }
-      // }
+     }
 
     // else if (role ==="Reinspector" && step == 8) {
     //     navigation.dispatch(
@@ -6951,6 +6951,150 @@ const OrderCreation = ({navigation}) => {
     }
   }, [id]);
 
+
+  const photoUpdates = [
+    { setter: setRcPhoto, index: 0, key: 'rcFrontPhoto' },
+    { setter: setRcPhoto, index: 1, key: 'rcBackPhoto' },
+    { setter: setRcPhoto, index: 2, key: 'RCOthers' },
+    { setter: setInsuracePhoto, index: 0, key: 'insuranceOwnDamagePhoto' },
+    { setter: setInsuracePhoto, index: 1, key: 'insuranceThirdPartyPhoto' },
+    { setter: setInsuracePhoto, index: 2, key: 'insuranceOthers' },
+    { setter: setNOCPhoto, index: 0, key: 'nocPhoto' },
+    { setter: setNOCPhoto, index: 1, key: 'nocOthers' },
+    { setter: setPhotoUrisCarPhotos, index: 0, key: 'frontViewPhoto' },
+    { setter: setPhotoUrisCarPhotos, index: 1, key: 'rearViewPhoto' },
+    { setter: setPhotoUrisCarPhotos, index: 2, key: 'lhsViewPhoto' },
+    { setter: setPhotoUrisCarPhotos, index: 3, key: 'rhsViewPhoto' },
+    { setter: setPhotoUrisCarPhotos, index: 4, key: 'odometerPhoto' },
+    { setter: setPhotoUrisCarPhotos, index: 5, key: 'roofPhoto' },
+    { setter: setPhotoUrisCarPhotos, index: 6, key: 'interiorPhoto' },
+    { setter: setPhotoUrisCarPhotos, index: 7, key: 'underChassisPhoto' },
+    { setter: setPhotoUrisCarPhotos, index: 8, key: 'engineRoomPhoto' },
+    { setter: setPhotoUrisCarPhotos, index: 9, key: 'trunkBootPhoto' },
+    { setter: setChassisPunchPhoto, index: 0, key: 'chassisPunchPhoto' },
+    { setter: setVinPlatePunchPhoto, index: 0, key: 'vinPlatePhoto' },
+    { setter: setTyrePunchPhoto, index: 0, key: 'frontTyreLeftPhoto' },
+    { setter: setTyrePunchPhoto, index: 1, key: 'frontTyreRightPhoto' },
+    { setter: setTyrePunchPhoto, index: 2, key: 'rearTyreLeftPhoto' },
+    { setter: setTyrePunchPhoto, index: 3, key: 'rearTyreRightPhoto' },
+    { setter: setSpareWheelPunchPhoto, index: 0, key: 'spareWheelPhoto' },
+    { setter: setToolkitPunchPhoto, index: 0, key: 'toolKitJackPhoto' },
+    { setter: setKeyPunchPhoto, index: 0, key: 'primaryKeyPhoto' },
+    { setter: setKeyPunchPhoto, index: 1, key: 'spareKeyPhoto' },
+    { setter: setPillarsPhoto, index: 0, key: 'pillarALeftSidePhoto' },
+    { setter: setPillarsPhoto, index: 1, key: 'pillarARightSidePhoto' },
+    { setter: setPillarsPhoto, index: 2, key: 'pillarBLeftSidePhoto' },
+    { setter: setPillarsPhoto, index: 3, key: 'pillarBRightSidePhoto' },
+    { setter: setPillarsPhoto, index: 4, key: 'pillarCLeftSidePhoto' },
+    { setter: setPillarsPhoto, index: 5, key: 'pillarCRightSidePhoto' },
+    { setter: setApronPhoto, index: 0, key: 'apronLeftSidePhoto' },
+    { setter: setApronPhoto, index: 1, key: 'apronRightSidePhoto' },
+    { setter: setFendersPhoto, index: 0, key: 'fendersLeftSidePhoto' },
+    { setter: setFendersPhoto, index: 1, key: 'fendersRightSidePhoto' },
+    { setter: setQuarterPanlesPhoto, index: 0, key: 'quarterPanelsLeftSidePhoto' },
+    { setter: setQuarterPanlesPhoto, index: 1, key: 'quarterPanelsRightSidePhoto' },
+    { setter: setRunningBoardPhoto, index: 0, key: 'runningBoardLeftSidePhoto' },
+    { setter: setRunningBoardPhoto, index: 1, key: 'runningBoardRightSidePhoto' },
+    { setter: setDoorPhoto, index: 0, key: 'doorsFrontLeftSidePhoto' },
+    { setter: setDoorPhoto, index: 1, key: 'doorsFrontRightSidePhoto' },
+    { setter: setDoorPhoto, index: 2, key: 'doorsRearLeftSidePhoto' },
+    { setter: setDoorPhoto, index: 3, key: 'doorsRearRightSidePhoto' },
+    { setter: setDickyDoorPhoto, index: 0, key: 'bootPhoto' },
+    { setter: setDickySkirtPhoto, index: 0, key: 'bootSkirtPhoto' },
+    { setter: setBonetPhoto, index: 0, key: 'bonetPhoto' },
+    { setter: setBumperPhoto, index: 0, key: 'bumperFrontPhoto' },
+    { setter: setBumperPhoto, index: 1, key: 'bumperRearPhoto' },
+    { setter: setSupportMembersPhoto, index: 0, key: 'supportMemberUpperPhoto' },
+    { setter: setSupportMembersPhoto, index: 1, key: 'supportMemberLowerPhoto' },
+    { setter: setSupportMembersPhoto, index: 2, key: 'headLampSupportRightSidePhoto' },
+    { setter: setSupportMembersPhoto, index: 3, key: 'headLampSupportLeftSidePhoto' },
+    { setter: setWheelTypePhoto, index: 0, key: 'wheelTypeAlloyPhoto' },
+    { setter: setWheelTypePhoto, index: 1, key: 'wheelTypeDrumPhoto' },
+    { setter: setWindShieldPhoto, index: 0, key: 'windShieldFrontTyrePhoto' },
+    { setter: setWindShieldPhoto, index: 1, key: 'windShieldRearTyrePhoto' },
+    { setter: setSuspensionPhoto, index: 0, key: 'strutPhoto' },
+    { setter: setSuspensionPhoto, index: 1, key: 'lowerArmPhoto' },
+    { setter: setSuspensionPhoto, index: 2, key: 'linkRodPhoto' },
+    { setter: setSuspensionPhoto, index: 3, key: 'stabilizerBarPhoto' },
+    { setter: setSuspensionPhoto, index: 4, key: 'shockAbsorberPhoto' },
+    { setter: setSuspensionPhoto, index: 5, key: 'coilSpringPhoto' },
+    { setter: setSuspensionPhoto, index: 6, key: 'leafSpringPhoto' },
+    { setter: setSteeringPhoto, index: 0, key: 'rackAndPinionPhoto' },
+    { setter: setSteeringPhoto, index: 1, key: 'steeringColumnPhoto' },
+    { setter: setSteeringPhoto, index: 2, key: 'hardnessPhoto' },
+    { setter: setSteeringPhoto, index: 3, key: 'ballJointEndPhoto' },
+    { setter: setBrakePhoto, index: 0, key: 'padPhoto' },
+    { setter: setBrakePhoto, index: 1, key: 'discPhoto' },
+    { setter: setBrakePhoto, index: 2, key: 'shoePhoto' },
+    { setter: setBrakePhoto, index: 3, key: 'drumPhoto' },
+    { setter: setBrakePhoto, index: 4, key: 'wheelCylinderPhoto' },
+    { setter: setBrakePhoto, index: 5, key: 'mcBoosterPhoto' },
+  
+    { setter: setTransmissionPhoto, index: 0, key: 'clutchPhoto' },
+    { setter: setTransmissionPhoto, index: 1, key: 'gearShiftingPhoto' },
+    { setter: setTransmissionPhoto, index: 2, key: 'driveShaftPhoto' },
+    { setter: setTransmissionPhoto, index: 3, key: 'axlePhoto' },
+    { setter: setTransmissionPhoto, index: 4, key: 'propellerShaftPhoto' },
+    { setter: setTransmissionPhoto, index: 5, key: 'differentialPhoto' },
+    { setter: setTransmissionPhoto, index: 6, key: 'bearingPhoto' },
+    { setter: setTransmissionPhoto, index: 7, key: 'mountingPhoto' },
+    
+    { setter: setEnginePhoto, index: 0, key: 'smokePhoto' },
+    { setter: setEnginePhoto, index: 1, key: 'turboPhoto' },
+    { setter: setEnginePhoto, index: 2, key: 'misfiringPhoto' },
+    { setter: setEnginePhoto, index: 3, key: 'tappetPhoto' },
+    { setter: setEnginePhoto, index: 4, key: 'knockingPhoto' },
+    { setter: setEnginePhoto, index: 5, key: 'exhaustPhoto' },
+    { setter: setEnginePhoto, index: 6, key: 'beltsPhoto' },
+    { setter: setEnginePhoto, index: 7, key: 'tensionerPhoto' },
+    { setter: setEnginePhoto, index: 8, key: 'mountingPhoto' },
+    { setter: setEnginePhoto, index: 9, key: 'fuelPumpPhoto' },
+    { setter: setEnginePhoto, index: 10, key: 'highPressurePumpPhoto' },
+    { setter: setEnginePhoto, index: 11, key: 'commonrailPhoto' },
+    { setter: setEnginePhoto, index: 12, key: 'injectorPhoto' },
+    { setter: setEnginePhoto, index: 13, key: 'fuelTankPhoto' },
+    { setter: setEnginePhoto, index: 14, key: 'hosePhoto' },
+    { setter: setEnginePhoto, index: 15, key: 'radiatorPhoto' },
+    { setter: setEnginePhoto, index: 16, key: 'fanPhoto' },
+    { setter: setEnginePhoto, index: 17, key: 'overHeatingPhoto' },
+    { setter: setEnginePhoto, index: 18, key: 'allBearingsPhoto' },
+    
+    { setter: setElectricalPhoto, index: 0, key: 'batteryPhoto' },
+    { setter: setElectricalPhoto, index: 1, key: 'alternatorPhoto' },
+    { setter: setElectricalPhoto, index: 2, key: 'selfMotorPhoto' },
+    { setter: setElectricalPhoto, index: 3, key: 'wiringHarnessPhoto' },
+    { setter: setElectricalPhoto, index: 4, key: 'ecmPhoto' },
+    { setter: setElectricalPhoto, index: 5, key: 'allSensorsPhoto' },
+    { setter: setElectricalPhoto, index: 6, key: 'wiperMotorPhoto' },
+    { setter: setElectricalPhoto, index: 7, key: 'clusterPhoto' },
+    { setter: setElectricalPhoto, index: 8, key: 'headLightsAndDrlPhoto' },
+    { setter: setElectricalPhoto, index: 9, key: 'tailLightPhoto' },
+    { setter: setElectricalPhoto, index: 10, key: 'cabinLightPhoto' },
+    { setter: setElectricalPhoto, index: 11, key: 'combinationSwitchPhoto' },
+    { setter: setElectricalPhoto, index: 12, key: 'absPhoto' },
+    { setter: setElectricalPhoto, index: 13, key: 'airBagPhoto' },
+    { setter: setElectricalPhoto, index: 14, key: 'powerWindowsPhoto' },
+    
+    { setter: setAcPhoto, index: 0, key: 'coolingPhoto' },
+    { setter: setAcPhoto, index: 1, key: 'blowerCondenserPhoto' },
+    { setter: setAcPhoto, index: 2, key: 'fanPhoto' },
+    { setter: setAcPhoto, index: 3, key: 'controlSwitchPhoto' },
+    { setter: setAcPhoto, index: 4, key: 'ventPhoto' },
+    
+    { setter: setAccessoriesPhoto, index: 0, key: 'musicSystemPhoto' },
+    { setter: setAccessoriesPhoto, index: 1, key: 'parkingSensorPhoto' },
+    { setter: setAccessoriesPhoto, index: 2, key: 'reverseCameraPhoto' },
+    { setter: setAccessoriesPhoto, index: 3, key: 'ovrmAdjusterPhoto' },
+    { setter: setAccessoriesPhoto, index: 4, key: 'seatHeightAdjusterPhoto' },
+    { setter: setAccessoriesPhoto, index: 5, key: 'seatBeltPhoto' },
+    { setter: setAccessoriesPhoto, index: 6, key: 'sunRoofPhoto' },
+    { setter: setAccessoriesPhoto, index: 7, key: 'roofRailPhoto' },
+    { setter: setAccessoriesPhoto, index: 8, key: 'spoilerPhoto' },
+    { setter: setAccessoriesPhoto, index: 9, key: 'skirtPhoto' },
+    { setter: setAccessoriesPhoto, index: 10, key: 'steeringControlsPhoto' },
+  ];
+  
+
   useEffect(() => {
     const handleBackPress = () => {
       if (currentIndex === 0) {
@@ -7015,435 +7159,440 @@ const OrderCreation = ({navigation}) => {
       setRcStatus(response.data.rcStatus === 'Original' ? 1 : 2);
       setStateNoc(response.data.stateNoc === 'No' ? 2 : 1);
       setFlood(response.data.flood === 'No' ? 2 : 1);
-      dispatch(storeOrderData(response.data));
+      //dispatch(storeOrderData(response.data));
 
-      updatePhotoState(setRcPhoto, 0, response.data.rcFrontPhoto || '');
-      updatePhotoState(setRcPhoto, 1, response.data.rcBackPhoto || ''); // Default to empty string if rcBackPhoto is not present
-      updatePhotoState(setRcPhoto, 2, response.data.RCOthers || '');
-      updatePhotoState(
-        setInsuracePhoto,
-        0,
-        response.data.insuranceOwnDamagePhoto || '',
-      );
-      updatePhotoState(
-        setInsuracePhoto,
-        1,
-        response.data.insuranceThirdPartyPhoto || '',
-      );
-      updatePhotoState(
-        setInsuracePhoto,
-        2,
-        response.data.insuranceOthers || '',
-      );
-      updatePhotoState(setNOCPhoto, 0, response.data.nocPhoto || '');
-      updatePhotoState(setNOCPhoto, 1, response.data.nocOthers || '');
-      updatePhotoState(
-        setPhotoUrisCarPhotos,
-        0,
-        response.data.frontViewPhoto || '',
-      );
-      updatePhotoState(
-        setPhotoUrisCarPhotos,
-        1,
-        response.data.rearViewPhoto || '',
-      );
-      updatePhotoState(
-        setPhotoUrisCarPhotos,
-        2,
-        response.data.lhsViewPhoto || '',
-      );
-      updatePhotoState(
-        setPhotoUrisCarPhotos,
-        3,
-        response.data.rhsViewPhoto || '',
-      );
-      updatePhotoState(
-        setPhotoUrisCarPhotos,
-        4,
-        response.data.odometerPhoto || '',
-      );
-      updatePhotoState(setPhotoUrisCarPhotos, 5, response.data.roofPhoto || '');
-      updatePhotoState(
-        setPhotoUrisCarPhotos,
-        6,
-        response.data.interiorPhoto || '',
-      );
-      updatePhotoState(
-        setPhotoUrisCarPhotos,
-        7,
-        response.data.underChassisPhoto || '',
-      );
-      updatePhotoState(
-        setPhotoUrisCarPhotos,
-        8,
-        response.data.engineRoomPhoto || '',
-      );
-      updatePhotoState(updatePhotoState, 9, response.data.trunkBootPhoto || '');
-      updatePhotoState(
-        setChassisPunchPhoto,
-        0,
-        response.data.chassisPunchPhoto || '',
-      );
-      updatePhotoState(
-        setVinPlatePunchPhoto,
-        0,
-        response.data.vinPlatePhoto || '',
-      );
-      updatePhotoState(
-        setTyrePunchPhoto,
-        0,
-        response.data.frontTyreLeftPhoto || '',
-      );
-      updatePhotoState(
-        setTyrePunchPhoto,
-        1,
-        response.data.frontTyreRightPhoto || '',
-      );
-      updatePhotoState(
-        setTyrePunchPhoto,
-        2,
-        response.data.rearTyreLeftPhoto || '',
-      );
-      updatePhotoState(
-        setTyrePunchPhoto,
-        3,
-        response.data.rearTyreRightPhoto || '',
-      );
-      updatePhotoState(
-        setSpareWheelPunchPhoto,
-        0,
-        response.data.spareWheelPhoto || '',
-      );
-      updatePhotoState(
-        setToolkitPunchPhoto,
-        0,
-        response.data.toolKitJackPhoto || '',
-      );
-      updatePhotoState(
-        setKeyPunchPhoto,
-        0,
-        response.data.primaryKeyPhoto || '',
-      );
-      updatePhotoState(setKeyPunchPhoto, 1, response.data.spareKeyPhoto || '');
-      updatePhotoState(
-        setPillarsPhoto,
-        0,
-        response.data.pillarALeftSidePhoto || '',
-      );
-      updatePhotoState(
-        setPillarsPhoto,
-        1,
-        response.data.pillarARightSidePhoto || '',
-      );
-      updatePhotoState(
-        setPillarsPhoto,
-        2,
-        response.data.pillarBLeftSidePhoto || '',
-      );
-      updatePhotoState(
-        setPillarsPhoto,
-        3,
-        response.data.pillarBRightSidePhoto || '',
-      );
-      updatePhotoState(
-        setPillarsPhoto,
-        4,
-        response.data.pillarCLeftSidePhoto || '',
-      );
-      updatePhotoState(
-        setPillarsPhoto,
-        5,
-        response.data.pillarCRightSidePhoto || '',
-      );
-      updatePhotoState(
-        setApronPhoto,
-        0,
-        response.data.apronLeftSidePhoto || '',
-      );
-      updatePhotoState(
-        setApronPhoto,
-        1,
-        response.data.apronRightSidePhoto || '',
-      );
-      updatePhotoState(
-        setFendersPhoto,
-        0,
-        response.data.fendersLeftSidePhoto || '',
-      );
-      updatePhotoState(
-        setFendersPhoto,
-        1,
-        response.data.fendersRightSidePhoto || '',
-      );
-      updatePhotoState(
-        setQuarterPanlesPhoto,
-        0,
-        response.data.quarterPanelsLeftSidePhoto || '',
-      );
-      updatePhotoState(
-        setQuarterPanlesPhoto,
-        1,
-        response.data.quarterPanelsRightSidePhoto || '',
-      );
-      updatePhotoState(
-        setRunningBoardPhoto,
-        0,
-        response.data.runningBoardLeftSidePhoto || '',
-      );
-      updatePhotoState(
-        setRunningBoardPhoto,
-        1,
-        response.data.runningBoardRightSidePhoto || '',
-      );
-      updatePhotoState(
-        setDoorPhoto,
-        0,
-        response.data.doorsFrontLeftSidePhoto || '',
-      );
-      updatePhotoState(
-        setDoorPhoto,
-        1,
-        response.data.doorsFrontRightSidePhoto || '',
-      );
-      updatePhotoState(
-        setDoorPhoto,
-        2,
-        response.data.doorsRearLeftSidePhoto || '',
-      );
-      updatePhotoState(
-        setDoorPhoto,
-        3,
-        response.data.doorsRearRightSidePhoto || '',
-      );
-      updatePhotoState(setDickyDoorPhoto, 0, response.data.bootPhoto || '');
-      updatePhotoState(
-        setDickySkirtPhoto,
-        0,
-        response.data.bootSkirtPhoto || '',
-      );
-      updatePhotoState(setBonetPhoto, 0, response.data.bonetPhoto || '');
-      updatePhotoState(setBumperPhoto, 0, response.data.bumperFrontPhoto || '');
-      updatePhotoState(setBumperPhoto, 1, response.data.bumperRearPhoto || '');
 
-      updatePhotoState(
-        setSupportMembersPhoto,
-        0,
-        response.data.supportMemberUpperPhoto || '',
-      );
-      updatePhotoState(
-        setSupportMembersPhoto,
-        1,
-        response.data.supportMemberLowerPhoto || '',
-      );
-      updatePhotoState(
-        setSupportMembersPhoto,
-        2,
-        response.data.headLampSupportRightSidePhoto || '',
-      );
-      updatePhotoState(
-        setSupportMembersPhoto,
-        3,
-        response.data.headLampSupportLeftSidePhoto || '',
-      );
+      photoUpdates.forEach(({ setter, index, key }) => {
+        updatePhotoState(setter, index, response.data[key] || '');
+      });
 
-      updatePhotoState(
-        setWheelTypePhoto,
-        0,
-        response.data.wheelTypeAlloyPhoto || '',
-      );
-      updatePhotoState(
-        setWheelTypePhoto,
-        1,
-        response.data.wheelTypeDrumPhoto || '',
-      );
-      updatePhotoState(
-        setWindShieldPhoto,
-        0,
-        response.data.windShieldFrontTyrePhoto || '',
-      );
-      updatePhotoState(
-        setWindShieldPhoto,
-        1,
-        response.data.windShieldRearTyrePhoto || '',
-      );
+      // updatePhotoState(setRcPhoto, 0, response.data.rcFrontPhoto || '');
+      // updatePhotoState(setRcPhoto, 1, response.data.rcBackPhoto || ''); // Default to empty string if rcBackPhoto is not present
+      // updatePhotoState(setRcPhoto, 2, response.data.RCOthers || '');
+      // updatePhotoState(
+      //   setInsuracePhoto,
+      //   0,
+      //   response.data.insuranceOwnDamagePhoto || '',
+      // );
+      // updatePhotoState(
+      //   setInsuracePhoto,
+      //   1,
+      //   response.data.insuranceThirdPartyPhoto || '',
+      // );
+      // updatePhotoState(
+      //   setInsuracePhoto,
+      //   2,
+      //   response.data.insuranceOthers || '',
+      // );
+      // updatePhotoState(setNOCPhoto, 0, response.data.nocPhoto || '');
+      // updatePhotoState(setNOCPhoto, 1, response.data.nocOthers || '');
+      // updatePhotoState(
+      //   setPhotoUrisCarPhotos,
+      //   0,
+      //   response.data.frontViewPhoto || '',
+      // );
+      // updatePhotoState(
+      //   setPhotoUrisCarPhotos,
+      //   1,
+      //   response.data.rearViewPhoto || '',
+      // );
+      // updatePhotoState(
+      //   setPhotoUrisCarPhotos,
+      //   2,
+      //   response.data.lhsViewPhoto || '',
+      // );
+      // updatePhotoState(
+      //   setPhotoUrisCarPhotos,
+      //   3,
+      //   response.data.rhsViewPhoto || '',
+      // );
+      // updatePhotoState(
+      //   setPhotoUrisCarPhotos,
+      //   4,
+      //   response.data.odometerPhoto || '',
+      // );
+      // updatePhotoState(setPhotoUrisCarPhotos, 5, response.data.roofPhoto || '');
+      // updatePhotoState(
+      //   setPhotoUrisCarPhotos,
+      //   6,
+      //   response.data.interiorPhoto || '',
+      // );
+      // updatePhotoState(
+      //   setPhotoUrisCarPhotos,
+      //   7,
+      //   response.data.underChassisPhoto || '',
+      // );
+      // updatePhotoState(
+      //   setPhotoUrisCarPhotos,
+      //   8,
+      //   response.data.engineRoomPhoto || '',
+      // );
+      // updatePhotoState(updatePhotoState, 9, response.data.trunkBootPhoto || '');
+      // updatePhotoState(
+      //   setChassisPunchPhoto,
+      //   0,
+      //   response.data.chassisPunchPhoto || '',
+      // );
+      // updatePhotoState(
+      //   setVinPlatePunchPhoto,
+      //   0,
+      //   response.data.vinPlatePhoto || '',
+      // );
+      // updatePhotoState(
+      //   setTyrePunchPhoto,
+      //   0,
+      //   response.data.frontTyreLeftPhoto || '',
+      // );
+      // updatePhotoState(
+      //   setTyrePunchPhoto,
+      //   1,
+      //   response.data.frontTyreRightPhoto || '',
+      // );
+      // updatePhotoState(
+      //   setTyrePunchPhoto,
+      //   2,
+      //   response.data.rearTyreLeftPhoto || '',
+      // );
+      // updatePhotoState(
+      //   setTyrePunchPhoto,
+      //   3,
+      //   response.data.rearTyreRightPhoto || '',
+      // );
+      // updatePhotoState(
+      //   setSpareWheelPunchPhoto,
+      //   0,
+      //   response.data.spareWheelPhoto || '',
+      // );
+      // updatePhotoState(
+      //   setToolkitPunchPhoto,
+      //   0,
+      //   response.data.toolKitJackPhoto || '',
+      // );
+      // updatePhotoState(
+      //   setKeyPunchPhoto,
+      //   0,
+      //   response.data.primaryKeyPhoto || '',
+      // );
+      // updatePhotoState(setKeyPunchPhoto, 1, response.data.spareKeyPhoto || '');
+      // updatePhotoState(
+      //   setPillarsPhoto,
+      //   0,
+      //   response.data.pillarALeftSidePhoto || '',
+      // );
+      // updatePhotoState(
+      //   setPillarsPhoto,
+      //   1,
+      //   response.data.pillarARightSidePhoto || '',
+      // );
+      // updatePhotoState(
+      //   setPillarsPhoto,
+      //   2,
+      //   response.data.pillarBLeftSidePhoto || '',
+      // );
+      // updatePhotoState(
+      //   setPillarsPhoto,
+      //   3,
+      //   response.data.pillarBRightSidePhoto || '',
+      // );
+      // updatePhotoState(
+      //   setPillarsPhoto,
+      //   4,
+      //   response.data.pillarCLeftSidePhoto || '',
+      // );
+      // updatePhotoState(
+      //   setPillarsPhoto,
+      //   5,
+      //   response.data.pillarCRightSidePhoto || '',
+      // );
+      // updatePhotoState(
+      //   setApronPhoto,
+      //   0,
+      //   response.data.apronLeftSidePhoto || '',
+      // );
+      // updatePhotoState(
+      //   setApronPhoto,
+      //   1,
+      //   response.data.apronRightSidePhoto || '',
+      // );
+      // updatePhotoState(
+      //   setFendersPhoto,
+      //   0,
+      //   response.data.fendersLeftSidePhoto || '',
+      // );
+      // updatePhotoState(
+      //   setFendersPhoto,
+      //   1,
+      //   response.data.fendersRightSidePhoto || '',
+      // );
+      // updatePhotoState(
+      //   setQuarterPanlesPhoto,
+      //   0,
+      //   response.data.quarterPanelsLeftSidePhoto || '',
+      // );
+      // updatePhotoState(
+      //   setQuarterPanlesPhoto,
+      //   1,
+      //   response.data.quarterPanelsRightSidePhoto || '',
+      // );
+      // updatePhotoState(
+      //   setRunningBoardPhoto,
+      //   0,
+      //   response.data.runningBoardLeftSidePhoto || '',
+      // );
+      // updatePhotoState(
+      //   setRunningBoardPhoto,
+      //   1,
+      //   response.data.runningBoardRightSidePhoto || '',
+      // );
+      // updatePhotoState(
+      //   setDoorPhoto,
+      //   0,
+      //   response.data.doorsFrontLeftSidePhoto || '',
+      // );
+      // updatePhotoState(
+      //   setDoorPhoto,
+      //   1,
+      //   response.data.doorsFrontRightSidePhoto || '',
+      // );
+      // updatePhotoState(
+      //   setDoorPhoto,
+      //   2,
+      //   response.data.doorsRearLeftSidePhoto || '',
+      // );
+      // updatePhotoState(
+      //   setDoorPhoto,
+      //   3,
+      //   response.data.doorsRearRightSidePhoto || '',
+      // );
+      // updatePhotoState(setDickyDoorPhoto, 0, response.data.bootPhoto || '');
+      // updatePhotoState(
+      //   setDickySkirtPhoto,
+      //   0,
+      //   response.data.bootSkirtPhoto || '',
+      // );
+      // updatePhotoState(setBonetPhoto, 0, response.data.bonetPhoto || '');
+      // updatePhotoState(setBumperPhoto, 0, response.data.bumperFrontPhoto || '');
+      // updatePhotoState(setBumperPhoto, 1, response.data.bumperRearPhoto || '');
 
-      updatePhotoState(setSuspensionPhoto, 0, response.data.strutPhoto || '');
-      updatePhotoState(
-        setSuspensionPhoto,
-        1,
-        response.data.lowerArmPhoto || '',
-      );
-      updatePhotoState(setSuspensionPhoto, 2, response.data.linkRodPhoto || '');
-      updatePhotoState(
-        setSuspensionPhoto,
-        3,
-        response.data.stabilizerBarPhoto || '',
-      );
-      updatePhotoState(
-        setSuspensionPhoto,
-        4,
-        response.data.shockAbsorberPhoto || '',
-      );
-      updatePhotoState(
-        setSuspensionPhoto,
-        5,
-        response.data.coilSpringPhoto || '',
-      );
-      updatePhotoState(
-        setSuspensionPhoto,
-        6,
-        response.data.leafSpringPhoto || '',
-      );
+      // updatePhotoState(
+      //   setSupportMembersPhoto,
+      //   0,
+      //   response.data.supportMemberUpperPhoto || '',
+      // );
+      // updatePhotoState(
+      //   setSupportMembersPhoto,
+      //   1,
+      //   response.data.supportMemberLowerPhoto || '',
+      // );
+      // updatePhotoState(
+      //   setSupportMembersPhoto,
+      //   2,
+      //   response.data.headLampSupportRightSidePhoto || '',
+      // );
+      // updatePhotoState(
+      //   setSupportMembersPhoto,
+      //   3,
+      //   response.data.headLampSupportLeftSidePhoto || '',
+      // );
 
-      updatePhotoState(
-        setSteeringPhoto,
-        0,
-        response.data.rackAndPinionPhoto || '',
-      );
+      // updatePhotoState(
+      //   setWheelTypePhoto,
+      //   0,
+      //   response.data.wheelTypeAlloyPhoto || '',
+      // );
+      // updatePhotoState(
+      //   setWheelTypePhoto,
+      //   1,
+      //   response.data.wheelTypeDrumPhoto || '',
+      // );
+      // updatePhotoState(
+      //   setWindShieldPhoto,
+      //   0,
+      //   response.data.windShieldFrontTyrePhoto || '',
+      // );
+      // updatePhotoState(
+      //   setWindShieldPhoto,
+      //   1,
+      //   response.data.windShieldRearTyrePhoto || '',
+      // );
 
-      updatePhotoState(
-        setSteeringPhoto,
-        1,
-        response.data.steeringColumnPhoto || '',
-      );
+      // updatePhotoState(setSuspensionPhoto, 0, response.data.strutPhoto || '');
+      // updatePhotoState(
+      //   setSuspensionPhoto,
+      //   1,
+      //   response.data.lowerArmPhoto || '',
+      // );
+      // updatePhotoState(setSuspensionPhoto, 2, response.data.linkRodPhoto || '');
+      // updatePhotoState(
+      //   setSuspensionPhoto,
+      //   3,
+      //   response.data.stabilizerBarPhoto || '',
+      // );
+      // updatePhotoState(
+      //   setSuspensionPhoto,
+      //   4,
+      //   response.data.shockAbsorberPhoto || '',
+      // );
+      // updatePhotoState(
+      //   setSuspensionPhoto,
+      //   5,
+      //   response.data.coilSpringPhoto || '',
+      // );
+      // updatePhotoState(
+      //   setSuspensionPhoto,
+      //   6,
+      //   response.data.leafSpringPhoto || '',
+      // );
 
-      updatePhotoState(setSteeringPhoto, 2, response.data.hardnessPhoto || '');
+      // updatePhotoState(
+      //   setSteeringPhoto,
+      //   0,
+      //   response.data.rackAndPinionPhoto || '',
+      // );
 
-      updatePhotoState(
-        setSteeringPhoto,
-        3,
-        response.data.ballJointEndPhoto || '',
-      );
+      // updatePhotoState(
+      //   setSteeringPhoto,
+      //   1,
+      //   response.data.steeringColumnPhoto || '',
+      // );
 
-      updatePhotoState(setBrakePhoto, 0, response.data.padPhoto || '');
-      updatePhotoState(setBrakePhoto, 1, response.data.discPhoto || '');
-      updatePhotoState(setBrakePhoto, 2, response.data.shoePhoto || '');
-      updatePhotoState(setBrakePhoto, 3, response.data.drumPhoto || '');
-      updatePhotoState(
-        setBrakePhoto,
-        4,
-        response.data.wheelCylinderPhoto || '',
-      );
-      updatePhotoState(setBrakePhoto, 5, response.data.mcBoosterPhoto || '');
+      // updatePhotoState(setSteeringPhoto, 2, response.data.hardnessPhoto || '');
 
-      updatePhotoState(
-        setTransmissionPhoto,
-        0,
-        response.data.clutchPhoto || '',
-      );
-      updatePhotoState(
-        setTransmissionPhoto,
-        1,
-        response.data.gearShiftingPhoto || '',
-      );
-      updatePhotoState(
-        setTransmissionPhoto,
-        2,
-        response.data.driveShaftPhoto || '',
-      );
-      updatePhotoState(setTransmissionPhoto, 3, response.data.axlePhoto || '');
-      updatePhotoState(
-        setTransmissionPhoto,
-        4,
-        response.data.propellerShaftPhoto || '',
-      );
-      updatePhotoState(
-        setTransmissionPhoto,
-        5,
-        response.data.differentialPhoto || '',
-      );
-      updatePhotoState(
-        setTransmissionPhoto,
-        6,
-        response.data.bearingPhoto || '',
-      );
-      updatePhotoState(
-        setTransmissionPhoto,
-        7,
-        response.data.mountingPhoto || '',
-      );
+      // updatePhotoState(
+      //   setSteeringPhoto,
+      //   3,
+      //   response.data.ballJointEndPhoto || '',
+      // );
 
-      updatePhotoState(setEnginePhoto, 0, response.data.smokePhoto);
-      updatePhotoState(setEnginePhoto, 1, response.data.turboPhoto);
-      updatePhotoState(setEnginePhoto, 2, response.data.misfiringPhoto);
-      updatePhotoState(setEnginePhoto, 3, response.data.tappetPhoto);
-      updatePhotoState(setEnginePhoto, 4, response.data.knockingPhoto);
-      updatePhotoState(setEnginePhoto, 5, response.data.exhaustPhoto);
-      updatePhotoState(setEnginePhoto, response.data.beltsPhoto);
-      updatePhotoState(setEnginePhoto, response.data.tensionerPhoto);
-      updatePhotoState(setEnginePhoto, response.data.mountingPhoto);
+      // updatePhotoState(setBrakePhoto, 0, response.data.padPhoto || '');
+      // updatePhotoState(setBrakePhoto, 1, response.data.discPhoto || '');
+      // updatePhotoState(setBrakePhoto, 2, response.data.shoePhoto || '');
+      // updatePhotoState(setBrakePhoto, 3, response.data.drumPhoto || '');
+      // updatePhotoState(
+      //   setBrakePhoto,
+      //   4,
+      //   response.data.wheelCylinderPhoto || '',
+      // );
+      // updatePhotoState(setBrakePhoto, 5, response.data.mcBoosterPhoto || '');
 
-      updatePhotoState(setEnginePhoto, 9, response.data.fuelPumpPhoto);
-      updatePhotoState(setEnginePhoto, 10, response.data.highPressurePumpPhoto);
-      updatePhotoState(setEnginePhoto, 11, response.data.commonrailPhoto);
-      updatePhotoState(setEnginePhoto, 12, response.data.injectorPhoto);
-      updatePhotoState(setEnginePhoto, 13, response.data.fuelTankPhoto);
-      updatePhotoState(setEnginePhoto, 14, response.data.hosePhoto);
-      updatePhotoState(setEnginePhoto, 15, response.data.radiatorPhoto);
-      updatePhotoState(setEnginePhoto, 16, response.data.fanPhoto);
-      updatePhotoState(setEnginePhoto, 17, response.data.overHeatingPhoto);
-      updatePhotoState(setEnginePhoto, 18, response.data.allBearingsPhoto);
+      // updatePhotoState(
+      //   setTransmissionPhoto,
+      //   0,
+      //   response.data.clutchPhoto || '',
+      // );
+      // updatePhotoState(
+      //   setTransmissionPhoto,
+      //   1,
+      //   response.data.gearShiftingPhoto || '',
+      // );
+      // updatePhotoState(
+      //   setTransmissionPhoto,
+      //   2,
+      //   response.data.driveShaftPhoto || '',
+      // );
+      // updatePhotoState(setTransmissionPhoto, 3, response.data.axlePhoto || '');
+      // updatePhotoState(
+      //   setTransmissionPhoto,
+      //   4,
+      //   response.data.propellerShaftPhoto || '',
+      // );
+      // updatePhotoState(
+      //   setTransmissionPhoto,
+      //   5,
+      //   response.data.differentialPhoto || '',
+      // );
+      // updatePhotoState(
+      //   setTransmissionPhoto,
+      //   6,
+      //   response.data.bearingPhoto || '',
+      // );
+      // updatePhotoState(
+      //   setTransmissionPhoto,
+      //   7,
+      //   response.data.mountingPhoto || '',
+      // );
 
-      updatePhotoState(setElectricalPhoto, 0, response.data.batteryPhoto);
-      updatePhotoState(setElectricalPhoto, 1, response.data.alternatorPhoto);
-      updatePhotoState(setElectricalPhoto, 2, response.data.selfMotorPhoto);
-      updatePhotoState(setElectricalPhoto, 3, response.data.wiringHarnessPhoto);
-      updatePhotoState(setElectricalPhoto, 4, response.data.ecmPhoto);
-      updatePhotoState(setElectricalPhoto, 5, response.data.allSensorsPhoto);
-      updatePhotoState(setElectricalPhoto, 6, response.data.wiperMotorPhoto);
-      updatePhotoState(setElectricalPhoto, 7, response.data.clusterPhoto);
-      updatePhotoState(
-        setElectricalPhoto,
-        8,
-        response.data.headLightsAndDrlPhoto,
-      );
+      // updatePhotoState(setEnginePhoto, 0, response.data.smokePhoto);
+      // updatePhotoState(setEnginePhoto, 1, response.data.turboPhoto);
+      // updatePhotoState(setEnginePhoto, 2, response.data.misfiringPhoto);
+      // updatePhotoState(setEnginePhoto, 3, response.data.tappetPhoto);
+      // updatePhotoState(setEnginePhoto, 4, response.data.knockingPhoto);
+      // updatePhotoState(setEnginePhoto, 5, response.data.exhaustPhoto);
+      // updatePhotoState(setEnginePhoto, response.data.beltsPhoto);
+      // updatePhotoState(setEnginePhoto, response.data.tensionerPhoto);
+      // updatePhotoState(setEnginePhoto, response.data.mountingPhoto);
 
-      updatePhotoState(setElectricalPhoto, 9, response.data.tailLightPhoto);
-      updatePhotoState(setElectricalPhoto, 10, response.data.cabinLightPhoto);
-      updatePhotoState(
-        setElectricalPhoto,
-        11,
-        response.data.combinationSwitchPhoto,
-      );
-      updatePhotoState(setElectricalPhoto, 12, response.data.absPhoto);
+      // updatePhotoState(setEnginePhoto, 9, response.data.fuelPumpPhoto);
+      // updatePhotoState(setEnginePhoto, 10, response.data.highPressurePumpPhoto);
+      // updatePhotoState(setEnginePhoto, 11, response.data.commonrailPhoto);
+      // updatePhotoState(setEnginePhoto, 12, response.data.injectorPhoto);
+      // updatePhotoState(setEnginePhoto, 13, response.data.fuelTankPhoto);
+      // updatePhotoState(setEnginePhoto, 14, response.data.hosePhoto);
+      // updatePhotoState(setEnginePhoto, 15, response.data.radiatorPhoto);
+      // updatePhotoState(setEnginePhoto, 16, response.data.fanPhoto);
+      // updatePhotoState(setEnginePhoto, 17, response.data.overHeatingPhoto);
+      // updatePhotoState(setEnginePhoto, 18, response.data.allBearingsPhoto);
 
-      updatePhotoState(setElectricalPhoto, 13, response.data.airBagPhoto);
-      updatePhotoState(setElectricalPhoto, 14, response.data.powerWindowsPhoto);
+      // updatePhotoState(setElectricalPhoto, 0, response.data.batteryPhoto);
+      // updatePhotoState(setElectricalPhoto, 1, response.data.alternatorPhoto);
+      // updatePhotoState(setElectricalPhoto, 2, response.data.selfMotorPhoto);
+      // updatePhotoState(setElectricalPhoto, 3, response.data.wiringHarnessPhoto);
+      // updatePhotoState(setElectricalPhoto, 4, response.data.ecmPhoto);
+      // updatePhotoState(setElectricalPhoto, 5, response.data.allSensorsPhoto);
+      // updatePhotoState(setElectricalPhoto, 6, response.data.wiperMotorPhoto);
+      // updatePhotoState(setElectricalPhoto, 7, response.data.clusterPhoto);
+      // updatePhotoState(
+      //   setElectricalPhoto,
+      //   8,
+      //   response.data.headLightsAndDrlPhoto,
+      // );
 
-      updatePhotoState(setAcPhoto, 0, response.data.coolingPhoto);
-      updatePhotoState(setAcPhoto, 1, response.data.blowerCondenserPhoto);
-      updatePhotoState(setAcPhoto, 2, response.data.fanPhoto);
-      updatePhotoState(setAcPhoto, 3, response.data.controlSwitchPhoto);
-      updatePhotoState(setAcPhoto, 4, response.data.ventPhoto);
+      // updatePhotoState(setElectricalPhoto, 9, response.data.tailLightPhoto);
+      // updatePhotoState(setElectricalPhoto, 10, response.data.cabinLightPhoto);
+      // updatePhotoState(
+      //   setElectricalPhoto,
+      //   11,
+      //   response.data.combinationSwitchPhoto,
+      // );
+      // updatePhotoState(setElectricalPhoto, 12, response.data.absPhoto);
 
-      updatePhotoState(setAccessoriesPhoto, 0, response.data.musicSystemPhoto);
-      updatePhotoState(
-        setAccessoriesPhoto,
-        1,
-        response.data.parkingSensorPhoto,
-      );
-      updatePhotoState(
-        setAccessoriesPhoto,
-        2,
-        response.data.reverseCameraPhoto,
-      );
-      updatePhotoState(setAccessoriesPhoto, 3, response.data.ovrmAdjusterPhoto);
-      updatePhotoState(
-        setAccessoriesPhoto,
-        4,
-        response.data.seatHeightAdjusterPhoto,
-      );
-      updatePhotoState(setAccessoriesPhoto, 5, response.data.seatBeltPhoto);
-      updatePhotoState(setAccessoriesPhoto, 6, response.data.sunRoofPhoto);
-      updatePhotoState(setAccessoriesPhoto, 7, response.data.roofRailPhoto);
-      updatePhotoState(setAccessoriesPhoto, 8, response.data.spoilerPhoto);
-      updatePhotoState(setAccessoriesPhoto, 9, response.data.skirtPhoto);
+      // updatePhotoState(setElectricalPhoto, 13, response.data.airBagPhoto);
+      // updatePhotoState(setElectricalPhoto, 14, response.data.powerWindowsPhoto);
 
-      updatePhotoState(
-        setAccessoriesPhoto,
-        10,
-        response.data.steeringControlsPhoto,
-      );
+      // updatePhotoState(setAcPhoto, 0, response.data.coolingPhoto);
+      // updatePhotoState(setAcPhoto, 1, response.data.blowerCondenserPhoto);
+      // updatePhotoState(setAcPhoto, 2, response.data.fanPhoto);
+      // updatePhotoState(setAcPhoto, 3, response.data.controlSwitchPhoto);
+      // updatePhotoState(setAcPhoto, 4, response.data.ventPhoto);
+
+      // updatePhotoState(setAccessoriesPhoto, 0, response.data.musicSystemPhoto);
+      // updatePhotoState(
+      //   setAccessoriesPhoto,
+      //   1,
+      //   response.data.parkingSensorPhoto,
+      // );
+      // updatePhotoState(
+      //   setAccessoriesPhoto,
+      //   2,
+      //   response.data.reverseCameraPhoto,
+      // );
+      // updatePhotoState(setAccessoriesPhoto, 3, response.data.ovrmAdjusterPhoto);
+      // updatePhotoState(
+      //   setAccessoriesPhoto,
+      //   4,
+      //   response.data.seatHeightAdjusterPhoto,
+      // );
+      // updatePhotoState(setAccessoriesPhoto, 5, response.data.seatBeltPhoto);
+      // updatePhotoState(setAccessoriesPhoto, 6, response.data.sunRoofPhoto);
+      // updatePhotoState(setAccessoriesPhoto, 7, response.data.roofRailPhoto);
+      // updatePhotoState(setAccessoriesPhoto, 8, response.data.spoilerPhoto);
+      // updatePhotoState(setAccessoriesPhoto, 9, response.data.skirtPhoto);
+
+      // updatePhotoState(
+      //   setAccessoriesPhoto,
+      //   10,
+      //   response.data.steeringControlsPhoto,
+      // );
 
       setLoading(false);
       // setLoading(false);
@@ -7454,12 +7603,16 @@ const OrderCreation = ({navigation}) => {
   };
 
   const updatePhotoState = (stateSetter, index, url) => {
+    console.log("forffififi");
     stateSetter(prevState => {
       const newState = [...prevState];
       newState[index] = url;
       return newState;
     });
   };
+
+
+ 
 
   return (
     <>
@@ -7889,10 +8042,11 @@ const OrderCreation = ({navigation}) => {
                             handleSuspensionDropDownChange(itemValue, index)
                           }>
                           <Picker.Item label="Select Condition" value="" />
-                          <Picker.Item label="Level" value="Level" />
-                          <Picker.Item label="Noise" value="Noise" />
-                          <Picker.Item label="Leak" value="Leak" />
-                          <Picker.Item label="Damaged" value="Damaged" />
+                          
+                          <Picker.Item label={index==0?"Noise":index==1?"Noise":index==2?"Noise":index ==3?"Noise":index==4?"Noise":index==5 ?"Noise":"Noise"} value={index==0?"Noise":index==1?"Noise":index==2?"Noise":index ==3?"Noise":index==4?"Noise":index==5 ?"Noise":"Noise"}  />
+                          <Picker.Item label={index==0?"Leake":index==1?"Damaged":index==2?"Damaged":index ==3?"Damaged":index==4?"Leake":index==5 ?"Damaged":"Damaged"}  value={index==0?"Leake":index==1?"Damaged":index==2?"Damaged":index ==3?"Damaged":index==4?"Leake":index==5 ?"Damaged":"Damaged"} />
+                          <Picker.Item label={index==0?"Damaged": index === 1 ? " " : index==2?"":index ==3?"":index==4?"Damaged":index==5 ?"Not Available":"Not Available"}   value={index==0?"Damaged": index === 1 ? " " : index==2?"":index ==3?"":index==4?"Damaged":index==5 ?"Not Available":"Not Available"} />
+               
 
                           {/* Add other items as needed */}
                         </Picker>
@@ -7979,10 +8133,10 @@ const OrderCreation = ({navigation}) => {
                             handleSuspensionDropDownChange(itemValue, index)
                           }>
                           <Picker.Item label="Select Condition" value="" />
-                          <Picker.Item label="Level" value="Level" />
-                          <Picker.Item label="Noise" value="Noise" />
-                          <Picker.Item label="Leak" value="Leak" />
-                          <Picker.Item label="Damaged" value="Damaged" />
+                          <Picker.Item label={index==0?"Noise":index==1?"Noise":index==2?"Need to OH":"Noise"}  value={index==0?"Noise":index==1?"Noise":index==2?"Need to OH":"Noise"} />
+                          <Picker.Item label={index==0?"Damaged":index==1?"Damaged":index==2?"PS motor not working":"Damaged"} value={index==0?"Damaged":index==1?"Damaged":index==2?"PS motor not working":"Damaged"} />
+
+                         
 
                           {/* Add other items as needed */}
                         </Picker>
@@ -8070,10 +8224,12 @@ const OrderCreation = ({navigation}) => {
                             handleSuspensionDropDownChange(itemValue, index)
                           }>
                           <Picker.Item label="Select Condition" value="" />
-                          <Picker.Item label="Level" value="Level" />
-                          <Picker.Item label="Noise" value="Noise" />
-                          <Picker.Item label="Leak" value="Leak" />
-                          <Picker.Item label="Damaged" value="Damaged" />
+                          <Picker.Item label={index==0?"Noise":index==1?"Noise":index==2?"Noise":index==3?"Noise":index==4?"Leake":"Leake"}  value={index==0?"Noise":index==1?"Noise":index==2?"Noise":index==3?"Noise":index==4?"Leake":"Leake"}  />
+                          <Picker.Item label={index==0?"Needs to Replace":index==1?"Needs to Replace":index==2?"Needs to Replace":index==3?"Needs to Replace":index==4?"Jam":"Jam"} value={index==0?"Needs to Replace":index==1?"Needs to Replace":index==2?"Needs to Replace":index==3?"Needs to Replace":index==4?"Jam":"Jam"} />
+                          <Picker.Item label={index==0?"Not Available":index==1?"Not Available":index==2?"Not Available":index==3?"Not Available":""}  value={index==0?"Not Available":index==1?"Not Available":index==2?"Not Available":index==3?"Not Available":""}   />
+
+
+                     
 
                           {/* Add other items as needed */}
                         </Picker>
@@ -8160,10 +8316,9 @@ const OrderCreation = ({navigation}) => {
                             handleSuspensionDropDownChange(itemValue, index)
                           }>
                           <Picker.Item label="Select Condition" value="" />
-                          <Picker.Item label="Level" value="Level" />
-                          <Picker.Item label="Noise" value="Noise" />
-                          <Picker.Item label="Leak" value="Leak" />
-                          <Picker.Item label="Damaged" value="Damaged" />
+                          <Picker.Item label={index==0?"Hard":index==1?"Hard":index==2?"Noise":index ==3?"Noise":index==4?"Noise":index==5 ?"Noise":"Noise"} value={index==0?"Hard":index==1?"Hard":index==2?"Noise":index ==3?"Noise":index==4?"Noise":index==5 ?"Noise":"Noise"}/>
+                          <Picker.Item label={index==0?"Wornout":index==1?"Noise":index==2?"Damage":index ==3?"Damage":index==4?"Damage":index==5 ?"Damage":"Damage"}  value={index==0?"Wornout":index==1?"Noise":index==2?"Damage":index ==3?"Damage":index==4?"Damage":index==5 ?"Damage":"Damage"}  />
+                          <Picker.Item label={index==0?"Shuttering": index == 1 ? "Need to Replace" : index==2?"leak":index ==3?"leak":index==4?"leak":index==5 ?"leak":""}   value={index==0?"Shuttering": index == 1 ? "Need to Replace" : index==2?"leak":index ==3?"leak":index==4?"leak":index==5 ?"leak":""}    />
 
                           {/* Add other items as needed */}
                         </Picker>
@@ -8250,11 +8405,79 @@ const OrderCreation = ({navigation}) => {
                             handleSuspensionDropDownChange(itemValue, index)
                           }>
                           <Picker.Item label="Select Condition" value="" />
-                          <Picker.Item label="Level" value="Level" />
-                          <Picker.Item label="Noise" value="Noise" />
-                          <Picker.Item label="Leak" value="Leak" />
-                          <Picker.Item label="Damaged" value="Damaged" />
-
+                          <Picker.Item   label={
+    index == 0 ? "White" :
+    index == 1 ? "Leak" :
+    index == 2 ? "Electrical" :
+    index == 3 ? "Adjust" :
+    index == 4 ? "Adjust" :
+    index == 5 ? "Noise" :
+    index == 6 ? "Noise" :
+    index == 7 ? "Noise" :
+    index == 8 ? "Noise" :
+    index == 9 ? "Leak" :
+    index == 10 ? "Leak" :
+    index == 11 ? "Leak" :
+    index == 12 ? "Leak" :
+    index == 13 ? "Leak" :
+    index == 14 ? "Leak" :
+    index == 15 ? "Leak" :
+    index == 16 ? "Noise" :
+    index == 17 ? "Oil level Low" :
+    "Noise"
+  }
+ value={index == 0 ? "White" :
+  index == 1 ? "Leak" :
+  index == 2 ? "Electrical" :
+  index == 3 ? "Adjust" :
+  index == 4 ? "Adjust" :
+  index == 5 ? "Noise" :
+  index == 6 ? "Noise" :
+  index == 7 ? "Noise" :
+  index == 8 ? "Noise" :
+  index == 9 ? "Leak" :
+  index == 10 ? "Leak" :
+  index == 11 ? "Leak" :
+  index == 12 ? "Leak" :
+  index == 13 ? "Leak" :
+  index == 14 ? "Leak" :
+  index == 15 ? "Leak" :
+  index == 16 ? "Noise" :
+  index == 17 ? "Oil level Low" :
+  "Noise"}  />
+                          <Picker.Item label={
+    index == 0 ? "Blue" :
+    index == 1 ? "Noise" :
+    index == 2 ? "Fuel" :
+    index == 3 ? "Replace" :
+    index == 4 ? "Replace" :
+    index == 5 ? "Damaged" :
+    index == 6 ? "Damaged" :
+    index == 7 ? "Damaged" :
+    index == 8 ? "Damaged" :
+    index == 9 ? "Noise" :
+    index == 10 ? "Noise" :
+    index == 11 ? "Noise" :
+    index == 12 ? "Noise" :
+    index == 13 ? "Damaged" :
+    index == 14 ? "Damaged" :index==15?"Damaged":index==16? "Damaged":index==17?"Electrical":"Damaged"
+    
+  }  value={index == 0 ? "Blue" :
+    index == 1 ? "Noise" :
+    index == 2 ? "Fuel" :
+    index == 3 ? "Replace" :
+    index == 4 ? "Replace" :
+    index == 5 ? "Damaged" :
+    index == 6 ? "Damaged" :
+    index == 7 ? "Damaged" :
+    index == 8 ? "Damaged" :
+    index == 9 ? "Noise" :
+    index == 10 ? "Noise" :
+    index == 11 ? "Noise" :
+    index == 12 ? "Noise" :
+    index == 13 ? "Damaged" :
+    index == 14 ? "Damaged" :index==15?"Damaged":index==16? "Damaged":index==17?"Electrical":"Damaged"} />
+                          <Picker.Item label={index==0?"Black": index === 1 ? "Not Available" : index==2?"Engine":index ==3?"Replace":index==4?"Replace":index==5 ?"Replace":index==6?"Replace":index==7?"Replace":index==8?"Replace":index==9?"Replace":index==10?"Replace":index==11?"Replace":index==12?"Replace":index==13?"Rust":index==14?"":index==15?"":index==16?"Not Working":index==17?"Oil Condaminated":"Replace"}   value={index==0?"Black": index === 1 ? "Not Available" : index==2?"Engine":index ==3?"Replace":index==4?"Replace":index==5 ?"Replace":index==6?"Replace":index==7?"Replace":index==8?"Replace":index==9?"Replace":index==10?"Replace":index==11?"Replace":index==12?"Replace":index==13?"Rust":index==14?"":index==15?"":index==16?"Not Working":index==17?"Oil Condaminated":"Replace"} />
                           {/* Add other items as needed */}
                         </Picker>
                       </View>
@@ -8340,10 +8563,10 @@ const OrderCreation = ({navigation}) => {
                             handleSuspensionDropDownChange(itemValue, index)
                           }>
                           <Picker.Item label="Select Condition" value="" />
-                          <Picker.Item label="Level" value="Level" />
-                          <Picker.Item label="Noise" value="Noise" />
-                          <Picker.Item label="Leak" value="Leak" />
-                          <Picker.Item label="Damaged" value="Damaged" />
+                          <Picker.Item label={index==0?"Charge": index === 1 ? "Noise" : index==2?"Noise":index ==3?"Damaged":index==4?"Not Working":index==5 ?"Not Working":index==6?"Not Working":index==7?"Not Working":index==8?"Not Working":index==9?"Not Working":index==10?"Not Working":index==11?"Not Working":index==12?"Not Applicable":index==13?"Not Applicable":"Not Applicable"} value={index==0?"Charge": index === 1 ? "Noise" : index==2?"Noise":index ==3?"Damaged":index==4?"Not Working":index==5 ?"Not Working":index==6?"Not Working":index==7?"Not Working":index==8?"Not Working":index==9?"Not Working":index==10?"Not Working":index==11?"Not Working":index==12?"Not Applicable":index==13?"Not Applicable":"Not Applicable"} />
+                          <Picker.Item label={index==0?"Replace": index === 1 ? "Not Working" : index==2?"Not Working":index ==3?"Repaired":index==4?"Damaged":index==5 ?"Damaged":index==6?"Damaged":index==7?"Damaged":index==8?"Damaged":index==9?"Damaged":index==10?"Damaged":index==11?"Damaged":index==12?"Not Working":index==13?"Not Available":"Not Working"} value={index==0?"Replace": index === 1 ? "Not Working" : index==2?"Not Working":index ==3?"Repaired":index==4?"Damaged":index==5 ?"Damaged":index==6?"Damaged":index==7?"Damaged":index==8?"Damaged":index==9?"Damaged":index==10?"Damaged":index==11?"Damaged":index==12?"Not Working":index==13?"Not Available":"Not Working"}  />
+                          <Picker.Item label={index==0?"": index === 1 ? "" : index==2?"":index ==3?"":index==4?"":index==5 ?"":index==6?"Replace":index==7?"":index==8?"":index==9?"":index==10?"":index==11?"":index==12?"Damaged":index==13?"Damaged":"Damaged"} value={index==0?"": index === 1 ? "" : index==2?"":index ==3?"":index==4?"":index==5 ?"":index==6?"Replace":index==7?"":index==8?"":index==9?"":index==10?"":index==11?"":index==12?"Damaged":index==13?"Damaged":"Damaged"}  />
+                          
 
                           {/* Add other items as needed */}
                         </Picker>
@@ -8429,10 +8652,8 @@ const OrderCreation = ({navigation}) => {
                             handleSuspensionDropDownChange(itemValue, index)
                           }>
                           <Picker.Item label="Select Condition" value="" />
-                          <Picker.Item label="Level" value="Level" />
-                          <Picker.Item label="Noise" value="Noise" />
-                          <Picker.Item label="Leak" value="Leak" />
-                          <Picker.Item label="Damaged" value="Damaged" />
+                          <Picker.Item label={index==0?"Gas Level Low":index==1?"Not Working":index==2?"Leak":index ==3?"Damaged":index==4?"Damaged":"Damaged"} value={index==0?"Gas Level Low":index==1?"Not Working":index==2?"Leak":index ==3?"Damaged":index==4?"Damaged":"Damaged"}/>
+                          <Picker.Item label={index==0?"Not Working":index==1?"Noise":index==2?"Damaged":index ==3?"Not Working":index==4?"Not Working":""}  value={index==0?"Not Working":index==1?"Noise":index==2?"Damaged":index ==3?"Not Working":index==4?"Not Working":""} />
 
                           {/* Add other items as needed */}
                         </Picker>
@@ -8518,11 +8739,9 @@ const OrderCreation = ({navigation}) => {
                             handleSuspensionDropDownChange(itemValue, index)
                           }>
                           <Picker.Item label="Select Condition" value="" />
-                          <Picker.Item label="Level" value="Level" />
-                          <Picker.Item label="Noise" value="Noise" />
-                          <Picker.Item label="Leak" value="Leak" />
-                          <Picker.Item label="Damaged" value="Damaged" />
-
+                          <Picker.Item label={index==0?"Not Available": index === 1 ? "Not Available" : index==2?"Not Available":index ==3?"Not Available":index==4?"Not Available":index==5 ?"Damaged":index==6?"Not Available":index==7?"Not Available":index==8?"Not Available":index==9?"Not Available":"Not Available"} value={index==0?"Not Available": index === 1 ? "Not Available" : index==2?"Not Available":index ==3?"Not Available":index==4?"Not Available":index==5 ?"Damaged":index==6?"Not Available":index==7?"Not Available":index==8?"Not Available":index==9?"Not Available":"Not Available"} />
+                          <Picker.Item label={index==0?"Damaged": index === 1 ? "Damaged" : index==2?"Damaged":index ==3?"Damaged":index==4?"Damaged":index==5 ?"Not Working":index==6?"Damaged":index==7?"Damaged":index==8?"Damaged":index==9?"Damaged":"Damaged"} value={index==0?"Damaged": index === 1 ? "Damaged" : index==2?"Damaged":index ==3?"Damaged":index==4?"Damaged":index==5 ?"Not Working":index==6?"Damaged":index==7?"Damaged":index==8?"Damaged":index==9?"Damaged":"Damaged"} />
+                          <Picker.Item label={index==0?"Not Working": index === 1 ? "Not Working" : index==2?"Not Working":index ==3?"Not Working":index==4?"Not Working":index==5 ?"":index==6?"Not Working":index==7?"":index==8?"":index==9?"":"Not Working"} value={index==0?"Not Working": index === 1 ? "Not Working" : index==2?"Not Working":index ==3?"Not Working":index==4?"Not Working":index==5 ?"":index==6?"Not Working":index==7?"":index==8?"":index==9?"":"Not Working"}   />
                           {/* Add other items as needed */}
                         </Picker>
                       </View>
