@@ -1,4 +1,4 @@
-import React, {useRef, useState, useEffect} from 'react';
+import React, {useRef, useState, useEffect, useMemo} from 'react';
 import {
   View,
   TextInput,
@@ -39,6 +39,7 @@ import {getItem} from '../../utils/asyncStorageUtils';
 import {useSelector} from 'react-redux';
 import {selectOrderData} from '../../redux/selector';
 import {useDispatch} from 'react-redux';
+import CustomTextInputWithDatePicker from '../../components/CustomTextInputWithDatePicker';
 import {storeOrderData} from '../../redux/action/storeData';
 
 const {width} = Dimensions.get('window');
@@ -67,6 +68,8 @@ const OrderCreation = ({navigation}) => {
     blacklist,
     id,
     orderId,
+    userName,
+    userPresentAddress,
   } = route.params;
 
   console.log(id, orderId, 'VECHICLE NUMBER');
@@ -75,28 +78,28 @@ const OrderCreation = ({navigation}) => {
 
   const orderData = useSelector(selectOrderData);
 
-  const [role,setRole]=useState("");
+  const [role, setRole] = useState('');
 
   useEffect(() => {
-     getData();
+    getData();
   }, []);
 
-
-  const getData=async()=>{
+  const getData = async () => {
     const roleType = await getItem('role');
     setRole(roleType);
-     
-  }
+  };
 
   const [make, setMake] = useState(vehicleMakerDescription);
   const [model, setModel] = useState(vehicleMakeModel);
-  const [ownerDetails, setOwnerDetails] = useState('');
+  const [ownerDetails, setOwnerDetails] = useState(userName);
+  const [ownerAddress, setOwnerAddress] = useState(userPresentAddress);
   const [year, setYear] = useState(vehicleManufacturedDate);
   const [variant, setVariant] = useState(vehicleMakeModel);
   const [mileage, setMileage] = useState('');
   const [color, setColor] = useState(vehicleColor);
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  const [showAlterationOptions, setShowAlterationOptions] = useState(false);
 
   const [owners, setOwners] = useState(vehicleOwnerNumber);
   const [hasHypothecated, setHasHypothecated] = useState('');
@@ -145,6 +148,10 @@ const OrderCreation = ({navigation}) => {
   const [selectedOption9, setSelectedOption9] = useState('');
   const [selectedOption10, setSelectedOption10] = useState('');
 
+  const [rcRemarks, setRcRemarks] = useState('');
+  const [insuranceRemarks, setInsuranceRemarks] = useState('');
+  const [nocRemarks, setNocRemarks] = useState('');
+
   const handleChange = option => {
     setSelectedOption(option);
   };
@@ -186,8 +193,14 @@ const OrderCreation = ({navigation}) => {
   };
 
   const handleSwitchSelection2 = value => {
+    console.log(value, '');
     setSelectedOption2(value);
+
     console.log(`Selected value: ${value}`);
+  };
+
+  const handleSwitchSelection2Boolean = value => {
+    setShowAlterationOptions(value === 1 ? true : false); // Assuming "Yes" is at index 0
   };
 
   const handleSwitchSelection3 = value => {
@@ -239,12 +252,42 @@ const OrderCreation = ({navigation}) => {
     engineNumber: '',
   });
 
-  const [sliderValues, setSliderValues] = useState([0, 0, 0, 0]);
+  //  const [value, setValue] = useState(0.0); // Initialize value state
+  //  const [value1, setValue1] = useState(0.0); // Initialize value state
+  // const [value2, setValue2] = useState(0.0); // Initialize value state
+  //   const [value3, setValue3] = useState(0.0); // Initialize value state
+  const [values, setValues] = useState(Array(4).fill(0.0));
 
-  const handleValueChange = (value, index) => {
-    const newValues = [...sliderValues];
-    newValues[index] = value;
-    setSliderValues(newValues);
+  const [spareWheel, setSpareWheel] = useState(Array(1).fill(0.0));
+  const handleValueChange = (val, index) => {
+    const newValues = [...values]; // Create a copy of the current values
+    newValues[index] = val; // Update the value at the specific index
+    setValues(newValues); // Set the new values array
+  };
+
+  //  const handleValueChange1 = (val, index) => {
+  //            setValue1(val);
+
+  //     // handle any other logic here, if needed
+  // };
+
+  //  const handleValueChange2 = (val, index) => {
+  //            setValue2(val);
+
+  //     // handle any other logic here, if needed
+  // };
+
+  //  const handleValueChange3 = (val, index) => {
+  //            setValue3(val);
+
+  //     // handle any other logic here, if needed
+  // };
+
+  const handleValueChange4 = (val, index) => {
+    const newValues = [...spareWheel];
+    newValues[index] = val;
+    setSpareWheel(newValues);
+    // handle any other logic here, if needed
   };
 
   const [spareTyreValue, setSpareTyreValue] = useState(
@@ -260,14 +303,6 @@ const OrderCreation = ({navigation}) => {
 
   const photos = ['RC frontPhoto', 'Insurance frontPhoto', 'Noc Photo'];
   const carPhotosList = [
-    
-    'UnderChassis Photo',
-    'EngineRoom Photo',
-    'TrunkBoot Photo',
-  ];
-
-
-  const reinspectorList=[
     'FrontView Photo',
     'RearView Photo',
     'LHSView Photo',
@@ -275,7 +310,21 @@ const OrderCreation = ({navigation}) => {
     'OdoMeter Photo',
     'Roof Photo',
     'Interior Photo',
-  ]
+
+    'UnderChassis Photo',
+    'EngineRoom Photo',
+    'TrunkBoot Photo',
+  ];
+
+  const reinspectorList = [
+    'FrontView Photo',
+    'RearView Photo',
+    'LHSView Photo',
+    'RHSView Photo',
+    'OdoMeter Photo',
+    'Roof Photo',
+    'Interior Photo',
+  ];
   const carDetailsPhotosList = [
     'ChassisPunch Photo',
     'VinPlate Photo',
@@ -429,6 +478,16 @@ const OrderCreation = ({navigation}) => {
     Array.from({length: 11}, () => ''),
   );
 
+  const [oliSwitch, setoilSwitch] = useState(Array.from({length: 5}, () => ''));
+
+  const [oilRemarks, setOilRemarks] = useState(
+    Array.from({length: 5}, () => ''),
+  );
+
+  const [oilDropDown, setOilDropDown] = useState(
+    Array.from({length: 5}, () => ''),
+  );
+
   const suspensionList = [
     'Strut',
     'Lower Arm',
@@ -508,7 +567,8 @@ const OrderCreation = ({navigation}) => {
 
   const ACList = [
     'Cooling',
-    'Blower, Condenser',
+    'Blower',
+    'Condenser',
     'fan',
     'Control Switch',
     'Vent',
@@ -528,13 +588,21 @@ const OrderCreation = ({navigation}) => {
     'Steering Controls',
   ];
 
+  const oilList = [
+    'Engine oil',
+    'Brake Oil',
+    'Coolent Oil',
+    'Gear Oil',
+    'Crown Oil',
+  ];
+
   const pillarsList = [
-    'Pillar A LeftSide Photo',
     'Pillar A RightSide Photo',
-    'Pillar B LeftSide Photo',
     'Pillar B RightSide Photo',
-    'Pillar C LeftSide Photo',
     'Pillar C RightSide Photo',
+    'Pillar A LeftSide Photo',
+    'Pillar B LeftSide Photo',
+    'Pillar C LeftSide Photo',
   ];
   const apronList = ['Apron LeftSide Photo', 'Apron RightSide Photo'];
   const fendersList = ['Fenders LeftSide Photo', 'Fenders RightSide Photo'];
@@ -543,13 +611,13 @@ const OrderCreation = ({navigation}) => {
     'QuarterPanles RightSide Photo',
   ];
   const runningBoardList = [
-    'RunningBoard LeftSide Photo',
     'RunningBoard RightSide Photo',
+    'RunningBoard LeftSide Photo',
   ];
   const doorsList = [
     'Door front LeftSide Photo',
-    'Door front RightSide Photo',
     'Door Rear LeftSide Photo',
+    'Door front RightSide Photo',
     'Door Rear RightSide Photo',
   ];
   const dickyDoorList = ['Boot Photo'];
@@ -562,7 +630,7 @@ const OrderCreation = ({navigation}) => {
     'Headlamp SupportLeftSide Photo',
   ];
   const bumberList = ['Bumber FrontSide Photo', 'Bumber RearSide Photo'];
-  const wheelTypeList = ['Wheel TypeAlloy Photo', 'Wheel TypeDrum Photo'];
+  const wheelTypeList = ['Wheel Photo'];
   const WindshieldList = ['WindShield Front Photo', 'WindShield Rear Photo'];
 
   const [pillarsPhoto, setPillarsPhoto] = useState(
@@ -740,43 +808,43 @@ const OrderCreation = ({navigation}) => {
   );
 
   const [wheelTypePhoto, setWheelTypePhoto] = useState(
-    Array.from({length: 2}, () => ''),
+    Array.from({length: 1}, () => ''),
   );
   const [wheelTypeRemarks, setWheelTypeRemarks] = useState(
-    Array.from({length: 2}, () => ''),
+    Array.from({length: 1}, () => ''),
   );
   const [wheelTypeBase64, setWheelTypeBase64] = useState(
-    Array.from({length: 2}, () => ''),
+    Array.from({length: 1}, () => ''),
   );
   const [wheelTypeSwitch, setWheelTypeSwitch] = useState(
-    Array.from({length: 2}, () => false),
+    Array.from({length: 1}, () => false),
+  );
+
+  const [selectWheelTypeSwitch, setSelectWheelTypeSwitch] = useState(
+    Array.from({length: 1}, () => false),
   );
   const [wheelTypeCondition, setWheelTypeCondition] = useState(
     Array.from({length: 2}, () => ''),
   );
 
   const [windShieldPhoto, setWindShieldPhoto] = useState(
-    Array.from({length: 3}, () => ''),
+    Array.from({length: 2}, () => ''),
   );
   const [windShieldRemarks, setWindShieldRemarks] = useState(
-    Array.from({length: 3}, () => ''),
+    Array.from({length: 2}, () => ''),
   );
   const [windShieldBase64, setWindShieldBase64] = useState(
-    Array.from({length: 3}, () => ''),
+    Array.from({length: 2}, () => ''),
   );
   const [windShieldSwitch, setWindShieldSwitch] = useState(
-    Array.from({length: 3}, () => false),
+    Array.from({length: 2}, () => false),
   );
   const [windShieldCondition, setWindShieldCondition] = useState(
-    Array.from({length: 3}, () => ''),
+    Array.from({length: 2}, () => ''),
   );
 
   const rcList = ['RC FrontPhoto', 'RCBackPhoto', 'Others'];
-  const insuranceList = [
-    'Insurance OwnDamage Photo',
-    'Insurance ThirdParty Photo',
-    'Others',
-  ];
+  const insuranceList = ['Page 1', 'Page 2', 'Others'];
   const nocList = ['NOC Photo', 'NOC Others'];
 
   const [rcPhoto, setRcPhoto] = useState(Array.from({length: 3}, () => ''));
@@ -795,21 +863,59 @@ const OrderCreation = ({navigation}) => {
 
   const [nocBase64, setNOCBase64] = useState(Array.from({length: 3}, () => ''));
 
-  const [rcRemarks, setRCRemarks] = useState('');
-  const [insuranceRemarks, setInsuranceRemarks] = useState('');
-  const [nocRemarks, setNocRemarks] = useState('');
+  
 
-  const chassisList = ['Chassis Punch'];
-  const vinPlateList = ['Vin  Plate'];
   const tyresList = [
     'FrontTyre Left',
     'FrontTyre Right',
     'RearTyre Left',
     'RearTyre Right',
   ];
-  const spareWheelList = ['SpareWheel'];
+
   const toolList = ['ToolKit'];
+ 
+
+  const frontViewList=["Front View"];
+  const engineRoomList=["Engine Room"];
+  const chassisList = ['Chassis Punch'];
+  const vinPlateList = ['Vin  Plate'];
+  const rhsView=["Rhs View"];
   const keyList = ['Primary Key', 'Spare Key'];
+  const odometerList=["Odometer"];
+  const interiorList=["Interioir"];
+  const lhsViewList=["Lhs View"];
+  const rearViewList=["RearView"];
+  const trunkBootList=["Trunk Boot"];
+  const spareWheelList = ['SpareWheel'];
+  const toolKitList=["ToolList"];
+  const roofList=["Roof"];
+  const underChassisList=["UnderChassis"];
+  const tyreList=["tyres"];
+
+  const [frontViewPhoto, setFrontViewPhoto] = useState(
+    Array.from({length: 1}, () => ''),
+  );
+
+  const [frontViewRemarks, setFrontViewRemarks] = useState(
+    Array.from({length: 1}, () => ''),
+  );
+
+
+  const [frontViewBase64, setFrontViewBase64] = useState(
+    Array.from({length: 1}, () => ''),
+  );
+
+  const [engineRoomPhoto, setEngineRoomPhoto] = useState(
+    Array.from({length: 1}, () => ''),
+  );
+
+  const [engineRoomBase64, setEngineRoomBase64] = useState(
+    Array.from({length: 1}, () => ''),
+  );
+
+  const [engineRoomRemarks, setEngineRoomRemarks] = useState(
+    Array.from({length: 1}, () => ''),
+  );
 
   const [chassisPunchPhoto, setChassisPunchPhoto] = useState(
     Array.from({length: 1}, () => ''),
@@ -842,6 +948,113 @@ const OrderCreation = ({navigation}) => {
   const [vinPlateCondition, setVinPlateCondition] = useState(
     Array.from({length: 1}, () => ''),
   );
+
+  const [rhsViewPhoto, setRhsViewPhoto] = useState(
+    Array.from({length: 1}, () => ''),
+  );
+
+  const [rhsViewBase64, setRhsViewBase64] = useState(
+    Array.from({length: 1}, () => ''),
+  );
+
+  const [rhsViewRemarks, setRhsViewRemarks] = useState(
+    Array.from({length: 1}, () => ''),
+  );
+
+  const [lhsViewPhoto, setLhsViewPhoto] = useState(
+    Array.from({ length: 1 }, () => '')
+  );
+  
+  const [lhsViewBase64, setLhsViewBase64] = useState(
+    Array.from({ length: 1 }, () => '')
+  );
+  
+  const [lhsViewRemarks, setLhsViewRemarks] = useState(
+    Array.from({ length: 1 }, () => '')
+  );
+
+  const [rearViewPhoto, setRearViewPhoto] = useState(
+    Array.from({ length: 1 }, () => '')
+  );
+  
+  const [rearViewBase64, setRearViewBase64] = useState(
+    Array.from({ length: 1 }, () => '')
+  );
+  
+  const [rearViewRemarks, setRearViewRemarks] = useState(
+    Array.from({ length: 1 }, () => '')
+  );
+
+
+  const [trunkBootPhoto, setTrunkBootPhoto] = useState(
+    Array.from({ length: 1 }, () => '')
+  );
+  
+  const [trunkBootBase64, setTrunkBootBase64] = useState(
+    Array.from({ length: 1 }, () => '')
+  );
+  
+  const [trunkBootRemarks, setTrunkBootRemarks] = useState(
+    Array.from({ length: 1 }, () => '')
+  );
+
+
+  const [roofPhoto, setRoofPhoto] = useState(
+    Array.from({ length: 1 }, () => '')
+  );
+  
+  const [roofBase64, setRoofBase64] = useState(
+    Array.from({ length: 1 }, () => '')
+  );
+  
+  const [roofRemarks, setRoofRemarks] = useState(
+    Array.from({ length: 1 }, () => '')
+  );
+  
+  const [underChassisPhoto, setUnderChassisPhoto] = useState(
+    Array.from({ length: 1 }, () => '')
+  );
+  
+  const [underChassisBase64, setUnderChassisBase64] = useState(
+    Array.from({ length: 1 }, () => '')
+  );
+  
+  const [underChassisRemarks, setUnderChassisRemarks] = useState(
+    Array.from({ length: 1 }, () => '')
+  );
+  
+
+    
+  const [odometerPhoto, setOdometerPhoto] = useState(
+    Array.from({ length: 1 }, () => '')
+  );
+  
+  const [odometerBase64, setOdometerBase64] = useState(
+    Array.from({ length: 1 }, () => '')
+  );
+  
+  const [odometerRemarks, setOdometerRemarks] = useState(
+    Array.from({ length: 1 }, () => '')
+  );
+
+
+  const [interiorPhoto, setInteriorPhoto] = useState(
+    Array.from({ length: 1 }, () => '')
+  );
+  
+  const [interiorBase64, setInteriorBase64] = useState(
+    Array.from({ length: 1 }, () => '')
+  );
+  
+  const [interiorRemarks, setInteriorRemarks] = useState(
+    Array.from({ length: 1 }, () => '')
+  );
+  
+  
+
+  
+  
+
 
   const [tyrePunchPhoto, setTyrePunchPhoto] = useState(
     Array.from({length: 4}, () => ''),
@@ -978,20 +1191,19 @@ const OrderCreation = ({navigation}) => {
   const [photoUris, setPhotoUris] = useState(Array.from({length: 3}, () => ''));
 
   const [photoUrisCarPhotos, setPhotoUrisCarPhotos] = useState(
-    Array.from({length:3}, () => ''),
+    Array.from({length: 10}, () => ''),
   );
 
-
-  const [reinspectorPhoto,setReinspectorPhoto] = useState(
-    Array.from({length:7}, () => ''),
+  const [reinspectorPhoto, setReinspectorPhoto] = useState(
+    Array.from({length: 7}, () => ''),
   );
 
   const [reinspectorRemarks, setReinspectorRemarks] = useState(
-    Array.from({length:7}, () => ''),
+    Array.from({length: 7}, () => ''),
   );
 
   const [carPhotosRemarks, setCarPhotoRemarks] = useState(
-    Array.from({length:3}, () => ''),
+    Array.from({length: 10}, () => ''),
   );
 
   const [photoUris1, setPhotoUris1] = useState('');
@@ -1011,12 +1223,11 @@ const OrderCreation = ({navigation}) => {
   );
 
   const [base64CarPhotos, setBase64Photos] = useState(
-    Array.from({length:3}, () => ''),
+    Array.from({length: 10}, () => ''),
   );
 
-
   const [base64ReinspectorPhoto, setBase64ReinspectorPhoto] = useState(
-    Array.from({length:7}, () => ''),
+    Array.from({length: 7}, () => ''),
   );
 
   const [base64BodyInspection, setBase64BodyInspection] = useState(
@@ -1102,8 +1313,8 @@ const OrderCreation = ({navigation}) => {
   const [selectedContainerIndex, setSelectedContainerIndex] = useState(null);
   const [selectedContainerIndex1, setSelectedContainerIndex1] = useState(null);
   const [selectedInspectionIndex, setSelectedInspectionIndex] = useState(null);
-  const [carIndex8,setCarIndex8]=useState(null);
-  const [reinspectorPage,setReinspectorPage]=useState(false)
+  const [carIndex8, setCarIndex8] = useState(null);
+  const [reinspectorPage, setReinspectorPage] = useState(false);
   const [selectedBodyInspectionIndex, setSelectedBodyInspectionIndex] =
     useState(null);
 
@@ -1154,18 +1365,18 @@ const OrderCreation = ({navigation}) => {
   //   return newPhotos;
   // });
 
-  const getPhotoStatus = (photos, index) => {
-    return photos[index];
+  const getSwitch = switchValue => {
+    return switchValue === 1 ? 'Ok' : 'Not Ok';
   };
 
-  const handleNext = async (step) => {
+  const getSwitchForAvailable = switchValue => {
+    return switchValue === 1 ? 'Not Available' : 'Available';
+  };
+
+  const handleNext = async step => {
     const itemId = await getItem('dealarId');
-    setLoading(true)
+    setLoading(true);
     let params = {};
-
-  
-
-   
 
     switch (step) {
       case 1:
@@ -1220,14 +1431,14 @@ const OrderCreation = ({navigation}) => {
           rcFrontPhoto: rcBase64[0],
           rcBackPhoto: rcBase64[1],
           RCOthers: rcBase64[2],
-          rcRemarks: remarks,
+          rcRemarks: rcRemarks,
           insuranceOwnDamagePhoto: insuranceBase64[0],
           insuranceThirdPartyPhoto: insuranceBase64[1],
           insuranceOthers: insuranceBase64[2],
-          insuranceRemarks: remarks,
+          insuranceRemarks: insuranceRemarks,
           nocPhoto: nocBase64[0],
           nocOthers: nocBase64[1],
-          nocRemarks: remarks,
+          nocRemarks: nocRemarks,
         };
         params = Object.fromEntries(
           Object.entries(params).filter(
@@ -1238,13 +1449,54 @@ const OrderCreation = ({navigation}) => {
         break;
       case 4:
         params = {
+          dealerId: itemId,
+          id: id ? id : orderId,
+          orderStatus: 1,
+          frontViewPhoto: frontViewBase64[0],
+          frontViewRemarks: frontViewRemarks[0],
+          engineRoomPhoto: engineRoomBase64[0],
+          engineRoomRemarks:engineRemarks[0],
+          chassisPunchPhoto: chassisBase64[0],
+          chassisPunchStatus: getSwitch(chassisSwitch[0]),
+          chassisPunchCondition: chassisCondition[0],
+          chassisPunchRemarks: chassisRemarks[0],
+          vinPlatePhoto: vinPlateBase64[0],
+          vinPlateStatus: getSwitch(vinPlateSwitch[0]),
+          vinPlateCondition: vinPlateCondition[0],
+          vinPlateRemarks: vinPlateRemarks[0],
+         rhsViewPhoto: rhsViewBase64[0],
+          rhsViewRemarks:rhsViewRemarks[0],
+          primaryKeyPhoto: keyBase64[0],
+          primaryKeyStatus: getSwitchForAvailable(keySwitch[0]),
+          primaryKeyCondition: keyCondition[0],
+          primaryKeyRemarks: keyRemarks[0],
+          spareKeyPhoto: keyBase64[1],
+          spareKeyStatus: getSwitchForAvailable(keySwitch[1]),
+          spareKeyCondition: keyCondition[1],
+          spareKeyRemarks: keyRemarks[1],
+          odometerPhoto: odometerBase64[0],
+          odometerRemarks: odometerRemarks[0],
+          interiorPhoto: interiorBase64[0],
+          interiorRemarks:interiorRemarks[0],
+         // lhsViewPhoto: lhsViewBase64[0],
+        //  lhsViewRemarks: lhsViewRemarks[0],
+       //   rearViewPhoto: base64CarPhotos[1],
+        //  rearViewRemarks: carPhotosRemarks[1],
+       //   lhsViewPhoto: base64CarPhotos[2],
+       //   lhsViewRemarks: carPhotosRemarks[2],
+        //  rhsViewPhoto: base64CarPhotos[3],
+        //  rhsViewRemarks: carPhotosRemarks[3],
+       //   odometerPhoto: base64CarPhotos[4],
+       //   odometerRemarks: carPhotosRemarks[4],
+       //   roofPhoto: base64CarPhotos[5],
+       //   roofRemarks: carPhotosRemarks[5],
+       //   interiorPhoto: base64CarPhotos[6],
+       //   interiorRemarks: carPhotosRemarks[6],
+          // underChassisPhoto: base64CarPhotos[7],
+          // underChassisRemarks: carPhotosRemarks[7],
          
-          underChassisPhoto: base64CarPhotos[0],
-          underChassisRemarks: carPhotosRemarks[0],
-          engineRoomPhoto: base64CarPhotos[1],
-          engineRoomRemarks: carPhotosRemarks[1],
-          trunkBootPhoto: base64CarPhotos[2],
-          trunkBootRemarks: carPhotosRemarks[2],
+          // trunkBootPhoto: base64CarPhotos[9],
+          // trunkBootRemarks: carPhotosRemarks[9],
         };
 
         params = Object.fromEntries(
@@ -1259,46 +1511,41 @@ const OrderCreation = ({navigation}) => {
           dealerId: itemId,
           id: id ? id : orderId,
           orderStatus: 1,
-          chassisPunchPhoto: chassisBase64[0],
-          chasisPunchStatus: chassisSwitch[0],
-          chassisPunchCondition: chassisCondition[0],
-          chassisPunchRemarks: chassisRemarks[0],
-          vinPlatePhoto: vinPlateBase64[0],
-          vinPlateStatus: vinPlateSwitch[0],
-          vinPlateCondition: vinPlateCondition[0],
-          vinPlateRemarks: vinPlateRemarks[0],
-          frontTyreLeftPhoto: tyreBase64[0],
-          frontTyreLeftStatus: tyreSwitch[0],
-          frontTyreLeftPercentage: tyreCondition[0],
-          frontTyreLeftRemarks: tyreRemarks[0],
-          frontTyreRightPhoto: tyreBase64[1],
-          frontTyreRightStatus: tyreSwitch[1],
-          frontTyreRightPercentage: tyreCondition[1],
-          frontTyreRightRemarks: tyreRemarks[1],
-          rearTyreLeftPhoto: tyreBase64[2],
-          rearTyreLeftStatus: tyreSwitch[2],
-          rearTyreLeftPercentage: tyreCondition[2],
-          rearTyreLeftRemarks: tyreRemarks[2],
-          rearTyreRightPhoto: tyreBase64[3],
-          rearTyreRightStatus: tyreSwitch[3],
-          rearTyreRightPercentage: tyreCondition[3],
-          rearTyreRightRemarks: tyreRemarks[3],
-          spareWheelPhoto: spareWheelBase64[0],
-          spareWheelStatus: spareWheelSwitch[0],
-          spareWheelPercentage: spareWheelCondition[0],
+             lhsViewPhoto: lhsViewBase64[0],
+         lhsViewRemarks: lhsViewRemarks[0],
+         rearViewPhoto: rearViewBase64[0],
+          rearViewRemarks: rearViewRemarks[0],
+          trunkBootPhoto: trunkBootBase64[0],
+           trunkBootRemarks: trunkBootRemarks[0],
+           spareWheelPhoto: spareWheelBase64[0],
+          spareWheelStatus: getSwitchForAvailable(spareWheelSwitch[0]),
+          spareWheelPercentage: spareWheel[0],
           spareWheelRemarks: spareWheelRemarks[0],
           toolKitJackPhoto: toolKitBase64[0],
-          toolKitJackStatus: toolKitSwitch[0],
+          toolKitJackStatus: getSwitchForAvailable(toolKitSwitch[0]),
           toolKitCondition: toolKitCondition[0],
           toolKitRemarks: toolKitRemarks[0],
-          primaryKeyPhoto: keyBase64[0],
-          primaryKeyStatus: keySwitch[0],
-          primaryKeyCondition: keyCondition[0],
-          primaryKeyRemarks: keyRemarks[0],
-          spareKeyPhoto: keyBase64[1],
-          spareKeyStatus: keySwitch[1],
-          spareKeyCondition: keyCondition[1],
-          spareKeyRemarks: keyRemarks[1],
+          roofPhoto: roofBase64[0],
+          roofRemarks:roofRemarks[0],
+          underChassisPhoto: underChassisBase64[0],
+         underChassisRemarks: underChassisRemarks[0],
+         frontTyreLeftPhoto: tyreBase64[0],
+         frontTyreLeftStatus: getSwitch(tyreSwitch[0]),
+         frontTyreLeftPercentage: values[0],
+         frontTyreLeftRemarks: tyreRemarks[0],
+         frontTyreRightPhoto: tyreBase64[1],
+         frontTyreRightStatus: getSwitch(tyreSwitch[1]),
+         frontTyreRightPercentage: values[1],
+         frontTyreRightRemarks: tyreRemarks[1],
+         rearTyreLeftPhoto: tyreBase64[2],
+         rearTyreLeftStatus: getSwitch(tyreSwitch[2]),
+         rearTyreLeftPercentage: values[2],
+         rearTyreLeftRemarks: tyreRemarks[2],
+         rearTyreRightPhoto: tyreBase64[3],
+         rearTyreRightStatus: getSwitch(tyreSwitch[3]),
+         rearTyreRightPercentage: values[3],
+         rearTyreRightRemarks: tyreRemarks[3],
+        
         };
 
         params = Object.fromEntries(
@@ -1314,130 +1561,129 @@ const OrderCreation = ({navigation}) => {
           dealerId: itemId,
           id: id ? id : orderId,
           orderStatus: 1,
-          pillarALeftSidePhoto: pillarBase64[0],
-          pillarALeftSideStatus: pillarSwitch[0],
-          pillarALeftSideCondition: pillarsCondition[0],
-          pillarALeftSideRemarks: pillarsPhotoRemarks[0],
-          pillarARightSidePhoto: pillarBase64[1],
-          pillarARightSideStatus: pillarSwitch[1],
-          pillarARightSideCondition: pillarsCondition[1],
-          pillarARightSideRemarks: pillarsPhotoRemarks[1],
-          pillarBLeftSidePhoto: pillarBase64[2],
-          pillarBLeftSideStatus: pillarSwitch[2],
-          pillarBLeftSideCondition: pillarsCondition[2],
-          pillarBLeftSideRemarks: pillarsPhotoRemarks[2],
-          pillarBRightSidePhoto: pillarBase64[3],
-          pillarBRightSideStatus: pillarSwitch[3],
-          pillarBRightSideCondition: pillarsCondition[3],
-          pillarBRightSideRemarks: pillarsPhotoRemarks[3],
-          pillarCLeftSidePhoto: pillarBase64[4],
-          pillarCLeftSideStatus: pillarSwitch[4],
-          pillarCLeftSideCondition: pillarsCondition[4],
-          pillarCLeftSideRemarks: pillarsPhotoRemarks[4],
-          pillarCRightSidePhoto: pillarBase64[5],
-          pillarCRightSideStatus: pillarSwitch[5],
-          pillarCRightSideCondition: pillarsCondition[5],
-          pillarCRightSideRemarks: pillarsPhotoRemarks[5],
+          bonetPhoto: bonetBase64[0],
+          bonetStatus: getSwitch(bonetSwitch[0]),
+          bonetCondition: bonetCondition[0],
+          bonetRemarks: bonetRemarks[0],
           apronLeftSidePhoto: apronBase64[0],
-          apronLeftSideStatus: apronSwitch[0],
+          apronLeftSideStatus: getSwitch(apronSwitch[0]),
           apronLeftSideCondition: apronCondition[0],
           apronLeftSideRemarks: apronRemarks[0],
           apronRightSidePhoto: apronBase64[1],
-          apronRightSideStatus: apronSwitch[1],
+          apronRightSideStatus: getSwitch(apronSwitch[1]),
           apronRightSideCondition: apronCondition[1],
           apronRightSideRemarks: apronRemarks[1],
-          fendersRightSidePhoto: fennderBase64[0],
-          fendersRightSideStatus: fenderSwitch[0],
-          fendersRightSideCondition: fenderCondition[0],
-          fendersRightSideRemarks: fenderRemarks[0],
-          fendersLeftSidePhoto: fennderBase64[1],
-          fendersLeftSideStatus: fenderSwitch[1],
-          fendersLeftSideCondition: fenderCondition[1],
-          fendersLeftSideRemarks: fenderRemarks[1],
-          quarterPanelsLeftSidePhoto: quarterPanlesBase64[0],
-          quarterPanelsLeftSideStatus: quarterPanlesSwitch[0],
-          quarterPanelsLeftSideCondition: quarterPanlesCondition[0],
-          quarterPanelsLeftSideRemarks: quarterPanlesRemarks[0],
-          quarterPanelsRightSidePhoto: quarterPanlesBase64[1],
-          quarterPanelsRightSideStatus: quarterPanlesSwitch[1],
-          quarterPanelsRightSideCondition: quarterPanlesCondition[1],
-          quarterPanelsRightSideRemarks: quarterPanlesRemarks[1],
-          doorsFrontRightSidePhoto: doorBase64[0],
-          doorsFrontRightSideStatus: doorSwitch[0],
-          doorsFrontRightSideCondition: doorSwitch[0],
-          doorsFrontRightSideRemarks: doorRemarks[0],
-          doorsFrontLeftSidePhoto: doorBase64[1],
-          doorsFrontLeftSideStatus: doorSwitch[1],
-          doorsFrontLeftSideCondition: doorCondition[1],
-          doorsFrontLeftSideRemarks: doorRemarks[1],
-          doorsRearRightSidePhoto: doorBase64[2],
-          doorsRearRightSideStatus: doorSwitch[2],
-          doorsRearRightSideCondition: doorCondition[2],
-          doorsRearRightSideRemarks: doorRemarks[2],
-          doorsRearLeftSidePhoto: doorBase64[3],
-          doorsRearLeftSideStatus: doorSwitch[3],
-          doorsRearLeftSideCondition: doorCondition[3],
-          doorsRearLeftSideRemarks: doorRemarks[3],
-          runningBoardLeftSidePhoto: runningBoardBase64[0],
-          runningBoardLeftSideStatus: runningBoardSwitch[0],
-          runningBoardLeftSideCondition: runnningBoardCondition[0],
-          runningBoardLeftSideRemarks: runningBoardRemarks[0],
-          runningBoardRightSidePhoto: runningBoardBase64[1],
-          runningBoardRightSideStatus: runningBoardSwitch[1],
-          runningBoardRightSideCondition: runnningBoardCondition[1],
-          runningBoardRightSideRemarks: runningBoardRemarks[1],
-          bootPhoto: dickyDoorBase64[0],
-          bootStatus: dickyDoorSwitch[0],
-          bootCondition: dickyDoorCondition[0],
-          bootRemarks: dickyDoorRemarks[0],
-          bootSkirtPhoto: dickySkirtBase64[0],
-          bootSkirtStatus: dickySkirtSwitch[0],
-          bootSkirtCondition: dickySkirtCondition[0],
-          bootSkirtRemarks: dickySkirtRemarks[0],
-          bonetPhoto: bonetBase64[0],
-          bonetStatus: bonetSwitch[0],
-          bonetCondition: bonetCondition[0],
-          bonetRemarks: bonetRemarks[0],
-          supportMemberUpperPhoto: supportMembersBase64[0],
-          supportMemberUpperStatus: supportMembersSwitch[0],
-          suportMemberUpperCondition: supportMembersCondition[0],
-          supportMemberUpperRemarks: supportMembersRemarks[0],
-          supportMemberLowerPhoto: supportMembersBase64[1],
-          supportMemberLowerStatus: supportMembersSwitch[1],
-          supportMemberLowerCondition: supportMembersCondition[1],
-          supportMemberLowerRemarks: supportMembersRemarks[1],
           headLampSupportRightSidePhoto: supportMembersBase64[2],
-          headLampSupportRightSideStatus: supportMembersSwitch[2],
+          headLampSupportRightSideStatus: getSwitch(supportMembersSwitch[2]),
           headLampSupportRightSideCondition: supportMembersCondition[2],
           headLampSupportRightSideRemarks: supportMembersRemarks[2],
           headLampSupportLeftSidePhoto: supportMembersBase64[3],
-          headLampSupportLeftSideStatus: supportMembersSwitch[3],
+          headLampSupportLeftSideStatus: getSwitch(supportMembersSwitch[3]),
           headLampSupportLeftSideCondition: supportMembersCondition[3],
           headLampSupportLeftSideRemarks: supportMembersRemarks[3],
-          wheelTypeAlloyPhoto: wheelTypeBase64[0],
-          wheelTypeAlloyStatus: wheelTypeSwitch[0],
-          wheelTypeAlloyCondition: wheelTypeCondition[0],
-          wheelTypeAlloyRemarks: wheelTypeRemarks[0],
-          wheelTypeDrumPhoto: wheelTypeBase64[1],
-          wheelTypeDrumStatus: wheelTypeSwitch[1],
-          wheelTypeDrumCondition: wheelTypeCondition[1],
-          wheelTypeDrumRemarks: wheelTypeRemarks[1],
-          windShieldFrontTyrePhoto: windShieldBase64[0],
-          windShieldFrontTyreStatus: windShieldSwitch[0],
-          windShieldFrontTyreCondition: windShieldCondition[0],
-          windShieldFrontTyreRemarks: windShieldRemarks[0],
-          windShieldRearTyrePhoto: windShieldBase64[1],
-          windShieldRearTyreStatus: windShieldSwitch[1],
-          windShieldRearTyreCondition: windShieldCondition[1],
-          windShieldRearTyreRemarks: windShieldRemarks[1],
+          supportMemberUpperPhoto: supportMembersBase64[0],
+          supportMemberUpperStatus: getSwitch(supportMembersSwitch[0]),
+          supportMemberUpperCondition: supportMembersCondition[0],
+          supportMemberUpperRemarks: supportMembersRemarks[0],
+          supportMemberLowerPhoto: supportMembersBase64[1],
+          supportMemberLowerStatus: getSwitch(supportMembersSwitch[1]),
+          supportMemberLowerCondition: supportMembersCondition[1],
+          supportMemberLowerRemarks: supportMembersRemarks[1],
           bumperFrontPhoto: bumperBase64[0],
-          bumperFrontStatus: bumperSwitch[0],
+          bumperFrontStatus: getSwitch(bumperSwitch[0]),
           bumperFrontCondition: bumperCondition[0],
           bumperFrontRemarks: bumperRemarks[0],
           bumperRearPhoto: bumperBase64[1],
-          bumperRearStatus: bumperSwitch[1],
+          bumperRearStatus: getSwitch(bumperSwitch[1]),
           bumperRearCondition: bumperCondition[1],
           bumperRearRemarks: bumperRemarks[1],
+          windShieldFrontTyrePhoto: windShieldBase64[0],
+          windShieldFrontTyreStatus: getSwitch(windShieldSwitch[0]),
+          windShieldFrontTyreCondition: windShieldCondition[0],
+          windShieldFrontTyreRemarks: windShieldRemarks[0],
+          windShieldRearTyrePhoto: windShieldBase64[1],
+          windShieldRearTyreStatus: getSwitch(windShieldSwitch[1]),
+          windShieldRearTyreCondition: windShieldCondition[1],
+          windShieldRearTyreRemarks: windShieldRemarks[1],
+          fendersRightSidePhoto: fennderBase64[1],
+          fendersRightSideStatus: getSwitch(fenderSwitch[1]),
+          fendersRightSideCondition: fenderCondition[1],
+          fendersRightSideRemarks: fenderRemarks[1],
+          fendersLeftSidePhoto: fennderBase64[0],
+          fendersLeftSideStatus: getSwitch(fenderSwitch[0]),
+          fendersLeftSideCondition: fenderCondition[0],
+          fendersLeftSideRemarks: fenderRemarks[0],
+          pillarALeftSidePhoto: pillarBase64[4],
+          pillarALeftSideStatus: getSwitch(pillarSwitch[4]),
+          pillarALeftSideCondition: pillarsCondition[4],
+          pillarALeftSideRemarks: pillarsPhotoRemarks[4],
+          pillarARightSidePhoto: pillarBase64[0],
+          pillarARightSideStatus: getSwitch(pillarSwitch[0]),
+          pillarARightSideCondition: pillarsCondition[0],
+          pillarARightSideRemarks: pillarsPhotoRemarks[0],
+          pillarBLeftSidePhoto: pillarBase64[5],
+          pillarBLeftSideStatus: getSwitch(pillarSwitch[5]),
+          pillarBLeftSideCondition: pillarsCondition[5],
+          pillarBLeftSideRemarks: pillarsPhotoRemarks[5],
+          pillarBRightSidePhoto: pillarBase64[1],
+          pillarBRightSideStatus: getSwitch(pillarSwitch[1]),
+          pillarBRightSideCondition: pillarsCondition[1],
+          pillarBRightSideRemarks: pillarsPhotoRemarks[1],
+          pillarCLeftSidePhoto: pillarBase64[6],
+          pillarCLeftSideStatus: getSwitch(pillarSwitch[6]),
+          pillarCLeftSideCondition: pillarsCondition[6],
+          pillarCLeftSideRemarks: pillarsPhotoRemarks[6],
+          pillarCRightSidePhoto: pillarBase64[2],
+          pillarCRightSideStatus: getSwitch(pillarSwitch[2]),
+          pillarCRightSideCondition: pillarsCondition[2],
+          pillarCRightSideRemarks: pillarsPhotoRemarks[2],
+          doorsFrontRightSidePhoto: doorBase64[2],
+          doorsFrontRightSideStatus: getSwitch(doorSwitch[2]),
+          doorsFrontRightSideCondition: doorSwitch[2],
+          doorsFrontRightSideRemarks: doorRemarks[2],
+          doorsFrontLeftSidePhoto: doorBase64[0],
+          doorsFrontLeftSideStatus: getSwitch(doorSwitch[0]),
+          doorsFrontLeftSideCondition: doorCondition[0],
+          doorsFrontLeftSideRemarks: doorRemarks[0],
+          doorsRearRightSidePhoto: doorBase64[3],
+          doorsRearRightSideStatus: getSwitch(doorSwitch[3]),
+          doorsRearRightSideCondition: doorCondition[3],
+          doorsRearRightSideRemarks: doorRemarks[3],
+          doorsRearLeftSidePhoto: doorBase64[1],
+          doorsRearLeftSideStatus: getSwitch(doorSwitch[1]),
+          doorsRearLeftSideCondition: doorCondition[1],
+          doorsRearLeftSideRemarks: doorRemarks[1],
+          runningBoardLeftSidePhoto: runningBoardBase64[1],
+          runningBoardLeftSideStatus: getSwitch(runningBoardSwitch[1]),
+          runningBoardLeftSideCondition: runnningBoardCondition[1],
+          runningBoardLeftSideRemarks: runningBoardRemarks[1],
+          runningBoardRightSidePhoto: runningBoardBase64[0],
+          runningBoardRightSideStatus: getSwitch(runningBoardSwitch[0]),
+          runningBoardRightSideCondition: runnningBoardCondition[0],
+          runningBoardRightSideRemarks: runningBoardRemarks[0],
+          quarterPanelsLeftSidePhoto: quarterPanlesBase64[0],
+          quarterPanelsLeftSideStatus: getSwitch(quarterPanlesSwitch[0]),
+          quarterPanelsLeftSideCondition: quarterPanlesCondition[0],
+          quarterPanelsLeftSideRemarks: quarterPanlesRemarks[0],
+          quarterPanelsRightSidePhoto: quarterPanlesBase64[1],
+          quarterPanelsRightSideStatus: getSwitch(quarterPanlesSwitch[1]),
+          quarterPanelsRightSideCondition: quarterPanlesCondition[1],
+          quarterPanelsRightSideRemarks: quarterPanlesRemarks[1],
+          bootPhoto: dickyDoorBase64[0],
+          bootStatus: getSwitch(dickyDoorSwitch[0]),
+          bootCondition: dickyDoorCondition[0],
+          bootRemarks: dickyDoorRemarks[0],
+          bootSkirtPhoto: dickySkirtBase64[0],
+          bootSkirtStatus: getSwitch(dickySkirtSwitch[0]),
+          bootSkirtCondition: dickySkirtCondition[0],
+          bootSkirtRemarks: dickySkirtRemarks[0],
+          wheelType: selectWheelTypeSwitch[0],
+          wheelTypePhoto: wheelTypeBase64[0],
+          wheelTypeStatus: getSwitch(wheelTypeSwitch[0]),
+          wheelTypeCondition: wheelTypeCondition[0],
+          wheelTypeRemarks: wheelTypeRemarks[0],
+        
+        
         };
 
         params = Object.fromEntries(
@@ -1452,307 +1698,376 @@ const OrderCreation = ({navigation}) => {
         params = {
           dealerId: itemId,
           id: id ? id : orderId,
-          orderStatus:1,
+          orderStatus: 1,
           strutPhoto: suspensionBase64[0],
-          strutStatus: suspensionSwitch[0],
+          strutStatus: getSwitch(suspensionSwitch[0]),
           strutCondition: suspensionDropdown[0],
           strutRemarks: suspensionRemarks[0],
           lowerArmPhoto: suspensionBase64[1],
-          lowerArmStatus: suspensionSwitch[1],
+          lowerArmStatus: getSwitch(suspensionSwitch[1]),
           lowerArmCondition: suspensionDropdown[1],
           lowerArmRemarks: suspensionRemarks[1],
           linkRodPhoto: suspensionBase64[2],
-          linkRodStatus: suspensionSwitch[2],
+          linkRodStatus: getSwitch(suspensionSwitch[2]),
           linkRodCondition: suspensionDropdown[2],
           linkRodRemarks: suspensionRemarks[2],
           stabilizerBarPhoto: suspensionBase64[3],
-          stabilizerBarStatus: suspensionSwitch[3],
+          stabilizerBarStatus: getSwitch(suspensionSwitch[3]),
           stabilizerBarCondition: suspensionDropdown[3],
           stabilizerBarRemarks: suspensionRemarks[3],
           shockAbsorberPhoto: suspensionBase64[4],
-          shockAbsorberStatus: suspensionSwitch[4],
+          shockAbsorberStatus: getSwitch(suspensionSwitch[4]),
           shockAbsorberCondition: suspensionDropdown[4],
           shockAbsorberRemarks: suspensionRemarks[4],
           coilSpringPhoto: suspensionBase64[5],
-          coilSpringStatus: suspensionSwitch[5],
+          coilSpringStatus: getSwitch(suspensionSwitch[5]),
           coilSpringCondition: suspensionDropdown[5],
           coilSpringRemarks: suspensionRemarks[5],
           leafSpringPhoto: suspensionBase64[6],
-          leafSpringStatus: suspensionSwitch[6],
+          leafSpringStatus: getSwitch(suspensionSwitch[6]),
           leafSpringCondition: suspensionDropdown[6],
           leafSpringRemarks: suspensionRemarks[6],
+
           rackAndPinionPhoto: steeringBase64[0],
-          rackAndPinionStatus: steeringSwitch[0],
+          rackAndPinionStatus: getSwitch(steeringSwitch[0]),
           rackAndPinionCondition: steeringDropdown[0],
           rackAndPinionRemarks: steeringRemarks[0],
           steeringColumnPhoto: steeringBase64[1],
-          steeringColumnStatus: steeringSwitch[1],
+          steeringColumnStatus: getSwitch(steeringSwitch[1]),
           steeringColumnCondition: steeringDropdown[1],
           steeringColumnRemarks: steeringRemarks[1],
           hardnessPhoto: steeringBase64[2],
-          hardnessStatus: steeringSwitch[2],
+          hardnessStatus: getSwitch(steeringSwitch[2]),
           hardnessCondition: steeringDropdown[2],
           hardnessRemarks: steeringRemarks[2],
           ballJointEndPhoto: steeringBase64[3],
-          ballJointEndStatus: steeringSwitch[3],
+          ballJointEndStatus: getSwitch(steeringSwitch[3]),
           ballJointEndCondition: steeringDropdown[3],
           ballJointEndRemarks: steeringRemarks[3],
           padPhoto: brakeBase64[0],
-          padStatus: brakeSwitch[0],
+          padStatus: getSwitch(brakeSwitch[0]),
           padCondition: brakeDropdown[0],
           padRemarks: brakeRemarks[0],
           discPhoto: brakeBase64[1],
-          discStatus: brakeSwitch[1],
+          discStatus: getSwitch(brakeSwitch[1]),
           discCondition: brakeDropdown[1],
           discRemarks: brakeRemarks[1],
           shoePhoto: brakeBase64[2],
-          shoeStatus: brakeSwitch[2],
+          shoeStatus: getSwitch(brakeSwitch[2]),
           shoeCondition: brakeDropdown[2],
           shoeRemarks: brakeRemarks[2],
           drumPhoto: brakeBase64[3],
-          drumStatus: brakeSwitch[3],
+          drumStatus: getSwitch(brakeSwitch[3]),
           drumCondition: brakeDropdown[3],
           drumRemarks: brakeRemarks[3],
           wheelCylinderPhoto: brakeBase64[4],
-          wheelCylinderStatus: brakeSwitch[4],
+          wheelCylinderStatus: getSwitch(brakeSwitch[4]),
           wheelCylinderCondition: brakeDropdown[4],
           wheelCylinderRemarks: brakeRemarks[4],
           mcBoosterPhoto: brakeBase64[5],
-          mcBoosterStatus: brakeSwitch[5],
+          mcBoosterStatus: getSwitch(brakeSwitch[5]),
           mcBoosterCondition: brakeDropdown[5],
           mcBoosterRemarks: brakeRemarks[5],
           clutchPhoto: transmissionBase64[0],
-          clutchStatus: transmissionSwitch[0],
+          clutchStatus: getSwitch(transmissionSwitch[0]),
           clutchCondition: transmissionSwitch[0],
           clutchRemarks: transmissionRemarks[0],
           gearShiftingPhoto: transmissionBase64[1],
-          gearShiftingStatus: transmissionSwitch[1],
+          gearShiftingStatus: getSwitch(transmissionSwitch[1]),
           gearShiftingCondition: transmissionDropdown[1],
           gearShiftingRemarks: transmissionRemarks[1],
           driveShaftPhoto: transmissionBase64[2],
-          driveShaftStatus: transmissionSwitch[2],
+          driveShaftStatus: getSwitch(transmissionSwitch[2]),
           driveShaftCondition: transmissionDropdown[2],
           driveShaftRemarks: transmissionRemarks[2],
           axlePhoto: transmissionBase64[3],
-          axleStatus: transmissionSwitch[3],
+          axleStatus: getSwitch(transmissionSwitch[3]),
           axleCondition: transmissionDropdown[3],
           axleRemarks: transmissionDropdown[3],
           propellerShaftPhoto: transmissionBase64[4],
-          propellerShaftStatus: transmissionSwitch[4],
+          propellerShaftStatus: getSwitch(transmissionSwitch[4]),
           propellerShaftCondition: transmissionDropdown[4],
           propellerShaftRemarks: transmissionRemarks[4],
           differentialPhoto: transmissionBase64[5],
-          differentialStatus: transmissionSwitch[5],
+          differentialStatus: getSwitch(transmissionSwitch[5]),
           differentialCondition: transmissionDropdown[5],
           differentialRemarks: transmissionRemarks[5],
           bearingPhoto: transmissionBase64[6],
-          bearingStatus: transmissionSwitch[6],
+          bearingStatus: getSwitch(transmissionSwitch[6]),
           bearingCondition: transmissionDropdown[6],
           bearingRemarks: transmissionRemarks[6],
           mountingPhoto: transmissionBase64[7],
-          mountingStatus: transmissionSwitch[7],
+          mountingStatus: getSwitch(transmissionSwitch[7]),
           mountingCondition: transmissionDropdown[7],
           mountingRemarks: transmissionRemarks[7],
           smokePhoto: engineBase64[0],
-          smokeStatus: engineSwitch[0],
+          smokeStatus: getSwitch(engineSwitch[0]),
           smokeCondition: engineDropdown[0],
           smokeRemarks: engineRemarks[0],
           turboPhoto: engineBase64[1],
-          turboStatus: engineSwitch[1],
+          turboStatus: getSwitch(engineSwitch[1]),
           turboCondition: engineDropdown[1],
           turboRemarks: engineRemarks[1],
           misfiringPhoto: engineBase64[2],
-          misfiringStatus: engineSwitch[2],
+          misfiringStatus: getSwitch(engineSwitch[2]),
           misfiringCondition: engineDropdown[2],
           misfiringRemarks: engineRemarks[2],
           tappetPhoto: engineBase64[3],
-          tappetStatus: engineSwitch[3],
+          tappetStatus: getSwitch(engineSwitch[3]),
           tappetCondition: engineDropdown[3],
           tappetRemarks: engineRemarks[3],
           knockingPhoto: engineBase64[4],
-          knockingStatus: engineSwitch[4],
+          knockingStatus: getSwitch(engineSwitch[4]),
           knockingCondition: engineDropdown[4],
           knockingRemarks: engineRemarks[4],
           exhaustPhoto: engineBase64[5],
-          exhaustStatus: engineSwitch[5],
+          exhaustStatus: getSwitch(engineSwitch[5]),
           exhaustCondition: engineDropdown[5],
           exhaustRemarks: engineRemarks[5],
           beltsPhoto: engineBase64[6],
-          beltsStatus: engineSwitch[6],
+          beltsStatus: getSwitch(engineSwitch[6]),
           beltsCondition: engineDropdown[6],
           beltsRemarks: engineRemarks[6],
           tensionerPhoto: engineBase64[7],
-          tensionerStatus: engineSwitch[7],
+          tensionerStatus: getSwitch(engineSwitch[7]),
           tensionerCondition: engineDropdown[7],
           tensionerRemarks: engineRemarks[7],
+
           mountingPhoto: engineBase64[8],
-          mountingStatus: engineSwitch[8],
+          mountingStatus: getSwitch(engineSwitch[8]),
           mountingCondition: engineDropdown[8],
           mountingRemarks: engineRemarks[8],
+
           fuelPumpPhoto: engineBase64[9],
-          fuelPumpStatus: engineSwitch[9],
+          fuelPumpStatus: getSwitch(engineSwitch[9]),
           fuelPumpCondition: engineDropdown[9],
           fuelPumpRemarks: engineRemarks[9],
+
           highPressurePumpPhoto: engineBase64[10],
-          highPressurePumpStatus: engineSwitch[10],
+          highPressurePumpStatus: getSwitch(engineSwitch[10]),
           highPressurePumpCondition: engineDropdown[10],
           highPressurePumpRemarks: engineRemarks[10],
+
           commonrailPhoto: engineBase64[11],
-          commonrailStatus: engineSwitch[11],
+          commonrailStatus: getSwitch(engineSwitch[11]),
           commonrailCondition: engineDropdown[11],
           commonrailRemarks: engineRemarks[11],
+
           injectorPhoto: engineBase64[12],
-          injectorStatus: engineSwitch[12],
+          injectorStatus: getSwitch(engineSwitch[12]),
           injectorCondition: engineDropdown[12],
           injectorRemarks: engineRemarks[12],
+
           fuelTankPhoto: engineBase64[13],
-          fuelTankStatus: engineSwitch[13],
+          fuelTankStatus: getSwitch(engineSwitch[13]),
           fuelTankCondition: engineDropdown[13],
           fuelTankRemarks: engineRemarks[13],
+
           hosePhoto: engineBase64[14],
-          hoseStatus: engineSwitch[14],
+          hoseStatus: getSwitch(engineSwitch[14]),
           hoseCondition: engineDropdown[14],
           hoseRemarks: engineRemarks[14],
+
           radiatorPhoto: engineBase64[15],
-          radiatorStatus: engineSwitch[15],
+          radiatorStatus: getSwitch(engineSwitch[15]),
           radiatorCondition: engineDropdown[15],
           radiatorRemarks: engineRemarks[15],
+
           fanPhoto: engineBase64[16],
-          fanStatus: engineSwitch[16],
+          fanStatus: getSwitch(engineSwitch[16]),
           fanCondition: engineDropdown[16],
           fanRemarks: engineRemarks[16],
+
           overHeatingPhoto: engineBase64[17],
-          overHeatingStatus: engineSwitch[17],
+          overHeatingStatus: getSwitch(engineSwitch[17]),
           overHeatingCondition: engineDropdown[17],
           overHeatingRemarks: engineRemarks[17],
+
           allBearingsPhoto: engineBase64[18],
-          allBearingsStatus: engineSwitch[18],
+          allBearingsStatus: getSwitch(engineSwitch[18]),
           allBearingsCondition: engineDropdown[18],
           allBearingsRemarks: engineRemarks[18],
+
           batteryPhoto: electricalBase64[0],
-          batteryStatus: electricalSwitch[0],
+          batteryStatus: getSwitch(electricalSwitch[0]),
           batteryCondition: electricalDropdown[0],
           batteryRemarks: electricalRemarks[0],
+
           alternatorPhoto: electricalBase64[1],
-          alternatorStatus: electricalSwitch[1],
+          alternatorStatus: getSwitch(electricalSwitch[1]),
           alternatorCondition: electricalDropdown[1],
           alternatorRemarks: electricalRemarks[1],
+
           selfMotorPhoto: electricalBase64[2],
-          selfMotorStatus: electricalSwitch[2],
+          selfMotorStatus: getSwitch(electricalSwitch[2]),
           selfMotorCondition: electricalDropdown[2],
           selfMotorRemarks: electricalRemarks[2],
+
           wiringHarnessPhoto: electricalBase64[3],
-          wiringHarnessStatus: electricalSwitch[3],
+          wiringHarnessStatus: getSwitch(electricalSwitch[3]),
           wiringHarnessCondition: electricalDropdown[3],
           wiringHarnessRemarks: electricalRemarks[3],
+
           ecmPhoto: electricalBase64[4],
-          ecmStatus: electricalSwitch[4],
+          ecmStatus: getSwitch(electricalSwitch[4]),
           ecmCondition: electricalDropdown[4],
           ecmRemarks: electricalRemarks[4],
+
           allSensorsPhoto: electricalBase64[5],
-          allSensorsStatus: electricalSwitch[5],
+          allSensorsStatus: getSwitch(electricalSwitch[5]),
           allSensorsCondition: electricalDropdown[5],
           allSensorsRemarks: electricalRemarks[5],
+
           wiperMotorPhoto: electricalBase64[6],
-          wiperMotorStatus: electricalSwitch[6],
+          wiperMotorStatus: getSwitch(electricalSwitch[6]),
           wiperMotorCondition: electricalDropdown[6],
           wiperMotorRemarks: electricalRemarks[6],
+
           clusterPhoto: electricalBase64[7],
-          clusterStatus: electricalSwitch[7],
+          clusterStatus: getSwitch(electricalSwitch[7]),
           clusterCondition: electricalDropdown[7],
           clusterRemarks: electricalRemarks[7],
+
           headLightsAndDrlPhoto: electricalBase64[8],
-          headLightsAndDrlStatus: electricalSwitch[8],
+          headLightsAndDrlStatus: getSwitch(electricalSwitch[8]),
           headLightsAndDrlCondition: electricalDropdown[8],
           headLightsAndDrlRemarks: electricalRemarks[8],
+
           tailLightPhoto: electricalBase64[9],
-          tailLightStatus: electricalSwitch[9],
+          tailLightStatus: getSwitch(electricalSwitch[9]),
           tailLightCondition: electricalDropdown[9],
           tailLightRemarks: electricalRemarks[9],
+
           cabinLightPhoto: electricalBase64[10],
-          cabinLightStatus: electricalSwitch[10],
+          cabinLightStatus: getSwitch(electricalSwitch[10]),
           cabinLightCondition: electricalDropdown[10],
           cabinLightRemarks: electricalRemarks[10],
+
           combinationSwitchPhoto: electricalBase64[11],
-          combinationSwitchStatus: electricalSwitch[11],
+          combinationSwitchStatus: getSwitch(electricalSwitch[11]),
           combinationSwitchCondition: electricalDropdown[11],
           combinationSwitchRemarks: electricalRemarks[11],
+
           absPhoto: electricalBase64[12],
-          absStatus: electricalSwitch[12],
+          absStatus: getSwitch(electricalSwitch[12]),
           absCondition: electricalDropdown[12],
           absRemarks: electricalRemarks[12],
+
           airBagPhoto: electricalBase64[13],
-          airBagStatus: electricalSwitch[13],
+          airBagStatus: getSwitch(electricalSwitch[13]),
           airBagCondition: electricalDropdown[13],
           airBagRemarks: electricalRemarks[13],
+
           powerWindowsPhoto: electricalBase64[14],
-          powerWindowsStatus: electricalSwitch[14],
+          powerWindowsStatus: getSwitch(electricalSwitch[14]),
           powerWindowsCondition: electricalDropdown[14],
           powerWindowsRemarks: electricalRemarks[14],
+
           coolingPhoto: acBase64[0],
-          coolingStatus: acSwitch[0],
+          coolingStatus: getSwitch(acSwitch[0]),
           coolingCondition: acDropdown[0],
           coolingRemarks: acRemarks[0],
-          blowerCondenserPhoto: acBase64[1],
-          blowerCondenserStatus: acSwitch[1],
-          blowerCondenserCondition: acDropdown[1],
-          blowerCondenserRemarks: acRemarks[1],
-          fanPhoto: acBase64[2],
-          fanStatus: acSwitch[2],
-          fanCondition: acDropdown[2],
-          fanRemarks: acRemarks[2],
-          controlSwitchPhoto: acBase64[3],
-          controlSwitchStatus: acSwitch[3],
-          controlSwitchCondition: acDropdown[3],
-          controlSwitchRemarks: acRemarks[3],
-          ventPhoto: acBase64[4],
-          ventStatus: acSwitch[4],
-          ventCondition: acDropdown[4],
-          ventRemarks: acRemarks[4],
+
+          blowerPhoto: acBase64[1],
+          blowerStatus: getSwitch(acSwitch[1]),
+          blowerCondition: acDropdown[1],
+          blowerRemarks: acRemarks[1],
+
+          condenserPhoto: acBase64[2],
+          condenserStatus: getSwitch(acSwitch[2]),
+          condenserCondition: acDropdown[2],
+          condenserRemarks: acRemarks[2],
+
+          fanPhoto: acBase64[3],
+          fanStatus: getSwitch(acSwitch[3]),
+          fanCondition: acDropdown[3],
+          fanRemarks: acRemarks[3],
+
+          controlSwitchPhoto: acBase64[4],
+          controlSwitchStatus: getSwitch(acSwitch[4]),
+          controlSwitchCondition: acDropdown[4],
+          controlSwitchRemarks: acRemarks[4],
+
+          ventPhoto: acBase64[5],
+          ventStatus: getSwitch(acSwitch[5]),
+          ventCondition: acDropdown[5],
+          ventRemarks: acRemarks[5],
+
           musicSystemPhoto: accessoriesBase64[0],
-          musicSystemStatus: accessoriesSwitch[0],
+          musicSystemStatus: getSwitch(accessoriesSwitch[0]),
           musicSystemCondition: accessoriesDropdown[0],
           musicSystemRemarks: accessoriesRemarks[0],
+
           parkingSensorPhoto: accessoriesBase64[1],
-          parkingSensorStatus: accessoriesSwitch[1],
+          parkingSensorStatus: getSwitch(accessoriesSwitch[1]),
           parkingSensorCondition: accessoriesDropdown[1],
           parkingSensorRemarks: accessoriesRemarks[1],
+
           reverseCameraPhoto: accessoriesBase64[2],
-          reverseCameraStatus: accessoriesSwitch[2],
+          reverseCameraStatus: getSwitch(accessoriesSwitch[2]),
           reverseCameraCondition: accessoriesDropdown[2],
           reverseCameraRemarks: accessoriesRemarks[2],
+
           ovrmAdjusterPhoto: accessoriesBase64[3],
-          ovrmAdjusterStatus: accessoriesSwitch[3],
+          ovrmAdjusterStatus: getSwitch(accessoriesSwitch[3]),
           ovrmAdjusterCondition: accessoriesDropdown[3],
           ovrmAdjusterRemarks: accessoriesRemarks[3],
+
           seatHeightAdjusterPhoto: accessoriesBase64[4],
-          seatHeightAdjusterStatus: accessoriesSwitch[4],
+          seatHeightAdjusterStatus: getSwitch(accessoriesSwitch[4]),
           seatHeightAdjusterCondition: accessoriesDropdown[4],
           seatHeightAdjusterRemarks: accessoriesRemarks[4],
+
           seatBeltPhoto: accessoriesBase64[5],
-          seatBeltStatus: accessoriesSwitch[5],
+          seatBeltStatus: getSwitch(accessoriesSwitch[5]),
           seatBeltCondition: accessoriesDropdown[5],
           seatBeltRemarks: accessoriesRemarks[5],
+
           sunRoofPhoto: accessoriesBase64[6],
-          sunRoofStatus: accessoriesSwitch[6],
+          sunRoofStatus: getSwitch(accessoriesSwitch[6]),
           sunRoofCondition: accessoriesDropdown[6],
           sunRoofRemarks: accessoriesRemarks[6],
+
           roofRailPhoto: accessoriesBase64[7],
-          roofRailStatus: accessoriesSwitch[7],
+          roofRailStatus: getSwitch(accessoriesSwitch[7]),
           roofRailCondition: accessoriesDropdown[7],
           roofRailRemarks: accessoriesRemarks[7],
+
           spoilerPhoto: accessoriesBase64[8],
-          spoilerStatus: accessoriesSwitch[8],
+          spoilerStatus: getSwitch(accessoriesSwitch[8]),
           spoilerCondition: accessoriesDropdown[8],
           spoilerRemarks: accessoriesRemarks[8],
+
           skirtPhoto: accessoriesBase64[9],
-          skirtStatus: accessoriesSwitch[9],
+          skirtStatus: getSwitch(accessoriesSwitch[9]),
           skirtCondition: accessoriesDropdown[9],
           skirtRemarks: accessoriesRemarks[9],
+
           steeringControlsPhoto: accessoriesBase64[10],
-          steeringControlsStatus: accessoriesSwitch[10],
+          steeringControlsStatus: getSwitch(accessoriesSwitch[10]),
           steeringControlsCondition: accessoriesDropdown[10],
           steeringControlsRemarks: accessoriesRemarks[10],
+
+          engineOilCondition: getSwitch(oliSwitch[0]),
+          engineOilRemarks: oilRemarks[0],
+          engineOilDropDown: oilDropDown[0],
+
+          brakeOilCondition: getSwitch(oliSwitch[1]),
+          brakeOilRemarks: oilRemarks[1],
+          brakeOilDropDown: oilDropDown[1],
+
+          coolentOilCondition: getSwitch(oliSwitch[2]),
+          coolentOilRemarks: oilRemarks[2],
+          coolentOilDropDown: oilDropDown[2],
+
+          gearOilCondition: getSwitch(oliSwitch[3]),
+          gearOilRemarks: oilRemarks[3],
+          gearOilDropDown: oilDropDown[3],
+
+          crownOilCondition: getSwitch(oliSwitch[4]),
+          crownOilRemarks: oilRemarks[4],
+          crownOilDropDown: oilDropDown[4],
+
           roadTestRemarks: roadTestRemarks,
         };
         params = Object.fromEntries(
@@ -1761,35 +2076,34 @@ const OrderCreation = ({navigation}) => {
           ),
         );
         break;
-        
-      
-        case 8:
-          params ={
-            dealerId: itemId,
-            id: id ? id : orderId,
-            orderStatus:2,
-            finalFrontViewPhoto: base64ReinspectorPhoto[0],
-            finalFrontViewRemarks: reinspectorRemarks[0],
-            finalRearViewPhoto: base64ReinspectorPhoto[1],
-            finalRearViewRemarks: reinspectorRemarks[1],
-            finalLhsViewPhoto: base64ReinspectorPhoto[2],
-            finalLhsViewRemarks: reinspectorRemarks[2],
-            finalRhsViewPhoto: base64ReinspectorPhoto[3],
-            finalRhsViewRemarks: reinspectorRemarks[3],
-            finalOdometerPhoto: base64ReinspectorPhoto[4],
-            finalOdometerRemarks: reinspectorRemarks[4],
-            finalRoofPhoto: base64ReinspectorPhoto[5],
-            finalRoofRemarks: reinspectorRemarks[5],
-            finalInteriorPhoto: base64ReinspectorPhoto[6],
-            finalInteriorRemarks: reinspectorRemarks[6],
-          }
 
-          params = Object.fromEntries(
-            Object.entries(params).filter(
-              ([_, value]) => value !== '' && value !== null && value !== false,
-            ),
-          );
-          break;
+      case 8:
+        params = {
+          dealerId: itemId,
+          id: id ? id : orderId,
+          orderStatus: 2,
+          finalFrontViewPhoto: base64ReinspectorPhoto[0],
+          finalFrontViewRemarks: reinspectorRemarks[0],
+          finalRearViewPhoto: base64ReinspectorPhoto[1],
+          finalRearViewRemarks: reinspectorRemarks[1],
+          finalLhsViewPhoto: base64ReinspectorPhoto[2],
+          finalLhsViewRemarks: reinspectorRemarks[2],
+          finalRhsViewPhoto: base64ReinspectorPhoto[3],
+          finalRhsViewRemarks: reinspectorRemarks[3],
+          finalOdometerPhoto: base64ReinspectorPhoto[4],
+          finalOdometerRemarks: reinspectorRemarks[4],
+          finalRoofPhoto: base64ReinspectorPhoto[5],
+          finalRoofRemarks: reinspectorRemarks[5],
+          finalInteriorPhoto: base64ReinspectorPhoto[6],
+          finalInteriorRemarks: reinspectorRemarks[6],
+        };
+
+        params = Object.fromEntries(
+          Object.entries(params).filter(
+            ([_, value]) => value !== '' && value !== null && value !== false,
+          ),
+        );
+        break;
 
       default:
         break;
@@ -1803,42 +2117,42 @@ const OrderCreation = ({navigation}) => {
 
     // Call the API
     try {
-      console.log(params, 'pgyfy');
+      console.log(params, 'params');
       const data = await apiPostWithToken('updateOrder', params);
 
-
-      if(step ==8) {
-        navigation.dispatch(
-          CommonActions.reset({
-            index: 0,
-            routes: [{name: 'Dashboard'}],
-          }),
-        );
-        
-       
-
-      } else {
-        if (swiperRef.current) {
-          swiperRef.current.scrollBy(1);
+      if (role === 'Reinspector') {
+        if (step === 8) {
+          navigation.dispatch(
+            CommonActions.reset({
+              index: 0,
+              routes: [{name: 'Dashboard'}],
+            }),
+          );
+        } else {
+          if (swiperRef.current) {
+            swiperRef.current.scrollBy(1);
+          }
         }
-     }
-
-    // else if (role ==="Reinspector" && step == 8) {
-    //     navigation.dispatch(
-    //       CommonActions.reset({
-    //         index: 0,
-    //         routes: [{name: 'Dashboard'}],
-    //       }),
-    //     );
-    //   } 
+      } else {
+        if (step === 7) {
+          navigation.dispatch(
+            CommonActions.reset({
+              index: 0,
+              routes: [{name: 'Dashboard'}],
+            }),
+          );
+        } else {
+          if (swiperRef.current) {
+            swiperRef.current.scrollBy(1);
+          }
+        }
+      }
     } catch (error) {
       // Handle errors here
       console.error('Request failed:', error);
     } finally {
-     
-        setLoading(false); // Show activity indicator
-      }
-    
+      setLoading(false); // Show activity indicator
+    }
   };
 
   const findDifferences = async (obj1, obj2) => {
@@ -3456,9 +3770,8 @@ const OrderCreation = ({navigation}) => {
   };
 
   const getProgressBarWidth = () => {
-    return `${((currentIndex + 1) / (role === "Reinspector" ? 8 : 7)) * 100}%`;
+    return `${((currentIndex + 1) / (role === 'Reinspector' ? 8 : 7)) * 100}%`;
   };
-  
 
   const handleUpload = buttonIndex => {
     openCameraForBodyInspection(selectedBodyInspectionIndex);
@@ -3583,15 +3896,13 @@ const OrderCreation = ({navigation}) => {
   //           }
   //         })
 
-
-
   const openCameraReinspector = () => {
-    launchCamera({mediaType: 'photo'}, response => {
+    launchCamera({mediaType: 'photo', cameraType: 'back'}, response => {
       if (response.assets && response.assets.length > 0) {
         const newPhotoUris = [...reinspectorPhoto];
         newPhotoUris[carIndex8] = response.assets[0].uri;
-       
-        setReinspectorPhoto(newPhotoUris)
+
+        setReinspectorPhoto(newPhotoUris);
 
         // Resize and compress the image with quality set to 10
         ImageResizer.createResizedImage(
@@ -3627,7 +3938,7 @@ const OrderCreation = ({navigation}) => {
   };
 
   const openCameraCarPhotos = () => {
-    launchCamera({mediaType: 'photo'}, response => {
+    launchCamera({mediaType: 'photo', cameraType: 'back'}, response => {
       if (response.assets && response.assets.length > 0) {
         const newPhotoUris = [...photoUrisCarPhotos];
         newPhotoUris[selectedContainerIndex1] = response.assets[0].uri;
@@ -3736,7 +4047,7 @@ const OrderCreation = ({navigation}) => {
   }
 
   const openCamera2 = () => {
-    launchCamera({mediaType: 'photo'}, response => {
+    launchCamera({mediaType: 'photo', cameraType: 'back'}, response => {
       if (response.assets && response.assets.length > 0) {
         const newPhotoUris = [...photoUris2];
         newPhotoUris[selectedContainerIndex] = response.assets[0].uri;
@@ -3766,6 +4077,275 @@ const OrderCreation = ({navigation}) => {
           .catch(error => {
             console.log('Error resizing image:', error);
           });
+      }
+    });
+  };
+
+
+  const openCamera5 = index => {
+    if (isCameraOpen.current) return;
+    isCameraOpen.current = true;
+
+    const handleCameraResponse = (
+      response,
+      photoState,
+      base64State,
+      setPhotoState,
+      setBase64State,
+    ) => {
+      if (response.assets && response.assets.length > 0) {
+        const newPhotoUris = [...photoState];
+        newPhotoUris[index] = response.assets[0].uri;
+        setPhotoState(newPhotoUris);
+
+        // Resize and compress the image with quality set to 10
+        ImageResizer.createResizedImage(
+          newPhotoUris[index],
+          400,
+          300,
+          'JPEG',
+          10,
+        )
+          .then(resizedImage => {
+            RNFS.readFile(resizedImage.uri, 'base64')
+              .then(base64 => {
+                const imageType = getImageType(base64);
+
+                if (imageType) {
+                  const base64Image = `data:image/${imageType};base64,${base64}`;
+                  const newBase64Strings = [...base64State];
+                  newBase64Strings[index] = base64Image;
+                  setBase64State(newBase64Strings);
+                } else {
+                  console.log('Unknown image type');
+                }
+              })
+              .catch(e => {
+                console.log('Error converting file to base64', e);
+              });
+          })
+          .catch(error => {
+            console.log('Error resizing image:', error);
+          })
+          .finally(() => {
+            isCameraOpen.current = false;
+          });
+      } else {
+        isCameraOpen.current = false;
+      }
+    };
+
+    launchCamera({mediaType: 'photo', cameraType: 'back'}, response => {
+      switch (carDetailsIndex) {
+        case 0:
+          handleCameraResponse(
+            response,
+            lhsViewPhoto,
+            lhsViewBase64,
+            setLhsViewPhoto,
+            setLhsViewBase64,
+          );
+          break;
+        case 1:
+          handleCameraResponse(
+            response,
+            rearViewPhoto,
+            rearViewBase64,
+            setRearViewPhoto,
+            setRearViewBase64,
+          );
+          break;
+        case 2:
+          handleCameraResponse(
+            response,
+            trunkBootPhoto,
+            trunkBootBase64,
+            setTrunkBootPhoto,
+            setTrunkBootBase64,
+          );
+          break;
+        case 3:
+          handleCameraResponse(
+            response,
+            spareWheelPunchPhoto,
+            spareWheelBase64,
+            setSpareWheelPunchPhoto,
+            setSpareWheelBase64,
+          );
+          break;
+        case 4:
+          handleCameraResponse(
+            response,
+            toolKitPunchPhoto,
+            toolKitBase64,
+            setToolkitPunchPhoto,
+            setToolkitBase64,
+          );
+          break;
+        case 5:
+          handleCameraResponse(
+            response,
+            roofPhoto,
+            roofBase64,
+            setRoofPhoto,
+            setRoofBase64,
+          );
+          break;
+        case 6:
+          handleCameraResponse(
+            response,
+            underChassisPhoto,
+            underChassisBase64,
+            setUnderChassisPhoto,
+            setUnderChassisBase64,
+          );
+          break;
+        case 7:
+          handleCameraResponse(
+            response,
+            tyrePunchPhoto,
+            tyreBase64,
+            setTyrePunchPhoto,
+            setTyreBase64,
+          );
+          break;
+        default:
+          console.log('Invalid inspection index');
+          isCameraOpen.current = false;
+      }
+    });
+  };
+
+  const openCamera4 = index => {
+    if (isCameraOpen.current) return;
+    isCameraOpen.current = true;
+
+    const handleCameraResponse = (
+      response,
+      photoState,
+      base64State,
+      setPhotoState,
+      setBase64State,
+    ) => {
+      if (response.assets && response.assets.length > 0) {
+        const newPhotoUris = [...photoState];
+        newPhotoUris[index] = response.assets[0].uri;
+        setPhotoState(newPhotoUris);
+
+        // Resize and compress the image with quality set to 10
+        ImageResizer.createResizedImage(
+          newPhotoUris[index],
+          400,
+          300,
+          'JPEG',
+          10,
+        )
+          .then(resizedImage => {
+            RNFS.readFile(resizedImage.uri, 'base64')
+              .then(base64 => {
+                const imageType = getImageType(base64);
+
+                if (imageType) {
+                  const base64Image = `data:image/${imageType};base64,${base64}`;
+                  const newBase64Strings = [...base64State];
+                  newBase64Strings[index] = base64Image;
+                  setBase64State(newBase64Strings);
+                } else {
+                  console.log('Unknown image type');
+                }
+              })
+              .catch(e => {
+                console.log('Error converting file to base64', e);
+              });
+          })
+          .catch(error => {
+            console.log('Error resizing image:', error);
+          })
+          .finally(() => {
+            isCameraOpen.current = false;
+          });
+      } else {
+        isCameraOpen.current = false;
+      }
+    };
+
+    launchCamera({mediaType: 'photo', cameraType: 'back'}, response => {
+      switch (selectedContainerIndex1) {
+        case 0:
+          handleCameraResponse(
+            response,
+            frontViewPhoto,
+            frontViewBase64,
+            setFrontViewPhoto,
+            setFrontViewBase64,
+          );
+          break;
+        case 1:
+          handleCameraResponse(
+            response,
+            engineRoomPhoto,
+            engineRoomBase64,
+            setEngineRoomPhoto,
+            setEngineRoomBase64,
+          );
+          break;
+        case 2:
+          handleCameraResponse(
+            response,
+            chassisPunchPhoto,
+            chassisBase64,
+            setChassisPunchPhoto,
+            setChassisBase64,
+          );
+          break;
+        case 3:
+          handleCameraResponse(
+            response,
+            vinPlatePunchPhoto,
+            vinPlateBase64,
+            setVinPlatePunchPhoto,
+            setVinPlateBase64,
+          );
+          break;
+        case 4:
+          handleCameraResponse(
+            response,
+            rhsViewPhoto,
+            rhsViewBase64,
+            setRhsViewPhoto,
+            setRhsViewBase64,
+          );
+          break;
+        case 5:
+          handleCameraResponse(
+            response,
+            keyPunchPhoto,
+            keyBase64,
+            setKeyPunchPhoto,
+            setKeyBase64,
+          );
+          break;
+        case 6:
+          handleCameraResponse(
+            response,
+            odometerPhoto,
+            odometerBase64,
+            setOdometerPhoto,
+            setOdometerBase64,
+          );
+          break;
+        case 7:
+          handleCameraResponse(
+            response,
+            interiorPhoto,
+            interiorBase64,
+            setInteriorPhoto,
+            setInteriorBase64,
+          );
+          break;
+        default:
+          console.log('Invalid inspection index');
+          isCameraOpen.current = false;
       }
     });
   };
@@ -3823,7 +4403,7 @@ const OrderCreation = ({navigation}) => {
       }
     };
 
-    launchCamera({mediaType: 'photo'}, response => {
+    launchCamera({mediaType: 'photo', cameraType: 'back'}, response => {
       switch (selectedInspectionIndex) {
         case 0:
           handleCameraResponse(
@@ -3967,7 +4547,7 @@ const OrderCreation = ({navigation}) => {
       }
     };
 
-    launchCamera({mediaType: 'photo'}, response => {
+    launchCamera({mediaType: 'photo', cameraType: 'back'}, response => {
       switch (selectedContainerIndex) {
         case 0:
           handleCameraResponse(
@@ -4059,15 +4639,15 @@ const OrderCreation = ({navigation}) => {
       }
     };
 
-    launchCamera({mediaType: 'photo'}, response => {
+    launchCamera({mediaType: 'photo', cameraType: 'back'}, response => {
       switch (selectedBodyInspectionIndex) {
         case 0:
           handleCameraResponse(
             response,
-            pillarsPhoto,
-            pillarBase64,
-            setPillarsPhoto,
-            setPillarBase64,
+            bonetPhoto,
+            bonetBase64,
+            setBonetPhoto,
+            setBonetBase64,
           );
           break;
         case 1:
@@ -4082,76 +4662,13 @@ const OrderCreation = ({navigation}) => {
         case 2:
           handleCameraResponse(
             response,
-            fenderPhoto,
-            fennderBase64,
-            setFendersPhoto,
-            setFenderBase64,
-          );
-          break;
-        case 3:
-          handleCameraResponse(
-            response,
-            quarterPanlesPhoto,
-            quarterPanlesBase64,
-            setQuarterPanlesPhoto,
-            setQuarterPanlesBase64,
-          );
-          break;
-        case 4:
-          handleCameraResponse(
-            response,
-            runningBoardPhoto,
-            runningBoardBase64,
-            setRunningBoardPhoto,
-            setRunningBoardBase64,
-          );
-          break;
-        case 5:
-          handleCameraResponse(
-            response,
-            doorPhoto,
-            doorBase64,
-            setDoorPhoto,
-            setDoorBase64,
-          );
-          break;
-        case 6:
-          handleCameraResponse(
-            response,
-            dickyDoorPhoto,
-            dickyDoorBase64,
-            setDickyDoorPhoto,
-            setDickyDoorBase64,
-          );
-          break;
-        case 7:
-          handleCameraResponse(
-            response,
-            dickySkirtPhoto,
-            dickySkirtBase64,
-            setDickySkirtPhoto,
-            setDickySkirtBase64,
-          );
-          break;
-        case 8:
-          handleCameraResponse(
-            response,
-            bonetPhoto,
-            bonetBase64,
-            setBonetPhoto,
-            setBonetBase64,
-          );
-          break;
-        case 9:
-          handleCameraResponse(
-            response,
             supportMembersPhoto,
             supportMembersBase64,
             setSupportMembersPhoto,
             setSupportMembersBase64,
           );
           break;
-        case 10:
+        case 3:
           handleCameraResponse(
             response,
             bumperPhoto,
@@ -4160,22 +4677,85 @@ const OrderCreation = ({navigation}) => {
             setBumperBase64,
           );
           break;
-        case 11:
-          handleCameraResponse(
-            response,
-            wheelTypePhoto,
-            wheelTypeBase64,
-            setWheelTypePhoto,
-            setWheelTypeBase64,
-          );
-          break;
-        case 12:
+        case 4:
           handleCameraResponse(
             response,
             windShieldPhoto,
             windShieldBase64,
             setWindShieldPhoto,
             setWindShieldBase64,
+          );
+          break;
+        case 5:
+          handleCameraResponse(
+            response,
+            fenderPhoto,
+            fennderBase64,
+            setFendersPhoto,
+            setFenderBase64,
+          );
+          break;
+        case 6:
+          handleCameraResponse(
+            response,
+            pillarsPhoto,
+            pillarBase64,
+            setPillarsPhoto,
+            setPillarBase64,
+          );
+          break;
+        case 7:
+          handleCameraResponse(
+            response,
+            doorPhoto,
+            doorBase64,
+            setDoorPhoto,
+            setDoorBase64,
+          );
+          break;
+        case 8:
+          handleCameraResponse(
+            response,
+            runningBoardPhoto,
+            runningBoardBase64,
+            setRunningBoardPhoto,
+            setRunningBoardBase64,
+          );
+          break;
+        case 9:
+          handleCameraResponse(
+            response,
+            quarterPanlesPhoto,
+            quarterPanlesBase64,
+            setQuarterPanlesPhoto,
+            setQuarterPanlesBase64,
+          );
+          break;
+        case 10:
+          handleCameraResponse(
+            response,
+            dickyDoorPhoto,
+            dickyDoorBase64,
+            setDickyDoorPhoto,
+            setDickyDoorBase64,
+          );
+          break;
+        case 11:
+          handleCameraResponse(
+            response,
+            dickySkirtPhoto,
+            dickySkirtBase64,
+            setDickySkirtPhoto,
+            setDickySkirtBase64,
+          );
+          break;
+        case 12:
+          handleCameraResponse(
+            response,
+            wheelTypePhoto,
+            wheelTypeBase64,
+            setWheelTypePhoto,
+            setWheelTypeBase64,
           );
           break;
         // Add cases for other indices
@@ -4239,7 +4819,7 @@ const OrderCreation = ({navigation}) => {
       }
     };
 
-    launchCamera({mediaType: 'photo'}, response => {
+    launchCamera({mediaType: 'photo', cameraType: 'back'}, response => {
       switch (carDetailsIndex) {
         case 0:
           handleCameraResponse(
@@ -5303,23 +5883,35 @@ const OrderCreation = ({navigation}) => {
   };
 
   const handleOkPress = () => {
-    const isPhotoArrayComplete = arr =>
-      arr.filter(photo => photo !== '').length === arr.length;
+    const isPhotoArrayComplete = (arr, mandatoryIndices) =>
+      mandatoryIndices.every(index => arr[index] !== '');
 
     console.log(
       selectedContainerIndex,
       rcPhoto.length,
       'give additional referecene',
     );
-    if (selectedContainerIndex === 0 && !isPhotoArrayComplete(rcPhoto)) {
-      ToastAndroid.show('RC Photo is mandatory.', ToastAndroid.SHORT);
+    if (
+      selectedContainerIndex === 0 &&
+      !isPhotoArrayComplete(rcPhoto, [0, 1])
+    ) {
+      ToastAndroid.show(
+        'RC Front Photo and RC Back Photo are mandatory.',
+        ToastAndroid.SHORT,
+      );
       return;
     }
-    if (selectedContainerIndex === 1 && !isPhotoArrayComplete(insurancePhoto)) {
-      ToastAndroid.show('Insurance Photo is mandatory.', ToastAndroid.SHORT);
+    if (
+      selectedContainerIndex === 1 &&
+      !isPhotoArrayComplete(insurancePhoto, [0, 1])
+    ) {
+      ToastAndroid.show(
+        'Page 1 and Page 2 of Insurance are mandatory.',
+        ToastAndroid.SHORT,
+      );
       return;
     }
-    if (selectedContainerIndex === 2 && !isPhotoArrayComplete(nocPhoto)) {
+    if (selectedContainerIndex === 2 && !isPhotoArrayComplete(nocPhoto, [0])) {
       ToastAndroid.show('NOC Photo is mandatory.', ToastAndroid.SHORT);
       return;
     }
@@ -5334,8 +5926,11 @@ const OrderCreation = ({navigation}) => {
   };
 
   const handleOkPressCarPhotos = () => {
-    if (!photoUrisCarPhotos[selectedContainerIndex1] || !carPhotosRemarks[selectedContainerIndex1]) {
-      ToastAndroid.show('Photo and remarks fields are required', ToastAndroid.SHORT);
+    if (!validateCarDetails4()) {
+      ToastAndroid.show(
+        'All the fields are mandatory',
+        ToastAndroid.SHORT,
+      );
       return;
     }
     const newValidations = [...carPhotovalidations];
@@ -5347,21 +5942,17 @@ const OrderCreation = ({navigation}) => {
     setModalVisible1(false);
   };
 
-
   const handleOkReinspector = () => {
-    if (!reinspectorPhoto[carIndex8] || !reinspectorRemarks[carIndex8]) {
-      ToastAndroid.show('Photo and remarks fields are required', ToastAndroid.SHORT);
+    if (!reinspectorPhoto[carIndex8]) {
+      ToastAndroid.show('Photos fields are required', ToastAndroid.SHORT);
       return;
     }
     const newValidations = [...reinspectorValidation];
     // Assume validatePhotoAndRemarks is a function that returns true if both photo and remarks are valid
-    newValidations[carIndex8] = validatePhotoAndRemarks(
-      carIndex8,
-    );
-    setReinspectorValidation(newValidations)
-   
+    newValidations[carIndex8] = validatePhotoAndRemarks(carIndex8);
+    setReinspectorValidation(newValidations);
 
-    setReinspectorPage(false)
+    setReinspectorPage(false);
   };
 
   const validateMechanicalInspectionFields = () => {
@@ -5371,9 +5962,7 @@ const OrderCreation = ({navigation}) => {
           console.log(suspensionSwitch[i], 'jjjjjj');
           if (
             (suspensionSwitch[i] === 2 || !suspensionSwitch[i]) &&
-            (!suspensionPhoto[i] ||
-              !suspensionRemarks[i] ||
-              !suspensionDropdown[i])
+            (!suspensionPhoto[i] || !suspensionDropdown[i])
           ) {
             return false;
           }
@@ -5386,7 +5975,7 @@ const OrderCreation = ({navigation}) => {
           console.log(steeringSwitch[i], 'asaasa');
           if (
             (steeringSwitch[i] === 2 || !steeringSwitch[i]) &&
-            (!steeringPhoto[i] || !steeringRemarks[i] || !steeringDropdown[i])
+            (!steeringPhoto[i] || !steeringDropdown[i])
           ) {
             return false;
           }
@@ -5399,7 +5988,7 @@ const OrderCreation = ({navigation}) => {
           console.log(brakeSwitch[i], 'jjjjjj');
           if (
             (brakeSwitch[i] === 2 || !brakeSwitch[i]) &&
-            (!brakePhoto[i] || !brakeRemarks[i] || !brakeDropdown[i])
+            (!brakePhoto[i] || !brakeDropdown[i])
           ) {
             return false;
           }
@@ -5412,9 +6001,7 @@ const OrderCreation = ({navigation}) => {
           console.log(transmissionSwitch[i], 'jjjjjj');
           if (
             (transmissionSwitch[i] === 2 || !transmissionSwitch[i]) &&
-            (!transmissionPhoto[i] ||
-              !transmissionRemarks[i] ||
-              !transmissionDropdown[i])
+            (!transmissionPhoto[i] || !transmissionDropdown[i])
           ) {
             return false;
           }
@@ -5427,7 +6014,7 @@ const OrderCreation = ({navigation}) => {
           console.log(engineSwitch[i], 'jjjjjj');
           if (
             (engineSwitch[i] === 2 || !engineSwitch[i]) &&
-            (!enginePhoto[i] || !engineRemarks[i] || !engineDropdown[i])
+            (!enginePhoto[i] || !engineDropdown[i])
           ) {
             return false;
           }
@@ -5440,9 +6027,7 @@ const OrderCreation = ({navigation}) => {
           console.log(electricalSwitch[i], 'jjjjjj');
           if (
             (electricalSwitch[i] === 2 || !electricalSwitch[i]) &&
-            (!electricalPhoto[i] ||
-              !electricalRemarks[i] ||
-              !electricalDropdown[i])
+            (!electricalPhoto[i] || !electricalDropdown[i])
           ) {
             return false;
           }
@@ -5456,7 +6041,7 @@ const OrderCreation = ({navigation}) => {
           console.log(acSwitch[i], 'jjjjjj');
           if (
             (acSwitch[i] === 2 || !acSwitch[i]) &&
-            (!acPhoto[i] || !acRemarks[i] || !acDropdown[i])
+            (!acPhoto[i] || !acDropdown[i])
           ) {
             return false;
           }
@@ -5468,10 +6053,17 @@ const OrderCreation = ({navigation}) => {
         for (let i = 0; i < accessoriesSwitch.length; i++) {
           if (
             (accessoriesSwitch[i] === 2 || accessoriesSwitch[i] === '') &&
-            (!accessoriesPhoto[i] ||
-              !accessoriesRemarks[i] ||
-              !accessoriesDropdown[i])
+            (!accessoriesPhoto[i] || !accessoriesDropdown[i])
           ) {
+            return false;
+          }
+        }
+        return true;
+        break;
+
+      case 8:
+        for (let i = 0; i < oliSwitch.length; i++) {
+          if ((oliSwitch[i] === 2 || oliSwitch[i] === '') && !oilDropDown[i]) {
             return false;
           }
         }
@@ -5486,7 +6078,7 @@ const OrderCreation = ({navigation}) => {
   const handleInspectionOkPress = () => {
     if (!validateMechanicalInspectionFields()) {
       ToastAndroid.show(
-        'All chassis fields are mandatory when the switch is on.',
+        'All the fields are mandatory when the switch is on.',
         ToastAndroid.SHORT,
       );
       return;
@@ -5503,13 +6095,11 @@ const OrderCreation = ({navigation}) => {
   const validateBodyInspectionFields = () => {
     switch (selectedBodyInspectionIndex) {
       case 0:
-        for (let i = 0; i < pillarSwitch.length; i++) {
-          console.log(pillarSwitch[i], 'jjjjjj');
+        for (let i = 0; i < bonetSwitch.length; i++) {
+          console.log(bonetSwitch[i], 'jjjjjj');
           if (
-            (pillarSwitch[i] === 2 || !pillarSwitch[i]) &&
-            (!pillarsPhoto[i] ||
-              !pillarsPhotoRemarks[i] ||
-              !pillarsCondition[i])
+            (bonetSwitch[i] === 2 || !pillarSwitch[i]) &&
+            (!bonetPhoto[i] || !bonetCondition[i])
           ) {
             return false;
           }
@@ -5522,7 +6112,7 @@ const OrderCreation = ({navigation}) => {
           console.log(apronSwitch[i], 'jjjjjj');
           if (
             (apronSwitch[i] === 2 || !apronSwitch[i]) &&
-            (!apronPhoto[i] || !apronRemarks[i] || !apronCondition[i])
+            (!apronPhoto[i] || !apronCondition[i])
           ) {
             return false;
           }
@@ -5531,11 +6121,11 @@ const OrderCreation = ({navigation}) => {
         break;
 
       case 2:
-        for (let i = 0; i < fenderSwitch.length; i++) {
-          console.log(fenderSwitch[i], 'jjjjjj');
+        for (let i = 0; i < supportMembersSwitch.length; i++) {
+          console.log(supportMembersSwitch[i], 'jjjjjj');
           if (
-            (fenderSwitch[i] === 2 || !fenderSwitch[i]) &&
-            (!fenderPhoto[i] || !fenderRemarks[i] || !fenderCondition[i])
+            (supportMembersSwitch[i] === 2 || !supportMembersSwitch[i]) &&
+            (!supportMembersPhoto[i] || !supportMembersCondition[i])
           ) {
             return false;
           }
@@ -5544,41 +6134,38 @@ const OrderCreation = ({navigation}) => {
         break;
 
       case 3:
-        for (let i = 0; i < quarterPanlesSwitch.length; i++) {
-          console.log(quarterPanlesSwitch[i], 'jjjjjj');
+        for (let i = 0; i < bumperSwitch.length; i++) {
           if (
-            (quarterPanlesSwitch[i] === 2 || !quarterPanlesSwitch[i]) &&
-            (!quarterPanlesPhoto[i] ||
-              !quarterPanlesRemarks[i] ||
-              !quarterPanlesCondition[i])
+            (bumperSwitch[i] === 2 || !bumperSwitch[i]) &&
+            (!bumperPhoto[i] || !bumperCondition[i])
           ) {
             return false;
           }
         }
         return true;
         break;
+      
 
       case 4:
-        for (let i = 0; i < runningBoardSwitch.length; i++) {
-          console.log(runningBoardSwitch[i], 'jjjjjj');
+        for (let i = 0; i < windShieldSwitch.length; i++) {
+          console.log(windShieldSwitch[i], 'jjjjjj');
           if (
-            (runningBoardSwitch[i] === 2 || !runningBoardSwitch[i]) &&
-            (!runningBoardPhoto[i] ||
-              !runningBoardRemarks[i] ||
-              !runnningBoardCondition[i])
+            (windShieldSwitch[i] === 2 || !windShieldSwitch[i]) &&
+            (!windShieldPhoto[i] || !windShieldCondition[i])
           ) {
             return false;
           }
         }
         return true;
         break;
+        
 
       case 5:
-        for (let i = 0; i < doorSwitch.length; i++) {
-          console.log(doorSwitch[i], 'jjjjjj');
+        for (let i = 0; i < fenderSwitch.length; i++) {
+          console.log(fenderSwitch[i], 'jjjjjj');
           if (
-            (doorSwitch[i] === 2 || !doorSwitch[i]) &&
-            (!doorPhoto[i] || !doorRemarks[i] || !doorCondition[i])
+            (fenderSwitch[i] === 2 || !fenderSwitch[i]) &&
+            (!fenderPhoto[i] || !fenderCondition[i])
           ) {
             return false;
           }
@@ -5587,13 +6174,11 @@ const OrderCreation = ({navigation}) => {
         break;
 
       case 6:
-        for (let i = 0; i < dickyDoorSwitch.length; i++) {
-          console.log(dickyDoorSwitch[i], 'jjjjjj');
+        for (let i = 0; i < pillarSwitch.length; i++) {
+          console.log(pillarSwitch[i], 'jjjjjj');
           if (
-            (dickyDoorSwitch[i] === 2 || !dickyDoorSwitch[i]) &&
-            (!dickyDoorPhoto[i] ||
-              !dickyDoorRemarks[i] ||
-              !dickyDoorCondition[i])
+            (pillarSwitch[i] === 2 || !pillarSwitch[i]) &&
+            (!pillarsPhoto[i] || !pillarsCondition[i])
           ) {
             return false;
           }
@@ -5602,13 +6187,11 @@ const OrderCreation = ({navigation}) => {
         break;
 
       case 7:
-        for (let i = 0; i < dickySkirtSwitch.length; i++) {
-          console.log(dickySkirtSwitch[i], 'jjjjjj');
+        for (let i = 0; i < doorSwitch.length; i++) {
+          console.log(doorSwitch[i], 'jjjjjj');
           if (
-            (dickySkirtSwitch[i] === 2 || !dickySkirtSwitch[i]) &&
-            (!dickySkirtPhoto[i] ||
-              !dickySkirtRemarks[i] ||
-              !dickySkirtCondition[i])
+            (doorSwitch[i] === 2 || !doorSwitch[i]) &&
+            (!doorPhoto[i] || !doorCondition[i])
           ) {
             return false;
           }
@@ -5617,26 +6200,25 @@ const OrderCreation = ({navigation}) => {
         break;
 
       case 8:
-        for (let i = 0; i < bonetSwitch.length; i++) {
-          console.log(bonetSwitch[i], 'jjjjjj');
+        for (let i = 0; i < runningBoardSwitch.length; i++) {
+          console.log(runningBoardSwitch[i], 'jjjjjj');
           if (
-            (bonetSwitch[i] === 2 || !bonetSwitch[i]) &&
-            (!bonetPhoto[i] || !bonetRemarks[i] || !bonetCondition[i])
+            (runningBoardSwitch[i] === 2 || !runningBoardSwitch[i]) &&
+            (!runningBoardPhoto[i] || !runnningBoardCondition[i])
           ) {
             return false;
           }
         }
         return true;
         break;
+      
 
       case 9:
-        for (let i = 0; i < supportMembersSwitch.length; i++) {
-          console.log(supportMembersSwitch[i], 'jjjjjj');
+        for (let i = 0; i < quarterPanlesSwitch.length; i++) {
+          console.log(quarterPanlesSwitch[i], 'jjjjjj');
           if (
-            (supportMembersSwitch[i] === 2 || !supportMembersSwitch[i]) &&
-            (!supportMembersPhoto[i] ||
-              !supportMembersRemarks[i] ||
-              !supportMembersCondition[i])
+            (quarterPanlesSwitch[i] === 2 || !quarterPanlesSwitch[i]) &&
+            (!quarterPanlesPhoto[i] || !quarterPanlesCondition[i])
           ) {
             return false;
           }
@@ -5645,10 +6227,11 @@ const OrderCreation = ({navigation}) => {
         break;
 
       case 10:
-        for (let i = 0; i < bumperSwitch.length; i++) {
+        for (let i = 0; i < dickyDoorSwitch.length; i++) {
+          console.log(dickyDoorSwitch[i], 'jjjjjj');
           if (
-            (bumperSwitch[i] === 2 || !bumperSwitch[i]) &&
-            (!bumperPhoto[i] || !bumperRemarks[i] || !bumperCondition[i])
+            (dickyDoorSwitch[i] === 2 || !dickyDoorSwitch[i]) &&
+            (!dickyDoorPhoto[i] || !dickyDoorCondition[i])
           ) {
             return false;
           }
@@ -5657,12 +6240,11 @@ const OrderCreation = ({navigation}) => {
         break;
 
       case 11:
-        for (let i = 0; i < wheelTypeSwitch.length; i++) {
+        for (let i = 0; i < dickySkirtSwitch.length; i++) {
+          console.log(dickySkirtSwitch[i], 'jjjjjj');
           if (
-            (wheelTypeSwitch[i] === 2 || !wheelTypeSwitch[i]) &&
-            (!wheelTypePhoto[i] ||
-              !wheelTypeRemarks[i] ||
-              !wheelTypeCondition[i])
+            (dickySkirtSwitch[i] === 2 || !dickySkirtSwitch[i]) &&
+            (!dickySkirtPhoto[i] || !dickySkirtCondition[i])
           ) {
             return false;
           }
@@ -5671,18 +6253,18 @@ const OrderCreation = ({navigation}) => {
         break;
 
       case 12:
-        for (let i = 0; i < windShieldSwitch.length; i++) {
+        for (let i = 0; i < wheelTypeSwitch.length; i++) {
           if (
-            (windShieldSwitch[i] === 2 || !windShieldSwitch[i]) &&
-            (!windShieldPhoto[i] ||
-              !windShieldRemarks[i] ||
-              !windShieldCondition[i])
+            (wheelTypeSwitch[i] === 2 || !wheelTypeSwitch[i]) &&
+            (!wheelTypePhoto[i] || !wheelTypeCondition[i])
           ) {
             return false;
           }
         }
         return true;
         break;
+
+     
 
       default:
         return true; // Return true for other indexes not explicitly handled
@@ -5692,7 +6274,7 @@ const OrderCreation = ({navigation}) => {
   const handleBodyInspectionOkPress = () => {
     if (!validateBodyInspectionFields()) {
       ToastAndroid.show(
-        'All chassis fields are mandatory when the switch is on.',
+        'All the fields are mandatory',
         ToastAndroid.SHORT,
       );
       return;
@@ -5709,12 +6291,10 @@ const OrderCreation = ({navigation}) => {
   const validateCarDetailsFields = () => {
     switch (carDetailsIndex) {
       case 0:
-        for (let i = 0; i < chassisSwitch.length; i++) {
+        for (let i = 0; i < lhsViewPhoto.length; i++) {
           if (
-            (chassisSwitch[i] === 2 || !chassisSwitch[i]) &&
-            (!chassisPunchPhoto[i] ||
-              !chassisRemarks[i] ||
-              !chassisCondition[i])
+          
+            (!lhsViewPhoto[i])
           ) {
             return false;
           }
@@ -5723,12 +6303,10 @@ const OrderCreation = ({navigation}) => {
         break;
 
       case 1:
-        for (let i = 0; i < vinPlateSwitch.length; i++) {
+        for (let i = 0; i < rearViewPhoto.length; i++) {
           if (
-            (vinPlateSwitch[i] === 2 || !vinPlateSwitch[i]) &&
-            (!vinPlatePunchPhoto[i] ||
-              !vinPlateRemarks[i] ||
-              !vinPlateCondition[i])
+          
+            (!rearViewPhoto[i])
           ) {
             return false;
           }
@@ -5736,25 +6314,26 @@ const OrderCreation = ({navigation}) => {
         return true;
         break;
 
-      case 2:
-        for (let i = 0; i < tyreSwitch.length; i++) {
-          if (
-            (tyreSwitch[i] === 2 || !tyreSwitch[i]) &&
-            (!tyrePunchPhoto[i] || !tyreRemarks[i] || !tyreCondition[i])
-          ) {
-            return false;
+        case 2:
+          for (let i = 0; i < trunkBootPhoto.length; i++) {
+            if (
+            
+              (!trunkBootPhoto[i])
+            ) {
+              return false;
+            }
           }
-        }
-        return true;
-        break;
+          return true;
+          break;
+
+
+    
 
       case 3:
         for (let i = 0; i < spareWheelSwitch.length; i++) {
           if (
             (spareWheelSwitch[i] === 2 || !spareWheelSwitch[i]) &&
-            (!spareWheelPunchPhoto[i] ||
-              !spareWheelRemarks[i] ||
-              !spareWheelCondition[i])
+            (!spareWheelPunchPhoto[i] || !spareWheelCondition[i])
           ) {
             return false;
           }
@@ -5766,9 +6345,7 @@ const OrderCreation = ({navigation}) => {
         for (let i = 0; i < toolKitSwitch.length; i++) {
           if (
             (toolKitSwitch[i] === 2 || !toolKitSwitch[i]) &&
-            (!toolKitPunchPhoto[i] ||
-              !toolKitRemarks[i] ||
-              !toolKitCondition[i])
+            (!toolKitPunchPhoto[i] || !toolKitCondition[i])
           ) {
             return false;
           }
@@ -5777,16 +6354,176 @@ const OrderCreation = ({navigation}) => {
         break;
 
       case 5:
-        for (let i = 0; i < keySwitch.length; i++) {
+       
+        for (let i = 0; i < roofPhoto.length; i++) {
           if (
-            (keySwitch[i] === 2 || !keySwitch[i]) &&
-            (!keyPunchPhoto[i] || !keyRemarks[i] || !keyCondition[i])
+          
+            (!roofPhoto[i])
           ) {
             return false;
           }
         }
         return true;
         break;
+
+        case 6:
+         
+          for (let i = 0; i < underChassisPhoto.length; i++) {
+            if (
+            
+              (!underChassisPhoto[i])
+            ) {
+              return false;
+            }
+          }
+          return true;
+          break;
+
+          case 7:
+            for (let i = 0; i < tyreSwitch.length; i++) {
+              // Check if tyreSwitch[i] is 1 or 2
+              if (tyreSwitch[i] === 1 || tyreSwitch[i] === 2 || !tyreSwitch[i]) {
+                // Ensure values[i] is present and not 0.0
+                if (!values[i] || values[i] === 0.0) {
+                  return false;
+                }
+              }
+            }
+            return true;
+            break;
+ 
+
+      default:
+        return true; // Return true for other indexes not explicitly handled
+    }
+  };
+
+
+  const validateCarDetails4 = () => {
+    switch (selectedContainerIndex1) {
+      case 0:
+        if (
+        
+          (!frontViewPhoto[i])
+        ) {
+          return false;
+        }
+      
+      return true;
+      break;
+
+      case 1:
+       
+        for (let i = 0; i < engineRoomPhoto.length; i++) {
+      if (
+        (!engineRoomPhoto[i])
+      ) {
+        return false;
+      }
+    }
+    
+    return true;
+    break;
+         
+
+      case 2:
+        for (let i = 0; i < chassisSwitch.length; i++) {
+          // If chassisSwitch[i] is 2, conditions are mandatory
+          if (chassisSwitch[i] === 2) {
+            if (!chassisPunchPhoto[i] || !chassisCondition[i]) {
+              return false;
+            }
+          }
+          // If chassisSwitch[i] is 1, conditions are not mandatory
+          else if (chassisSwitch[i] === 1) {
+            continue;
+          }
+          // If chassisSwitch[i] is not 1 or 2, handle accordingly (optional)
+          else {
+            if (!chassisPunchPhoto[i] || !chassisCondition[i]) {
+              return false;
+            }
+          }
+        }
+        return true;
+        break;
+
+      case 3:
+        for (let i = 0; i < vinPlateSwitch.length; i++) {
+          // If chassisSwitch[i] is 2, conditions are mandatory
+          if (vinPlateSwitch[i] === 2) {
+            if (!vinPlatePunchPhoto[i] || !vinPlateCondition[i]) {
+              return false;
+            }
+          }
+          // If chassisSwitch[i] is 1, conditions are not mandatory
+          else if (vinPlateSwitch[i] === 1) {
+            continue;
+          }
+          // If chassisSwitch[i] is not 1 or 2, handle accordingly (optional)
+          else {
+            if (!vinPlatePunchPhoto[i] || !vinPlateCondition[i]) {
+              return false;
+            }
+          }
+        }
+        return true;
+
+      case 4:
+
+      for (let i = 0; i < rhsViewPhoto.length; i++) {
+        if (
+        
+          (!rhsViewPhoto[i])
+        ) {
+          return false;
+        }
+      }
+      
+      return true;
+      break;
+
+      case 5:
+        for (let i = 0; i < keySwitch.length; i++) {
+          if (
+            (keySwitch[i] === 2 || !keySwitch[i]) &&
+            (!keyPunchPhoto[i] || !keyCondition[i])
+          ) {
+            return false;
+          }
+        }
+        return true;
+        break;
+
+
+        case 6:
+
+        for (let i = 0; i < odometerPhoto.length; i++) {
+          if (
+          
+            (!odometerPhoto[i])
+          ) {
+            return false;
+          }
+        }
+        
+        return true;
+        break;
+
+        case 7:
+          for (let i = 0; i < interiorPhoto.length; i++) {
+          if (
+          
+            (!interiorPhoto[i])
+          ) {
+            return false;
+          }
+        }
+        
+        return true;
+        break;
+  
+  
 
       default:
         return true; // Return true for other indexes not explicitly handled
@@ -5796,7 +6533,7 @@ const OrderCreation = ({navigation}) => {
   const handleCarDetailsOkPress = () => {
     if (!validateCarDetailsFields()) {
       ToastAndroid.show(
-        'All chassis fields are mandatory when the switch is on.',
+        'All the fields are mandatory',
         ToastAndroid.SHORT,
       );
       return;
@@ -5808,6 +6545,23 @@ const OrderCreation = ({navigation}) => {
     //setCa(newValidations);
     setCarDetailsValidation(newValidations);
   };
+
+
+  // const handleCarDetails4 = () => {
+  //   if (!validateCarDetails4()) {
+  //     ToastAndroid.show(
+  //       'All the fields are mandatory when the switch is on.',
+  //       ToastAndroid.SHORT,
+  //     );
+  //     return;
+  //   }
+  //   setCarDetailsInspection(false);
+  //   const newValidations = [...carValidation];
+  //   // Assume validatePhotoAndRemarks is a function that returns true if both photo and remarks are valid
+  //   newValidations[carDetailsIndex] = validatePhotoAndRemarks(carDetailsIndex);
+  //   //setCa(newValidations);
+  //   setCarDetailsValidation(newValidations);
+  // };
 
   const handleCancelPress = () => {
     setSelectedContainerIndex(null);
@@ -5832,15 +6586,14 @@ const OrderCreation = ({navigation}) => {
     setCarPhotoRemarks(newRemarks);
   };
 
-
   const handleCloseReinspectorPhotos = index => {
     const newPhotoUris = [...reinspectorPhoto];
     newPhotoUris[index] = null;
     // const newRemarks = [...carPhotosRemarks];
     // newRemarks[index] = '';
-    setReinspectorPhoto(newPhotoUris)
+    setReinspectorPhoto(newPhotoUris);
 
-  //  setCarPhotoRemarks(newRemarks);
+    //  setCarPhotoRemarks(newRemarks);
   };
 
   const handleClosePress1 = index => {
@@ -5882,6 +6635,103 @@ const OrderCreation = ({navigation}) => {
         break;
     }
   };
+
+
+  const handleCamera4=(index)=>{
+    let newPhotoUris;
+
+    switch (selectedContainerIndex1) {
+      case 0:
+        newPhotoUris = [...frontViewPhoto];
+        newPhotoUris[index] = null;
+        setFrontViewPhoto(newPhotoUris);
+        break;
+      case 1:
+        newPhotoUris = [...engineRoomPhoto];
+        newPhotoUris[index] = null;
+        setEngineRoomPhoto(newPhotoUris);
+        break;
+      case 2:
+        newPhotoUris = [...chassisPunchPhoto];
+        newPhotoUris[index] = null;
+        setChassisPunchPhoto(newPhotoUris);
+        break;
+      case 3:
+        newPhotoUris = [...vinPlatePunchPhoto];
+        newPhotoUris[index] = null;
+        setVinPlatePunchPhoto(newPhotoUris);
+        break;
+      case 4:
+        newPhotoUris = [...rhsViewPhoto];
+        newPhotoUris[index] = null;
+        setRhsViewPhoto(newPhotoUris);
+        break;
+      case 5:
+        newPhotoUris = [...keyPunchPhoto];
+        newPhotoUris[index] = null;
+        setKeyPunchPhoto(newPhotoUris);
+        break;
+      case 6:
+        newPhotoUris = [...odometerPhoto];
+        newPhotoUris[index] = null;
+        setOdometerPhoto(newPhotoUris);
+        break;
+      case 7:
+        newPhotoUris = [...interiorPhoto];
+        newPhotoUris[index] = null;
+        setInteriorPhoto(newPhotoUris);
+        break;
+
+  }
+}
+
+const handleCamera5=(index)=>{
+  let newPhotoUris;
+
+  switch (carDetailsIndex) {
+    case 0:
+      newPhotoUris = [...lhsViewPhoto];
+      newPhotoUris[index] = null;
+      setLhsViewPhoto(newPhotoUris);
+      break;
+    case 1:
+      newPhotoUris = [...rearViewPhoto];
+      newPhotoUris[index] = null;
+      setRearViewPhoto(newPhotoUris);
+      break;
+    case 2:
+      newPhotoUris = [...trunkBootPhoto];
+      newPhotoUris[index] = null;
+      setTrunkBootPhoto(newPhotoUris);
+      break;
+    case 3:
+      newPhotoUris = [...spareWheelPunchPhoto];
+      newPhotoUris[index] = null;
+      setSpareWheelPunchPhoto(newPhotoUris);
+      break;
+    case 4:
+      newPhotoUris = [...toolKitPunchPhoto];
+      newPhotoUris[index] = null;
+      setToolkitPunchPhoto(newPhotoUris);
+      break;
+    case 5:
+      newPhotoUris = [...roofPhoto];
+      newPhotoUris[index] = null;
+      setRoofPhoto(newPhotoUris);
+      break;
+    case 6:
+      newPhotoUris = [...underChassisPhoto];
+      newPhotoUris[index] = null;
+      setUnderChassisPhoto(newPhotoUris);
+      break;
+    case 7:
+      newPhotoUris = [...tyrePunchPhoto];
+      newPhotoUris[index] = null;
+      setTyrePunchPhoto(newPhotoUris);
+      break;
+
+}
+}
 
   const handleSuspensionClosePress = index => {
     let newPhotoUris;
@@ -5938,9 +6788,9 @@ const OrderCreation = ({navigation}) => {
 
     switch (selectedBodyInspectionIndex) {
       case 0:
-        newPhotoUris = [...pillarsPhoto];
+        newPhotoUris = [...bonetPhoto];
         newPhotoUris[index] = null;
-        setPillarsPhoto(newPhotoUris);
+        setBonetPhoto(newPhotoUris);
         break;
       case 1:
         newPhotoUris = [...apronPhoto];
@@ -5948,59 +6798,59 @@ const OrderCreation = ({navigation}) => {
         setApronPhoto(newPhotoUris);
         break;
       case 2:
-        newPhotoUris = [...fenderPhoto];
-        newPhotoUris[index] = null;
-        setFendersPhoto(newPhotoUris);
-        break;
-      case 3:
-        newPhotoUris = [...quarterPanlesPhoto];
-        newPhotoUris[index] = null;
-        setQuarterPanlesPhoto(newPhotoUris);
-        break;
-      case 4:
-        newPhotoUris = [...runningBoardPhoto];
-        newPhotoUris[index] = null;
-        setRunningBoardPhoto(newPhotoUris);
-        break;
-      case 5:
-        newPhotoUris = [...doorPhoto];
-        newPhotoUris[index] = null;
-        setDoorPhoto(newPhotoUris);
-        break;
-      case 6:
-        newPhotoUris = [...dickyDoorPhoto];
-        newPhotoUris[index] = null;
-        setDickyDoorPhoto(newPhotoUris);
-        break;
-      case 7:
-        newPhotoUris = [...dickySkirtPhoto];
-        newPhotoUris[index] = null;
-        setDickySkirtPhoto(newPhotoUris);
-        break;
-      case 8:
-        newPhotoUris = [...bonetPhoto];
-        newPhotoUris[index] = null;
-        setBonetPhoto(newPhotoUris);
-        break;
-      case 9:
         newPhotoUris = [...supportMembersPhoto];
         newPhotoUris[index] = null;
         setSupportMembersPhoto(newPhotoUris);
         break;
-      case 10:
+      case 3:
         newPhotoUris = [...bumperPhoto];
         newPhotoUris[index] = null;
         setBumperPhoto(newPhotoUris);
         break;
-      case 11:
-        newPhotoUris = [...wheelTypePhoto];
-        newPhotoUris[index] = null;
-        setWheelTypePhoto(newPhotoUris);
-        break;
-      case 12:
+      case 4:
         newPhotoUris = [...windShieldPhoto];
         newPhotoUris[index] = null;
         setWindShieldPhoto(newPhotoUris);
+        break;
+      case 5:
+        newPhotoUris = [...fenderPhoto];
+        newPhotoUris[index] = null;
+        setFendersPhoto(newPhotoUris);
+        break;
+      case 6:
+        newPhotoUris = [...pillarsPhoto];
+        newPhotoUris[index] = null;
+        setPillarsPhoto(newPhotoUris);
+        break;
+      case 7:
+        newPhotoUris = [...doorPhoto];
+        newPhotoUris[index] = null;
+        setDoorPhoto(newPhotoUris);
+        break;
+      case 8:
+        newPhotoUris = [...runningBoardPhoto];
+        newPhotoUris[index] = null;
+        setRunningBoardPhoto(newPhotoUris);
+        break;
+      case 9:
+        newPhotoUris = [...quarterPanlesPhoto];
+        newPhotoUris[index] = null;
+        setQuarterPanlesPhoto(newPhotoUris);
+        break;
+      case 10:
+        newPhotoUris = [...dickyDoorPhoto];
+        newPhotoUris[index] = null;
+        setDickyDoorPhoto(newPhotoUris);
+        break;
+      case 11:
+        newPhotoUris = [...dickySkirtPhoto];
+        newPhotoUris[index] = null;
+        setDickySkirtPhoto(newPhotoUris);
+        break;
+      case 12:
+        newPhotoUris = [...wheelTypePhoto];
+        newPhotoUris[index] = null;
+        setWheelTypePhoto(newPhotoUris);
         break;
       default:
         console.log('Invalid inspection index');
@@ -6250,12 +7100,11 @@ const OrderCreation = ({navigation}) => {
     setCarPhotoRemarks(newRemarks);
   };
 
-  const handleReinspectorRemarks=(text,index)=>{
+  const handleReinspectorRemarks = (text, index) => {
     const newRemarks = [...reinspectorRemarks];
     newRemarks[index] = text;
     setReinspectorRemarks(newRemarks);
-
-  }
+  };
 
   const handleInspectionRemarks = (text, index) => {
     const newRemarks = [...inspectionRemarks];
@@ -6307,6 +7156,11 @@ const OrderCreation = ({navigation}) => {
         setAccessoriesRemarks(newRemarks);
         break;
       case 8:
+        newRemarks = [...oilRemarks];
+        newRemarks[index] = text;
+        setOilRemarks(newRemarks);
+        break;
+      case 9:
         setRoadTestRemarks(text);
         break;
       default:
@@ -6315,14 +7169,116 @@ const OrderCreation = ({navigation}) => {
     }
   };
 
+
+  const handleRemarks4 = (text, index) => {
+    let newRemarks;
+
+    switch (selectedContainerIndex1) {
+      case 0:
+        newRemarks = [...frontViewRemarks];
+        newRemarks[index] = text;
+        setFrontViewRemarks(newRemarks);
+        break;
+      case 1:
+        newRemarks = [...engineRoomRemarks];
+        newRemarks[index] = text;
+        setEngineRoomRemarks(newRemarks);
+        break;
+      case 2:
+        newRemarks = [...chassisRemarks];
+        newRemarks[index] = text;
+        setChassisRemarks(newRemarks);
+        break;
+      case 3:
+        newRemarks = [...vinPlateRemarks];
+        newRemarks[index] = text;
+        setVinPlateRemarks(newRemarks);
+        break;
+      case 4:
+        newRemarks = [...rhsViewRemarks];
+        newRemarks[index] = text;
+        setRhsViewRemarks(newRemarks);
+        break;
+      case 5:
+        newRemarks = [...keyRemarks];
+        newRemarks[index] = text;
+        setKeyRemarks(newRemarks);
+        break;
+      case 6:
+        newRemarks = [...odometerRemarks];
+        newRemarks[index] = text;
+        setOdometerRemarks(newRemarks);
+        break;
+      case 7:
+        newRemarks = [...interiorRemarks];
+        newRemarks[index] = text;
+        setInteriorRemarks(newRemarks);
+        break;
+    
+      default:
+        console.log('Invalid inspection index');
+        break;
+    }
+  };
+
+  const handleRemarks5 = (text, index) => {
+    let newRemarks;
+
+    switch (carDetailsIndex) {
+      case 0:
+        newRemarks = [...lhsViewRemarks];
+        newRemarks[index] = text;
+        setLhsViewRemarks(newRemarks);
+        break;
+      case 1:
+        newRemarks = [...rearViewRemarks];
+        newRemarks[index] = text;
+        setRearViewRemarks(newRemarks);
+        break;
+      case 2:
+        newRemarks = [...trunkBootRemarks];
+        newRemarks[index] = text;
+        setTrunkBootRemarks(newRemarks);
+        break;
+      case 3:
+        newRemarks = [...spareWheelRemarks];
+        newRemarks[index] = text;
+        setSpareWheelRemarks(newRemarks);
+        break;
+      case 4:
+        newRemarks = [...toolKitRemarks];
+        newRemarks[index] = text;
+        setToolkitRemarks(newRemarks);
+        break;
+      case 5:
+        newRemarks = [...roofRemarks];
+        newRemarks[index] = text;
+        setRoofRemarks(newRemarks);
+        break;
+      case 6:
+        newRemarks = [...underChassisRemarks];
+        newRemarks[index] = text;
+        setUnderChassisRemarks(newRemarks);
+        break;
+      case 7:
+        newRemarks = [...tyreRemarks];
+        newRemarks[index] = text;
+        setTyreRemarks(newRemarks);
+        break;
+    
+      default:
+        console.log('Invalid inspection index');
+        break;
+    }
+  };
   const handleBodyInspectionRemarks = (text, index) => {
     let newRemarks;
 
     switch (selectedBodyInspectionIndex) {
       case 0:
-        newRemarks = [...pillarsPhotoRemarks];
+        newRemarks = [...bonetRemarks];
         newRemarks[index] = text;
-        setPillarsPhotoRemarks(newRemarks);
+        setBonetRemarks(newRemarks);
         break;
       case 1:
         newRemarks = [...apronRemarks];
@@ -6330,60 +7286,60 @@ const OrderCreation = ({navigation}) => {
         setApronRemarks(newRemarks);
         break;
       case 2:
-        newRemarks = [...fenderRemarks];
-        newRemarks[index] = text;
-        setFenderRemarks(newRemarks);
-        break;
-      case 3:
-        newRemarks = [...quarterPanlesRemarks];
-        newRemarks[index] = text;
-        setQuarterPanlesRemarks(newRemarks);
-        break;
-      case 4:
-        newRemarks = [...runningBoardRemarks];
-        newRemarks[index] = text;
-        setRunningBoardRemarks(newRemarks);
-        break;
-      case 5:
-        newRemarks = [...doorRemarks];
-        newRemarks[index] = text;
-        setDoorRemarks(newRemarks);
-        break;
-      case 6:
-        newRemarks = [...dickyDoorRemarks];
-        newRemarks[index] = text;
-        setDickyDoorRemarks(newRemarks);
-        break;
-      case 7:
-        newRemarks = [...dickySkirtRemarks];
-        newRemarks[index] = text;
-        setDickySkirtRemarks(newRemarks);
-        break;
-      case 8:
-        newRemarks = [...bonetRemarks];
-        newRemarks[index] = text;
-        setBonetRemarks(newRemarks);
-        break;
-
-      case 9:
         newRemarks = [...supportMembersRemarks];
         newRemarks[index] = text;
         setSupportMembersRemarks(newRemarks);
         break;
-      case 10:
+      case 3:
         newRemarks = [...bumperRemarks];
         newRemarks[index] = text;
         setBumperRemarks(newRemarks);
         break;
-      case 11:
-        newRemarks = [...wheelTypeRemarks];
-        newRemarks[index] = text;
-        setWheelTypeRemarks(newRemarks);
-        break;
-      case 12:
+      case 4:
         newRemarks = [...windShieldRemarks];
         newRemarks[index] = text;
         setWindShieldRemarks(newRemarks);
+        break;
+      case 5:
+        newRemarks = [...fenderRemarks];
+        newRemarks[index] = text;
+        setFenderRemarks(newRemarks);
+        break;
+      case 6:
+        newRemarks = [...pillarsPhotoRemarks];
+        newRemarks[index] = text;
+        setPillarsPhotoRemarks(newRemarks);
+        break;
+      case 7:
+        newRemarks = [...doorRemarks];
+        newRemarks[index] = text;
+        setDoorRemarks(newRemarks);
+        break;
+      case 8:
+        newRemarks = [...runningBoardRemarks];
+        newRemarks[index] = text;
+        setRunningBoardRemarks(newRemarks);
+        break;
+
+      case 9:
+        newRemarks = [...quarterPanlesRemarks];
+        newRemarks[index] = text;
+        setQuarterPanlesRemarks(newRemarks);
+        break;
+      case 10:
+        newRemarks = [...dickyDoorRemarks];
+        newRemarks[index] = text;
+        setDickyDoorRemarks(newRemarks);
+        break;
+      case 11:
+        newRemarks = [...dickySkirtRemarks];
+        newRemarks[index] = text;
+        setDickySkirtRemarks(newRemarks);
+        break;
+      case 12:
+        newRemarks = [...wheelTypeRemarks];
+        newRemarks[index] = text;
+        setWheelTypeRemarks(newRemarks);
         break;
 
       default:
@@ -6551,6 +7507,11 @@ const OrderCreation = ({navigation}) => {
         newSelectedValues[index] = value;
         setAccessoriesDropdown(newSelectedValues);
         break;
+      case 8:
+        newSelectedValues = [...oilDropDown];
+        newSelectedValues[index] = value;
+        setOilDropDown(newSelectedValues);
+        break;
       default:
         console.log('Invalid inspection index');
         break;
@@ -6562,9 +7523,9 @@ const OrderCreation = ({navigation}) => {
 
     switch (selectedBodyInspectionIndex) {
       case 0:
-        newSelectedValues = [...pillarsCondition];
+        newSelectedValues = [...bonetCondition];
         newSelectedValues[index] = value;
-        setPillarsCondition(newSelectedValues);
+        setBonetCondition(newSelectedValues);
         break;
       case 1:
         newSelectedValues = [...apronCondition];
@@ -6572,60 +7533,113 @@ const OrderCreation = ({navigation}) => {
         setApronCondition(newSelectedValues);
         break;
       case 2:
-        newSelectedValues = [...fenderCondition];
-        newSelectedValues[index] = value;
-        setFenderCondition(newSelectedValues);
-        break;
-      case 3:
-        newSelectedValues = [...quarterPanlesCondition];
-        newSelectedValues[index] = value;
-        setQuarterPanlesCondition(newSelectedValues);
-        break;
-      case 4:
-        newSelectedValues = [...runnningBoardCondition];
-        newSelectedValues[index] = value;
-        setRunningBoardCondition(newSelectedValues);
-        break;
-      case 5:
-        newSelectedValues = [...doorCondition];
-        newSelectedValues[index] = value;
-        setDoorCondition(newSelectedValues);
-        break;
-      case 6:
-        newSelectedValues = [...dickyDoorCondition];
-        newSelectedValues[index] = value;
-        setDickyDoorCondition(newSelectedValues);
-        break;
-      case 7:
-        newSelectedValues = [...dickySkirtCondition];
-        newSelectedValues[index] = value;
-        setDickySkirtCondition(newSelectedValues);
-        break;
-      case 8:
-        newSelectedValues = [...bonetCondition];
-        newSelectedValues[index] = value;
-        setBonetCondition(newSelectedValues);
-        break;
-      case 9:
         newSelectedValues = [...supportMembersCondition];
         newSelectedValues[index] = value;
         setSupportMembersCondition(newSelectedValues);
         break;
-      case 10:
+      case 3:
         newSelectedValues = [...bumperCondition];
         newSelectedValues[index] = value;
         setBumperCondition(newSelectedValues);
         break;
-      case 11:
-        newSelectedValues = [...wheelTypeCondition];
-        newSelectedValues[index] = value;
-        setWheelTypeCondition(newSelectedValues);
-        break;
-      case 12:
+      case 4:
         newSelectedValues = [...windShieldCondition];
         newSelectedValues[index] = value;
         setWindShieldCondition(newSelectedValues);
         break;
+      case 5:
+        newSelectedValues = [...fenderCondition];
+        newSelectedValues[index] = value;
+        setFenderCondition(newSelectedValues);
+        break;
+      case 6:
+        newSelectedValues = [...pillarsCondition];
+        newSelectedValues[index] = value;
+        setPillarsCondition(newSelectedValues);
+        break;
+      case 7:
+        newSelectedValues = [...doorCondition];
+        newSelectedValues[index] = value;
+        setDoorCondition(newSelectedValues);
+        break;
+      case 8:
+        newSelectedValues = [...runnningBoardCondition];
+        newSelectedValues[index] = value;
+        setRunningBoardCondition(newSelectedValues);
+        break;
+      case 9:
+        newSelectedValues = [...quarterPanlesCondition];
+        newSelectedValues[index] = value;
+        setQuarterPanlesCondition(newSelectedValues);
+        break;
+      case 10:
+        newSelectedValues = [...dickyDoorCondition];
+        newSelectedValues[index] = value;
+        setDickyDoorCondition(newSelectedValues);
+        break;
+      case 11:
+        newSelectedValues = [...dickySkirtCondition];
+        newSelectedValues[index] = value;
+        setDickySkirtCondition(newSelectedValues);
+        break;
+      case 12:
+        newSelectedValues = [...wheelTypeCondition];
+        newSelectedValues[index] = value;
+        setWheelTypeCondition(newSelectedValues);
+        break;
+      default:
+        console.log('Invalid inspection index');
+        break;
+    }
+  };
+  const handleDropDown5 = (value, index) => {
+    let newSelectedValues;
+
+    switch (carDetailsIndex) {
+      case 3:
+        newSelectedValues = [...spareWheelCondition];
+        newSelectedValues[index] = value;
+        setSpareWheelCondition(newSelectedValues);
+        break;
+      case 4:
+        newSelectedValues = [...toolKitCondition];
+        newSelectedValues[index] = value;
+        setToolkitCondition(newSelectedValues);
+        break;
+    
+      case 7:
+        newSelectedValues = [...tyreCondition];
+        newSelectedValues[index] = value;
+        setTyreCondition(newSelectedValues);
+        break;
+
+      default:
+        console.log('Invalid inspection index');
+        break;
+    }
+  };
+
+  const handleDropDown4 = (value, index) => {
+    let newSelectedValues;
+
+    switch (selectedContainerIndex1) {
+      case 2:
+        newSelectedValues = [...chassisCondition];
+        newSelectedValues[index] = value;
+        setChasisCondition(newSelectedValues);
+        break;
+      case 3:
+        newSelectedValues = [...vinPlateCondition];
+        newSelectedValues[index] = value;
+        setVinPlateCondition(newSelectedValues);
+        break;
+    
+      case 5:
+        newSelectedValues = [...keyCondition];
+        newSelectedValues[index] = value;
+        setKeyCondition(newSelectedValues);
+        break;
+
       default:
         console.log('Invalid inspection index');
         break;
@@ -6729,10 +7743,22 @@ const OrderCreation = ({navigation}) => {
         newState[index] = value; // 1 for Yes and 2 for No
         setAccessoriesSwitch(newState);
         break;
+      case 8:
+        newState = [...oliSwitch];
+        newState[index] = value; // 1 for Yes and 2 for No
+        setoilSwitch(newState);
+        break;
       default:
         console.log('Invalid inspection index');
         break;
     }
+  };
+
+  const handleBodyInspectionChanngeWheelType = (index, value) => {
+    let newState;
+    newState = [...selectWheelTypeSwitch];
+    newState[index] = value; // 1 for Yes and 2 for No
+    setSelectWheelTypeSwitch(newState);
   };
 
   const handleBodyInspectionChannge = (index, value) => {
@@ -6740,9 +7766,9 @@ const OrderCreation = ({navigation}) => {
 
     switch (selectedBodyInspectionIndex) {
       case 0:
-        newState = [...pillarSwitch];
+        newState = [...bonetSwitch];
         newState[index] = value; // 1 for Yes and 2 for No
-        setPillarSwitch(newState);
+        setBonetSwitch(newState);
         break;
       case 1:
         newState = [...apronSwitch];
@@ -6750,67 +7776,128 @@ const OrderCreation = ({navigation}) => {
         setApronSwitch(newState);
         break;
       case 2:
-        newState = [...fenderSwitch];
-        newState[index] = value; // 1 for Yes and 2 for No
-        setFenderSwitch(newState);
-        break;
-      case 3:
-        newState = [...quarterPanlesSwitch];
-        newState[index] = value; // 1 for Yes and 2 for No
-        setQuarterPanlesSwitch(newState);
-        break;
-      case 4:
-        newState = [...runningBoardSwitch];
-        newState[index] = value; // 1 for Yes and 2 for No
-        setRunningBoardSwitch(newState);
-        break;
-      case 5:
-        newState = [...doorSwitch];
-        newState[index] = value; // 1 for Yes and 2 for No
-        setDoorSwitch(newState);
-        break;
-      case 6:
-        newState = [...dickyDoorSwitch];
-        newState[index] = value; // 1 for Yes and 2 for No
-        setAcsetDickyDoorSwitchSwitch(newState);
-        break;
-      case 7:
-        newState = [...dickySkirtSwitch];
-        newState[index] = value; // 1 for Yes and 2 for No
-        setDickySkirtSwitch(newState);
-        break;
-      case 8:
-        newState = [...bonetSwitch];
-        newState[index] = value; // 1 for Yes and 2 for No
-        setBonetSwitch(newState);
-        break;
-
-      case 9:
         newState = [...supportMembersSwitch];
         newState[index] = value; // 1 for Yes and 2 for No
         setSupportMembersSwitch(newState);
         break;
-      case 10:
+      case 3:
         newState = [...bumperSwitch];
         newState[index] = value; // 1 for Yes and 2 for No
         setBumperSwitch(newState);
         break;
-      case 11:
-        newState = [...wheelTypeSwitch];
-        newState[index] = value; // 1 for Yes and 2 for No
-        setWheelTypeSwitch(newState);
-        break;
-
-      case 12:
+      case 4:
         newState = [...windShieldSwitch];
         newState[index] = value; // 1 for Yes and 2 for No
         setWindShieldSwitch(newState);
+        break;
+      case 5:
+        newState = [...fenderSwitch];
+        newState[index] = value; // 1 for Yes and 2 for No
+        setFenderSwitch(newState);
+        break;
+      case 6:
+        newState = [...pillarSwitch];
+        newState[index] = value; // 1 for Yes and 2 for No
+        setPillarSwitch(newState);
+        break;
+      case 7:
+        newState = [...doorSwitch];
+        newState[index] = value; // 1 for Yes and 2 for No
+        setDoorSwitch(newState);
+        break;
+      case 8:
+        newState = [...runningBoardSwitch];
+        newState[index] = value; // 1 for Yes and 2 for No
+        setRunningBoardSwitch(newState);
+        break;
+
+      case 9:
+        newState = [...quarterPanlesSwitch];
+        newState[index] = value; // 1 for Yes and 2 for No
+        setQuarterPanlesSwitch(newState);
+        break;
+      case 10:
+        newState = [...dickyDoorSwitch];
+        newState[index] = value; // 1 for Yes and 2 for No
+        setDickyDoorSwitch(newState);
+        break;
+      case 11:
+        newState = [...dickySkirtSwitch];
+        newState[index] = value; // 1 for Yes and 2 for No
+        setDickySkirtSwitch(newState);
+        break;
+
+      case 12:
+        newState = [...wheelTypeSwitch];
+        newState[index] = value; // 1 for Yes and 2 for No
+        setWheelTypeSwitch(newState);
         break;
       default:
         console.log('Invalid inspection index');
         break;
     }
   };
+
+  const handleSwitch4 = (index, value) => {
+    let newState;
+
+    switch (selectedContainerIndex1) {
+      case 2:
+        newState = [...chassisSwitch];
+        newState[index] = value; // 1 for Yes and 2 for No
+        setChassisSwitch(newState);
+        break;
+      case 3:
+        newState = [...vinPlateSwitch];
+        newState[index] = value; // 1 for Yes and 2 for No
+        setVinPlateSwitch(newState);
+        break;
+      case 2:
+        newState = [...tyreSwitch];
+        newState[index] = value; // 1 for Yes and 2 for No
+        setTyreSwitch(newState);
+        break;
+    
+      case 5:
+        newState = [...keySwitch];
+        newState[index] = value; // 1 for Yes and 2 for No
+        setKeySwitch(newState);
+        break;
+
+      default:
+        console.log('Invalid inspection index');
+        break;
+    }
+  };
+
+  const handleSwitch5 = (index, value) => {
+    let newState;
+
+    switch (carDetailsIndex) {
+      case 3:
+        newState = [...spareWheelSwitch];
+        newState[index] = value; // 1 for Yes and 2 for No
+        setSpareWheelSwitch(newState);
+        break;
+      case 4:
+        newState = [...toolKitSwitch];
+        newState[index] = value; // 1 for Yes and 2 for No
+        setToolkitSwitch(newState);
+        break;
+      case 7:
+        newState = [...tyreSwitch];
+        newState[index] = value; // 1 for Yes and 2 for No
+        setTyreSwitch(newState);
+        break;
+    
+     
+
+      default:
+        console.log('Invalid inspection index');
+        break;
+    }
+  };
+
 
   const handleCarDetailsChange = (index, value) => {
     let newState;
@@ -6856,14 +7943,23 @@ const OrderCreation = ({navigation}) => {
   const photoTitles = ['RC', 'Insurance', 'NOC'];
 
   const carPhotos = [
-    
-    'Under Chassis',
-    'Engine Room',
-    'Trunk Boot',
+    'Front View',
+     'Engine Room',
+     'Chassis punch',
+     'Vin Plate',
+     'RHS View',
+     'Key',
+     'Odo Meter',
+     'Interior',
+    // 'Rear View',
+    // 'LHS View',
+    // 'Roof',
+    // 'Under Chassis',
+    // 'Engine Room',
+    // 'Trunk Boot',
   ];
 
-
-  const carPhotos8=[
+  const carPhotos8 = [
     'Front View',
     'Rear View',
     'LHS View',
@@ -6871,7 +7967,7 @@ const OrderCreation = ({navigation}) => {
     'Odo Meter',
     'Roof',
     'Interior',
-  ]
+  ];
 
   const mechanicalInspection = [
     'Suspension',
@@ -6882,32 +7978,35 @@ const OrderCreation = ({navigation}) => {
     'Electrical',
     'AC',
     'Accesssories',
+    'Oil Level',
     'Road Test',
   ];
 
   const bodyInspection = [
-    'Pillars',
-    'Apron',
-    'Fenders',
-    'Quater Panels',
-    'Running Board',
-    'Doors',
-    'Boot',
-    'Boot Skirt',
     'Bonet',
+    'Apron',
     'Support Members',
     'Bumper',
-    'Wheel Type',
     'Windshield',
+    'Fenders',
+    'Pillars',
+    'Doors',
+    'Running Board',
+    'Quater Panels',
+    'Boot',
+    'Boot Skirt',
+    'Wheel Type',
   ];
 
   const carDetails = [
-    'Chassis Punch',
-    'Vin plate',
-    'Tyres',
+    'LHS View',
+    'Rear View',
+    'Trunk Boot',
     'Spare Wheel',
     'Tool Kit/Jack',
-    'Key',
+    'Roof',
+    'Under Chassis',
+    'Tyres'
   ];
 
   const [validations, setValidations] = useState(
@@ -6917,7 +8016,6 @@ const OrderCreation = ({navigation}) => {
   const [carPhotovalidations, setCarPhotoValidations] = useState(
     Array(carPhotos.length).fill(false),
   );
-
 
   const [reinspectorValidation, setReinspectorValidation] = useState(
     Array(reinspectorList.length).fill(false),
@@ -6951,149 +8049,496 @@ const OrderCreation = ({navigation}) => {
     }
   }, [id]);
 
+  const remarksUpdates = [
+    {setter: setCarPhotoRemarks, index: 0, key: 'underChassisRemarks'},
+    {setter: setCarPhotoRemarks, index: 1, key: 'engineRoomRemarks'},
+    {setter: setCarPhotoRemarks, index: 2, key: 'trunkBootRemarks'},
+    {setter: setChassisRemarks, index: 0, key: 'chassisPunchRemarks'},
+    {setter: setVinPlateRemarks, index: 0, key: 'vinPlateRemarks'},
+    {setter: setTyreRemarks, index: 0, key: 'frontTyreLeftRemarks'},
+    {setter: setTyreRemarks, index: 1, key: 'frontTyreRightRemarks'},
+    {setter: setTyreRemarks, index: 2, key: 'rearTyreLeftRemarks'},
+    {setter: setTyreRemarks, index: 3, key: 'rearTyreRightRemarks'},
+    {setter: setSpareWheelRemarks, index: 0, key: 'spareWheelRemarks'},
+    {setter: setToolkitRemarks, index: 0, key: 'toolKitJackRemarks'},
+    {setter: setKeyRemarks, index: 0, key: 'primaryKeyRemarks'},
+    {setter: setKeyRemarks, index: 1, key: 'spareKeyRemarks'},
+    {setter: setPillarsPhotoRemarks, index: 0, key: 'pillarALeftSideRemarks'},
+    {setter: setPillarsPhotoRemarks, index: 1, key: 'pillarARightSideRemarks'},
+    {setter: setPillarsPhotoRemarks, index: 2, key: 'pillarBLeftSideRemarks'},
+    {setter: setPillarsPhotoRemarks, index: 3, key: 'pillarBRightSideRemarks'},
+    {setter: setPillarsPhotoRemarks, index: 4, key: 'pillarCLeftSideRemarks'},
+    {setter: setPillarsPhotoRemarks, index: 5, key: 'pillarCRightSideRemarks'},
+    {setter: setApronRemarks, index: 0, key: 'apronLeftSideRemarks'},
+    {setter: setApronRemarks, index: 1, key: 'apronRightSideRemarks'},
+    {setter: setFenderRemarks, index: 0, key: 'fendersLeftSideRemarks'},
+    {setter: setFenderRemarks, index: 1, key: 'fendersRightSideRemarks'},
+    {
+      setter: setQuarterPanlesRemarks,
+      index: 0,
+      key: 'quarterPanelsLeftSideRemarks',
+    },
+    {
+      setter: setQuarterPanlesRemarks,
+      index: 1,
+      key: 'quarterPanelsRightSideRemarks',
+    },
+    {
+      setter: setRunningBoardRemarks,
+      index: 0,
+      key: 'runningBoardLeftSideRemarks',
+    },
+    {
+      setter: setRunningBoardRemarks,
+      index: 1,
+      key: 'runningBoardRightSideRemarks',
+    },
+    {setter: setDoorRemarks, index: 0, key: 'doorsFrontLeftSideRemarks'},
+    {setter: setDoorRemarks, index: 1, key: 'doorsFrontRightSideRemarks'},
+    {setter: setDoorRemarks, index: 2, key: 'doorsRearLeftSideRemarks'},
+    {setter: setDoorRemarks, index: 3, key: 'doorsRearRightSideRemarks'},
+    {setter: setDickyDoorRemarks, index: 0, key: 'bootRemarks'},
+    {setter: setDickySkirtRemarks, index: 0, key: 'bootSkirtRemarks'},
+    {setter: setBonetRemarks, index: 0, key: 'bonetRemarks'},
+    {setter: setBumperRemarks, index: 0, key: 'bumperFrontRemarks'},
+    {setter: setBumperRemarks, index: 1, key: 'bumperRearRemarks'},
+    {
+      setter: setSupportMembersRemarks,
+      index: 0,
+      key: 'supportMemberUpperRemarks',
+    },
+    {
+      setter: setSupportMembersRemarks,
+      index: 1,
+      key: 'supportMemberLowerRemarks',
+    },
+    {
+      setter: setSupportMembersRemarks,
+      index: 2,
+      key: 'headLampSupportRightSideRemarks',
+    },
+    {
+      setter: setSupportMembersRemarks,
+      index: 3,
+      key: 'headLampSupportLeftSideRemarks',
+    },
+    {setter: setWheelTypeRemarks, index: 0, key: 'wheelTypeAlloyRemarks'},
+    {setter: setWheelTypeRemarks, index: 1, key: 'wheelTypeDrumRemarks'},
+    {setter: setWindShieldRemarks, index: 0, key: 'windShieldFrontTyreRemarks'},
+    {setter: setWindShieldRemarks, index: 1, key: 'windShieldRearTyreRemarks'},
+    {setter: setSuspensionRemarks, index: 0, key: 'strutRemarks'},
+    {setter: setSuspensionRemarks, index: 1, key: 'lowerArmRemarks'},
+    {setter: setSuspensionRemarks, index: 2, key: 'linkRodRemarks'},
+    {setter: setSuspensionRemarks, index: 3, key: 'stabilizerBarRemarks'},
+    {setter: setSuspensionRemarks, index: 4, key: 'shockAbsorberRemarks'},
+    {setter: setSuspensionRemarks, index: 5, key: 'coilSpringRemarks'},
+    {setter: setSuspensionRemarks, index: 6, key: 'leafSpringRemarks'},
+    {setter: setSteeringRemarks, index: 0, key: 'rackAndPinionRemarks'},
+    {setter: setSteeringRemarks, index: 1, key: 'steeringColumnRemarks'},
+    {setter: setSteeringRemarks, index: 2, key: 'hardnessRemarks'},
+    {setter: setSteeringRemarks, index: 3, key: 'ballJointEndRemarks'},
+    {setter: setBrakeRemarks, index: 0, key: 'padRemarks'},
+    {setter: setBrakeRemarks, index: 1, key: 'discRemarks'},
+    {setter: setBrakeRemarks, index: 2, key: 'shoeRemarks'},
+    {setter: setBrakeRemarks, index: 3, key: 'drumRemarks'},
+    {setter: setBrakeRemarks, index: 4, key: 'wheelCylinderRemarks'},
+    {setter: setBrakeRemarks, index: 5, key: 'mcBoosterRemarks'},
+    {setter: setTransmissionRemarks, index: 0, key: 'clutchRemarks'},
+    {setter: setTransmissionRemarks, index: 1, key: 'gearShiftingRemarks'},
+    {setter: setTransmissionRemarks, index: 2, key: 'driveShaftRemarks'},
+    {setter: setTransmissionRemarks, index: 3, key: 'axleRemarks'},
+    {setter: setTransmissionRemarks, index: 4, key: 'propellerShaftRemarks'},
+    {setter: setTransmissionRemarks, index: 5, key: 'differentialRemarks'},
+    {setter: setTransmissionRemarks, index: 6, key: 'bearingRemarks'},
+    {setter: setTransmissionRemarks, index: 7, key: 'mountingRemarks'},
+    {setter: setEngineRemarks, index: 0, key: 'smokeRemarks'},
+    {setter: setEngineRemarks, index: 1, key: 'turboRemarks'},
+    {setter: setEngineRemarks, index: 2, key: 'misfiringRemarks'},
+    {setter: setEngineRemarks, index: 3, key: 'tappetRemarks'},
+    {setter: setEngineRemarks, index: 4, key: 'knockingRemarks'},
+    {setter: setEngineRemarks, index: 5, key: 'exhaustRemarks'},
+    {setter: setEngineRemarks, index: 6, key: 'beltsRemarks'},
+    {setter: setEngineRemarks, index: 7, key: 'tensionerRemarks'},
+    {setter: setEngineRemarks, index: 8, key: 'mountingRemarks'},
+    {setter: setEngineRemarks, index: 9, key: 'fuelPumpRemarks'},
+    {setter: setEngineRemarks, index: 10, key: 'highPressurePumpRemarks'},
+    {setter: setEngineRemarks, index: 11, key: 'commonrailRemarks'},
+    {setter: setEngineRemarks, index: 12, key: 'injectorRemarks'},
+    {setter: setEngineRemarks, index: 13, key: 'fuelTankRemarks'},
+    {setter: setEngineRemarks, index: 14, key: 'hoseRemarks'},
+    {setter: setEngineRemarks, index: 15, key: 'radiatorRemarks'},
+    {setter: setEngineRemarks, index: 16, key: 'fanRemarks'},
+    {setter: setEngineRemarks, index: 17, key: 'overHeatingRemarks'},
+    {setter: setEngineRemarks, index: 18, key: 'allBearingsRemarks'},
+    {setter: setElectricalRemarks, index: 0, key: 'batteryRemarks'},
+    {setter: setElectricalRemarks, index: 1, key: 'alternatorRemarks'},
+    {setter: setElectricalRemarks, index: 2, key: 'selfMotorRemarks'},
+    {setter: setElectricalRemarks, index: 3, key: 'wiringHarnessRemarks'},
+    {setter: setElectricalRemarks, index: 4, key: 'ecmRemarks'},
+    {setter: setElectricalRemarks, index: 5, key: 'allSensorsRemarks'},
+    {setter: setElectricalRemarks, index: 6, key: 'wiperMotorRemarks'},
+    {setter: setElectricalRemarks, index: 7, key: 'clusterRemarks'},
+    {setter: setElectricalRemarks, index: 8, key: 'headLightsAndDrlRemarks'},
+    {setter: setElectricalRemarks, index: 9, key: 'tailLightRemarks'},
+    {setter: setElectricalRemarks, index: 10, key: 'cabinLightRemarks'},
+    {setter: setElectricalRemarks, index: 11, key: 'combinationSwitchRemarks'},
+    {setter: setElectricalRemarks, index: 12, key: 'absRemarks'},
+    {setter: setElectricalRemarks, index: 13, key: 'airBagRemarks'},
+    {setter: setElectricalRemarks, index: 14, key: 'powerWindowsRemarks'},
+
+    {setter: setAcRemarks, index: 0, key: 'coolingRemarks'},
+    {setter: setAcRemarks, index: 1, key: 'blowerCondenserRemarks'},
+    {setter: setAcRemarks, index: 2, key: 'fanRemarks'},
+    {setter: setAcRemarks, index: 3, key: 'controlSwitchRemarks'},
+    {setter: setAcRemarks, index: 4, key: 'ventRemarks'},
+    {setter: setAccessoriesRemarks, index: 0, key: 'musicSystemRemarks'},
+    {setter: setAccessoriesRemarks, index: 1, key: 'parkingSensorRemarks'},
+    {setter: setAccessoriesRemarks, index: 2, key: 'reverseCameraRemarks'},
+    {setter: setAccessoriesRemarks, index: 3, key: 'ovrmAdjusterRemarks'},
+    {setter: setAccessoriesRemarks, index: 4, key: 'seatHeightAdjusterRemarks'},
+    {setter: setAccessoriesRemarks, index: 5, key: 'seatBeltRemarks'},
+    {setter: setAccessoriesRemarks, index: 6, key: 'sunRoofRemarks'},
+    {setter: setAccessoriesRemarks, index: 7, key: 'roofRailRemarks'},
+    {setter: setAccessoriesRemarks, index: 8, key: 'spoilerRemarks'},
+    {setter: setAccessoriesRemarks, index: 9, key: 'skirtRemarks'},
+    {setter: setAccessoriesRemarks, index: 10, key: 'steeringControlsRemarks'},
+    {setter: setReinspectorRemarks, index: 0, key: 'finalFrontViewRemarks'},
+    {setter: setReinspectorRemarks, index: 1, key: 'finalRearViewRemarks'},
+    {setter: setReinspectorRemarks, index: 2, key: 'finalLhsViewRemarks'},
+    {setter: setReinspectorRemarks, index: 3, key: 'finalRhsViewRemarks'},
+    {setter: setReinspectorRemarks, index: 4, key: 'finalOdometerRemarks'},
+    {setter: setReinspectorRemarks, index: 5, key: 'finalRoofRemarks'},
+    {setter: setReinspectorRemarks, index: 6, key: 'finalInteriorRemarks'},
+  ];
+
+  const conditionUpdates = [
+    {setter: setChasisCondition, index: 0, key: 'chassisPunchCondition'},
+    {setter: setVinPlateCondition, index: 0, key: 'vinPlateCondition'},
+    {setter: setTyreCondition, index: 0, key: 'frontTyreLeftPercentage'},
+    {setter: setTyreCondition, index: 1, key: 'frontTyreRightPercentage'},
+    {setter: setTyreCondition, index: 2, key: 'rearTyreLeftPercentage'},
+    {setter: setTyreCondition, index: 3, key: 'rearTyreRightPercentage'},
+    {setter: setSpareWheelCondition, index: 0, key: 'spareWheelPercentage'},
+    {setter: setToolkitCondition, index: 0, key: 'toolKitCondition'},
+    {setter: setKeyCondition, index: 0, key: 'primaryKeyCondition'},
+    {setter: setKeyCondition, index: 1, key: 'spareKeyCondition'},
+    {setter: setPillarsCondition, index: 0, key: 'pillarALeftSideCondition'},
+    {setter: setPillarsCondition, index: 1, key: 'pillarARightSideCondition'},
+    {setter: setPillarsCondition, index: 2, key: 'pillarBLeftSideCondition'},
+    {setter: setPillarsCondition, index: 3, key: 'pillarBRightSideCondition'},
+    {setter: setPillarsCondition, index: 4, key: 'pillarCLeftSideCondition'},
+    {setter: setPillarsCondition, index: 5, key: 'pillarCRightSideCondition'},
+    {setter: setApronCondition, index: 0, key: 'apronLeftSideCondition'},
+    {setter: setApronCondition, index: 1, key: 'apronRightSideCondition'},
+    {setter: setFenderCondition, index: 0, key: 'fendersRightSideCondition'},
+    {setter: setFenderCondition, index: 1, key: 'fendersLeftSideCondition'},
+    {
+      setter: setQuarterPanlesCondition,
+      index: 0,
+      key: 'quarterPanelsLeftSideCondition',
+    },
+    {
+      setter: setQuarterPanlesCondition,
+      index: 1,
+      key: 'quarterPanelsRightSideCondition',
+    },
+    {setter: setDoorCondition, index: 0, key: 'doorsFrontRightSideCondition'},
+    {setter: setDoorCondition, index: 1, key: 'doorsFrontLeftSideCondition'},
+    {setter: setDoorCondition, index: 2, key: 'doorsRearRightSideCondition'},
+    {setter: setDoorCondition, index: 3, key: 'doorsRearLeftSideCondition'},
+    {
+      setter: setRunningBoardCondition,
+      index: 0,
+      key: 'runningBoardLeftSideCondition',
+    },
+    {
+      setter: setRunningBoardCondition,
+      index: 1,
+      key: 'runningBoardRightSideCondition',
+    },
+    {setter: setDickyDoorCondition, index: 0, key: 'bootCondition'},
+    {setter: setDickySkirtCondition, index: 0, key: 'bootSkirtCondition'},
+    {setter: setBonetCondition, index: 0, key: 'bonetCondition'},
+    {
+      setter: setSupportMembersCondition,
+      index: 0,
+      key: 'supportMemberUpperCondition',
+    },
+    {
+      setter: setSupportMembersCondition,
+      index: 1,
+      key: 'supportMemberLowerCondition',
+    },
+    {
+      setter: setSupportMembersCondition,
+      index: 2,
+      key: 'headLampSupportRightSideCondition',
+    },
+    {
+      setter: setSupportMembersCondition,
+      index: 3,
+      key: 'headLampSupportLeftSideCondition',
+    },
+    {setter: setWheelTypeCondition, index: 0, key: 'wheelTypeAlloyCondition'},
+    {setter: setWheelTypeCondition, index: 1, key: 'wheelTypeDrumCondition'},
+    {
+      setter: setWindShieldCondition,
+      index: 0,
+      key: 'windShieldFrontTyreCondition',
+    },
+    {
+      setter: setWindShieldCondition,
+      index: 1,
+      key: 'windShieldRearTyreCondition',
+    },
+    {setter: setBumperCondition, index: 0, key: 'bumperFrontCondition'},
+    {setter: setBumperCondition, index: 1, key: 'bumperRearCondition'},
+    {setter: setSuspensionDropdown, index: 0, key: 'strutCondition'},
+    {setter: setSuspensionDropdown, index: 1, key: 'lowerArmCondition'},
+    {setter: setSuspensionDropdown, index: 2, key: 'linkRodCondition'},
+    {setter: setSuspensionDropdown, index: 3, key: 'stabilizerBarCondition'},
+    {setter: setSuspensionDropdown, index: 4, key: 'shockAbsorberCondition'},
+    {setter: setSuspensionDropdown, index: 5, key: 'coilSpringCondition'},
+    {setter: setSuspensionDropdown, index: 6, key: 'leafSpringCondition'},
+    {setter: setSteeringDropdown, index: 0, key: 'rackAndPinionCondition'},
+    {setter: setSteeringDropdown, index: 1, key: 'steeringColumnCondition'},
+    {setter: setSteeringDropdown, index: 2, key: 'hardnessCondition'},
+    {setter: setSteeringDropdown, index: 3, key: 'ballJointEndCondition'},
+    {setter: setBrakeDropdown, index: 0, key: 'padCondition'},
+    {setter: setBrakeDropdown, index: 1, key: 'discCondition'},
+    {setter: setBrakeDropdown, index: 2, key: 'shoeCondition'},
+    {setter: setBrakeDropdown, index: 3, key: 'drumCondition'},
+    {setter: setBrakeDropdown, index: 4, key: 'wheelCylinderCondition'},
+    {setter: setBrakeDropdown, index: 5, key: 'mcBoosterCondition'},
+    {setter: setTransmissionDropdown, index: 0, key: 'clutchCondition'},
+    {setter: setTransmissionDropdown, index: 1, key: 'gearShiftingCondition'},
+    {setter: setTransmissionDropdown, index: 2, key: 'driveShaftCondition'},
+    {setter: setTransmissionDropdown, index: 3, key: 'axleCondition'},
+    {setter: setTransmissionDropdown, index: 4, key: 'propellerShaftCondition'},
+    {setter: setTransmissionDropdown, index: 5, key: 'differentialCondition'},
+    {setter: setTransmissionDropdown, index: 6, key: 'bearingCondition'},
+    {setter: setTransmissionDropdown, index: 7, key: 'mountingCondition'},
+    {setter: setEngineDropdown, index: 0, key: 'smokeCondition'},
+    {setter: setEngineDropdown, index: 1, key: 'turboCondition'},
+    {setter: setEngineDropdown, index: 2, key: 'misfiringCondition'},
+    {setter: setEngineDropdown, index: 3, key: 'tappetCondition'},
+    {setter: setEngineDropdown, index: 4, key: 'knockingCondition'},
+    {setter: setEngineDropdown, index: 5, key: 'exhaustCondition'},
+    {setter: setEngineDropdown, index: 6, key: 'beltsCondition'},
+    {setter: setEngineDropdown, index: 7, key: 'tensionerCondition'},
+    {setter: setEngineDropdown, index: 8, key: 'mountingCondition'},
+    {setter: setEngineDropdown, index: 9, key: 'fuelPumpCondition'},
+    {setter: setEngineDropdown, index: 10, key: 'highPressurePumpCondition'},
+    {setter: setEngineDropdown, index: 11, key: 'commonrailCondition'},
+    {setter: setEngineDropdown, index: 12, key: 'injectorCondition'},
+    {setter: setEngineDropdown, index: 13, key: 'fuelTankCondition'},
+    {setter: setEngineDropdown, index: 14, key: 'hoseCondition'},
+    {setter: setEngineDropdown, index: 15, key: 'radiatorCondition'},
+    {setter: setEngineDropdown, index: 16, key: 'fanCondition'},
+    {setter: setEngineDropdown, index: 17, key: 'overHeatingCondition'},
+    {setter: setEngineDropdown, index: 18, key: 'allBearingsCondition'},
+    {setter: setElectricalDropdown, index: 0, key: 'batteryCondition'},
+    {setter: setElectricalDropdown, index: 1, key: 'alternatorCondition'},
+    {setter: setElectricalDropdown, index: 2, key: 'selfMotorCondition'},
+    {setter: setElectricalDropdown, index: 3, key: 'wiringHarnessCondition'},
+    {setter: setElectricalDropdown, index: 4, key: 'ecmCondition'},
+    {setter: setElectricalDropdown, index: 5, key: 'allSensorsCondition'},
+    {setter: setElectricalDropdown, index: 6, key: 'wiperMotorCondition'},
+    {setter: setElectricalDropdown, index: 7, key: 'clusterCondition'},
+    {setter: setElectricalDropdown, index: 8, key: 'headLightsAndDrlCondition'},
+    {setter: setElectricalDropdown, index: 9, key: 'tailLightCondition'},
+    {setter: setElectricalDropdown, index: 10, key: 'cabinLightCondition'},
+    {
+      setter: setElectricalDropdown,
+      index: 11,
+      key: 'combinationSwitchCondition',
+    },
+    {setter: setElectricalDropdown, index: 12, key: 'absCondition'},
+    {setter: setElectricalDropdown, index: 13, key: 'airBagCondition'},
+    {setter: setElectricalDropdown, index: 14, key: 'powerWindowsCondition'},
+    {setter: setAcDropdown, index: 0, key: 'coolingCondition'},
+    {setter: setAcDropdown, index: 1, key: 'blowerCondenserCondition'},
+    {setter: setAcDropdown, index: 2, key: 'fanCondition'},
+    {setter: setAcDropdown, index: 3, key: 'controlSwitchCondition'},
+    {setter: setAcDropdown, index: 4, key: 'ventCondition'},
+    {setter: setAccessoriesDropdown, index: 0, key: 'musicSystemCondition'},
+    {setter: setAccessoriesDropdown, index: 1, key: 'parkingSensorCondition'},
+    {setter: setAccessoriesDropdown, index: 2, key: 'reverseCameraCondition'},
+    {setter: setAccessoriesDropdown, index: 3, key: 'ovrmAdjusterCondition'},
+    {
+      setter: setAccessoriesDropdown,
+      index: 4,
+      key: 'seatHeightAdjusterCondition',
+    },
+    {setter: setAccessoriesDropdown, index: 5, key: 'seatBeltCondition'},
+    {setter: setAccessoriesDropdown, index: 6, key: 'sunRoofCondition'},
+    {setter: setAccessoriesDropdown, index: 7, key: 'roofRailCondition'},
+    {setter: setAccessoriesDropdown, index: 8, key: 'spoilerCondition'},
+    {setter: setAccessoriesDropdown, index: 9, key: 'skirtCondition'},
+    {
+      setter: setAccessoriesDropdown,
+      index: 10,
+      key: 'steeringControlsCondition',
+    },
+  ];
 
   const photoUpdates = [
-    { setter: setRcPhoto, index: 0, key: 'rcFrontPhoto' },
-    { setter: setRcPhoto, index: 1, key: 'rcBackPhoto' },
-    { setter: setRcPhoto, index: 2, key: 'RCOthers' },
-    { setter: setInsuracePhoto, index: 0, key: 'insuranceOwnDamagePhoto' },
-    { setter: setInsuracePhoto, index: 1, key: 'insuranceThirdPartyPhoto' },
-    { setter: setInsuracePhoto, index: 2, key: 'insuranceOthers' },
-    { setter: setNOCPhoto, index: 0, key: 'nocPhoto' },
-    { setter: setNOCPhoto, index: 1, key: 'nocOthers' },
-    { setter: setPhotoUrisCarPhotos, index: 0, key: 'frontViewPhoto' },
-    { setter: setPhotoUrisCarPhotos, index: 1, key: 'rearViewPhoto' },
-    { setter: setPhotoUrisCarPhotos, index: 2, key: 'lhsViewPhoto' },
-    { setter: setPhotoUrisCarPhotos, index: 3, key: 'rhsViewPhoto' },
-    { setter: setPhotoUrisCarPhotos, index: 4, key: 'odometerPhoto' },
-    { setter: setPhotoUrisCarPhotos, index: 5, key: 'roofPhoto' },
-    { setter: setPhotoUrisCarPhotos, index: 6, key: 'interiorPhoto' },
-    { setter: setPhotoUrisCarPhotos, index: 7, key: 'underChassisPhoto' },
-    { setter: setPhotoUrisCarPhotos, index: 8, key: 'engineRoomPhoto' },
-    { setter: setPhotoUrisCarPhotos, index: 9, key: 'trunkBootPhoto' },
-    { setter: setChassisPunchPhoto, index: 0, key: 'chassisPunchPhoto' },
-    { setter: setVinPlatePunchPhoto, index: 0, key: 'vinPlatePhoto' },
-    { setter: setTyrePunchPhoto, index: 0, key: 'frontTyreLeftPhoto' },
-    { setter: setTyrePunchPhoto, index: 1, key: 'frontTyreRightPhoto' },
-    { setter: setTyrePunchPhoto, index: 2, key: 'rearTyreLeftPhoto' },
-    { setter: setTyrePunchPhoto, index: 3, key: 'rearTyreRightPhoto' },
-    { setter: setSpareWheelPunchPhoto, index: 0, key: 'spareWheelPhoto' },
-    { setter: setToolkitPunchPhoto, index: 0, key: 'toolKitJackPhoto' },
-    { setter: setKeyPunchPhoto, index: 0, key: 'primaryKeyPhoto' },
-    { setter: setKeyPunchPhoto, index: 1, key: 'spareKeyPhoto' },
-    { setter: setPillarsPhoto, index: 0, key: 'pillarALeftSidePhoto' },
-    { setter: setPillarsPhoto, index: 1, key: 'pillarARightSidePhoto' },
-    { setter: setPillarsPhoto, index: 2, key: 'pillarBLeftSidePhoto' },
-    { setter: setPillarsPhoto, index: 3, key: 'pillarBRightSidePhoto' },
-    { setter: setPillarsPhoto, index: 4, key: 'pillarCLeftSidePhoto' },
-    { setter: setPillarsPhoto, index: 5, key: 'pillarCRightSidePhoto' },
-    { setter: setApronPhoto, index: 0, key: 'apronLeftSidePhoto' },
-    { setter: setApronPhoto, index: 1, key: 'apronRightSidePhoto' },
-    { setter: setFendersPhoto, index: 0, key: 'fendersLeftSidePhoto' },
-    { setter: setFendersPhoto, index: 1, key: 'fendersRightSidePhoto' },
-    { setter: setQuarterPanlesPhoto, index: 0, key: 'quarterPanelsLeftSidePhoto' },
-    { setter: setQuarterPanlesPhoto, index: 1, key: 'quarterPanelsRightSidePhoto' },
-    { setter: setRunningBoardPhoto, index: 0, key: 'runningBoardLeftSidePhoto' },
-    { setter: setRunningBoardPhoto, index: 1, key: 'runningBoardRightSidePhoto' },
-    { setter: setDoorPhoto, index: 0, key: 'doorsFrontLeftSidePhoto' },
-    { setter: setDoorPhoto, index: 1, key: 'doorsFrontRightSidePhoto' },
-    { setter: setDoorPhoto, index: 2, key: 'doorsRearLeftSidePhoto' },
-    { setter: setDoorPhoto, index: 3, key: 'doorsRearRightSidePhoto' },
-    { setter: setDickyDoorPhoto, index: 0, key: 'bootPhoto' },
-    { setter: setDickySkirtPhoto, index: 0, key: 'bootSkirtPhoto' },
-    { setter: setBonetPhoto, index: 0, key: 'bonetPhoto' },
-    { setter: setBumperPhoto, index: 0, key: 'bumperFrontPhoto' },
-    { setter: setBumperPhoto, index: 1, key: 'bumperRearPhoto' },
-    { setter: setSupportMembersPhoto, index: 0, key: 'supportMemberUpperPhoto' },
-    { setter: setSupportMembersPhoto, index: 1, key: 'supportMemberLowerPhoto' },
-    { setter: setSupportMembersPhoto, index: 2, key: 'headLampSupportRightSidePhoto' },
-    { setter: setSupportMembersPhoto, index: 3, key: 'headLampSupportLeftSidePhoto' },
-    { setter: setWheelTypePhoto, index: 0, key: 'wheelTypeAlloyPhoto' },
-    { setter: setWheelTypePhoto, index: 1, key: 'wheelTypeDrumPhoto' },
-    { setter: setWindShieldPhoto, index: 0, key: 'windShieldFrontTyrePhoto' },
-    { setter: setWindShieldPhoto, index: 1, key: 'windShieldRearTyrePhoto' },
-    { setter: setSuspensionPhoto, index: 0, key: 'strutPhoto' },
-    { setter: setSuspensionPhoto, index: 1, key: 'lowerArmPhoto' },
-    { setter: setSuspensionPhoto, index: 2, key: 'linkRodPhoto' },
-    { setter: setSuspensionPhoto, index: 3, key: 'stabilizerBarPhoto' },
-    { setter: setSuspensionPhoto, index: 4, key: 'shockAbsorberPhoto' },
-    { setter: setSuspensionPhoto, index: 5, key: 'coilSpringPhoto' },
-    { setter: setSuspensionPhoto, index: 6, key: 'leafSpringPhoto' },
-    { setter: setSteeringPhoto, index: 0, key: 'rackAndPinionPhoto' },
-    { setter: setSteeringPhoto, index: 1, key: 'steeringColumnPhoto' },
-    { setter: setSteeringPhoto, index: 2, key: 'hardnessPhoto' },
-    { setter: setSteeringPhoto, index: 3, key: 'ballJointEndPhoto' },
-    { setter: setBrakePhoto, index: 0, key: 'padPhoto' },
-    { setter: setBrakePhoto, index: 1, key: 'discPhoto' },
-    { setter: setBrakePhoto, index: 2, key: 'shoePhoto' },
-    { setter: setBrakePhoto, index: 3, key: 'drumPhoto' },
-    { setter: setBrakePhoto, index: 4, key: 'wheelCylinderPhoto' },
-    { setter: setBrakePhoto, index: 5, key: 'mcBoosterPhoto' },
-  
-    { setter: setTransmissionPhoto, index: 0, key: 'clutchPhoto' },
-    { setter: setTransmissionPhoto, index: 1, key: 'gearShiftingPhoto' },
-    { setter: setTransmissionPhoto, index: 2, key: 'driveShaftPhoto' },
-    { setter: setTransmissionPhoto, index: 3, key: 'axlePhoto' },
-    { setter: setTransmissionPhoto, index: 4, key: 'propellerShaftPhoto' },
-    { setter: setTransmissionPhoto, index: 5, key: 'differentialPhoto' },
-    { setter: setTransmissionPhoto, index: 6, key: 'bearingPhoto' },
-    { setter: setTransmissionPhoto, index: 7, key: 'mountingPhoto' },
-    
-    { setter: setEnginePhoto, index: 0, key: 'smokePhoto' },
-    { setter: setEnginePhoto, index: 1, key: 'turboPhoto' },
-    { setter: setEnginePhoto, index: 2, key: 'misfiringPhoto' },
-    { setter: setEnginePhoto, index: 3, key: 'tappetPhoto' },
-    { setter: setEnginePhoto, index: 4, key: 'knockingPhoto' },
-    { setter: setEnginePhoto, index: 5, key: 'exhaustPhoto' },
-    { setter: setEnginePhoto, index: 6, key: 'beltsPhoto' },
-    { setter: setEnginePhoto, index: 7, key: 'tensionerPhoto' },
-    { setter: setEnginePhoto, index: 8, key: 'mountingPhoto' },
-    { setter: setEnginePhoto, index: 9, key: 'fuelPumpPhoto' },
-    { setter: setEnginePhoto, index: 10, key: 'highPressurePumpPhoto' },
-    { setter: setEnginePhoto, index: 11, key: 'commonrailPhoto' },
-    { setter: setEnginePhoto, index: 12, key: 'injectorPhoto' },
-    { setter: setEnginePhoto, index: 13, key: 'fuelTankPhoto' },
-    { setter: setEnginePhoto, index: 14, key: 'hosePhoto' },
-    { setter: setEnginePhoto, index: 15, key: 'radiatorPhoto' },
-    { setter: setEnginePhoto, index: 16, key: 'fanPhoto' },
-    { setter: setEnginePhoto, index: 17, key: 'overHeatingPhoto' },
-    { setter: setEnginePhoto, index: 18, key: 'allBearingsPhoto' },
-    
-    { setter: setElectricalPhoto, index: 0, key: 'batteryPhoto' },
-    { setter: setElectricalPhoto, index: 1, key: 'alternatorPhoto' },
-    { setter: setElectricalPhoto, index: 2, key: 'selfMotorPhoto' },
-    { setter: setElectricalPhoto, index: 3, key: 'wiringHarnessPhoto' },
-    { setter: setElectricalPhoto, index: 4, key: 'ecmPhoto' },
-    { setter: setElectricalPhoto, index: 5, key: 'allSensorsPhoto' },
-    { setter: setElectricalPhoto, index: 6, key: 'wiperMotorPhoto' },
-    { setter: setElectricalPhoto, index: 7, key: 'clusterPhoto' },
-    { setter: setElectricalPhoto, index: 8, key: 'headLightsAndDrlPhoto' },
-    { setter: setElectricalPhoto, index: 9, key: 'tailLightPhoto' },
-    { setter: setElectricalPhoto, index: 10, key: 'cabinLightPhoto' },
-    { setter: setElectricalPhoto, index: 11, key: 'combinationSwitchPhoto' },
-    { setter: setElectricalPhoto, index: 12, key: 'absPhoto' },
-    { setter: setElectricalPhoto, index: 13, key: 'airBagPhoto' },
-    { setter: setElectricalPhoto, index: 14, key: 'powerWindowsPhoto' },
-    
-    { setter: setAcPhoto, index: 0, key: 'coolingPhoto' },
-    { setter: setAcPhoto, index: 1, key: 'blowerCondenserPhoto' },
-    { setter: setAcPhoto, index: 2, key: 'fanPhoto' },
-    { setter: setAcPhoto, index: 3, key: 'controlSwitchPhoto' },
-    { setter: setAcPhoto, index: 4, key: 'ventPhoto' },
-    
-    { setter: setAccessoriesPhoto, index: 0, key: 'musicSystemPhoto' },
-    { setter: setAccessoriesPhoto, index: 1, key: 'parkingSensorPhoto' },
-    { setter: setAccessoriesPhoto, index: 2, key: 'reverseCameraPhoto' },
-    { setter: setAccessoriesPhoto, index: 3, key: 'ovrmAdjusterPhoto' },
-    { setter: setAccessoriesPhoto, index: 4, key: 'seatHeightAdjusterPhoto' },
-    { setter: setAccessoriesPhoto, index: 5, key: 'seatBeltPhoto' },
-    { setter: setAccessoriesPhoto, index: 6, key: 'sunRoofPhoto' },
-    { setter: setAccessoriesPhoto, index: 7, key: 'roofRailPhoto' },
-    { setter: setAccessoriesPhoto, index: 8, key: 'spoilerPhoto' },
-    { setter: setAccessoriesPhoto, index: 9, key: 'skirtPhoto' },
-    { setter: setAccessoriesPhoto, index: 10, key: 'steeringControlsPhoto' },
+    {setter: setRcPhoto, index: 0, key: 'rcFrontPhoto'},
+    {setter: setRcPhoto, index: 1, key: 'rcBackPhoto'},
+    {setter: setRcPhoto, index: 2, key: 'RCOthers'},
+    {setter: setInsuracePhoto, index: 0, key: 'insuranceOwnDamagePhoto'},
+    {setter: setInsuracePhoto, index: 1, key: 'insuranceThirdPartyPhoto'},
+    {setter: setInsuracePhoto, index: 2, key: 'insuranceOthers'},
+    {setter: setNOCPhoto, index: 0, key: 'nocPhoto'},
+    {setter: setNOCPhoto, index: 1, key: 'nocOthers'},
+    {setter: setPhotoUrisCarPhotos, index: 0, key: 'frontViewPhoto'},
+    {setter: setPhotoUrisCarPhotos, index: 1, key: 'rearViewPhoto'},
+    {setter: setPhotoUrisCarPhotos, index: 2, key: 'lhsViewPhoto'},
+    {setter: setPhotoUrisCarPhotos, index: 3, key: 'rhsViewPhoto'},
+    {setter: setPhotoUrisCarPhotos, index: 4, key: 'odometerPhoto'},
+    {setter: setPhotoUrisCarPhotos, index: 5, key: 'roofPhoto'},
+    {setter: setPhotoUrisCarPhotos, index: 6, key: 'interiorPhoto'},
+    {setter: setPhotoUrisCarPhotos, index: 7, key: 'underChassisPhoto'},
+    {setter: setPhotoUrisCarPhotos, index: 8, key: 'engineRoomPhoto'},
+    {setter: setPhotoUrisCarPhotos, index: 9, key: 'trunkBootPhoto'},
+    {setter: setChassisPunchPhoto, index: 0, key: 'chassisPunchPhoto'},
+    {setter: setVinPlatePunchPhoto, index: 0, key: 'vinPlatePhoto'},
+    {setter: setTyrePunchPhoto, index: 0, key: 'frontTyreLeftPhoto'},
+    {setter: setTyrePunchPhoto, index: 1, key: 'frontTyreRightPhoto'},
+    {setter: setTyrePunchPhoto, index: 2, key: 'rearTyreLeftPhoto'},
+    {setter: setTyrePunchPhoto, index: 3, key: 'rearTyreRightPhoto'},
+    {setter: setSpareWheelPunchPhoto, index: 0, key: 'spareWheelPhoto'},
+    {setter: setToolkitPunchPhoto, index: 0, key: 'toolKitJackPhoto'},
+    {setter: setKeyPunchPhoto, index: 0, key: 'primaryKeyPhoto'},
+    {setter: setKeyPunchPhoto, index: 1, key: 'spareKeyPhoto'},
+    {setter: setPillarsPhoto, index: 0, key: 'pillarALeftSidePhoto'},
+    {setter: setPillarsPhoto, index: 1, key: 'pillarARightSidePhoto'},
+    {setter: setPillarsPhoto, index: 2, key: 'pillarBLeftSidePhoto'},
+    {setter: setPillarsPhoto, index: 3, key: 'pillarBRightSidePhoto'},
+    {setter: setPillarsPhoto, index: 4, key: 'pillarCLeftSidePhoto'},
+    {setter: setPillarsPhoto, index: 5, key: 'pillarCRightSidePhoto'},
+    {setter: setApronPhoto, index: 0, key: 'apronLeftSidePhoto'},
+    {setter: setApronPhoto, index: 1, key: 'apronRightSidePhoto'},
+    {setter: setFendersPhoto, index: 0, key: 'fendersLeftSidePhoto'},
+    {setter: setFendersPhoto, index: 1, key: 'fendersRightSidePhoto'},
+    {
+      setter: setQuarterPanlesPhoto,
+      index: 0,
+      key: 'quarterPanelsLeftSidePhoto',
+    },
+    {
+      setter: setQuarterPanlesPhoto,
+      index: 1,
+      key: 'quarterPanelsRightSidePhoto',
+    },
+    {setter: setRunningBoardPhoto, index: 0, key: 'runningBoardLeftSidePhoto'},
+    {setter: setRunningBoardPhoto, index: 1, key: 'runningBoardRightSidePhoto'},
+    {setter: setDoorPhoto, index: 0, key: 'doorsFrontLeftSidePhoto'},
+    {setter: setDoorPhoto, index: 1, key: 'doorsFrontRightSidePhoto'},
+    {setter: setDoorPhoto, index: 2, key: 'doorsRearLeftSidePhoto'},
+    {setter: setDoorPhoto, index: 3, key: 'doorsRearRightSidePhoto'},
+    {setter: setDickyDoorPhoto, index: 0, key: 'bootPhoto'},
+    {setter: setDickySkirtPhoto, index: 0, key: 'bootSkirtPhoto'},
+    {setter: setBonetPhoto, index: 0, key: 'bonetPhoto'},
+    {setter: setBumperPhoto, index: 0, key: 'bumperFrontPhoto'},
+    {setter: setBumperPhoto, index: 1, key: 'bumperRearPhoto'},
+    {setter: setSupportMembersPhoto, index: 0, key: 'supportMemberUpperPhoto'},
+    {setter: setSupportMembersPhoto, index: 1, key: 'supportMemberLowerPhoto'},
+    {
+      setter: setSupportMembersPhoto,
+      index: 2,
+      key: 'headLampSupportRightSidePhoto',
+    },
+    {
+      setter: setSupportMembersPhoto,
+      index: 3,
+      key: 'headLampSupportLeftSidePhoto',
+    },
+    {setter: setWheelTypePhoto, index: 0, key: 'wheelTypeAlloyPhoto'},
+    {setter: setWheelTypePhoto, index: 1, key: 'wheelTypeDrumPhoto'},
+    {setter: setWindShieldPhoto, index: 0, key: 'windShieldFrontTyrePhoto'},
+    {setter: setWindShieldPhoto, index: 1, key: 'windShieldRearTyrePhoto'},
+    {setter: setSuspensionPhoto, index: 0, key: 'strutPhoto'},
+    {setter: setSuspensionPhoto, index: 1, key: 'lowerArmPhoto'},
+    {setter: setSuspensionPhoto, index: 2, key: 'linkRodPhoto'},
+    {setter: setSuspensionPhoto, index: 3, key: 'stabilizerBarPhoto'},
+    {setter: setSuspensionPhoto, index: 4, key: 'shockAbsorberPhoto'},
+    {setter: setSuspensionPhoto, index: 5, key: 'coilSpringPhoto'},
+    {setter: setSuspensionPhoto, index: 6, key: 'leafSpringPhoto'},
+    {setter: setSteeringPhoto, index: 0, key: 'rackAndPinionPhoto'},
+    {setter: setSteeringPhoto, index: 1, key: 'steeringColumnPhoto'},
+    {setter: setSteeringPhoto, index: 2, key: 'hardnessPhoto'},
+    {setter: setSteeringPhoto, index: 3, key: 'ballJointEndPhoto'},
+    {setter: setBrakePhoto, index: 0, key: 'padPhoto'},
+    {setter: setBrakePhoto, index: 1, key: 'discPhoto'},
+    {setter: setBrakePhoto, index: 2, key: 'shoePhoto'},
+    {setter: setBrakePhoto, index: 3, key: 'drumPhoto'},
+    {setter: setBrakePhoto, index: 4, key: 'wheelCylinderPhoto'},
+    {setter: setBrakePhoto, index: 5, key: 'mcBoosterPhoto'},
+
+    {setter: setTransmissionPhoto, index: 0, key: 'clutchPhoto'},
+    {setter: setTransmissionPhoto, index: 1, key: 'gearShiftingPhoto'},
+    {setter: setTransmissionPhoto, index: 2, key: 'driveShaftPhoto'},
+    {setter: setTransmissionPhoto, index: 3, key: 'axlePhoto'},
+    {setter: setTransmissionPhoto, index: 4, key: 'propellerShaftPhoto'},
+    {setter: setTransmissionPhoto, index: 5, key: 'differentialPhoto'},
+    {setter: setTransmissionPhoto, index: 6, key: 'bearingPhoto'},
+    {setter: setTransmissionPhoto, index: 7, key: 'mountingPhoto'},
+
+    {setter: setEnginePhoto, index: 0, key: 'smokePhoto'},
+    {setter: setEnginePhoto, index: 1, key: 'turboPhoto'},
+    {setter: setEnginePhoto, index: 2, key: 'misfiringPhoto'},
+    {setter: setEnginePhoto, index: 3, key: 'tappetPhoto'},
+    {setter: setEnginePhoto, index: 4, key: 'knockingPhoto'},
+    {setter: setEnginePhoto, index: 5, key: 'exhaustPhoto'},
+    {setter: setEnginePhoto, index: 6, key: 'beltsPhoto'},
+    {setter: setEnginePhoto, index: 7, key: 'tensionerPhoto'},
+    {setter: setEnginePhoto, index: 8, key: 'mountingPhoto'},
+    {setter: setEnginePhoto, index: 9, key: 'fuelPumpPhoto'},
+    {setter: setEnginePhoto, index: 10, key: 'highPressurePumpPhoto'},
+    {setter: setEnginePhoto, index: 11, key: 'commonrailPhoto'},
+    {setter: setEnginePhoto, index: 12, key: 'injectorPhoto'},
+    {setter: setEnginePhoto, index: 13, key: 'fuelTankPhoto'},
+    {setter: setEnginePhoto, index: 14, key: 'hosePhoto'},
+    {setter: setEnginePhoto, index: 15, key: 'radiatorPhoto'},
+    {setter: setEnginePhoto, index: 16, key: 'fanPhoto'},
+    {setter: setEnginePhoto, index: 17, key: 'overHeatingPhoto'},
+    {setter: setEnginePhoto, index: 18, key: 'allBearingsPhoto'},
+
+    {setter: setElectricalPhoto, index: 0, key: 'batteryPhoto'},
+    {setter: setElectricalPhoto, index: 1, key: 'alternatorPhoto'},
+    {setter: setElectricalPhoto, index: 2, key: 'selfMotorPhoto'},
+    {setter: setElectricalPhoto, index: 3, key: 'wiringHarnessPhoto'},
+    {setter: setElectricalPhoto, index: 4, key: 'ecmPhoto'},
+    {setter: setElectricalPhoto, index: 5, key: 'allSensorsPhoto'},
+    {setter: setElectricalPhoto, index: 6, key: 'wiperMotorPhoto'},
+    {setter: setElectricalPhoto, index: 7, key: 'clusterPhoto'},
+    {setter: setElectricalPhoto, index: 8, key: 'headLightsAndDrlPhoto'},
+    {setter: setElectricalPhoto, index: 9, key: 'tailLightPhoto'},
+    {setter: setElectricalPhoto, index: 10, key: 'cabinLightPhoto'},
+    {setter: setElectricalPhoto, index: 11, key: 'combinationSwitchPhoto'},
+    {setter: setElectricalPhoto, index: 12, key: 'absPhoto'},
+    {setter: setElectricalPhoto, index: 13, key: 'airBagPhoto'},
+    {setter: setElectricalPhoto, index: 14, key: 'powerWindowsPhoto'},
+
+    {setter: setAcPhoto, index: 0, key: 'coolingPhoto'},
+    {setter: setAcPhoto, index: 1, key: 'blowerCondenserPhoto'},
+    {setter: setAcPhoto, index: 2, key: 'fanPhoto'},
+    {setter: setAcPhoto, index: 3, key: 'controlSwitchPhoto'},
+    {setter: setAcPhoto, index: 4, key: 'ventPhoto'},
+
+    {setter: setAccessoriesPhoto, index: 0, key: 'musicSystemPhoto'},
+    {setter: setAccessoriesPhoto, index: 1, key: 'parkingSensorPhoto'},
+    {setter: setAccessoriesPhoto, index: 2, key: 'reverseCameraPhoto'},
+    {setter: setAccessoriesPhoto, index: 3, key: 'ovrmAdjusterPhoto'},
+    {setter: setAccessoriesPhoto, index: 4, key: 'seatHeightAdjusterPhoto'},
+    {setter: setAccessoriesPhoto, index: 5, key: 'seatBeltPhoto'},
+    {setter: setAccessoriesPhoto, index: 6, key: 'sunRoofPhoto'},
+    {setter: setAccessoriesPhoto, index: 7, key: 'roofRailPhoto'},
+    {setter: setAccessoriesPhoto, index: 8, key: 'spoilerPhoto'},
+    {setter: setAccessoriesPhoto, index: 9, key: 'skirtPhoto'},
+    {setter: setAccessoriesPhoto, index: 10, key: 'steeringControlsPhoto'},
   ];
-  
 
   useEffect(() => {
     const handleBackPress = () => {
@@ -7115,486 +8560,108 @@ const OrderCreation = ({navigation}) => {
     return () => backHandler.remove(); // Clean up event listener
   }, [navigation, swiperRef, currentIndex]);
 
+  const setVehicleData = data => {
+    setMake(data.make);
+    setModel(data.model);
+    setYear(data.year);
+    setVariant(data.variant);
+    setMileage(data.mileage);
+    setColor(data.color);
+    setSelectedOption(data.transmission === 'Automatic' ? 1 : 2);
+    setSelectedOption1(
+      data.fuelType === 'Diesel'
+        ? 1
+        : data.fuelType === 'Petrol'
+        ? 2
+        : data.fuelType === 'EV'
+        ? 3
+        : data.fuelType === 'CNG'
+        ? 4
+        : 5,
+    );
+    setOwners(data.owners);
+    setSelectedOption2(data.hasHypothecated === 'No' ? 2 : 1);
+    setHypothecatedBy(data.hypothecatedBy);
+    setSelectedOption3(data.noc === 'No' ? 2 : 1);
+    setRoadTaxValid(data.roadTaxValid);
+    setSelectedOption4(data.reRegistered === 'No' ? 2 : 1);
+    setCubicCapacity(data.cubicCapacity);
+    setNumberOfSeats(data.numberOfSeats);
+    setRegistrationType(data.registrationType);
+    setRegistrationDate(data.registrationDate);
+    setInsurance(data.insurance === 'No' ? 2 : 1);
+    setInsuranceCompany(data.insuranceCompany);
+    setInsuranceValidity(data.insuranceValidity);
+    setChallanDetails(data.challanDetails);
+    setBlacklisted(data.blacklisted === 'No' ? 2 : 1);
+    setChassisNumber(data.chassisNumber);
+    setEngineNumber(data.engineNumber);
+    setRcStatus(data.rcStatus === 'Original' ? 1 : 2);
+    setStateNoc(data.stateNoc === 'No' ? 2 : 1);
+    setFlood(data.flood === 'No' ? 2 : 1);
+  };
+
+  // setMake(response.data.make);
+  // setModel(response.data.model);
+  // setYear(response.data.year);
+  // setVariant(response.data.variant);
+  // setMileage(response.data.mileage);
+  // setColor(response.data.color);
+  // setSelectedOption(response.data.transmission === 'Automatic' ? 1 : 2);
+  // setSelectedOption1(
+  //   response.data.fuelType === 'Diesel'
+  //     ? 1
+  //     : response.data.fuelType === 'Petrol'
+  //     ? 2
+  //     : response.data.fuelType === 'EV'
+  //     ? 3
+  //     : response.data.fuelType === 'CNG'
+  //     ? 4
+  //     : 5,
+  // );
+  // setOwners(response.data.owners);
+  // setSelectedOption2(response.data.hasHypothecated === 'No' ? 2 : 1);
+  // setHypothecatedBy(response.data.hypothecatedBy);
+  // setSelectedOption3(response.data.noc === 'No' ? 2 : 1);
+  // setRoadTaxValid(response.data.roadTaxValid);
+  // setSelectedOption4(response.data.reRegistered === 'No' ? 2 : 1);
+  // setCubicCapacity(response.data.cubicCapacity);
+  // setNumberOfSeats(response.data.numberOfSeats);
+  // setRegistrationType(response.data.registrationType);
+  // setRegistrationDate(response.data.registrationDate);
+  // setInsurance(response.data.insurance === 'No' ? 2 : 1);
+  // setInsuranceCompany(response.data.insuranceCompany);
+  // setInsuranceValidity(response.data.insuranceValidity);
+  // setChallanDetails(response.data.challanDetails);
+  // setBlacklisted(response.data.blacklisted == 'No' ? 2 : 1);
+  // setChassisNumber(response.data.chassisNumber);
+  // setEngineNumber(response.data.engineNumber);
+  // setRcStatus(response.data.rcStatus === 'Original' ? 1 : 2);
+  // setStateNoc(response.data.stateNoc === 'No' ? 2 : 1);
+  // setFlood(response.data.flood === 'No' ? 2 : 1);
+
   const getOrder = async () => {
     console.log('loading and loading');
-    setLoading(false);
+    setRefreshing(true);
     try {
       const response = await apiGetWithToken(`getOneOrder?id=${id}`);
 
-      setMake(response.data.make);
-      setModel(response.data.model);
-      setYear(response.data.year);
-      setVariant(response.data.variant);
-      setMileage(response.data.mileage);
-      setColor(response.data.color);
-      setSelectedOption(response.data.transmission === 'Automatic' ? 1 : 2);
-      setSelectedOption1(
-        response.data.fuelType === 'Diesel'
-          ? 1
-          : response.data.fuelType === 'Petrol'
-          ? 2
-          : response.data.fuelType === 'EV'
-          ? 3
-          : response.data.fuelType === 'CNG'
-          ? 4
-          : 5,
-      );
-      setOwners(response.data.owners);
-      setSelectedOption2(response.data.hasHypothecated === 'No' ? 2 : 1);
-      setHypothecatedBy(response.data.hypothecatedBy);
-      setSelectedOption3(response.data.noc === 'No' ? 2 : 1);
-      setRoadTaxValid(response.data.roadTaxValid);
-      setSelectedOption4(response.data.reRegistered === 'No' ? 2 : 1);
-      setCubicCapacity(response.data.cubicCapacity);
-      setNumberOfSeats(response.data.numberOfSeats);
-      setRegistrationType(response.data.registrationType);
-      setRegistrationDate(response.data.registrationDate);
-      setInsurance(response.data.insurance === 'No' ? 2 : 1);
-      setInsuranceCompany(response.data.insuranceCompany);
-      setInsuranceValidity(response.data.insuranceValidity);
-      setChallanDetails(response.data.challanDetails);
-      setBlacklisted(response.data.blacklisted == 'No' ? 2 : 1);
-      setChassisNumber(response.data.chassisNumber);
-      setEngineNumber(response.data.engineNumber);
-      setRcStatus(response.data.rcStatus === 'Original' ? 1 : 2);
-      setStateNoc(response.data.stateNoc === 'No' ? 2 : 1);
-      setFlood(response.data.flood === 'No' ? 2 : 1);
+      setVehicleData(response.data);
       //dispatch(storeOrderData(response.data));
 
-
-      photoUpdates.forEach(({ setter, index, key }) => {
+      photoUpdates.forEach(({setter, index, key}) => {
         updatePhotoState(setter, index, response.data[key] || '');
       });
 
-      // updatePhotoState(setRcPhoto, 0, response.data.rcFrontPhoto || '');
-      // updatePhotoState(setRcPhoto, 1, response.data.rcBackPhoto || ''); // Default to empty string if rcBackPhoto is not present
-      // updatePhotoState(setRcPhoto, 2, response.data.RCOthers || '');
-      // updatePhotoState(
-      //   setInsuracePhoto,
-      //   0,
-      //   response.data.insuranceOwnDamagePhoto || '',
-      // );
-      // updatePhotoState(
-      //   setInsuracePhoto,
-      //   1,
-      //   response.data.insuranceThirdPartyPhoto || '',
-      // );
-      // updatePhotoState(
-      //   setInsuracePhoto,
-      //   2,
-      //   response.data.insuranceOthers || '',
-      // );
-      // updatePhotoState(setNOCPhoto, 0, response.data.nocPhoto || '');
-      // updatePhotoState(setNOCPhoto, 1, response.data.nocOthers || '');
-      // updatePhotoState(
-      //   setPhotoUrisCarPhotos,
-      //   0,
-      //   response.data.frontViewPhoto || '',
-      // );
-      // updatePhotoState(
-      //   setPhotoUrisCarPhotos,
-      //   1,
-      //   response.data.rearViewPhoto || '',
-      // );
-      // updatePhotoState(
-      //   setPhotoUrisCarPhotos,
-      //   2,
-      //   response.data.lhsViewPhoto || '',
-      // );
-      // updatePhotoState(
-      //   setPhotoUrisCarPhotos,
-      //   3,
-      //   response.data.rhsViewPhoto || '',
-      // );
-      // updatePhotoState(
-      //   setPhotoUrisCarPhotos,
-      //   4,
-      //   response.data.odometerPhoto || '',
-      // );
-      // updatePhotoState(setPhotoUrisCarPhotos, 5, response.data.roofPhoto || '');
-      // updatePhotoState(
-      //   setPhotoUrisCarPhotos,
-      //   6,
-      //   response.data.interiorPhoto || '',
-      // );
-      // updatePhotoState(
-      //   setPhotoUrisCarPhotos,
-      //   7,
-      //   response.data.underChassisPhoto || '',
-      // );
-      // updatePhotoState(
-      //   setPhotoUrisCarPhotos,
-      //   8,
-      //   response.data.engineRoomPhoto || '',
-      // );
-      // updatePhotoState(updatePhotoState, 9, response.data.trunkBootPhoto || '');
-      // updatePhotoState(
-      //   setChassisPunchPhoto,
-      //   0,
-      //   response.data.chassisPunchPhoto || '',
-      // );
-      // updatePhotoState(
-      //   setVinPlatePunchPhoto,
-      //   0,
-      //   response.data.vinPlatePhoto || '',
-      // );
-      // updatePhotoState(
-      //   setTyrePunchPhoto,
-      //   0,
-      //   response.data.frontTyreLeftPhoto || '',
-      // );
-      // updatePhotoState(
-      //   setTyrePunchPhoto,
-      //   1,
-      //   response.data.frontTyreRightPhoto || '',
-      // );
-      // updatePhotoState(
-      //   setTyrePunchPhoto,
-      //   2,
-      //   response.data.rearTyreLeftPhoto || '',
-      // );
-      // updatePhotoState(
-      //   setTyrePunchPhoto,
-      //   3,
-      //   response.data.rearTyreRightPhoto || '',
-      // );
-      // updatePhotoState(
-      //   setSpareWheelPunchPhoto,
-      //   0,
-      //   response.data.spareWheelPhoto || '',
-      // );
-      // updatePhotoState(
-      //   setToolkitPunchPhoto,
-      //   0,
-      //   response.data.toolKitJackPhoto || '',
-      // );
-      // updatePhotoState(
-      //   setKeyPunchPhoto,
-      //   0,
-      //   response.data.primaryKeyPhoto || '',
-      // );
-      // updatePhotoState(setKeyPunchPhoto, 1, response.data.spareKeyPhoto || '');
-      // updatePhotoState(
-      //   setPillarsPhoto,
-      //   0,
-      //   response.data.pillarALeftSidePhoto || '',
-      // );
-      // updatePhotoState(
-      //   setPillarsPhoto,
-      //   1,
-      //   response.data.pillarARightSidePhoto || '',
-      // );
-      // updatePhotoState(
-      //   setPillarsPhoto,
-      //   2,
-      //   response.data.pillarBLeftSidePhoto || '',
-      // );
-      // updatePhotoState(
-      //   setPillarsPhoto,
-      //   3,
-      //   response.data.pillarBRightSidePhoto || '',
-      // );
-      // updatePhotoState(
-      //   setPillarsPhoto,
-      //   4,
-      //   response.data.pillarCLeftSidePhoto || '',
-      // );
-      // updatePhotoState(
-      //   setPillarsPhoto,
-      //   5,
-      //   response.data.pillarCRightSidePhoto || '',
-      // );
-      // updatePhotoState(
-      //   setApronPhoto,
-      //   0,
-      //   response.data.apronLeftSidePhoto || '',
-      // );
-      // updatePhotoState(
-      //   setApronPhoto,
-      //   1,
-      //   response.data.apronRightSidePhoto || '',
-      // );
-      // updatePhotoState(
-      //   setFendersPhoto,
-      //   0,
-      //   response.data.fendersLeftSidePhoto || '',
-      // );
-      // updatePhotoState(
-      //   setFendersPhoto,
-      //   1,
-      //   response.data.fendersRightSidePhoto || '',
-      // );
-      // updatePhotoState(
-      //   setQuarterPanlesPhoto,
-      //   0,
-      //   response.data.quarterPanelsLeftSidePhoto || '',
-      // );
-      // updatePhotoState(
-      //   setQuarterPanlesPhoto,
-      //   1,
-      //   response.data.quarterPanelsRightSidePhoto || '',
-      // );
-      // updatePhotoState(
-      //   setRunningBoardPhoto,
-      //   0,
-      //   response.data.runningBoardLeftSidePhoto || '',
-      // );
-      // updatePhotoState(
-      //   setRunningBoardPhoto,
-      //   1,
-      //   response.data.runningBoardRightSidePhoto || '',
-      // );
-      // updatePhotoState(
-      //   setDoorPhoto,
-      //   0,
-      //   response.data.doorsFrontLeftSidePhoto || '',
-      // );
-      // updatePhotoState(
-      //   setDoorPhoto,
-      //   1,
-      //   response.data.doorsFrontRightSidePhoto || '',
-      // );
-      // updatePhotoState(
-      //   setDoorPhoto,
-      //   2,
-      //   response.data.doorsRearLeftSidePhoto || '',
-      // );
-      // updatePhotoState(
-      //   setDoorPhoto,
-      //   3,
-      //   response.data.doorsRearRightSidePhoto || '',
-      // );
-      // updatePhotoState(setDickyDoorPhoto, 0, response.data.bootPhoto || '');
-      // updatePhotoState(
-      //   setDickySkirtPhoto,
-      //   0,
-      //   response.data.bootSkirtPhoto || '',
-      // );
-      // updatePhotoState(setBonetPhoto, 0, response.data.bonetPhoto || '');
-      // updatePhotoState(setBumperPhoto, 0, response.data.bumperFrontPhoto || '');
-      // updatePhotoState(setBumperPhoto, 1, response.data.bumperRearPhoto || '');
+      remarksUpdates.forEach(({setter, index, key}) => {
+        updatePhotoState(setter, index, response.data[key] || '');
+      });
 
-      // updatePhotoState(
-      //   setSupportMembersPhoto,
-      //   0,
-      //   response.data.supportMemberUpperPhoto || '',
-      // );
-      // updatePhotoState(
-      //   setSupportMembersPhoto,
-      //   1,
-      //   response.data.supportMemberLowerPhoto || '',
-      // );
-      // updatePhotoState(
-      //   setSupportMembersPhoto,
-      //   2,
-      //   response.data.headLampSupportRightSidePhoto || '',
-      // );
-      // updatePhotoState(
-      //   setSupportMembersPhoto,
-      //   3,
-      //   response.data.headLampSupportLeftSidePhoto || '',
-      // );
+      conditionUpdates.forEach(({setter, index, key}) => {
+        updatePhotoState(setter, index, response.data[key] || '');
+      });
 
-      // updatePhotoState(
-      //   setWheelTypePhoto,
-      //   0,
-      //   response.data.wheelTypeAlloyPhoto || '',
-      // );
-      // updatePhotoState(
-      //   setWheelTypePhoto,
-      //   1,
-      //   response.data.wheelTypeDrumPhoto || '',
-      // );
-      // updatePhotoState(
-      //   setWindShieldPhoto,
-      //   0,
-      //   response.data.windShieldFrontTyrePhoto || '',
-      // );
-      // updatePhotoState(
-      //   setWindShieldPhoto,
-      //   1,
-      //   response.data.windShieldRearTyrePhoto || '',
-      // );
-
-      // updatePhotoState(setSuspensionPhoto, 0, response.data.strutPhoto || '');
-      // updatePhotoState(
-      //   setSuspensionPhoto,
-      //   1,
-      //   response.data.lowerArmPhoto || '',
-      // );
-      // updatePhotoState(setSuspensionPhoto, 2, response.data.linkRodPhoto || '');
-      // updatePhotoState(
-      //   setSuspensionPhoto,
-      //   3,
-      //   response.data.stabilizerBarPhoto || '',
-      // );
-      // updatePhotoState(
-      //   setSuspensionPhoto,
-      //   4,
-      //   response.data.shockAbsorberPhoto || '',
-      // );
-      // updatePhotoState(
-      //   setSuspensionPhoto,
-      //   5,
-      //   response.data.coilSpringPhoto || '',
-      // );
-      // updatePhotoState(
-      //   setSuspensionPhoto,
-      //   6,
-      //   response.data.leafSpringPhoto || '',
-      // );
-
-      // updatePhotoState(
-      //   setSteeringPhoto,
-      //   0,
-      //   response.data.rackAndPinionPhoto || '',
-      // );
-
-      // updatePhotoState(
-      //   setSteeringPhoto,
-      //   1,
-      //   response.data.steeringColumnPhoto || '',
-      // );
-
-      // updatePhotoState(setSteeringPhoto, 2, response.data.hardnessPhoto || '');
-
-      // updatePhotoState(
-      //   setSteeringPhoto,
-      //   3,
-      //   response.data.ballJointEndPhoto || '',
-      // );
-
-      // updatePhotoState(setBrakePhoto, 0, response.data.padPhoto || '');
-      // updatePhotoState(setBrakePhoto, 1, response.data.discPhoto || '');
-      // updatePhotoState(setBrakePhoto, 2, response.data.shoePhoto || '');
-      // updatePhotoState(setBrakePhoto, 3, response.data.drumPhoto || '');
-      // updatePhotoState(
-      //   setBrakePhoto,
-      //   4,
-      //   response.data.wheelCylinderPhoto || '',
-      // );
-      // updatePhotoState(setBrakePhoto, 5, response.data.mcBoosterPhoto || '');
-
-      // updatePhotoState(
-      //   setTransmissionPhoto,
-      //   0,
-      //   response.data.clutchPhoto || '',
-      // );
-      // updatePhotoState(
-      //   setTransmissionPhoto,
-      //   1,
-      //   response.data.gearShiftingPhoto || '',
-      // );
-      // updatePhotoState(
-      //   setTransmissionPhoto,
-      //   2,
-      //   response.data.driveShaftPhoto || '',
-      // );
-      // updatePhotoState(setTransmissionPhoto, 3, response.data.axlePhoto || '');
-      // updatePhotoState(
-      //   setTransmissionPhoto,
-      //   4,
-      //   response.data.propellerShaftPhoto || '',
-      // );
-      // updatePhotoState(
-      //   setTransmissionPhoto,
-      //   5,
-      //   response.data.differentialPhoto || '',
-      // );
-      // updatePhotoState(
-      //   setTransmissionPhoto,
-      //   6,
-      //   response.data.bearingPhoto || '',
-      // );
-      // updatePhotoState(
-      //   setTransmissionPhoto,
-      //   7,
-      //   response.data.mountingPhoto || '',
-      // );
-
-      // updatePhotoState(setEnginePhoto, 0, response.data.smokePhoto);
-      // updatePhotoState(setEnginePhoto, 1, response.data.turboPhoto);
-      // updatePhotoState(setEnginePhoto, 2, response.data.misfiringPhoto);
-      // updatePhotoState(setEnginePhoto, 3, response.data.tappetPhoto);
-      // updatePhotoState(setEnginePhoto, 4, response.data.knockingPhoto);
-      // updatePhotoState(setEnginePhoto, 5, response.data.exhaustPhoto);
-      // updatePhotoState(setEnginePhoto, response.data.beltsPhoto);
-      // updatePhotoState(setEnginePhoto, response.data.tensionerPhoto);
-      // updatePhotoState(setEnginePhoto, response.data.mountingPhoto);
-
-      // updatePhotoState(setEnginePhoto, 9, response.data.fuelPumpPhoto);
-      // updatePhotoState(setEnginePhoto, 10, response.data.highPressurePumpPhoto);
-      // updatePhotoState(setEnginePhoto, 11, response.data.commonrailPhoto);
-      // updatePhotoState(setEnginePhoto, 12, response.data.injectorPhoto);
-      // updatePhotoState(setEnginePhoto, 13, response.data.fuelTankPhoto);
-      // updatePhotoState(setEnginePhoto, 14, response.data.hosePhoto);
-      // updatePhotoState(setEnginePhoto, 15, response.data.radiatorPhoto);
-      // updatePhotoState(setEnginePhoto, 16, response.data.fanPhoto);
-      // updatePhotoState(setEnginePhoto, 17, response.data.overHeatingPhoto);
-      // updatePhotoState(setEnginePhoto, 18, response.data.allBearingsPhoto);
-
-      // updatePhotoState(setElectricalPhoto, 0, response.data.batteryPhoto);
-      // updatePhotoState(setElectricalPhoto, 1, response.data.alternatorPhoto);
-      // updatePhotoState(setElectricalPhoto, 2, response.data.selfMotorPhoto);
-      // updatePhotoState(setElectricalPhoto, 3, response.data.wiringHarnessPhoto);
-      // updatePhotoState(setElectricalPhoto, 4, response.data.ecmPhoto);
-      // updatePhotoState(setElectricalPhoto, 5, response.data.allSensorsPhoto);
-      // updatePhotoState(setElectricalPhoto, 6, response.data.wiperMotorPhoto);
-      // updatePhotoState(setElectricalPhoto, 7, response.data.clusterPhoto);
-      // updatePhotoState(
-      //   setElectricalPhoto,
-      //   8,
-      //   response.data.headLightsAndDrlPhoto,
-      // );
-
-      // updatePhotoState(setElectricalPhoto, 9, response.data.tailLightPhoto);
-      // updatePhotoState(setElectricalPhoto, 10, response.data.cabinLightPhoto);
-      // updatePhotoState(
-      //   setElectricalPhoto,
-      //   11,
-      //   response.data.combinationSwitchPhoto,
-      // );
-      // updatePhotoState(setElectricalPhoto, 12, response.data.absPhoto);
-
-      // updatePhotoState(setElectricalPhoto, 13, response.data.airBagPhoto);
-      // updatePhotoState(setElectricalPhoto, 14, response.data.powerWindowsPhoto);
-
-      // updatePhotoState(setAcPhoto, 0, response.data.coolingPhoto);
-      // updatePhotoState(setAcPhoto, 1, response.data.blowerCondenserPhoto);
-      // updatePhotoState(setAcPhoto, 2, response.data.fanPhoto);
-      // updatePhotoState(setAcPhoto, 3, response.data.controlSwitchPhoto);
-      // updatePhotoState(setAcPhoto, 4, response.data.ventPhoto);
-
-      // updatePhotoState(setAccessoriesPhoto, 0, response.data.musicSystemPhoto);
-      // updatePhotoState(
-      //   setAccessoriesPhoto,
-      //   1,
-      //   response.data.parkingSensorPhoto,
-      // );
-      // updatePhotoState(
-      //   setAccessoriesPhoto,
-      //   2,
-      //   response.data.reverseCameraPhoto,
-      // );
-      // updatePhotoState(setAccessoriesPhoto, 3, response.data.ovrmAdjusterPhoto);
-      // updatePhotoState(
-      //   setAccessoriesPhoto,
-      //   4,
-      //   response.data.seatHeightAdjusterPhoto,
-      // );
-      // updatePhotoState(setAccessoriesPhoto, 5, response.data.seatBeltPhoto);
-      // updatePhotoState(setAccessoriesPhoto, 6, response.data.sunRoofPhoto);
-      // updatePhotoState(setAccessoriesPhoto, 7, response.data.roofRailPhoto);
-      // updatePhotoState(setAccessoriesPhoto, 8, response.data.spoilerPhoto);
-      // updatePhotoState(setAccessoriesPhoto, 9, response.data.skirtPhoto);
-
-      // updatePhotoState(
-      //   setAccessoriesPhoto,
-      //   10,
-      //   response.data.steeringControlsPhoto,
-      // );
-
-      setLoading(false);
+      setRefreshing(false);
       // setLoading(false);
       console.log(response.data, 'COUNT INNDIA');
     } catch (error) {
@@ -7602,17 +8669,24 @@ const OrderCreation = ({navigation}) => {
     }
   };
 
-  const updatePhotoState = (stateSetter, index, url) => {
-    console.log("forffififi");
-    stateSetter(prevState => {
-      const newState = [...prevState];
-      newState[index] = url;
-      return newState;
-    });
-  };
+  // const updatePhotoState = (stateSetter, index, url) => {
 
+  //   stateSetter(prevState => {
+  //     const newState = [...prevState];
+  //     newState[index] = url;
+  //     return newState;
+  //   });
+  // };
 
- 
+  const updatePhotoState = useMemo(() => {
+    return (stateSetter, index, url) => {
+      stateSetter(prevState => {
+        const newState = [...prevState];
+        newState[index] = url;
+        return newState;
+      });
+    };
+  }, []);
 
   return (
     <>
@@ -7752,17 +8826,6 @@ const OrderCreation = ({navigation}) => {
                         </View>
                       )}
 
-                      {/* <View style={{marginTop: 14}}>
-                        <TextInput
-                          style={styles.photoInput}
-                          placeholder="Enter remarks"
-                          value={suspensionRemarks[index]}
-                          onChangeText={text =>
-                            handleSuspensionRemarks(text, index)
-                          }
-                        />
-                      </View> */}
-
                       <View style={{marginTop: 0}}>
                         {!nocPhoto[index] && (
                           <TouchableOpacity
@@ -7775,14 +8838,41 @@ const OrderCreation = ({navigation}) => {
                     </View>
                   ))}
 
-                <View style={{marginTop: 10, paddingHorizontal: 8}}>
-                  <TextInput
-                    style={styles.photoInput}
-                    placeholder="Enter remarks"
-                    value={remarks}
-                    onChangeText={text => setRemarks(text)}
-                  />
-                </View>
+                {selectedContainerIndex === 0 && (
+                  <View style={{marginTop: 10, paddingHorizontal: 8}}>
+                    {/* <Text>{item}</Text> */}
+                    <TextInput
+                      style={styles.photoInput}
+                      placeholder={`Enter the RC remarks`}
+                      value={rcRemarks}
+                      onChangeText={text => setRcRemarks(text)}
+                    />
+                  </View>
+                )}
+
+                {selectedContainerIndex === 1 && (
+                  <View style={{marginTop: 10, paddingHorizontal: 8}}>
+                    {/* <Text>{item}</Text> */}
+                    <TextInput
+                      style={styles.photoInput}
+                      placeholder={`Enter the Insurance Remarks`}
+                      value={insuranceRemarks}
+                      onChangeText={text => setInsuranceRemarks(text)}
+                    />
+                  </View>
+                )}
+
+                {selectedContainerIndex === 2 && (
+                  <View style={{marginTop: 10, paddingHorizontal: 8}}>
+                    {/* <Text>{item}</Text> */}
+                    <TextInput
+                      style={styles.photoInput}
+                      placeholder={`Enter the NOC remarks`}
+                      value={nocRemarks}
+                      onChangeText={text => setNocRemarks(text)}
+                    />
+                  </View>
+                )}
               </View>
 
               <View style={{paddingHorizontal: 8, marginTop: 10}}>
@@ -7807,7 +8897,7 @@ const OrderCreation = ({navigation}) => {
             <ScrollView
               contentContainerStyle={styles.scrollViewContent}
               showsVerticalScrollIndicator={false}>
-              {photoUrisCarPhotos[selectedContainerIndex1] ? (
+              {/* {photoUrisCarPhotos[selectedContainerIndex1] ? (
                 <View style={{paddingHorizontal: 12, marginTop: 12}}>
                   <View style={{position: 'relative'}}>
                     <Image
@@ -7819,10 +8909,10 @@ const OrderCreation = ({navigation}) => {
                     <TouchableOpacity
                       style={{
                         position: 'absolute',
-                        top: 0,
+                        top: 20,
                         right: 0,
                         backgroundColor: 'black',
-                        //  borderRadius: 15,
+                    
                         width: 60,
                         height: 30,
                         justifyContent: 'center',
@@ -7836,13 +8926,7 @@ const OrderCreation = ({navigation}) => {
                   </View>
 
                   <View>
-                    {/* <TouchableOpacity
-                      style={styles.closeButton1}
-                      onPress={() =>
-                        handleClosePressCarPhotos(selectedContainerIndex1)
-                      }>
-                      <Text style={styles.closeButtonText1}>Cancel</Text>
-                    </TouchableOpacity> */}
+                
                   </View>
                 </View>
               ) : (
@@ -7863,6 +8947,588 @@ const OrderCreation = ({navigation}) => {
                     handleRemarksChangeCarPhotos(text, selectedContainerIndex1)
                   }
                 />
+              </View> */}
+
+<View style={{paddingHorizontal: 0}}>
+                {selectedContainerIndex1 === 0 &&
+                  frontViewList.map((item, index) => (
+                    <View key={index} style={styles.itemContainer}>
+                      <Text>{item}</Text>
+
+                     
+                      {frontViewPhoto[index] && (
+                        <View stylle={{position: 'relative'}}>
+                          <Image
+                            source={{uri: frontViewPhoto[index]}}
+                            style={styles.uploadedImage}
+                          />
+                          <TouchableOpacity
+                            style={{
+                              position: 'absolute',
+                              top: 20,
+                              right: 0,
+                              backgroundColor: 'black',
+                              // borderRadius: 15,
+                              width: 60,
+                              height: 30,
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                            }}
+                            onPress={() => handleCamera4(index)}>
+                            <Text style={{fontSize: 14, color: 'white'}}>
+                              Cancel
+                            </Text>
+                          </TouchableOpacity>
+                        </View>
+                      )}
+
+                     
+                         
+                        
+                          <View style={{marginTop: 14}}>
+                            {!frontViewPhoto[index] && (
+                              <TouchableOpacity
+                                style={styles.photoInput}
+                                onPress={() => openCamera4(index)}>
+                                <Text>{item}</Text>
+                              </TouchableOpacity>
+                            )}
+                          </View>
+
+                          <View style={{marginTop: 14}}>
+                            <TextInput
+                              style={styles.photoInput}
+                              placeholder="Enter remarks"
+                              value={frontViewRemarks[index]}
+                              onChangeText={text =>
+                                handleRemarks4(text, index)
+                              }
+                            />
+                          </View>
+                      
+                    </View>
+                  ))}
+              </View>
+
+              <View style={{paddingHorizontal: 0}}>
+                {selectedContainerIndex1 === 1 &&
+                  engineRoomList.map((item, index) => (
+                    <View key={index} style={styles.itemContainer}>
+                      <Text>{item}</Text>
+
+                     
+                      {engineRoomPhoto[index] && (
+                        <View stylle={{position: 'relative'}}>
+                          <Image
+                            source={{uri: engineRoomPhoto[index]}}
+                            style={styles.uploadedImage}
+                          />
+                          <TouchableOpacity
+                            style={{
+                              position: 'absolute',
+                              top: 20,
+                              right: 0,
+                              backgroundColor: 'black',
+                              // borderRadius: 15,
+                              width: 60,
+                              height: 30,
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                            }}
+                            onPress={() => handleCamera4(index)}>
+                            <Text style={{fontSize: 14, color: 'white'}}>
+                              Cancel
+                            </Text>
+                          </TouchableOpacity>
+                        </View>
+                      )}
+
+                     
+                        
+                        
+                          <View style={{marginTop: 14}}>
+                            {!engineRoomPhoto[index] && (
+                              <TouchableOpacity
+                                style={styles.photoInput}
+                                onPress={() => openCamera4(index)}>
+                                <Text>{item}</Text>
+                              </TouchableOpacity>
+                            )}
+                          </View>
+
+                          <View style={{marginTop: 14}}>
+                            <TextInput
+                              style={styles.photoInput}
+                              placeholder="Enter remarks"
+                              value={engineRoomRemarks[index]}
+                              onChangeText={text =>
+                                handleRemarks4(text, index)
+                              }
+                            />
+                          </View>
+                      
+                    </View>
+                  ))}
+              </View>
+
+              <View style={{paddingHorizontal: 0}}>
+                {selectedContainerIndex1 === 2 &&
+                  chassisList.map((item, index) => (
+                    <View key={index} style={styles.itemContainer}>
+                      <Text>{item}</Text>
+
+                      <View
+                        style={{
+                          // marginLeft: 9,
+                          // marginRight: 9,
+                          // marginBottom: 20,
+                          marginTop: 5,
+                        }}>
+                        <CustomSwitch
+                          selectionMode={chassisSwitch[index]}
+                          roundCorner={false}
+                          option1={'Ok'}
+                          option2={'Not Ok'}
+                          onSelectSwitch={val =>
+                            handleSwitch4(index, val)
+                          }
+                          selectionColor={'#007BFF'}
+                          index={index} // Pass the index as a prop
+                        />
+                      </View>
+                      {chassisPunchPhoto[index] && (
+                        <View style={{position: 'relative'}}>
+                          <Image
+                            source={{uri: chassisPunchPhoto[index]}}
+                            style={styles.uploadedImage}
+                          />
+                          <TouchableOpacity
+                            style={{
+                              position: 'absolute',
+                              top: 20,
+                              right: 0,
+                              backgroundColor: 'black',
+                              // borderRadius: 15,
+                              width: 60,
+                              height: 30,
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                            }}
+                            onPress={() => handleCamera4(index)}>
+                            <Text style={{fontSize: 14, color: 'white'}}>
+                              Cancel
+                            </Text>
+                          </TouchableOpacity>
+                        </View>
+                      )}
+                      {/* {(chassisSwitch.length ===0 || chassisSwitch[0] === 2) && (
+                     // <> */}
+                      <View style={{marginTop: 14}}>
+                        <TextInput
+                          style={styles.photoInput}
+                          placeholder="Enter remarks"
+                          value={chassisRemarks[index]}
+                          onChangeText={text =>
+                            handleRemarks4(text, index)
+                          }
+                        />
+                      </View>
+                      <View style={{marginTop: 14}}>
+                        <Picker
+                          style={styles.photoInput}
+                          selectedValue={chassisCondition[index]}
+                          onValueChange={itemValue =>
+                            handleDropDown4(itemValue, index)
+                          }>
+                          <Picker.Item label="Select Condition" value="" />
+                          <Picker.Item
+                            label="Re Punched"
+                            value="Re Punched"
+                          />
+                          <Picker.Item label="Rusted" value="Rusted" />
+
+                          {/* Add other items as needed */}
+                        </Picker>
+                      </View>
+                      <View style={{marginTop: 14}}>
+                        {!chassisPunchPhoto[index] && (
+                          <TouchableOpacity
+                            style={styles.photoInput}
+                            onPress={() => openCamera4(index)}>
+                            <Text>{item}</Text>
+                          </TouchableOpacity>
+                        )}
+                      </View>
+                      {/* </> */}
+
+                      {/* )} */}
+                    </View>
+                  ))}
+              </View>
+
+              <View style={{paddingHorizontal: 0}}>
+                {selectedContainerIndex1 === 3 &&
+                 vinPlateList.map((item, index) => (
+                  <View key={index} style={styles.itemContainer}>
+                    <Text>{item}</Text>
+
+                    <View
+                      style={{
+                        // marginLeft: 9,
+                        // marginRight: 9,
+                        // marginBottom: 20,
+                        marginTop: 5,
+                      }}>
+                      <CustomSwitch
+                        selectionMode={vinPlateSwitch[index]}
+                        roundCorner={false}
+                        option1={'Ok'}
+                        option2={'Not Ok'}
+                        onSelectSwitch={val =>
+                          handleSwitch4(index, val)
+                        }
+                        selectionColor={'#007BFF'}
+                        index={index} // Pass the index as a prop
+                      />
+                    </View>
+                    {vinPlatePunchPhoto[index] && (
+                      <View style={{position: 'relative'}}>
+                        <Image
+                          source={{uri: vinPlatePunchPhoto[index]}}
+                          style={styles.uploadedImage}
+                        />
+                        <TouchableOpacity
+                          style={{
+                            position: 'absolute',
+                            top: 20,
+                            right: 0,
+                            backgroundColor: 'black',
+                            // borderRadius: 15,
+                            width: 60,
+                            height: 30,
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                          }}
+                          onPress={() => handleCamera4(index)}>
+                          <Text style={{fontSize: 14, color: 'white'}}>
+                            Cancel
+                          </Text>
+                        </TouchableOpacity>
+                      </View>
+                    )}
+                    {/* {(vinPlateSwitch.length ===0 || vinPlateSwitch[0] === 2) && (
+                  <> */}
+                    <View style={{marginTop: 14}}>
+                      <TextInput
+                        style={styles.photoInput}
+                        placeholder="Enter remarks"
+                        value={vinPlateRemarks[index]}
+                        onChangeText={text =>
+                          handleRemarks4(text, index)
+                        }
+                      />
+                    </View>
+                    <View style={{marginTop: 14}}>
+                      <Picker
+                        style={styles.photoInput}
+                        selectedValue={vinPlateCondition[index]}
+                        onValueChange={itemValue =>
+                          handleDropDown4(itemValue, index)
+                        }>
+                        <Picker.Item label="Select Condition" value="" />
+                        <Picker.Item label="Damaged" value="Damaged" />
+                        <Picker.Item label="Missing" value="Missing" />
+
+                        {/* Add other items as needed */}
+                      </Picker>
+                    </View>
+                    <View style={{marginTop: 14}}>
+                      {!vinPlatePunchPhoto[index] && (
+                        <TouchableOpacity
+                          style={styles.photoInput}
+                          onPress={() => openCamera4(index)}>
+                          <Text>{item}</Text>
+                        </TouchableOpacity>
+                      )}
+                    </View>
+                    {/* </>
+                )} */}
+                  </View>
+                ))}
+              </View>
+
+              <View style={{paddingHorizontal: 0}}>
+                {selectedContainerIndex1 === 4 &&
+                  rhsView.map((item, index) => (
+                    <View key={index} style={styles.itemContainer}>
+                      <Text>{item}</Text>
+
+                     
+                      {rhsViewPhoto[index] && (
+                        <View stylle={{position: 'relative'}}>
+                          <Image
+                            source={{uri: rhsViewPhoto[index]}}
+                            style={styles.uploadedImage}
+                          />
+                          <TouchableOpacity
+                            style={{
+                              position: 'absolute',
+                              top: 20,
+                              right: 0,
+                              backgroundColor: 'black',
+                              // borderRadius: 15,
+                              width: 60,
+                              height: 30,
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                            }}
+                            onPress={() => handleCamera4(index)}>
+                            <Text style={{fontSize: 14, color: 'white'}}>
+                              Cancel
+                            </Text>
+                          </TouchableOpacity>
+                        </View>
+                      )}
+
+                     
+                        
+                          <View style={{marginTop: 14}}>
+                            {!rhsViewPhoto[index] && (
+                              <TouchableOpacity
+                                style={styles.photoInput}
+                                onPress={() => openCamera4(index)}>
+                                <Text>{item}</Text>
+                              </TouchableOpacity>
+                            )}
+                          </View>
+
+                          
+                          <View style={{marginTop: 14}}>
+                            <TextInput
+                              style={styles.photoInput}
+                              placeholder="Enter remarks"
+                              value={rhsViewRemarks[index]}
+                              onChangeText={text =>
+                                handleRemarks4(text, index)
+                              }
+                            />
+                          </View>
+                      
+                    </View>
+                  ))}
+              </View>
+
+              <View style={{paddingHorizontal: 0}}>
+                {selectedContainerIndex1 === 5 &&
+                 keyList.map((item, index) => (
+                  <View key={index} style={styles.itemContainer}>
+                    <Text>{item}</Text>
+
+                    <View
+                      style={{
+                        // marginLeft: 9,
+                        // marginRight: 9,
+                        // marginBottom: 20,
+                        marginTop: 5,
+                      }}>
+                      <CustomSwitch
+                        selectionMode={keySwitch[index]}
+                        roundCorner={false}
+                        option1={'Not Available'}
+                        option2={'Available'}
+                        onSelectSwitch={val =>
+                          handleSwitch4(index, val)
+                        }
+                        selectionColor={'#007BFF'}
+                        index={index} // Pass the index as a prop
+                      />
+                    </View>
+                    {keyPunchPhoto[index] && (
+                      <View style={{position: 'relative'}}>
+                        <Image
+                          source={{uri: keyPunchPhoto[index]}}
+                          style={styles.uploadedImage}
+                        />
+                        <TouchableOpacity
+                          style={{
+                            position: 'absolute',
+                            top: 20,
+                            right: 0,
+                            backgroundColor: 'black',
+                            // borderRadius: 15,
+                            width: 60,
+                            height: 30,
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                          }}
+                          onPress={() => handleCamera4(index)}>
+                          <Text style={{fontSize: 14, color: 'white'}}>
+                            Cancel
+                          </Text>
+                        </TouchableOpacity>
+                      </View>
+                    )}
+
+
+                    
+
+                    <View style={{marginTop: 14}}>
+                      <TextInput
+                        style={styles.photoInput}
+                        placeholder="Enter remarks"
+                        value={keyRemarks[index]}
+                        onChangeText={text =>
+                          handleRemarks4(text, index)
+                        }
+                      />
+                    </View>
+                    <View style={{marginTop: 14}}>
+                      <Picker
+                        style={styles.photoInput}
+                        selectedValue={keyCondition[index]}
+                        onValueChange={itemValue =>
+                          handleDropDown4(itemValue, index)
+                        }>
+                        <Picker.Item label="Select Condition" value="" />
+                        <Picker.Item label="Good" value="Good" />
+                        <Picker.Item label="Damaged" value="Damaged" />
+
+                        {/* Add other items as needed */}
+                      </Picker>
+                    </View>
+                    <View style={{marginTop: 14}}>
+                      {!keyPunchPhoto[index] && (
+                        <TouchableOpacity
+                          style={styles.photoInput}
+                          onPress={() => openCamera4(index)}>
+                          <Text>{item}</Text>
+                        </TouchableOpacity>
+                      )}
+                    </View>
+                  </View>
+                ))}
+              </View>
+
+              <View style={{paddingHorizontal: 0}}>
+                {selectedContainerIndex1 === 6 &&
+                  odometerList.map((item, index) => (
+                    <View key={index} style={styles.itemContainer}>
+                      <Text>{item}</Text>
+
+                     
+                      {odometerPhoto[index] && (
+                        <View stylle={{position: 'relative'}}>
+                          <Image
+                            source={{uri: odometerPhoto[index]}}
+                            style={styles.uploadedImage}
+                          />
+                          <TouchableOpacity
+                            style={{
+                              position: 'absolute',
+                              top: 20,
+                              right: 0,
+                              backgroundColor: 'black',
+                              // borderRadius: 15,
+                              width: 60,
+                              height: 30,
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                            }}
+                            onPress={() => handleCamera4(index)}>
+                            <Text style={{fontSize: 14, color: 'white'}}>
+                              Cancel
+                            </Text>
+                          </TouchableOpacity>
+                        </View>
+                      )}
+
+                     
+                         
+                        
+                          <View style={{marginTop: 14}}>
+                            {!odometerPhoto[index] && (
+                              <TouchableOpacity
+                                style={styles.photoInput}
+                                onPress={() => openCamera4(index)}>
+                                <Text>{item}</Text>
+                              </TouchableOpacity>
+                            )}
+                          </View>
+
+                          <View style={{marginTop: 14}}>
+                            <TextInput
+                              style={styles.photoInput}
+                              placeholder="Enter remarks"
+                              value={odometerRemarks[index]}
+                              onChangeText={text =>
+                                handleRemarks4(text, index)
+                              }
+                            />
+                          </View>
+                      
+                    </View>
+                  ))}
+              </View>
+
+              <View style={{paddingHorizontal: 0}}>
+                {selectedContainerIndex1 === 7 &&
+                  interiorList.map((item, index) => (
+                    <View key={index} style={styles.itemContainer}>
+                      <Text>{item}</Text>
+
+                     
+                      {interiorPhoto[index] && (
+                        <View stylle={{position: 'relative'}}>
+                          <Image
+                            source={{uri: interiorPhoto[index]}}
+                            style={styles.uploadedImage}
+                          />
+                          <TouchableOpacity
+                            style={{
+                              position: 'absolute',
+                              top: 20,
+                              right: 0,
+                              backgroundColor: 'black',
+                              // borderRadius: 15,
+                              width: 60,
+                              height: 30,
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                            }}
+                            onPress={() => handleCamera4(index)}>
+                            <Text style={{fontSize: 14, color: 'white'}}>
+                              Cancel
+                            </Text>
+                          </TouchableOpacity>
+                        </View>
+                      )}
+
+                     
+                         
+                        
+                          <View style={{marginTop: 14}}>
+                            {!interiorPhoto[index] && (
+                              <TouchableOpacity
+                                style={styles.photoInput}
+                                onPress={() => openCamera4(index)}>
+                                <Text>{item}</Text>
+                              </TouchableOpacity>
+                            )}
+                          </View>
+
+                          <View style={{marginTop: 14}}>
+                            <TextInput
+                              style={styles.photoInput}
+                              placeholder="Enter remarks"
+                              value={interiorRemarks[index]}
+                              onChangeText={text =>
+                                handleRemarks4(text, index)
+                              }
+                            />
+                          </View>
+                      
+                    </View>
+                  ))}
               </View>
 
               <View style={{paddingHorizontal: 8, marginTop: 20}}>
@@ -7875,7 +9541,6 @@ const OrderCreation = ({navigation}) => {
           </View>
         </View>
       </Modal>
-
 
       <Modal
         visible={reinspectorPage}
@@ -7912,9 +9577,7 @@ const OrderCreation = ({navigation}) => {
                         justifyContent: 'center',
                         alignItems: 'center',
                       }}
-                      onPress={() =>
-                        handleCloseReinspectorPhotos(carIndex8)
-                      }>
+                      onPress={() => handleCloseReinspectorPhotos(carIndex8)}>
                       <Text style={{fontSize: 14, color: 'white'}}>Cancel</Text>
                     </TouchableOpacity>
                   </View>
@@ -7987,7 +9650,8 @@ const OrderCreation = ({navigation}) => {
                           marginTop: 5,
                         }}>
                         <CustomSwitch
-                          selectionMode={item}
+                          // selectionMode={item}
+                          selectionMode={suspensionSwitch[index]}
                           roundCorner={false}
                           option1={'Ok'}
                           option2={'Not Ok'}
@@ -8024,42 +9688,139 @@ const OrderCreation = ({navigation}) => {
                         </View>
                       )}
 
-                      <View style={{marginTop: 14}}>
-                        <TextInput
-                          style={styles.photoInput}
-                          placeholder="Enter remarks"
-                          value={suspensionRemarks[index]}
-                          onChangeText={text =>
-                            handleSuspensionRemarks(text, index)
-                          }
-                        />
-                      </View>
-                      <View style={{marginTop: 14}}>
-                        <Picker
-                          style={styles.photoInput}
-                          selectedValue={suspensionDropdown[index]}
-                          onValueChange={itemValue =>
-                            handleSuspensionDropDownChange(itemValue, index)
-                          }>
-                          <Picker.Item label="Select Condition" value="" />
-                          
-                          <Picker.Item label={index==0?"Noise":index==1?"Noise":index==2?"Noise":index ==3?"Noise":index==4?"Noise":index==5 ?"Noise":"Noise"} value={index==0?"Noise":index==1?"Noise":index==2?"Noise":index ==3?"Noise":index==4?"Noise":index==5 ?"Noise":"Noise"}  />
-                          <Picker.Item label={index==0?"Leake":index==1?"Damaged":index==2?"Damaged":index ==3?"Damaged":index==4?"Leake":index==5 ?"Damaged":"Damaged"}  value={index==0?"Leake":index==1?"Damaged":index==2?"Damaged":index ==3?"Damaged":index==4?"Leake":index==5 ?"Damaged":"Damaged"} />
-                          <Picker.Item label={index==0?"Damaged": index === 1 ? " " : index==2?"":index ==3?"":index==4?"Damaged":index==5 ?"Not Available":"Not Available"}   value={index==0?"Damaged": index === 1 ? " " : index==2?"":index ==3?"":index==4?"Damaged":index==5 ?"Not Available":"Not Available"} />
-               
+                      {(suspensionSwitch.length === 0 ||
+                        suspensionSwitch[index] === 2) && (
+                        <>
+                          <View style={{marginTop: 14}}>
+                            <TextInput
+                              style={styles.photoInput}
+                              placeholder="Enter remarks"
+                              value={suspensionRemarks[index]}
+                              onChangeText={text =>
+                                handleSuspensionRemarks(text, index)
+                              }
+                            />
+                          </View>
+                          <View style={{marginTop: 14}}>
+                            <Picker
+                              style={styles.photoInput}
+                              selectedValue={suspensionDropdown[index]}
+                              onValueChange={itemValue =>
+                                handleSuspensionDropDownChange(itemValue, index)
+                              }>
+                              <Picker.Item label="Select Condition" value="" />
 
-                          {/* Add other items as needed */}
-                        </Picker>
-                      </View>
-                      <View style={{marginTop: 14}}>
-                        {!suspensionPhoto[index] && (
-                          <TouchableOpacity
-                            style={styles.photoInput}
-                            onPress={() => openCameraForInspection(index)}>
-                            <Text>{item}</Text>
-                          </TouchableOpacity>
-                        )}
-                      </View>
+                              <Picker.Item
+                                label={
+                                  index == 0
+                                    ? 'Noise'
+                                    : index == 1
+                                    ? 'Noise'
+                                    : index == 2
+                                    ? 'Noise'
+                                    : index == 3
+                                    ? 'Noise'
+                                    : index == 4
+                                    ? 'Noise'
+                                    : index == 5
+                                    ? 'Noise'
+                                    : 'Noise'
+                                }
+                                value={
+                                  index == 0
+                                    ? 'Noise'
+                                    : index == 1
+                                    ? 'Noise'
+                                    : index == 2
+                                    ? 'Noise'
+                                    : index == 3
+                                    ? 'Noise'
+                                    : index == 4
+                                    ? 'Noise'
+                                    : index == 5
+                                    ? 'Noise'
+                                    : 'Noise'
+                                }
+                              />
+                              <Picker.Item
+                                label={
+                                  index == 0
+                                    ? 'Leake'
+                                    : index == 1
+                                    ? 'Damaged'
+                                    : index == 2
+                                    ? 'Damaged'
+                                    : index == 3
+                                    ? 'Damaged'
+                                    : index == 4
+                                    ? 'Leake'
+                                    : index == 5
+                                    ? 'Damaged'
+                                    : 'Damaged'
+                                }
+                                value={
+                                  index == 0
+                                    ? 'Leake'
+                                    : index == 1
+                                    ? 'Damaged'
+                                    : index == 2
+                                    ? 'Damaged'
+                                    : index == 3
+                                    ? 'Damaged'
+                                    : index == 4
+                                    ? 'Leake'
+                                    : index == 5
+                                    ? 'Damaged'
+                                    : 'Damaged'
+                                }
+                              />
+                              <Picker.Item
+                                label={
+                                  index == 0
+                                    ? 'Damaged'
+                                    : index === 1
+                                    ? ' '
+                                    : index == 2
+                                    ? ''
+                                    : index == 3
+                                    ? ''
+                                    : index == 4
+                                    ? 'Damaged'
+                                    : index == 5
+                                    ? 'Not Available'
+                                    : 'Not Available'
+                                }
+                                value={
+                                  index == 0
+                                    ? 'Damaged'
+                                    : index === 1
+                                    ? ' '
+                                    : index == 2
+                                    ? ''
+                                    : index == 3
+                                    ? ''
+                                    : index == 4
+                                    ? 'Damaged'
+                                    : index == 5
+                                    ? 'Not Available'
+                                    : 'Not Available'
+                                }
+                              />
+
+                              {/* Add other items as needed */}
+                            </Picker>
+                          </View>
+                          <View style={{marginTop: 14}}>
+                            {!suspensionPhoto[index] && (
+                              <TouchableOpacity
+                                style={styles.photoInput}
+                                onPress={() => openCameraForInspection(index)}>
+                                <Text>{item}</Text>
+                              </TouchableOpacity>
+                            )}
+                          </View>
+                        </>
+                      )}
                     </View>
                   ))}
               </View>
@@ -8078,7 +9839,7 @@ const OrderCreation = ({navigation}) => {
                           marginTop: 5,
                         }}>
                         <CustomSwitch
-                          selectionMode={item}
+                          selectionMode={steeringSwitch[index]}
                           roundCorner={false}
                           option1={'Ok'}
                           option2={'Not Ok'}
@@ -8115,41 +9876,82 @@ const OrderCreation = ({navigation}) => {
                         </View>
                       )}
 
-                      <View style={{marginTop: 14}}>
-                        <TextInput
-                          style={styles.photoInput}
-                          placeholder="Enter remarks"
-                          value={steeringRemarks[index]}
-                          onChangeText={text =>
-                            handleSuspensionRemarks(text, index)
-                          }
-                        />
-                      </View>
-                      <View style={{marginTop: 14}}>
-                        <Picker
-                          style={styles.photoInput}
-                          selectedValue={steeringDropdown[index]}
-                          onValueChange={itemValue =>
-                            handleSuspensionDropDownChange(itemValue, index)
-                          }>
-                          <Picker.Item label="Select Condition" value="" />
-                          <Picker.Item label={index==0?"Noise":index==1?"Noise":index==2?"Need to OH":"Noise"}  value={index==0?"Noise":index==1?"Noise":index==2?"Need to OH":"Noise"} />
-                          <Picker.Item label={index==0?"Damaged":index==1?"Damaged":index==2?"PS motor not working":"Damaged"} value={index==0?"Damaged":index==1?"Damaged":index==2?"PS motor not working":"Damaged"} />
+                      {(steeringSwitch.length === 0 ||
+                        steeringSwitch[index] === 2) && (
+                        <>
+                          <View style={{marginTop: 14}}>
+                            <TextInput
+                              style={styles.photoInput}
+                              placeholder="Enter remarks"
+                              value={steeringRemarks[index]}
+                              onChangeText={text =>
+                                handleSuspensionRemarks(text, index)
+                              }
+                            />
+                          </View>
+                          <View style={{marginTop: 14}}>
+                            <Picker
+                              style={styles.photoInput}
+                              selectedValue={steeringDropdown[index]}
+                              onValueChange={itemValue =>
+                                handleSuspensionDropDownChange(itemValue, index)
+                              }>
+                              <Picker.Item label="Select Condition" value="" />
+                              <Picker.Item
+                                label={
+                                  index == 0
+                                    ? 'Noise'
+                                    : index == 1
+                                    ? 'Noise'
+                                    : index == 2
+                                    ? 'Need to OH'
+                                    : 'Noise'
+                                }
+                                value={
+                                  index == 0
+                                    ? 'Noise'
+                                    : index == 1
+                                    ? 'Noise'
+                                    : index == 2
+                                    ? 'Need to OH'
+                                    : 'Noise'
+                                }
+                              />
+                              <Picker.Item
+                                label={
+                                  index == 0
+                                    ? 'Damaged'
+                                    : index == 1
+                                    ? 'Damaged'
+                                    : index == 2
+                                    ? 'PS motor not working'
+                                    : 'Damaged'
+                                }
+                                value={
+                                  index == 0
+                                    ? 'Damaged'
+                                    : index == 1
+                                    ? 'Damaged'
+                                    : index == 2
+                                    ? 'PS motor not working'
+                                    : 'Damaged'
+                                }
+                              />
 
-                         
-
-                          {/* Add other items as needed */}
-                        </Picker>
-                      </View>
-                      <View style={{marginTop: 14}}>
-                        {!steeringPhoto[index] && (
-                          <TouchableOpacity
-                            style={styles.photoInput}
-                            onPress={() => openCameraForInspection(index)}>
-                            <Text>{item}</Text>
-                          </TouchableOpacity>
-                        )}
-                      </View>
+                              {/* Add other items as needed */}
+                            </Picker>
+                          </View>
+                          <View style={{marginTop: 14}}>
+                            {!steeringPhoto[index] && (
+                              <TouchableOpacity
+                                style={styles.photoInput}
+                                onPress={() => openCameraForInspection(index)}>
+                                <Text>{item}</Text>
+                              </TouchableOpacity>
+                            )}
+                          </View>
+                        </>
+                      )}
                     </View>
                   ))}
               </View>
@@ -8168,7 +9970,7 @@ const OrderCreation = ({navigation}) => {
                           marginTop: 5,
                         }}>
                         <CustomSwitch
-                          selectionMode={item}
+                          selectionMode={brakeSwitch[index]}
                           roundCorner={false}
                           option1={'Ok'}
                           option2={'Not Ok'}
@@ -8205,44 +10007,122 @@ const OrderCreation = ({navigation}) => {
                           </TouchableOpacity>
                         </View>
                       )}
+                      {(brakeSwitch.length === 0 ||
+                        brakeSwitch[index] === 2) && (
+                        <>
+                          <View style={{marginTop: 14}}>
+                            <TextInput
+                              style={styles.photoInput}
+                              placeholder="Enter remarks"
+                              value={brakeRemarks[index]}
+                              onChangeText={text =>
+                                handleSuspensionRemarks(text, index)
+                              }
+                            />
+                          </View>
+                          <View style={{marginTop: 14}}>
+                            <Picker
+                              style={styles.photoInput}
+                              selectedValue={brakeDropdown[index]}
+                              onValueChange={itemValue =>
+                                handleSuspensionDropDownChange(itemValue, index)
+                              }>
+                              <Picker.Item label="Select Condition" value="" />
+                              <Picker.Item
+                                label={
+                                  index == 0
+                                    ? 'Noise'
+                                    : index == 1
+                                    ? 'Noise'
+                                    : index == 2
+                                    ? 'Noise'
+                                    : index == 3
+                                    ? 'Noise'
+                                    : index == 4
+                                    ? 'Leake'
+                                    : 'Leake'
+                                }
+                                value={
+                                  index == 0
+                                    ? 'Noise'
+                                    : index == 1
+                                    ? 'Noise'
+                                    : index == 2
+                                    ? 'Noise'
+                                    : index == 3
+                                    ? 'Noise'
+                                    : index == 4
+                                    ? 'Leake'
+                                    : 'Leake'
+                                }
+                              />
+                              <Picker.Item
+                                label={
+                                  index == 0
+                                    ? 'Needs to Replace'
+                                    : index == 1
+                                    ? 'Needs to Replace'
+                                    : index == 2
+                                    ? 'Needs to Replace'
+                                    : index == 3
+                                    ? 'Needs to Replace'
+                                    : index == 4
+                                    ? 'Jam'
+                                    : 'Jam'
+                                }
+                                value={
+                                  index == 0
+                                    ? 'Needs to Replace'
+                                    : index == 1
+                                    ? 'Needs to Replace'
+                                    : index == 2
+                                    ? 'Needs to Replace'
+                                    : index == 3
+                                    ? 'Needs to Replace'
+                                    : index == 4
+                                    ? 'Jam'
+                                    : 'Jam'
+                                }
+                              />
+                              <Picker.Item
+                                label={
+                                  index == 0
+                                    ? 'Not Available'
+                                    : index == 1
+                                    ? 'Not Available'
+                                    : index == 2
+                                    ? 'Not Available'
+                                    : index == 3
+                                    ? 'Not Available'
+                                    : ''
+                                }
+                                value={
+                                  index == 0
+                                    ? 'Not Available'
+                                    : index == 1
+                                    ? 'Not Available'
+                                    : index == 2
+                                    ? 'Not Available'
+                                    : index == 3
+                                    ? 'Not Available'
+                                    : ''
+                                }
+                              />
 
-                      <View style={{marginTop: 14}}>
-                        <TextInput
-                          style={styles.photoInput}
-                          placeholder="Enter remarks"
-                          value={brakeRemarks[index]}
-                          onChangeText={text =>
-                            handleSuspensionRemarks(text, index)
-                          }
-                        />
-                      </View>
-                      <View style={{marginTop: 14}}>
-                        <Picker
-                          style={styles.photoInput}
-                          selectedValue={brakeDropdown[index]}
-                          onValueChange={itemValue =>
-                            handleSuspensionDropDownChange(itemValue, index)
-                          }>
-                          <Picker.Item label="Select Condition" value="" />
-                          <Picker.Item label={index==0?"Noise":index==1?"Noise":index==2?"Noise":index==3?"Noise":index==4?"Leake":"Leake"}  value={index==0?"Noise":index==1?"Noise":index==2?"Noise":index==3?"Noise":index==4?"Leake":"Leake"}  />
-                          <Picker.Item label={index==0?"Needs to Replace":index==1?"Needs to Replace":index==2?"Needs to Replace":index==3?"Needs to Replace":index==4?"Jam":"Jam"} value={index==0?"Needs to Replace":index==1?"Needs to Replace":index==2?"Needs to Replace":index==3?"Needs to Replace":index==4?"Jam":"Jam"} />
-                          <Picker.Item label={index==0?"Not Available":index==1?"Not Available":index==2?"Not Available":index==3?"Not Available":""}  value={index==0?"Not Available":index==1?"Not Available":index==2?"Not Available":index==3?"Not Available":""}   />
-
-
-                     
-
-                          {/* Add other items as needed */}
-                        </Picker>
-                      </View>
-                      <View style={{marginTop: 14}}>
-                        {!brakePhoto[index] && (
-                          <TouchableOpacity
-                            style={styles.photoInput}
-                            onPress={() => openCameraForInspection(index)}>
-                            <Text>{item}</Text>
-                          </TouchableOpacity>
-                        )}
-                      </View>
+                              {/* Add other items as needed */}
+                            </Picker>
+                          </View>
+                          <View style={{marginTop: 14}}>
+                            {!brakePhoto[index] && (
+                              <TouchableOpacity
+                                style={styles.photoInput}
+                                onPress={() => openCameraForInspection(index)}>
+                                <Text>{item}</Text>
+                              </TouchableOpacity>
+                            )}
+                          </View>
+                        </>
+                      )}
                     </View>
                   ))}
               </View>
@@ -8261,7 +10141,7 @@ const OrderCreation = ({navigation}) => {
                           marginTop: 5,
                         }}>
                         <CustomSwitch
-                          selectionMode={item}
+                          selectionMode={transmissionSwitch[index]}
                           roundCorner={false}
                           option1={'Ok'}
                           option2={'Not Ok'}
@@ -8298,40 +10178,170 @@ const OrderCreation = ({navigation}) => {
                         </View>
                       )}
 
-                      <View style={{marginTop: 14}}>
-                        <TextInput
-                          style={styles.photoInput}
-                          placeholder="Enter remarks"
-                          value={transmissionRemarks[index]}
-                          onChangeText={text =>
-                            handleSuspensionRemarks(text, index)
-                          }
-                        />
-                      </View>
-                      <View style={{marginTop: 14}}>
-                        <Picker
-                          style={styles.photoInput}
-                          selectedValue={transmissionDropdown[index]}
-                          onValueChange={itemValue =>
-                            handleSuspensionDropDownChange(itemValue, index)
-                          }>
-                          <Picker.Item label="Select Condition" value="" />
-                          <Picker.Item label={index==0?"Hard":index==1?"Hard":index==2?"Noise":index ==3?"Noise":index==4?"Noise":index==5 ?"Noise":"Noise"} value={index==0?"Hard":index==1?"Hard":index==2?"Noise":index ==3?"Noise":index==4?"Noise":index==5 ?"Noise":"Noise"}/>
-                          <Picker.Item label={index==0?"Wornout":index==1?"Noise":index==2?"Damage":index ==3?"Damage":index==4?"Damage":index==5 ?"Damage":"Damage"}  value={index==0?"Wornout":index==1?"Noise":index==2?"Damage":index ==3?"Damage":index==4?"Damage":index==5 ?"Damage":"Damage"}  />
-                          <Picker.Item label={index==0?"Shuttering": index == 1 ? "Need to Replace" : index==2?"leak":index ==3?"leak":index==4?"leak":index==5 ?"leak":""}   value={index==0?"Shuttering": index == 1 ? "Need to Replace" : index==2?"leak":index ==3?"leak":index==4?"leak":index==5 ?"leak":""}    />
+                      {(transmissionSwitch.length === 0 ||
+                        transmissionSwitch[index] === 2) && (
+                        <>
+                          <View style={{marginTop: 14}}>
+                            <TextInput
+                              style={styles.photoInput}
+                              placeholder="Enter remarks"
+                              value={transmissionRemarks[index]}
+                              onChangeText={text =>
+                                handleSuspensionRemarks(text, index)
+                              }
+                            />
+                          </View>
+                          <View style={{marginTop: 14}}>
+                            <Picker
+                              style={styles.photoInput}
+                              selectedValue={transmissionDropdown[index]}
+                              onValueChange={itemValue =>
+                                handleSuspensionDropDownChange(itemValue, index)
+                              }>
+                              <Picker.Item label="Select Condition" value="" />
+                              <Picker.Item
+                                label={
+                                  index == 0
+                                    ? 'Hard'
+                                    : index == 1
+                                    ? 'Hard'
+                                    : index == 2
+                                    ? 'Noise'
+                                    : index == 3
+                                    ? 'Noise'
+                                    : index == 4
+                                    ? 'Noise'
+                                    : index == 5
+                                    ? 'Noise'
+                                    : 'Noise'
+                                }
+                                value={
+                                  index == 0
+                                    ? 'Hard'
+                                    : index == 1
+                                    ? 'Hard'
+                                    : index == 2
+                                    ? 'Noise'
+                                    : index == 3
+                                    ? 'Noise'
+                                    : index == 4
+                                    ? 'Noise'
+                                    : index == 5
+                                    ? 'Noise'
+                                    : 'Noise'
+                                }
+                              />
+                              <Picker.Item
+                                label={
+                                  index == 0
+                                    ? 'Wornout'
+                                    : index == 1
+                                    ? 'Noise'
+                                    : index == 2
+                                    ? 'Damage'
+                                    : index == 3
+                                    ? 'Damage'
+                                    : index == 4
+                                    ? 'Damage'
+                                    : index == 5
+                                    ? 'Damage'
+                                    : 'Damage'
+                                }
+                                value={
+                                  index == 0
+                                    ? 'Wornout'
+                                    : index == 1
+                                    ? 'Noise'
+                                    : index == 2
+                                    ? 'Damage'
+                                    : index == 3
+                                    ? 'Damage'
+                                    : index == 4
+                                    ? 'Damage'
+                                    : index == 5
+                                    ? 'Damage'
+                                    : 'Damage'
+                                }
+                              />
+                              <Picker.Item
+                                label={
+                                  index == 0
+                                    ? 'Shuttering'
+                                    : index == 1
+                                    ? 'Need to Replace'
+                                    : index == 2
+                                    ? 'leak'
+                                    : index == 3
+                                    ? 'leak'
+                                    : index == 4
+                                    ? 'leak'
+                                    : index == 5
+                                    ? 'leak'
+                                    : ''
+                                }
+                                value={
+                                  index == 0
+                                    ? 'Shuttering'
+                                    : index == 1
+                                    ? 'Need to Replace'
+                                    : index == 2
+                                    ? 'leak'
+                                    : index == 3
+                                    ? 'leak'
+                                    : index == 4
+                                    ? 'leak'
+                                    : index == 5
+                                    ? 'leak'
+                                    : ''
+                                }
+                              />
+                              <Picker.Item
+                                label={
+                                  index == 0
+                                    ? ''
+                                    : index == 1
+                                    ? ''
+                                    : index == 2
+                                    ? 'Not Availble'
+                                    : index == 3
+                                    ? 'Not Availble'
+                                    : index == 4
+                                    ? 'Not Availble'
+                                    : index == 5
+                                    ? 'Not Availble'
+                                    : ''
+                                }
+                                value={
+                                  index == 0
+                                    ? ''
+                                    : index == 1
+                                    ? ''
+                                    : index == 2
+                                    ? 'Not Availble'
+                                    : index == 3
+                                    ? 'Not Availble'
+                                    : index == 4
+                                    ? 'Not Availble'
+                                    : index == 5
+                                    ? 'Not Availble'
+                                    : ''
+                                }
+                              />
 
-                          {/* Add other items as needed */}
-                        </Picker>
-                      </View>
-                      <View style={{marginTop: 14}}>
-                        {!transmissionPhoto[index] && (
-                          <TouchableOpacity
-                            style={styles.photoInput}
-                            onPress={() => openCameraForInspection(index)}>
-                            <Text>{item}</Text>
-                          </TouchableOpacity>
-                        )}
-                      </View>
+                              {/* Add other items as needed */}
+                            </Picker>
+                          </View>
+                          <View style={{marginTop: 14}}>
+                            {!transmissionPhoto[index] && (
+                              <TouchableOpacity
+                                style={styles.photoInput}
+                                onPress={() => openCameraForInspection(index)}>
+                                <Text>{item}</Text>
+                              </TouchableOpacity>
+                            )}
+                          </View>
+                        </>
+                      )}
                     </View>
                   ))}
               </View>
@@ -8350,7 +10360,7 @@ const OrderCreation = ({navigation}) => {
                           marginTop: 5,
                         }}>
                         <CustomSwitch
-                          selectionMode={item}
+                          selectionMode={engineSwitch[index]}
                           roundCorner={false}
                           option1={'Ok'}
                           option2={'Not Ok'}
@@ -8387,109 +10397,281 @@ const OrderCreation = ({navigation}) => {
                         </View>
                       )}
 
-                      <View style={{marginTop: 14}}>
-                        <TextInput
-                          style={styles.photoInput}
-                          placeholder="Enter remarks"
-                          value={engineRemarks[index]}
-                          onChangeText={text =>
-                            handleSuspensionRemarks(text, index)
-                          }
-                        />
-                      </View>
-                      <View style={{marginTop: 14}}>
-                        <Picker
-                          style={styles.photoInput}
-                          selectedValue={engineDropdown[index]}
-                          onValueChange={itemValue =>
-                            handleSuspensionDropDownChange(itemValue, index)
-                          }>
-                          <Picker.Item label="Select Condition" value="" />
-                          <Picker.Item   label={
-    index == 0 ? "White" :
-    index == 1 ? "Leak" :
-    index == 2 ? "Electrical" :
-    index == 3 ? "Adjust" :
-    index == 4 ? "Adjust" :
-    index == 5 ? "Noise" :
-    index == 6 ? "Noise" :
-    index == 7 ? "Noise" :
-    index == 8 ? "Noise" :
-    index == 9 ? "Leak" :
-    index == 10 ? "Leak" :
-    index == 11 ? "Leak" :
-    index == 12 ? "Leak" :
-    index == 13 ? "Leak" :
-    index == 14 ? "Leak" :
-    index == 15 ? "Leak" :
-    index == 16 ? "Noise" :
-    index == 17 ? "Oil level Low" :
-    "Noise"
-  }
- value={index == 0 ? "White" :
-  index == 1 ? "Leak" :
-  index == 2 ? "Electrical" :
-  index == 3 ? "Adjust" :
-  index == 4 ? "Adjust" :
-  index == 5 ? "Noise" :
-  index == 6 ? "Noise" :
-  index == 7 ? "Noise" :
-  index == 8 ? "Noise" :
-  index == 9 ? "Leak" :
-  index == 10 ? "Leak" :
-  index == 11 ? "Leak" :
-  index == 12 ? "Leak" :
-  index == 13 ? "Leak" :
-  index == 14 ? "Leak" :
-  index == 15 ? "Leak" :
-  index == 16 ? "Noise" :
-  index == 17 ? "Oil level Low" :
-  "Noise"}  />
-                          <Picker.Item label={
-    index == 0 ? "Blue" :
-    index == 1 ? "Noise" :
-    index == 2 ? "Fuel" :
-    index == 3 ? "Replace" :
-    index == 4 ? "Replace" :
-    index == 5 ? "Damaged" :
-    index == 6 ? "Damaged" :
-    index == 7 ? "Damaged" :
-    index == 8 ? "Damaged" :
-    index == 9 ? "Noise" :
-    index == 10 ? "Noise" :
-    index == 11 ? "Noise" :
-    index == 12 ? "Noise" :
-    index == 13 ? "Damaged" :
-    index == 14 ? "Damaged" :index==15?"Damaged":index==16? "Damaged":index==17?"Electrical":"Damaged"
-    
-  }  value={index == 0 ? "Blue" :
-    index == 1 ? "Noise" :
-    index == 2 ? "Fuel" :
-    index == 3 ? "Replace" :
-    index == 4 ? "Replace" :
-    index == 5 ? "Damaged" :
-    index == 6 ? "Damaged" :
-    index == 7 ? "Damaged" :
-    index == 8 ? "Damaged" :
-    index == 9 ? "Noise" :
-    index == 10 ? "Noise" :
-    index == 11 ? "Noise" :
-    index == 12 ? "Noise" :
-    index == 13 ? "Damaged" :
-    index == 14 ? "Damaged" :index==15?"Damaged":index==16? "Damaged":index==17?"Electrical":"Damaged"} />
-                          <Picker.Item label={index==0?"Black": index === 1 ? "Not Available" : index==2?"Engine":index ==3?"Replace":index==4?"Replace":index==5 ?"Replace":index==6?"Replace":index==7?"Replace":index==8?"Replace":index==9?"Replace":index==10?"Replace":index==11?"Replace":index==12?"Replace":index==13?"Rust":index==14?"":index==15?"":index==16?"Not Working":index==17?"Oil Condaminated":"Replace"}   value={index==0?"Black": index === 1 ? "Not Available" : index==2?"Engine":index ==3?"Replace":index==4?"Replace":index==5 ?"Replace":index==6?"Replace":index==7?"Replace":index==8?"Replace":index==9?"Replace":index==10?"Replace":index==11?"Replace":index==12?"Replace":index==13?"Rust":index==14?"":index==15?"":index==16?"Not Working":index==17?"Oil Condaminated":"Replace"} />
-                          {/* Add other items as needed */}
-                        </Picker>
-                      </View>
-                      <View style={{marginTop: 14}}>
-                        {!enginePhoto[index] && (
-                          <TouchableOpacity
-                            style={styles.photoInput}
-                            onPress={() => openCameraForInspection(index)}>
-                            <Text>{item}</Text>
-                          </TouchableOpacity>
-                        )}
-                      </View>
+                      {(engineSwitch.length === 0 ||
+                        engineSwitch[index] === 2) && (
+                        <>
+                          <View style={{marginTop: 14}}>
+                            <TextInput
+                              style={styles.photoInput}
+                              placeholder="Enter remarks"
+                              value={engineRemarks[index]}
+                              onChangeText={text =>
+                                handleSuspensionRemarks(text, index)
+                              }
+                            />
+                          </View>
+                          <View style={{marginTop: 14}}>
+                            <Picker
+                              style={styles.photoInput}
+                              selectedValue={engineDropdown[index]}
+                              onValueChange={itemValue =>
+                                handleSuspensionDropDownChange(itemValue, index)
+                              }>
+                              <Picker.Item label="Select Condition" value="" />
+                              <Picker.Item
+                                label={
+                                  index == 0
+                                    ? 'White'
+                                    : index == 1
+                                    ? 'Leak'
+                                    : index == 2
+                                    ? 'Electrical'
+                                    : index == 3
+                                    ? 'Adjust'
+                                    : index == 4
+                                    ? 'Adjust'
+                                    : index == 5
+                                    ? 'Noise'
+                                    : index == 6
+                                    ? 'Noise'
+                                    : index == 7
+                                    ? 'Noise'
+                                    : index == 8
+                                    ? 'Noise'
+                                    : index == 9
+                                    ? 'Leak'
+                                    : index == 10
+                                    ? 'Leak'
+                                    : index == 11
+                                    ? 'Leak'
+                                    : index == 12
+                                    ? 'Leak'
+                                    : index == 13
+                                    ? 'Leak'
+                                    : index == 14
+                                    ? 'Leak'
+                                    : index == 15
+                                    ? 'Leak'
+                                    : index == 16
+                                    ? 'Noise'
+                                    : index == 17
+                                    ? 'Oil level Low'
+                                    : 'Noise'
+                                }
+                                value={
+                                  index == 0
+                                    ? 'White'
+                                    : index == 1
+                                    ? 'Leak'
+                                    : index == 2
+                                    ? 'Electrical'
+                                    : index == 3
+                                    ? 'Adjust'
+                                    : index == 4
+                                    ? 'Adjust'
+                                    : index == 5
+                                    ? 'Noise'
+                                    : index == 6
+                                    ? 'Noise'
+                                    : index == 7
+                                    ? 'Noise'
+                                    : index == 8
+                                    ? 'Noise'
+                                    : index == 9
+                                    ? 'Leak'
+                                    : index == 10
+                                    ? 'Leak'
+                                    : index == 11
+                                    ? 'Leak'
+                                    : index == 12
+                                    ? 'Leak'
+                                    : index == 13
+                                    ? 'Leak'
+                                    : index == 14
+                                    ? 'Leak'
+                                    : index == 15
+                                    ? 'Leak'
+                                    : index == 16
+                                    ? 'Noise'
+                                    : index == 17
+                                    ? 'Oil level Low'
+                                    : 'Noise'
+                                }
+                              />
+                              <Picker.Item
+                                label={
+                                  index == 0
+                                    ? 'Blue'
+                                    : index == 1
+                                    ? 'Noise'
+                                    : index == 2
+                                    ? 'Fuel'
+                                    : index == 3
+                                    ? 'Replace'
+                                    : index == 4
+                                    ? 'Replace'
+                                    : index == 5
+                                    ? 'Damaged'
+                                    : index == 6
+                                    ? 'Damaged'
+                                    : index == 7
+                                    ? 'Damaged'
+                                    : index == 8
+                                    ? 'Damaged'
+                                    : index == 9
+                                    ? 'Noise'
+                                    : index == 10
+                                    ? 'Noise'
+                                    : index == 11
+                                    ? 'Noise'
+                                    : index == 12
+                                    ? 'Noise'
+                                    : index == 13
+                                    ? 'Damaged'
+                                    : index == 14
+                                    ? 'Damaged'
+                                    : index == 15
+                                    ? 'Damaged'
+                                    : index == 16
+                                    ? 'Damaged'
+                                    : index == 17
+                                    ? 'Electrical'
+                                    : 'Damaged'
+                                }
+                                value={
+                                  index == 0
+                                    ? 'Blue'
+                                    : index == 1
+                                    ? 'Noise'
+                                    : index == 2
+                                    ? 'Fuel'
+                                    : index == 3
+                                    ? 'Replace'
+                                    : index == 4
+                                    ? 'Replace'
+                                    : index == 5
+                                    ? 'Damaged'
+                                    : index == 6
+                                    ? 'Damaged'
+                                    : index == 7
+                                    ? 'Damaged'
+                                    : index == 8
+                                    ? 'Damaged'
+                                    : index == 9
+                                    ? 'Noise'
+                                    : index == 10
+                                    ? 'Noise'
+                                    : index == 11
+                                    ? 'Noise'
+                                    : index == 12
+                                    ? 'Noise'
+                                    : index == 13
+                                    ? 'Damaged'
+                                    : index == 14
+                                    ? 'Damaged'
+                                    : index == 15
+                                    ? 'Damaged'
+                                    : index == 16
+                                    ? 'Damaged'
+                                    : index == 17
+                                    ? 'Electrical'
+                                    : 'Damaged'
+                                }
+                              />
+                              <Picker.Item
+                                label={
+                                  index == 0
+                                    ? 'Black'
+                                    : index === 1
+                                    ? 'Not Available'
+                                    : index == 2
+                                    ? 'Engine'
+                                    : index == 3
+                                    ? 'Replace'
+                                    : index == 4
+                                    ? 'Replace'
+                                    : index == 5
+                                    ? 'Replace'
+                                    : index == 6
+                                    ? 'Replace'
+                                    : index == 7
+                                    ? 'Replace'
+                                    : index == 8
+                                    ? 'Replace'
+                                    : index == 9
+                                    ? 'Replace'
+                                    : index == 10
+                                    ? 'Replace'
+                                    : index == 11
+                                    ? 'Replace'
+                                    : index == 12
+                                    ? 'Replace'
+                                    : index == 13
+                                    ? 'Rust'
+                                    : index == 14
+                                    ? ''
+                                    : index == 15
+                                    ? ''
+                                    : index == 16
+                                    ? 'Not Working'
+                                    : index == 17
+                                    ? 'Oil Condaminated'
+                                    : 'Replace'
+                                }
+                                value={
+                                  index == 0
+                                    ? 'Black'
+                                    : index === 1
+                                    ? 'Not Available'
+                                    : index == 2
+                                    ? 'Engine'
+                                    : index == 3
+                                    ? 'Replace'
+                                    : index == 4
+                                    ? 'Replace'
+                                    : index == 5
+                                    ? 'Replace'
+                                    : index == 6
+                                    ? 'Replace'
+                                    : index == 7
+                                    ? 'Replace'
+                                    : index == 8
+                                    ? 'Replace'
+                                    : index == 9
+                                    ? 'Replace'
+                                    : index == 10
+                                    ? 'Replace'
+                                    : index == 11
+                                    ? 'Replace'
+                                    : index == 12
+                                    ? 'Replace'
+                                    : index == 13
+                                    ? 'Rust'
+                                    : index == 14
+                                    ? ''
+                                    : index == 15
+                                    ? ''
+                                    : index == 16
+                                    ? 'Not Working'
+                                    : index == 17
+                                    ? 'Oil Condaminated'
+                                    : 'Replace'
+                                }
+                              />
+                              {/* Add other items as needed */}
+                            </Picker>
+                          </View>
+                          <View style={{marginTop: 14}}>
+                            {!enginePhoto[index] && (
+                              <TouchableOpacity
+                                style={styles.photoInput}
+                                onPress={() => openCameraForInspection(index)}>
+                                <Text>{item}</Text>
+                              </TouchableOpacity>
+                            )}
+                          </View>
+                        </>
+                      )}
                     </View>
                   ))}
               </View>
@@ -8508,7 +10690,7 @@ const OrderCreation = ({navigation}) => {
                           marginTop: 5,
                         }}>
                         <CustomSwitch
-                          selectionMode={item}
+                          selectionMode={electricalSwitch[index]}
                           roundCorner={false}
                           option1={'Ok'}
                           option2={'Not Ok'}
@@ -8545,41 +10727,234 @@ const OrderCreation = ({navigation}) => {
                         </View>
                       )}
 
-                      <View style={{marginTop: 14}}>
-                        <TextInput
-                          style={styles.photoInput}
-                          placeholder="Enter remarks"
-                          value={electricalRemarks[index]}
-                          onChangeText={text =>
-                            handleSuspensionRemarks(text, index)
-                          }
-                        />
-                      </View>
-                      <View style={{marginTop: 14}}>
-                        <Picker
-                          style={styles.photoInput}
-                          selectedValue={electricalDropdown[index]}
-                          onValueChange={itemValue =>
-                            handleSuspensionDropDownChange(itemValue, index)
-                          }>
-                          <Picker.Item label="Select Condition" value="" />
-                          <Picker.Item label={index==0?"Charge": index === 1 ? "Noise" : index==2?"Noise":index ==3?"Damaged":index==4?"Not Working":index==5 ?"Not Working":index==6?"Not Working":index==7?"Not Working":index==8?"Not Working":index==9?"Not Working":index==10?"Not Working":index==11?"Not Working":index==12?"Not Applicable":index==13?"Not Applicable":"Not Applicable"} value={index==0?"Charge": index === 1 ? "Noise" : index==2?"Noise":index ==3?"Damaged":index==4?"Not Working":index==5 ?"Not Working":index==6?"Not Working":index==7?"Not Working":index==8?"Not Working":index==9?"Not Working":index==10?"Not Working":index==11?"Not Working":index==12?"Not Applicable":index==13?"Not Applicable":"Not Applicable"} />
-                          <Picker.Item label={index==0?"Replace": index === 1 ? "Not Working" : index==2?"Not Working":index ==3?"Repaired":index==4?"Damaged":index==5 ?"Damaged":index==6?"Damaged":index==7?"Damaged":index==8?"Damaged":index==9?"Damaged":index==10?"Damaged":index==11?"Damaged":index==12?"Not Working":index==13?"Not Available":"Not Working"} value={index==0?"Replace": index === 1 ? "Not Working" : index==2?"Not Working":index ==3?"Repaired":index==4?"Damaged":index==5 ?"Damaged":index==6?"Damaged":index==7?"Damaged":index==8?"Damaged":index==9?"Damaged":index==10?"Damaged":index==11?"Damaged":index==12?"Not Working":index==13?"Not Available":"Not Working"}  />
-                          <Picker.Item label={index==0?"": index === 1 ? "" : index==2?"":index ==3?"":index==4?"":index==5 ?"":index==6?"Replace":index==7?"":index==8?"":index==9?"":index==10?"":index==11?"":index==12?"Damaged":index==13?"Damaged":"Damaged"} value={index==0?"": index === 1 ? "" : index==2?"":index ==3?"":index==4?"":index==5 ?"":index==6?"Replace":index==7?"":index==8?"":index==9?"":index==10?"":index==11?"":index==12?"Damaged":index==13?"Damaged":"Damaged"}  />
-                          
+                      {(electricalSwitch.length === 0 ||
+                        electricalSwitch[index] === 2) && (
+                        <>
+                          <View style={{marginTop: 14}}>
+                            <TextInput
+                              style={styles.photoInput}
+                              placeholder="Enter remarks"
+                              value={electricalRemarks[index]}
+                              onChangeText={text =>
+                                handleSuspensionRemarks(text, index)
+                              }
+                            />
+                          </View>
+                          <View style={{marginTop: 14}}>
+                            <Picker
+                              style={styles.photoInput}
+                              selectedValue={electricalDropdown[index]}
+                              onValueChange={itemValue =>
+                                handleSuspensionDropDownChange(itemValue, index)
+                              }>
+                              <Picker.Item label="Select Condition" value="" />
+                              <Picker.Item
+                                label={
+                                  index == 0
+                                    ? 'Charge'
+                                    : index === 1
+                                    ? 'Noise'
+                                    : index == 2
+                                    ? 'Noise'
+                                    : index == 3
+                                    ? 'Damaged'
+                                    : index == 4
+                                    ? 'Not Working'
+                                    : index == 5
+                                    ? 'Not Working'
+                                    : index == 6
+                                    ? 'Not Working'
+                                    : index == 7
+                                    ? 'Not Working'
+                                    : index == 8
+                                    ? 'Not Working'
+                                    : index == 9
+                                    ? 'Not Working'
+                                    : index == 10
+                                    ? 'Not Working'
+                                    : index == 11
+                                    ? 'Not Working'
+                                    : index == 12
+                                    ? 'Not Applicable'
+                                    : index == 13
+                                    ? 'Not Applicable'
+                                    : 'Not Applicable'
+                                }
+                                value={
+                                  index == 0
+                                    ? 'Charge'
+                                    : index === 1
+                                    ? 'Noise'
+                                    : index == 2
+                                    ? 'Noise'
+                                    : index == 3
+                                    ? 'Damaged'
+                                    : index == 4
+                                    ? 'Not Working'
+                                    : index == 5
+                                    ? 'Not Working'
+                                    : index == 6
+                                    ? 'Not Working'
+                                    : index == 7
+                                    ? 'Not Working'
+                                    : index == 8
+                                    ? 'Not Working'
+                                    : index == 9
+                                    ? 'Not Working'
+                                    : index == 10
+                                    ? 'Not Working'
+                                    : index == 11
+                                    ? 'Not Working'
+                                    : index == 12
+                                    ? 'Not Applicable'
+                                    : index == 13
+                                    ? 'Not Applicable'
+                                    : 'Not Applicable'
+                                }
+                              />
+                              <Picker.Item
+                                label={
+                                  index == 0
+                                    ? 'Replace'
+                                    : index === 1
+                                    ? 'Not Working'
+                                    : index == 2
+                                    ? 'Not Working'
+                                    : index == 3
+                                    ? 'Repaired'
+                                    : index == 4
+                                    ? 'Damaged'
+                                    : index == 5
+                                    ? 'Damaged'
+                                    : index == 6
+                                    ? 'Damaged'
+                                    : index == 7
+                                    ? 'Damaged'
+                                    : index == 8
+                                    ? 'Damaged'
+                                    : index == 9
+                                    ? 'Damaged'
+                                    : index == 10
+                                    ? 'Damaged'
+                                    : index == 11
+                                    ? 'Damaged'
+                                    : index == 12
+                                    ? 'Not Working'
+                                    : index == 13
+                                    ? 'Not Available'
+                                    : 'Not Working'
+                                }
+                                value={
+                                  index == 0
+                                    ? 'Replace'
+                                    : index === 1
+                                    ? 'Not Working'
+                                    : index == 2
+                                    ? 'Not Working'
+                                    : index == 3
+                                    ? 'Repaired'
+                                    : index == 4
+                                    ? 'Damaged'
+                                    : index == 5
+                                    ? 'Damaged'
+                                    : index == 6
+                                    ? 'Damaged'
+                                    : index == 7
+                                    ? 'Damaged'
+                                    : index == 8
+                                    ? 'Damaged'
+                                    : index == 9
+                                    ? 'Damaged'
+                                    : index == 10
+                                    ? 'Damaged'
+                                    : index == 11
+                                    ? 'Damaged'
+                                    : index == 12
+                                    ? 'Not Working'
+                                    : index == 13
+                                    ? 'Not Available'
+                                    : 'Not Working'
+                                }
+                              />
+                              <Picker.Item
+                                label={
+                                  index == 0
+                                    ? ''
+                                    : index === 1
+                                    ? ''
+                                    : index == 2
+                                    ? ''
+                                    : index == 3
+                                    ? ''
+                                    : index == 4
+                                    ? ''
+                                    : index == 5
+                                    ? ''
+                                    : index == 6
+                                    ? 'Replace'
+                                    : index == 7
+                                    ? ''
+                                    : index == 8
+                                    ? ''
+                                    : index == 9
+                                    ? ''
+                                    : index == 10
+                                    ? ''
+                                    : index == 11
+                                    ? ''
+                                    : index == 12
+                                    ? 'Damaged'
+                                    : index == 13
+                                    ? 'Damaged'
+                                    : 'Damaged'
+                                }
+                                value={
+                                  index == 0
+                                    ? ''
+                                    : index === 1
+                                    ? ''
+                                    : index == 2
+                                    ? ''
+                                    : index == 3
+                                    ? ''
+                                    : index == 4
+                                    ? ''
+                                    : index == 5
+                                    ? ''
+                                    : index == 6
+                                    ? 'Replace'
+                                    : index == 7
+                                    ? ''
+                                    : index == 8
+                                    ? ''
+                                    : index == 9
+                                    ? ''
+                                    : index == 10
+                                    ? ''
+                                    : index == 11
+                                    ? ''
+                                    : index == 12
+                                    ? 'Damaged'
+                                    : index == 13
+                                    ? 'Damaged'
+                                    : 'Damaged'
+                                }
+                              />
 
-                          {/* Add other items as needed */}
-                        </Picker>
-                      </View>
-                      <View style={{marginTop: 14}}>
-                        {!electricalPhoto[index] && (
-                          <TouchableOpacity
-                            style={styles.photoInput}
-                            onPress={() => openCameraForInspection(index)}>
-                            <Text>{item}</Text>
-                          </TouchableOpacity>
-                        )}
-                      </View>
+                              {/* Add other items as needed */}
+                            </Picker>
+                          </View>
+                          <View style={{marginTop: 14}}>
+                            {!electricalPhoto[index] && (
+                              <TouchableOpacity
+                                style={styles.photoInput}
+                                onPress={() => openCameraForInspection(index)}>
+                                <Text>{item}</Text>
+                              </TouchableOpacity>
+                            )}
+                          </View>
+                        </>
+                      )}
                     </View>
                   ))}
               </View>
@@ -8597,7 +10972,7 @@ const OrderCreation = ({navigation}) => {
                           marginTop: 5,
                         }}>
                         <CustomSwitch
-                          selectionMode={item}
+                          selectionMode={acSwitch[index]}
                           roundCorner={false}
                           option1={'Ok'}
                           option2={'Not Ok'}
@@ -8633,40 +11008,97 @@ const OrderCreation = ({navigation}) => {
                           </TouchableOpacity>
                         </View>
                       )}
+                      {(acSwitch.length === 0 || acSwitch[index] === 2) && (
+                        <>
+                          <View style={{marginTop: 14}}>
+                            <TextInput
+                              style={styles.photoInput}
+                              placeholder="Enter remarks"
+                              value={acRemarks[index]}
+                              onChangeText={text =>
+                                handleSuspensionRemarks(text, index)
+                              }
+                            />
+                          </View>
+                          <View style={{marginTop: 14}}>
+                            <Picker
+                              style={styles.photoInput}
+                              selectedValue={acDropdown[index]}
+                              onValueChange={itemValue =>
+                                handleSuspensionDropDownChange(itemValue, index)
+                              }>
+                              <Picker.Item label="Select Condition" value="" />
+                              <Picker.Item
+                                label={
+                                  index == 0
+                                    ? 'Gas Level Low'
+                                    : index == 1
+                                    ? 'Not Working'
+                                    : index == 2
+                                    ? 'Leak'
+                                    : index == 3
+                                    ? 'Damaged'
+                                    : index == 4
+                                    ? 'Damaged'
+                                    : 'Damaged'
+                                }
+                                value={
+                                  index == 0
+                                    ? 'Gas Level Low'
+                                    : index == 1
+                                    ? 'Not Working'
+                                    : index == 2
+                                    ? 'Leak'
+                                    : index == 3
+                                    ? 'Damaged'
+                                    : index == 4
+                                    ? 'Damaged'
+                                    : 'Damaged'
+                                }
+                              />
+                              <Picker.Item
+                                label={
+                                  index == 0
+                                    ? 'Not Working'
+                                    : index == 1
+                                    ? 'Noise'
+                                    : index == 2
+                                    ? 'Damaged'
+                                    : index == 3
+                                    ? 'Not Working'
+                                    : index == 4
+                                    ? 'Not Working'
+                                    : ''
+                                }
+                                value={
+                                  index == 0
+                                    ? 'Not Working'
+                                    : index == 1
+                                    ? 'Noise'
+                                    : index == 2
+                                    ? 'Damaged'
+                                    : index == 3
+                                    ? 'Not Working'
+                                    : index == 4
+                                    ? 'Not Working'
+                                    : ''
+                                }
+                              />
 
-                      <View style={{marginTop: 14}}>
-                        <TextInput
-                          style={styles.photoInput}
-                          placeholder="Enter remarks"
-                          value={acRemarks[index]}
-                          onChangeText={text =>
-                            handleSuspensionRemarks(text, index)
-                          }
-                        />
-                      </View>
-                      <View style={{marginTop: 14}}>
-                        <Picker
-                          style={styles.photoInput}
-                          selectedValue={acDropdown[index]}
-                          onValueChange={itemValue =>
-                            handleSuspensionDropDownChange(itemValue, index)
-                          }>
-                          <Picker.Item label="Select Condition" value="" />
-                          <Picker.Item label={index==0?"Gas Level Low":index==1?"Not Working":index==2?"Leak":index ==3?"Damaged":index==4?"Damaged":"Damaged"} value={index==0?"Gas Level Low":index==1?"Not Working":index==2?"Leak":index ==3?"Damaged":index==4?"Damaged":"Damaged"}/>
-                          <Picker.Item label={index==0?"Not Working":index==1?"Noise":index==2?"Damaged":index ==3?"Not Working":index==4?"Not Working":""}  value={index==0?"Not Working":index==1?"Noise":index==2?"Damaged":index ==3?"Not Working":index==4?"Not Working":""} />
-
-                          {/* Add other items as needed */}
-                        </Picker>
-                      </View>
-                      <View style={{marginTop: 14}}>
-                        {!acPhoto[index] && (
-                          <TouchableOpacity
-                            style={styles.photoInput}
-                            onPress={() => openCameraForInspection(index)}>
-                            <Text>{item}</Text>
-                          </TouchableOpacity>
-                        )}
-                      </View>
+                              {/* Add other items as needed */}
+                            </Picker>
+                          </View>
+                          <View style={{marginTop: 14}}>
+                            {!acPhoto[index] && (
+                              <TouchableOpacity
+                                style={styles.photoInput}
+                                onPress={() => openCameraForInspection(index)}>
+                                <Text>{item}</Text>
+                              </TouchableOpacity>
+                            )}
+                          </View>
+                        </>
+                      )}
                     </View>
                   ))}
               </View>
@@ -8684,7 +11116,7 @@ const OrderCreation = ({navigation}) => {
                           marginTop: 5,
                         }}>
                         <CustomSwitch
-                          selectionMode={item}
+                          selectionMode={accessoriesSwitch[index]}
                           roundCorner={false}
                           option1={'Ok'}
                           option2={'Not Ok'}
@@ -8721,31 +11153,265 @@ const OrderCreation = ({navigation}) => {
                         </View>
                       )}
 
-                      <View style={{marginTop: 14}}>
-                        <TextInput
-                          style={styles.photoInput}
-                          placeholder="Enter remarks"
-                          value={accessoriesRemarks[index]}
-                          onChangeText={text =>
-                            handleSuspensionRemarks(text, index)
+                      {(accessoriesSwitch.length === 0 ||
+                        accessoriesSwitch[index] === 2) && (
+                        <>
+                          <View style={{marginTop: 14}}>
+                            <TextInput
+                              style={styles.photoInput}
+                              placeholder="Enter remarks"
+                              value={accessoriesRemarks[index]}
+                              onChangeText={text =>
+                                handleSuspensionRemarks(text, index)
+                              }
+                            />
+                          </View>
+                          <View style={{marginTop: 14}}>
+                            <Picker
+                              style={styles.photoInput}
+                              selectedValue={accessoriesDropdown[index]}
+                              onValueChange={itemValue =>
+                                handleSuspensionDropDownChange(itemValue, index)
+                              }>
+                              <Picker.Item label="Select Condition" value="" />
+                              <Picker.Item
+                                label={
+                                  index == 0
+                                    ? 'Not Available'
+                                    : index === 1
+                                    ? 'Not Available'
+                                    : index == 2
+                                    ? 'Not Available'
+                                    : index == 3
+                                    ? 'Not Available'
+                                    : index == 4
+                                    ? 'Not Available'
+                                    : index == 5
+                                    ? 'Damaged'
+                                    : index == 6
+                                    ? 'Not Available'
+                                    : index == 7
+                                    ? 'Not Available'
+                                    : index == 8
+                                    ? 'Not Available'
+                                    : index == 9
+                                    ? 'Not Available'
+                                    : 'Not Available'
+                                }
+                                value={
+                                  index == 0
+                                    ? 'Not Available'
+                                    : index === 1
+                                    ? 'Not Available'
+                                    : index == 2
+                                    ? 'Not Available'
+                                    : index == 3
+                                    ? 'Not Available'
+                                    : index == 4
+                                    ? 'Not Available'
+                                    : index == 5
+                                    ? 'Damaged'
+                                    : index == 6
+                                    ? 'Not Available'
+                                    : index == 7
+                                    ? 'Not Available'
+                                    : index == 8
+                                    ? 'Not Available'
+                                    : index == 9
+                                    ? 'Not Available'
+                                    : 'Not Available'
+                                }
+                              />
+                              <Picker.Item
+                                label={
+                                  index == 0
+                                    ? 'Damaged'
+                                    : index === 1
+                                    ? 'Damaged'
+                                    : index == 2
+                                    ? 'Damaged'
+                                    : index == 3
+                                    ? 'Damaged'
+                                    : index == 4
+                                    ? 'Damaged'
+                                    : index == 5
+                                    ? 'Not Working'
+                                    : index == 6
+                                    ? 'Damaged'
+                                    : index == 7
+                                    ? 'Damaged'
+                                    : index == 8
+                                    ? 'Damaged'
+                                    : index == 9
+                                    ? 'Damaged'
+                                    : 'Damaged'
+                                }
+                                value={
+                                  index == 0
+                                    ? 'Damaged'
+                                    : index === 1
+                                    ? 'Damaged'
+                                    : index == 2
+                                    ? 'Damaged'
+                                    : index == 3
+                                    ? 'Damaged'
+                                    : index == 4
+                                    ? 'Damaged'
+                                    : index == 5
+                                    ? 'Not Working'
+                                    : index == 6
+                                    ? 'Damaged'
+                                    : index == 7
+                                    ? 'Damaged'
+                                    : index == 8
+                                    ? 'Damaged'
+                                    : index == 9
+                                    ? 'Damaged'
+                                    : 'Damaged'
+                                }
+                              />
+                              <Picker.Item
+                                label={
+                                  index == 0
+                                    ? 'Not Working'
+                                    : index === 1
+                                    ? 'Not Working'
+                                    : index == 2
+                                    ? 'Not Working'
+                                    : index == 3
+                                    ? 'Not Working'
+                                    : index == 4
+                                    ? 'Not Working'
+                                    : index == 5
+                                    ? ''
+                                    : index == 6
+                                    ? 'Not Working'
+                                    : index == 7
+                                    ? ''
+                                    : index == 8
+                                    ? ''
+                                    : index == 9
+                                    ? ''
+                                    : 'Not Working'
+                                }
+                                value={
+                                  index == 0
+                                    ? 'Not Working'
+                                    : index === 1
+                                    ? 'Not Working'
+                                    : index == 2
+                                    ? 'Not Working'
+                                    : index == 3
+                                    ? 'Not Working'
+                                    : index == 4
+                                    ? 'Not Working'
+                                    : index == 5
+                                    ? ''
+                                    : index == 6
+                                    ? 'Not Working'
+                                    : index == 7
+                                    ? ''
+                                    : index == 8
+                                    ? ''
+                                    : index == 9
+                                    ? ''
+                                    : 'Not Working'
+                                }
+                              />
+                              {/* Add other items as needed */}
+                            </Picker>
+                          </View>
+                          <View style={{marginTop: 14}}>
+                            {!accessoriesPhoto[index] && (
+                              <TouchableOpacity
+                                style={styles.photoInput}
+                                onPress={() => openCameraForInspection(index)}>
+                                <Text>{item}</Text>
+                              </TouchableOpacity>
+                            )}
+                          </View>
+                        </>
+                      )}
+                    </View>
+                  ))}
+              </View>
+              <View style={{paddingHorizontal: 0}}>
+                {selectedInspectionIndex === 8 &&
+                  oilList.map((item, index) => (
+                    <View key={index} style={styles.itemContainer}>
+                      <Text>{item}</Text>
+
+                      <View
+                        style={{
+                          // marginLeft: 9,
+                          // marginRight: 9,
+                          // marginBottom: 20,
+                          marginTop: 5,
+                        }}>
+                        <CustomSwitch
+                          selectionMode={oliSwitch[index]}
+                          roundCorner={false}
+                          option1={'Ok'}
+                          option2={'Not Ok'}
+                          onSelectSwitch={val =>
+                            handleSuspensionChange(index, val)
                           }
+                          selectionColor={'#007BFF'}
+                          index={index} // Pass the index as a prop
                         />
                       </View>
-                      <View style={{marginTop: 14}}>
-                        <Picker
-                          style={styles.photoInput}
-                          selectedValue={accessoriesDropdown[index]}
-                          onValueChange={itemValue =>
-                            handleSuspensionDropDownChange(itemValue, index)
-                          }>
-                          <Picker.Item label="Select Condition" value="" />
-                          <Picker.Item label={index==0?"Not Available": index === 1 ? "Not Available" : index==2?"Not Available":index ==3?"Not Available":index==4?"Not Available":index==5 ?"Damaged":index==6?"Not Available":index==7?"Not Available":index==8?"Not Available":index==9?"Not Available":"Not Available"} value={index==0?"Not Available": index === 1 ? "Not Available" : index==2?"Not Available":index ==3?"Not Available":index==4?"Not Available":index==5 ?"Damaged":index==6?"Not Available":index==7?"Not Available":index==8?"Not Available":index==9?"Not Available":"Not Available"} />
-                          <Picker.Item label={index==0?"Damaged": index === 1 ? "Damaged" : index==2?"Damaged":index ==3?"Damaged":index==4?"Damaged":index==5 ?"Not Working":index==6?"Damaged":index==7?"Damaged":index==8?"Damaged":index==9?"Damaged":"Damaged"} value={index==0?"Damaged": index === 1 ? "Damaged" : index==2?"Damaged":index ==3?"Damaged":index==4?"Damaged":index==5 ?"Not Working":index==6?"Damaged":index==7?"Damaged":index==8?"Damaged":index==9?"Damaged":"Damaged"} />
-                          <Picker.Item label={index==0?"Not Working": index === 1 ? "Not Working" : index==2?"Not Working":index ==3?"Not Working":index==4?"Not Working":index==5 ?"":index==6?"Not Working":index==7?"":index==8?"":index==9?"":"Not Working"} value={index==0?"Not Working": index === 1 ? "Not Working" : index==2?"Not Working":index ==3?"Not Working":index==4?"Not Working":index==5 ?"":index==6?"Not Working":index==7?"":index==8?"":index==9?"":"Not Working"}   />
-                          {/* Add other items as needed */}
-                        </Picker>
-                      </View>
-                      <View style={{marginTop: 14}}>
+                      {/* {accessoriesPhoto[index] && (
+                        <View style={{position: 'relative'}}>
+                          <Image
+                            source={{uri: accessoriesPhoto[index]}}
+                            style={styles.uploadedImage}
+                          />
+                          <TouchableOpacity
+                            style={{
+                              position: 'absolute',
+                              top: 20,
+                              right: 0,
+                              backgroundColor: 'black',
+                              // borderRadius: 15,
+                              width: 60,
+                              height: 30,
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                            }}
+                            onPress={() => handleSuspensionClosePress(index)}>
+                            <Text style={{fontSize: 14, color: 'white'}}>
+                              Cancel
+                            </Text>
+                          </TouchableOpacity>
+                        </View>
+                      )} */}
+
+                      {(oliSwitch.length === 0 || oliSwitch[index] === 2) && (
+                        <>
+                          <View style={{marginTop: 14}}>
+                            <TextInput
+                              style={styles.photoInput}
+                              placeholder="Enter remarks"
+                              value={oilRemarks[index]}
+                              onChangeText={text =>
+                                handleSuspensionRemarks(text, index)
+                              }
+                            />
+                          </View>
+                          <View style={{marginTop: 14}}>
+                            <Picker
+                              style={styles.photoInput}
+                              selectedValue={oilDropDown[index]}
+                              onValueChange={itemValue =>
+                                handleSuspensionDropDownChange(itemValue, index)
+                              }>
+                              <Picker.Item label="Select Condition" value="" />
+                              <Picker.Item label="Level" value="Level" />
+                              <Picker.Item label="Leak" value="Leak" />
+                              {/* Add other items as needed */}
+                            </Picker>
+                          </View>
+                          {/* <View style={{marginTop: 14}}>
                         {!accessoriesPhoto[index] && (
                           <TouchableOpacity
                             style={styles.photoInput}
@@ -8753,20 +11419,20 @@ const OrderCreation = ({navigation}) => {
                             <Text>{item}</Text>
                           </TouchableOpacity>
                         )}
-                      </View>
+                      </View> */}
+                        </>
+                      )}
                     </View>
                   ))}
               </View>
-              <View style={{paddingHorizontal: 0}}>
-                {selectedInspectionIndex === 8 && (
+              <View style={{paddingHorizontal: 8}}>
+                {selectedInspectionIndex === 9 && (
                   <View style={{marginTop: 14}}>
                     <TextInput
                       style={styles.photoInput}
                       placeholder="Enter remarks"
                       value={roadTestRemarks}
-                      onChangeText={text =>
-                        handleSuspensionRemarks(text, index)
-                      }
+                      onChangeText={text => handleSuspensionRemarks(text)}
                     />
                   </View>
                 )}
@@ -8796,7 +11462,7 @@ const OrderCreation = ({navigation}) => {
               contentContainerStyle={styles.scrollViewContent}
               showsVerticalScrollIndicator={false}>
               <View style={{paddingHorizontal: 0}}>
-                {selectedBodyInspectionIndex === 0 &&
+                {selectedBodyInspectionIndex === 6 &&
                   pillarsList.map((item, index) => (
                     <View key={index} style={styles.itemContainer}>
                       <Text>{item}</Text>
@@ -8809,7 +11475,7 @@ const OrderCreation = ({navigation}) => {
                           marginTop: 5,
                         }}>
                         <CustomSwitch
-                          selectionMode={item}
+                          selectionMode={pillarSwitch[index]}
                           roundCorner={false}
                           option1={'Ok'}
                           option2={'Not Ok'}
@@ -8847,42 +11513,48 @@ const OrderCreation = ({navigation}) => {
                           </TouchableOpacity>
                         </View>
                       )}
+                      {(pillarSwitch.length === 0 ||
+                        pillarSwitch[index] === 2) && (
+                        <>
+                          <View style={{marginTop: 14}}>
+                            <TextInput
+                              style={styles.photoInput}
+                              placeholder="Enter remarks"
+                              value={pillarsPhotoRemarks[index]}
+                              onChangeText={text =>
+                                handleBodyInspectionRemarks(text, index)
+                              }
+                            />
+                          </View>
+                          <View style={{marginTop: 14}}>
+                            <Picker
+                              style={styles.photoInput}
+                              selectedValue={pillarsCondition[index]}
+                              onValueChange={itemValue =>
+                                handleBodyInspectionDropDown(itemValue, index)
+                              }>
+                              <Picker.Item label="Select Condition" value="" />
+                              <Picker.Item label="Damaged" value="Damaged" />
+                              <Picker.Item label="Rusting" value="Rusting" />
+                              <Picker.Item label="Replaced" value="Replaced" />
+                              <Picker.Item label="Repaired" value="Repaired" />
 
-                      <View style={{marginTop: 14}}>
-                        <TextInput
-                          style={styles.photoInput}
-                          placeholder="Enter remarks"
-                          value={pillarsPhotoRemarks[index]}
-                          onChangeText={text =>
-                            handleBodyInspectionRemarks(text, index)
-                          }
-                        />
-                      </View>
-                      <View style={{marginTop: 14}}>
-                        <Picker
-                          style={styles.photoInput}
-                          selectedValue={pillarsCondition[index]}
-                          onValueChange={itemValue =>
-                            handleBodyInspectionDropDown(itemValue, index)
-                          }>
-                          <Picker.Item label="Select Condition" value="" />
-                          <Picker.Item label="Damaged" value="Damaged" />
-                          <Picker.Item label="Rusting" value="Rusting" />
-                          <Picker.Item label="Replaced" value="Replaced" />
-                          <Picker.Item label="Repaired" value="Repaired" />
-
-                          {/* Add other items as needed */}
-                        </Picker>
-                      </View>
-                      <View style={{marginTop: 14}}>
-                        {!pillarsPhoto[index] && (
-                          <TouchableOpacity
-                            style={styles.photoInput}
-                            onPress={() => openCameraForBodyInspection(index)}>
-                            <Text>{item}</Text>
-                          </TouchableOpacity>
-                        )}
-                      </View>
+                              {/* Add other items as needed */}
+                            </Picker>
+                          </View>
+                          <View style={{marginTop: 14}}>
+                            {!pillarsPhoto[index] && (
+                              <TouchableOpacity
+                                style={styles.photoInput}
+                                onPress={() =>
+                                  openCameraForBodyInspection(index)
+                                }>
+                                <Text>{item}</Text>
+                              </TouchableOpacity>
+                            )}
+                          </View>
+                        </>
+                      )}
                     </View>
                   ))}
               </View>
@@ -8901,7 +11573,7 @@ const OrderCreation = ({navigation}) => {
                           marginTop: 5,
                         }}>
                         <CustomSwitch
-                          selectionMode={item}
+                          selectionMode={apronSwitch[index]}
                           roundCorner={false}
                           option1={'Ok'}
                           option2={'Not Ok'}
@@ -8939,48 +11611,54 @@ const OrderCreation = ({navigation}) => {
                           </TouchableOpacity>
                         </View>
                       )}
+                      {(apronSwitch.length === 0 ||
+                        apronSwitch[index] === 2) && (
+                        <>
+                          <View style={{marginTop: 14}}>
+                            <TextInput
+                              style={styles.photoInput}
+                              placeholder="Enter remarks"
+                              value={apronRemarks[index]}
+                              onChangeText={text =>
+                                handleBodyInspectionRemarks(text, index)
+                              }
+                            />
+                          </View>
+                          <View style={{marginTop: 14}}>
+                            <Picker
+                              style={styles.photoInput}
+                              selectedValue={apronCondition[index]}
+                              onValueChange={itemValue =>
+                                handleBodyInspectionDropDown(itemValue, index)
+                              }>
+                              <Picker.Item label="Select Condition" value="" />
+                              <Picker.Item label="Damaged" value="Damaged" />
+                              <Picker.Item label="Rusting" value="Rusting" />
+                              <Picker.Item label="Replaced" value="Replaced" />
+                              <Picker.Item label="Repaired" value="Repaired" />
 
-                      <View style={{marginTop: 14}}>
-                        <TextInput
-                          style={styles.photoInput}
-                          placeholder="Enter remarks"
-                          value={apronRemarks[index]}
-                          onChangeText={text =>
-                            handleBodyInspectionRemarks(text, index)
-                          }
-                        />
-                      </View>
-                      <View style={{marginTop: 14}}>
-                        <Picker
-                          style={styles.photoInput}
-                          selectedValue={apronCondition[index]}
-                          onValueChange={itemValue =>
-                            handleBodyInspectionDropDown(itemValue, index)
-                          }>
-                          <Picker.Item label="Select Condition" value="" />
-                          <Picker.Item label="Damaged" value="Damaged" />
-                          <Picker.Item label="Rusting" value="Rusting" />
-                          <Picker.Item label="Replaced" value="Replaced" />
-                          <Picker.Item label="Repaired" value="Repaired" />
-
-                          {/* Add other items as needed */}
-                        </Picker>
-                      </View>
-                      <View style={{marginTop: 14}}>
-                        {!apronPhoto[index] && (
-                          <TouchableOpacity
-                            style={styles.photoInput}
-                            onPress={() => openCameraForBodyInspection(index)}>
-                            <Text>{item}</Text>
-                          </TouchableOpacity>
-                        )}
-                      </View>
+                              {/* Add other items as needed */}
+                            </Picker>
+                          </View>
+                          <View style={{marginTop: 14}}>
+                            {!apronPhoto[index] && (
+                              <TouchableOpacity
+                                style={styles.photoInput}
+                                onPress={() =>
+                                  openCameraForBodyInspection(index)
+                                }>
+                                <Text>{item}</Text>
+                              </TouchableOpacity>
+                            )}
+                          </View>
+                        </>
+                      )}
                     </View>
                   ))}
               </View>
 
               <View style={{paddingHorizontal: 0}}>
-                {selectedBodyInspectionIndex === 2 &&
+                {selectedBodyInspectionIndex === 5 &&
                   fendersList.map((item, index) => (
                     <View key={index} style={styles.itemContainer}>
                       <Text>{item}</Text>
@@ -8993,7 +11671,7 @@ const OrderCreation = ({navigation}) => {
                           marginTop: 5,
                         }}>
                         <CustomSwitch
-                          selectionMode={item}
+                          selectionMode={fenderSwitch[index]}
                           roundCorner={false}
                           option1={'Ok'}
                           option2={'Not Ok'}
@@ -9011,47 +11689,54 @@ const OrderCreation = ({navigation}) => {
                         />
                       )}
 
-                      <View style={{marginTop: 14}}>
-                        <TextInput
-                          style={styles.photoInput}
-                          placeholder="Enter remarks"
-                          value={fenderRemarks[index]}
-                          onChangeText={text =>
-                            handleBodyInspectionRemarks(text, index)
-                          }
-                        />
-                      </View>
-                      <View style={{marginTop: 14}}>
-                        <Picker
-                          style={styles.photoInput}
-                          selectedValue={fenderCondition[index]}
-                          onValueChange={itemValue =>
-                            handleBodyInspectionDropDown(itemValue, index)
-                          }>
-                          <Picker.Item label="Select Condition" value="" />
-                          <Picker.Item label="Damaged" value="Damaged" />
-                          <Picker.Item label="Rusting" value="Rusting" />
-                          <Picker.Item label="Replaced" value="Replaced" />
-                          <Picker.Item label="Repaired" value="Repaired" />
+                      {(fenderSwitch.length === 0 ||
+                        fenderSwitch[index] === 2) && (
+                        <>
+                          <View style={{marginTop: 14}}>
+                            <TextInput
+                              style={styles.photoInput}
+                              placeholder="Enter remarks"
+                              value={fenderRemarks[index]}
+                              onChangeText={text =>
+                                handleBodyInspectionRemarks(text, index)
+                              }
+                            />
+                          </View>
+                          <View style={{marginTop: 14}}>
+                            <Picker
+                              style={styles.photoInput}
+                              selectedValue={fenderCondition[index]}
+                              onValueChange={itemValue =>
+                                handleBodyInspectionDropDown(itemValue, index)
+                              }>
+                              <Picker.Item label="Select Condition" value="" />
+                              <Picker.Item label="Damaged" value="Damaged" />
+                              <Picker.Item label="Rusting" value="Rusting" />
+                              <Picker.Item label="Replaced" value="Replaced" />
+                              <Picker.Item label="Repaired" value="Repaired" />
 
-                          {/* Add other items as needed */}
-                        </Picker>
-                      </View>
-                      <View style={{marginTop: 14}}>
-                        {!fenderPhoto[index] && (
-                          <TouchableOpacity
-                            style={styles.photoInput}
-                            onPress={() => openCameraForBodyInspection(index)}>
-                            <Text>{item}</Text>
-                          </TouchableOpacity>
-                        )}
-                      </View>
+                              {/* Add other items as needed */}
+                            </Picker>
+                          </View>
+                          <View style={{marginTop: 14}}>
+                            {!fenderPhoto[index] && (
+                              <TouchableOpacity
+                                style={styles.photoInput}
+                                onPress={() =>
+                                  openCameraForBodyInspection(index)
+                                }>
+                                <Text>{item}</Text>
+                              </TouchableOpacity>
+                            )}
+                          </View>
+                        </>
+                      )}
                     </View>
                   ))}
               </View>
 
               <View style={{paddingHorizontal: 0}}>
-                {selectedBodyInspectionIndex === 3 &&
+                {selectedBodyInspectionIndex === 9 &&
                   quarterPanelsList.map((item, index) => (
                     <View key={index} style={styles.itemContainer}>
                       <Text>{item}</Text>
@@ -9064,7 +11749,7 @@ const OrderCreation = ({navigation}) => {
                           marginTop: 5,
                         }}>
                         <CustomSwitch
-                          selectionMode={item}
+                          selectionMode={quarterPanlesSwitch[index]}
                           roundCorner={false}
                           option1={'Ok'}
                           option2={'Not Ok'}
@@ -9103,47 +11788,54 @@ const OrderCreation = ({navigation}) => {
                         </View>
                       )}
 
-                      <View style={{marginTop: 14}}>
-                        <TextInput
-                          style={styles.photoInput}
-                          placeholder="Enter remarks"
-                          value={quarterPanlesRemarks[index]}
-                          onChangeText={text =>
-                            handleBodyInspectionRemarks(text, index)
-                          }
-                        />
-                      </View>
-                      <View style={{marginTop: 14}}>
-                        <Picker
-                          style={styles.photoInput}
-                          selectedValue={quarterPanlesCondition[index]}
-                          onValueChange={itemValue =>
-                            handleBodyInspectionDropDown(itemValue, index)
-                          }>
-                          <Picker.Item label="Select Condition" value="" />
-                          <Picker.Item label="Damaged" value="Damaged" />
-                          <Picker.Item label="Rusting" value="Rusting" />
-                          <Picker.Item label="Replaced" value="Replaced" />
-                          <Picker.Item label="Repaired" value="Repaired" />
+                      {(quarterPanlesSwitch.length === 0 ||
+                        quarterPanlesSwitch[index] === 2) && (
+                        <>
+                          <View style={{marginTop: 14}}>
+                            <TextInput
+                              style={styles.photoInput}
+                              placeholder="Enter remarks"
+                              value={quarterPanlesRemarks[index]}
+                              onChangeText={text =>
+                                handleBodyInspectionRemarks(text, index)
+                              }
+                            />
+                          </View>
+                          <View style={{marginTop: 14}}>
+                            <Picker
+                              style={styles.photoInput}
+                              selectedValue={quarterPanlesCondition[index]}
+                              onValueChange={itemValue =>
+                                handleBodyInspectionDropDown(itemValue, index)
+                              }>
+                              <Picker.Item label="Select Condition" value="" />
+                              <Picker.Item label="Damaged" value="Damaged" />
+                              <Picker.Item label="Rusting" value="Rusting" />
+                              <Picker.Item label="Replaced" value="Replaced" />
+                              <Picker.Item label="Repaired" value="Repaired" />
 
-                          {/* Add other items as needed */}
-                        </Picker>
-                      </View>
-                      <View style={{marginTop: 14}}>
-                        {!quarterPanlesPhoto[index] && (
-                          <TouchableOpacity
-                            style={styles.photoInput}
-                            onPress={() => openCameraForBodyInspection(index)}>
-                            <Text>{item}</Text>
-                          </TouchableOpacity>
-                        )}
-                      </View>
+                              {/* Add other items as needed */}
+                            </Picker>
+                          </View>
+                          <View style={{marginTop: 14}}>
+                            {!quarterPanlesPhoto[index] && (
+                              <TouchableOpacity
+                                style={styles.photoInput}
+                                onPress={() =>
+                                  openCameraForBodyInspection(index)
+                                }>
+                                <Text>{item}</Text>
+                              </TouchableOpacity>
+                            )}
+                          </View>
+                        </>
+                      )}
                     </View>
                   ))}
               </View>
 
               <View style={{paddingHorizontal: 0}}>
-                {selectedBodyInspectionIndex === 4 &&
+                {selectedBodyInspectionIndex === 8 &&
                   runningBoardList.map((item, index) => (
                     <View key={index} style={styles.itemContainer}>
                       <Text>{item}</Text>
@@ -9156,7 +11848,7 @@ const OrderCreation = ({navigation}) => {
                           marginTop: 5,
                         }}>
                         <CustomSwitch
-                          selectionMode={item}
+                          selectionMode={runningBoardSwitch[index]}
                           roundCorner={false}
                           option1={'Ok'}
                           option2={'Not Ok'}
@@ -9195,47 +11887,54 @@ const OrderCreation = ({navigation}) => {
                         </View>
                       )}
 
-                      <View style={{marginTop: 14}}>
-                        <TextInput
-                          style={styles.photoInput}
-                          placeholder="Enter remarks"
-                          value={runningBoardRemarks[index]}
-                          onChangeText={text =>
-                            handleBodyInspectionRemarks(text, index)
-                          }
-                        />
-                      </View>
-                      <View style={{marginTop: 14}}>
-                        <Picker
-                          style={styles.photoInput}
-                          selectedValue={runnningBoardCondition[index]}
-                          onValueChange={itemValue =>
-                            handleBodyInspectionDropDown(itemValue, index)
-                          }>
-                          <Picker.Item label="Select Condition" value="" />
-                          <Picker.Item label="Damaged" value="Damaged" />
-                          <Picker.Item label="Rusting" value="Rusting" />
-                          <Picker.Item label="Replaced" value="Replaced" />
-                          <Picker.Item label="Repaired" value="Repaired" />
+                      {(runningBoardSwitch.length === 0 ||
+                        runningBoardSwitch[index] === 2) && (
+                        <>
+                          <View style={{marginTop: 14}}>
+                            <TextInput
+                              style={styles.photoInput}
+                              placeholder="Enter remarks"
+                              value={runningBoardRemarks[index]}
+                              onChangeText={text =>
+                                handleBodyInspectionRemarks(text, index)
+                              }
+                            />
+                          </View>
+                          <View style={{marginTop: 14}}>
+                            <Picker
+                              style={styles.photoInput}
+                              selectedValue={runnningBoardCondition[index]}
+                              onValueChange={itemValue =>
+                                handleBodyInspectionDropDown(itemValue, index)
+                              }>
+                              <Picker.Item label="Select Condition" value="" />
+                              <Picker.Item label="Damaged" value="Damaged" />
+                              <Picker.Item label="Rusting" value="Rusting" />
+                              <Picker.Item label="Replaced" value="Replaced" />
+                              <Picker.Item label="Repaired" value="Repaired" />
 
-                          {/* Add other items as needed */}
-                        </Picker>
-                      </View>
-                      <View style={{marginTop: 14}}>
-                        {!runningBoardPhoto[index] && (
-                          <TouchableOpacity
-                            style={styles.photoInput}
-                            onPress={() => openCameraForBodyInspection(index)}>
-                            <Text>{item}</Text>
-                          </TouchableOpacity>
-                        )}
-                      </View>
+                              {/* Add other items as needed */}
+                            </Picker>
+                          </View>
+                          <View style={{marginTop: 14}}>
+                            {!runningBoardPhoto[index] && (
+                              <TouchableOpacity
+                                style={styles.photoInput}
+                                onPress={() =>
+                                  openCameraForBodyInspection(index)
+                                }>
+                                <Text>{item}</Text>
+                              </TouchableOpacity>
+                            )}
+                          </View>
+                        </>
+                      )}
                     </View>
                   ))}
               </View>
 
               <View style={{paddingHorizontal: 0}}>
-                {selectedBodyInspectionIndex === 5 &&
+                {selectedBodyInspectionIndex === 7 &&
                   doorsList.map((item, index) => (
                     <View key={index} style={styles.itemContainer}>
                       <Text>{item}</Text>
@@ -9248,7 +11947,7 @@ const OrderCreation = ({navigation}) => {
                           marginTop: 5,
                         }}>
                         <CustomSwitch
-                          selectionMode={item}
+                          selectionMode={doorSwitch[index]}
                           roundCorner={false}
                           option1={'Ok'}
                           option2={'Not Ok'}
@@ -9266,47 +11965,53 @@ const OrderCreation = ({navigation}) => {
                         />
                       )}
 
-                      <View style={{marginTop: 14}}>
-                        <TextInput
-                          style={styles.photoInput}
-                          placeholder="Enter remarks"
-                          value={doorRemarks[index]}
-                          onChangeText={text =>
-                            handleBodyInspectionRemarks(text, index)
-                          }
-                        />
-                      </View>
-                      <View style={{marginTop: 14}}>
-                        <Picker
-                          style={styles.photoInput}
-                          selectedValue={doorCondition[index]}
-                          onValueChange={itemValue =>
-                            handleBodyInspectionDropDown(itemValue, index)
-                          }>
-                          <Picker.Item label="Select Condition" value="" />
-                          <Picker.Item label="Damaged" value="Damaged" />
-                          <Picker.Item label="Rusting" value="Rusting" />
-                          <Picker.Item label="Replaced" value="Replaced" />
-                          <Picker.Item label="Repaired" value="Repaired" />
+                      {(doorSwitch.length === 0 || doorSwitch[index] === 2) && (
+                        <>
+                          <View style={{marginTop: 14}}>
+                            <TextInput
+                              style={styles.photoInput}
+                              placeholder="Enter remarks"
+                              value={doorRemarks[index]}
+                              onChangeText={text =>
+                                handleBodyInspectionRemarks(text, index)
+                              }
+                            />
+                          </View>
+                          <View style={{marginTop: 14}}>
+                            <Picker
+                              style={styles.photoInput}
+                              selectedValue={doorCondition[index]}
+                              onValueChange={itemValue =>
+                                handleBodyInspectionDropDown(itemValue, index)
+                              }>
+                              <Picker.Item label="Select Condition" value="" />
+                              <Picker.Item label="Damaged" value="Damaged" />
+                              <Picker.Item label="Rusting" value="Rusting" />
+                              <Picker.Item label="Replaced" value="Replaced" />
+                              <Picker.Item label="Repaired" value="Repaired" />
 
-                          {/* Add other items as needed */}
-                        </Picker>
-                      </View>
-                      <View style={{marginTop: 14}}>
-                        {!doorPhoto[index] && (
-                          <TouchableOpacity
-                            style={styles.photoInput}
-                            onPress={() => openCameraForBodyInspection(index)}>
-                            <Text>{item}</Text>
-                          </TouchableOpacity>
-                        )}
-                      </View>
+                              {/* Add other items as needed */}
+                            </Picker>
+                          </View>
+                          <View style={{marginTop: 14}}>
+                            {!doorPhoto[index] && (
+                              <TouchableOpacity
+                                style={styles.photoInput}
+                                onPress={() =>
+                                  openCameraForBodyInspection(index)
+                                }>
+                                <Text>{item}</Text>
+                              </TouchableOpacity>
+                            )}
+                          </View>
+                        </>
+                      )}
                     </View>
                   ))}
               </View>
 
               <View style={{paddingHorizontal: 0}}>
-                {selectedBodyInspectionIndex === 6 &&
+                {selectedBodyInspectionIndex === 10 &&
                   dickyDoorList.map((item, index) => (
                     <View key={index} style={styles.itemContainer}>
                       <Text>{item}</Text>
@@ -9319,7 +12024,7 @@ const OrderCreation = ({navigation}) => {
                           marginTop: 5,
                         }}>
                         <CustomSwitch
-                          selectionMode={item}
+                          selectionMode={dickyDoorSwitch[index]}
                           roundCorner={false}
                           option1={'Ok'}
                           option2={'Not Ok'}
@@ -9358,47 +12063,54 @@ const OrderCreation = ({navigation}) => {
                         </View>
                       )}
 
-                      <View style={{marginTop: 14}}>
-                        <TextInput
-                          style={styles.photoInput}
-                          placeholder="Enter remarks"
-                          value={dickyDoorRemarks[index]}
-                          onChangeText={text =>
-                            handleBodyInspectionRemarks(text, index)
-                          }
-                        />
-                      </View>
-                      <View style={{marginTop: 14}}>
-                        <Picker
-                          style={styles.photoInput}
-                          selectedValue={dickyDoorCondition[index]}
-                          onValueChange={itemValue =>
-                            handleBodyInspectionDropDown(itemValue, index)
-                          }>
-                          <Picker.Item label="Select Condition" value="" />
-                          <Picker.Item label="Damaged" value="Damaged" />
-                          <Picker.Item label="Rusting" value="Rusting" />
-                          <Picker.Item label="Replaced" value="Replaced" />
-                          <Picker.Item label="Repaired" value="Repaired" />
+                      {(dickyDoorSwitch.length === 0 ||
+                        dickyDoorSwitch[index] === 2) && (
+                        <>
+                          <View style={{marginTop: 14}}>
+                            <TextInput
+                              style={styles.photoInput}
+                              placeholder="Enter remarks"
+                              value={dickyDoorRemarks[index]}
+                              onChangeText={text =>
+                                handleBodyInspectionRemarks(text, index)
+                              }
+                            />
+                          </View>
+                          <View style={{marginTop: 14}}>
+                            <Picker
+                              style={styles.photoInput}
+                              selectedValue={dickyDoorCondition[index]}
+                              onValueChange={itemValue =>
+                                handleBodyInspectionDropDown(itemValue, index)
+                              }>
+                              <Picker.Item label="Select Condition" value="" />
+                              <Picker.Item label="Damaged" value="Damaged" />
+                              <Picker.Item label="Rusting" value="Rusting" />
+                              <Picker.Item label="Replaced" value="Replaced" />
+                              <Picker.Item label="Repaired" value="Repaired" />
 
-                          {/* Add other items as needed */}
-                        </Picker>
-                      </View>
-                      <View style={{marginTop: 14}}>
-                        {!dickyDoorPhoto[index] && (
-                          <TouchableOpacity
-                            style={styles.photoInput}
-                            onPress={() => openCameraForBodyInspection(index)}>
-                            <Text>{item}</Text>
-                          </TouchableOpacity>
-                        )}
-                      </View>
+                              {/* Add other items as needed */}
+                            </Picker>
+                          </View>
+                          <View style={{marginTop: 14}}>
+                            {!dickyDoorPhoto[index] && (
+                              <TouchableOpacity
+                                style={styles.photoInput}
+                                onPress={() =>
+                                  openCameraForBodyInspection(index)
+                                }>
+                                <Text>{item}</Text>
+                              </TouchableOpacity>
+                            )}
+                          </View>
+                        </>
+                      )}
                     </View>
                   ))}
               </View>
 
               <View style={{paddingHorizontal: 0}}>
-                {selectedBodyInspectionIndex === 7 &&
+                {selectedBodyInspectionIndex === 11 &&
                   dickySkirtList.map((item, index) => (
                     <View key={index} style={styles.itemContainer}>
                       <Text>{item}</Text>
@@ -9411,7 +12123,7 @@ const OrderCreation = ({navigation}) => {
                           marginTop: 5,
                         }}>
                         <CustomSwitch
-                          selectionMode={item}
+                          selectionMode={dickySkirtSwitch[index]}
                           roundCorner={false}
                           option1={'Ok'}
                           option2={'Not Ok'}
@@ -9450,47 +12162,54 @@ const OrderCreation = ({navigation}) => {
                         </View>
                       )}
 
-                      <View style={{marginTop: 14}}>
-                        <TextInput
-                          style={styles.photoInput}
-                          placeholder="Enter remarks"
-                          value={dickySkirtRemarks[index]}
-                          onChangeText={text =>
-                            handleBodyInspectionRemarks(text, index)
-                          }
-                        />
-                      </View>
-                      <View style={{marginTop: 14}}>
-                        <Picker
-                          style={styles.photoInput}
-                          selectedValue={dickySkirtCondition[index]}
-                          onValueChange={itemValue =>
-                            handleBodyInspectionDropDown(itemValue, index)
-                          }>
-                          <Picker.Item label="Select Condition" value="" />
-                          <Picker.Item label="Damaged" value="Damaged" />
-                          <Picker.Item label="Rusting" value="Rusting" />
-                          <Picker.Item label="Replaced" value="Replaced" />
-                          <Picker.Item label="Repaired" value="Repaired" />
+                      {(dickySkirtSwitch.length === 0 ||
+                        dickySkirtSwitch[index] === 2) && (
+                        <>
+                          <View style={{marginTop: 14}}>
+                            <TextInput
+                              style={styles.photoInput}
+                              placeholder="Enter remarks"
+                              value={dickySkirtRemarks[index]}
+                              onChangeText={text =>
+                                handleBodyInspectionRemarks(text, index)
+                              }
+                            />
+                          </View>
+                          <View style={{marginTop: 14}}>
+                            <Picker
+                              style={styles.photoInput}
+                              selectedValue={dickySkirtCondition[index]}
+                              onValueChange={itemValue =>
+                                handleBodyInspectionDropDown(itemValue, index)
+                              }>
+                              <Picker.Item label="Select Condition" value="" />
+                              <Picker.Item label="Damaged" value="Damaged" />
+                              <Picker.Item label="Rusting" value="Rusting" />
+                              <Picker.Item label="Replaced" value="Replaced" />
+                              <Picker.Item label="Repaired" value="Repaired" />
 
-                          {/* Add other items as needed */}
-                        </Picker>
-                      </View>
-                      <View style={{marginTop: 14}}>
-                        {!dickySkirtPhoto[index] && (
-                          <TouchableOpacity
-                            style={styles.photoInput}
-                            onPress={() => openCameraForBodyInspection(index)}>
-                            <Text>{item}</Text>
-                          </TouchableOpacity>
-                        )}
-                      </View>
+                              {/* Add other items as needed */}
+                            </Picker>
+                          </View>
+                          <View style={{marginTop: 14}}>
+                            {!dickySkirtPhoto[index] && (
+                              <TouchableOpacity
+                                style={styles.photoInput}
+                                onPress={() =>
+                                  openCameraForBodyInspection(index)
+                                }>
+                                <Text>{item}</Text>
+                              </TouchableOpacity>
+                            )}
+                          </View>
+                        </>
+                      )}
                     </View>
                   ))}
               </View>
 
               <View style={{paddingHorizontal: 0}}>
-                {selectedBodyInspectionIndex === 8 &&
+                {selectedBodyInspectionIndex === 0 &&
                   bonetList.map((item, index) => (
                     <View key={index} style={styles.itemContainer}>
                       <Text>{item}</Text>
@@ -9503,7 +12222,7 @@ const OrderCreation = ({navigation}) => {
                           marginTop: 5,
                         }}>
                         <CustomSwitch
-                          selectionMode={item}
+                          selectionMode={bonetSwitch[index]}
                           roundCorner={false}
                           option1={'Ok'}
                           option2={'Not Ok'}
@@ -9541,48 +12260,54 @@ const OrderCreation = ({navigation}) => {
                           </TouchableOpacity>
                         </View>
                       )}
+                      {(bonetSwitch.length === 0 ||
+                        bonetSwitch[index] === 2) && (
+                        <>
+                          <View style={{marginTop: 14}}>
+                            <TextInput
+                              style={styles.photoInput}
+                              placeholder="Enter remarks"
+                              value={bonetRemarks[index]}
+                              onChangeText={text =>
+                                handleBodyInspectionRemarks(text, index)
+                              }
+                            />
+                          </View>
+                          <View style={{marginTop: 14}}>
+                            <Picker
+                              style={styles.photoInput}
+                              selectedValue={bonetCondition[index]}
+                              onValueChange={itemValue =>
+                                handleBodyInspectionDropDown(itemValue, index)
+                              }>
+                              <Picker.Item label="Select Condition" value="" />
+                              <Picker.Item label="Damaged" value="Damaged" />
+                              <Picker.Item label="Rusting" value="Rusting" />
+                              <Picker.Item label="Replaced" value="Replaced" />
+                              <Picker.Item label="Repaired" value="Repaired" />
 
-                      <View style={{marginTop: 14}}>
-                        <TextInput
-                          style={styles.photoInput}
-                          placeholder="Enter remarks"
-                          value={bonetRemarks[index]}
-                          onChangeText={text =>
-                            handleBodyInspectionRemarks(text, index)
-                          }
-                        />
-                      </View>
-                      <View style={{marginTop: 14}}>
-                        <Picker
-                          style={styles.photoInput}
-                          selectedValue={bonetCondition[index]}
-                          onValueChange={itemValue =>
-                            handleBodyInspectionDropDown(itemValue, index)
-                          }>
-                          <Picker.Item label="Select Condition" value="" />
-                          <Picker.Item label="Damaged" value="Damaged" />
-                          <Picker.Item label="Rusting" value="Rusting" />
-                          <Picker.Item label="Replaced" value="Replaced" />
-                          <Picker.Item label="Repaired" value="Repaired" />
-
-                          {/* Add other items as needed */}
-                        </Picker>
-                      </View>
-                      <View style={{marginTop: 14}}>
-                        {!bonetPhoto[index] && (
-                          <TouchableOpacity
-                            style={styles.photoInput}
-                            onPress={() => openCameraForBodyInspection(index)}>
-                            <Text>{item}</Text>
-                          </TouchableOpacity>
-                        )}
-                      </View>
+                              {/* Add other items as needed */}
+                            </Picker>
+                          </View>
+                          <View style={{marginTop: 14}}>
+                            {!bonetPhoto[index] && (
+                              <TouchableOpacity
+                                style={styles.photoInput}
+                                onPress={() =>
+                                  openCameraForBodyInspection(index)
+                                }>
+                                <Text>{item}</Text>
+                              </TouchableOpacity>
+                            )}
+                          </View>
+                        </>
+                      )}
                     </View>
                   ))}
               </View>
 
               <View style={{paddingHorizontal: 0}}>
-                {selectedBodyInspectionIndex === 9 &&
+                {selectedBodyInspectionIndex === 2 &&
                   supportMembersList.map((item, index) => (
                     <View key={index} style={styles.itemContainer}>
                       <Text>{item}</Text>
@@ -9595,7 +12320,7 @@ const OrderCreation = ({navigation}) => {
                           marginTop: 5,
                         }}>
                         <CustomSwitch
-                          selectionMode={item}
+                          selectionMode={supportMembersSwitch[index]}
                           roundCorner={false}
                           option1={'Ok'}
                           option2={'Not Ok'}
@@ -9634,47 +12359,54 @@ const OrderCreation = ({navigation}) => {
                         </View>
                       )}
 
-                      <View style={{marginTop: 14}}>
-                        <TextInput
-                          style={styles.photoInput}
-                          placeholder="Enter remarks"
-                          value={supportMembersRemarks[index]}
-                          onChangeText={text =>
-                            handleBodyInspectionRemarks(text, index)
-                          }
-                        />
-                      </View>
-                      <View style={{marginTop: 14}}>
-                        <Picker
-                          style={styles.photoInput}
-                          selectedValue={supportMembersCondition[index]}
-                          onValueChange={itemValue =>
-                            handleBodyInspectionDropDown(itemValue, index)
-                          }>
-                          <Picker.Item label="Select Condition" value="" />
-                          <Picker.Item label="Damaged" value="Damaged" />
-                          <Picker.Item label="Rusting" value="Rusting" />
-                          <Picker.Item label="Replaced" value="Replaced" />
-                          <Picker.Item label="Repaired" value="Repaired" />
+                      {(supportMembersSwitch.length === 0 ||
+                        supportMembersSwitch[index] === 2) && (
+                        <>
+                          <View style={{marginTop: 14}}>
+                            <TextInput
+                              style={styles.photoInput}
+                              placeholder="Enter remarks"
+                              value={supportMembersRemarks[index]}
+                              onChangeText={text =>
+                                handleBodyInspectionRemarks(text, index)
+                              }
+                            />
+                          </View>
+                          <View style={{marginTop: 14}}>
+                            <Picker
+                              style={styles.photoInput}
+                              selectedValue={supportMembersCondition[index]}
+                              onValueChange={itemValue =>
+                                handleBodyInspectionDropDown(itemValue, index)
+                              }>
+                              <Picker.Item label="Select Condition" value="" />
+                              <Picker.Item label="Damaged" value="Damaged" />
+                              <Picker.Item label="Rusting" value="Rusting" />
+                              <Picker.Item label="Replaced" value="Replaced" />
+                              <Picker.Item label="Repaired" value="Repaired" />
 
-                          {/* Add other items as needed */}
-                        </Picker>
-                      </View>
-                      <View style={{marginTop: 14}}>
-                        {!supportMembersPhoto[index] && (
-                          <TouchableOpacity
-                            style={styles.photoInput}
-                            onPress={() => openCameraForBodyInspection(index)}>
-                            <Text>{item}</Text>
-                          </TouchableOpacity>
-                        )}
-                      </View>
+                              {/* Add other items as needed */}
+                            </Picker>
+                          </View>
+                          <View style={{marginTop: 14}}>
+                            {!supportMembersPhoto[index] && (
+                              <TouchableOpacity
+                                style={styles.photoInput}
+                                onPress={() =>
+                                  openCameraForBodyInspection(index)
+                                }>
+                                <Text>{item}</Text>
+                              </TouchableOpacity>
+                            )}
+                          </View>
+                        </>
+                      )}
                     </View>
                   ))}
               </View>
 
               <View style={{paddingHorizontal: 0}}>
-                {selectedBodyInspectionIndex === 10 &&
+                {selectedBodyInspectionIndex === 3 &&
                   bumberList.map((item, index) => (
                     <View key={index} style={styles.itemContainer}>
                       <Text>{item}</Text>
@@ -9687,7 +12419,7 @@ const OrderCreation = ({navigation}) => {
                           marginTop: 5,
                         }}>
                         <CustomSwitch
-                          selectionMode={item}
+                          selectionMode={bumperSwitch[index]}
                           roundCorner={false}
                           option1={'Ok'}
                           option2={'Not Ok'}
@@ -9726,47 +12458,54 @@ const OrderCreation = ({navigation}) => {
                         </View>
                       )}
 
-                      <View style={{marginTop: 14}}>
-                        <TextInput
-                          style={styles.photoInput}
-                          placeholder="Enter remarks"
-                          value={bumperRemarks[index]}
-                          onChangeText={text =>
-                            handleBodyInspectionRemarks(text, index)
-                          }
-                        />
-                      </View>
-                      <View style={{marginTop: 14}}>
-                        <Picker
-                          style={styles.photoInput}
-                          selectedValue={bumperCondition[index]}
-                          onValueChange={itemValue =>
-                            handleBodyInspectionDropDown(itemValue, index)
-                          }>
-                          <Picker.Item label="Select DropDown" value="" />
-                          <Picker.Item label="Damaged" value="Damaged" />
-                          <Picker.Item label="Rusting" value="Rusting" />
-                          <Picker.Item label="Replaced" value="Replaced" />
-                          <Picker.Item label="Repaired" value="Repaired" />
+                      {(bumperSwitch.length === 0 ||
+                        bumperSwitch[index] === 2) && (
+                        <>
+                          <View style={{marginTop: 14}}>
+                            <TextInput
+                              style={styles.photoInput}
+                              placeholder="Enter remarks"
+                              value={bumperRemarks[index]}
+                              onChangeText={text =>
+                                handleBodyInspectionRemarks(text, index)
+                              }
+                            />
+                          </View>
+                          <View style={{marginTop: 14}}>
+                            <Picker
+                              style={styles.photoInput}
+                              selectedValue={bumperCondition[index]}
+                              onValueChange={itemValue =>
+                                handleBodyInspectionDropDown(itemValue, index)
+                              }>
+                              <Picker.Item label="Select DropDown" value="" />
+                              <Picker.Item label="Damaged" value="Damaged" />
+                              <Picker.Item label="Rusting" value="Rusting" />
+                              <Picker.Item label="Replaced" value="Replaced" />
+                              <Picker.Item label="Repaired" value="Repaired" />
 
-                          {/* Add other items as needed */}
-                        </Picker>
-                      </View>
-                      <View style={{marginTop: 14}}>
-                        {!bumperPhoto[index] && (
-                          <TouchableOpacity
-                            style={styles.photoInput}
-                            onPress={() => openCameraForBodyInspection(index)}>
-                            <Text>{item}</Text>
-                          </TouchableOpacity>
-                        )}
-                      </View>
+                              {/* Add other items as needed */}
+                            </Picker>
+                          </View>
+                          <View style={{marginTop: 14}}>
+                            {!bumperPhoto[index] && (
+                              <TouchableOpacity
+                                style={styles.photoInput}
+                                onPress={() =>
+                                  openCameraForBodyInspection(index)
+                                }>
+                                <Text>{item}</Text>
+                              </TouchableOpacity>
+                            )}
+                          </View>
+                        </>
+                      )}
                     </View>
                   ))}
               </View>
 
               <View style={{paddingHorizontal: 0}}>
-                {selectedBodyInspectionIndex === 11 &&
+                {selectedBodyInspectionIndex === 12 &&
                   wheelTypeList.map((item, index) => (
                     <View key={index} style={styles.itemContainer}>
                       <Text>{item}</Text>
@@ -9779,7 +12518,27 @@ const OrderCreation = ({navigation}) => {
                           marginTop: 5,
                         }}>
                         <CustomSwitch
-                          selectionMode={item}
+                          selectionMode={selectWheelTypeSwitch[index]}
+                          roundCorner={false}
+                          option1={'Alloy'}
+                          option2={'Drum'}
+                          onSelectSwitch={val =>
+                            handleBodyInspectionChanngeWheelType(index, val)
+                          }
+                          selectionColor={'#007BFF'}
+                          index={index} // Pass the index as a prop
+                        />
+                      </View>
+
+                      <View
+                        style={{
+                          // marginLeft: 9,
+                          // marginRight: 9,
+                          // marginBottom: 20,
+                          marginTop: 25,
+                        }}>
+                        <CustomSwitch
+                          selectionMode={wheelTypeSwitch[index]}
                           roundCorner={false}
                           option1={'Ok'}
                           option2={'Not Ok'}
@@ -9818,47 +12577,54 @@ const OrderCreation = ({navigation}) => {
                         </View>
                       )}
 
-                      <View style={{marginTop: 14}}>
-                        <TextInput
-                          style={styles.photoInput}
-                          placeholder="Enter remarks"
-                          value={wheelTypeRemarks[index]}
-                          onChangeText={text =>
-                            handleBodyInspectionRemarks(text, index)
-                          }
-                        />
-                      </View>
-                      <View style={{marginTop: 14}}>
-                        <Picker
-                          style={styles.photoInput}
-                          selectedValue={wheelTypeCondition[index]}
-                          onValueChange={itemValue =>
-                            handleBodyInspectionDropDown(itemValue, index)
-                          }>
-                          <Picker.Item label="Select Condition" value="" />
-                          <Picker.Item label="Damaged" value="Damaged" />
-                          <Picker.Item label="Rusting" value="Rusting" />
-                          <Picker.Item label="Replaced" value="Replaced" />
-                          <Picker.Item label="Repaired" value="Repaired" />
+                      {(wheelTypeSwitch.length === 0 ||
+                        wheelTypeSwitch[0] === 2) && (
+                        <>
+                          <View style={{marginTop: 14}}>
+                            <TextInput
+                              style={styles.photoInput}
+                              placeholder="Enter remarks"
+                              value={wheelTypeRemarks[index]}
+                              onChangeText={text =>
+                                handleBodyInspectionRemarks(text, index)
+                              }
+                            />
+                          </View>
+                          <View style={{marginTop: 14}}>
+                            <Picker
+                              style={styles.photoInput}
+                              selectedValue={wheelTypeCondition[index]}
+                              onValueChange={itemValue =>
+                                handleBodyInspectionDropDown(itemValue, index)
+                              }>
+                              <Picker.Item label="Select Condition" value="" />
+                              <Picker.Item label="Damaged" value="Damaged" />
+                              <Picker.Item label="Rusting" value="Rusting" />
+                              <Picker.Item label="Replaced" value="Replaced" />
+                              <Picker.Item label="Repaired" value="Repaired" />
 
-                          {/* Add other items as needed */}
-                        </Picker>
-                      </View>
-                      <View style={{marginTop: 14}}>
-                        {!wheelTypePhoto[index] && (
-                          <TouchableOpacity
-                            style={styles.photoInput}
-                            onPress={() => openCameraForBodyInspection(index)}>
-                            <Text>{item}</Text>
-                          </TouchableOpacity>
-                        )}
-                      </View>
+                              {/* Add other items as needed */}
+                            </Picker>
+                          </View>
+                          <View style={{marginTop: 14}}>
+                            {!wheelTypePhoto[index] && (
+                              <TouchableOpacity
+                                style={styles.photoInput}
+                                onPress={() =>
+                                  openCameraForBodyInspection(index)
+                                }>
+                                <Text>{item}</Text>
+                              </TouchableOpacity>
+                            )}
+                          </View>
+                        </>
+                      )}
                     </View>
                   ))}
               </View>
 
               <View style={{paddingHorizontal: 0}}>
-                {selectedBodyInspectionIndex === 12 &&
+                {selectedBodyInspectionIndex === 4 &&
                   WindshieldList.map((item, index) => (
                     <View key={index} style={styles.itemContainer}>
                       <Text>{item}</Text>
@@ -9871,7 +12637,7 @@ const OrderCreation = ({navigation}) => {
                           marginTop: 5,
                         }}>
                         <CustomSwitch
-                          selectionMode={item}
+                          selectionMode={windShieldSwitch[index]}
                           roundCorner={false}
                           option1={'Ok'}
                           option2={'Not Ok'}
@@ -9910,41 +12676,49 @@ const OrderCreation = ({navigation}) => {
                         </View>
                       )}
 
-                      <View style={{marginTop: 14}}>
-                        <TextInput
-                          style={styles.photoInput}
-                          placeholder="Enter remarks"
-                          value={windShieldRemarks[index]}
-                          onChangeText={text =>
-                            handleBodyInspectionRemarks(text, index)
-                          }
-                        />
-                      </View>
-                      <View style={{marginTop: 14}}>
-                        <Picker
-                          style={styles.photoInput}
-                          selectedValue={windShieldCondition[index]}
-                          onValueChange={itemValue =>
-                            handleBodyInspectionDropDown(itemValue, index)
-                          }>
-                          <Picker.Item label="Select Condition" value="" />
-                          <Picker.Item label="Damaged" value="Damaged" />
-                          <Picker.Item label="Rusting" value="Rusting" />
-                          <Picker.Item label="Replaced" value="Replaced" />
-                          <Picker.Item label="Repaired" value="Repaired" />
 
-                          {/* Add other items as needed */}
-                        </Picker>
-                      </View>
-                      <View style={{marginTop: 14}}>
-                        {!windShieldPhoto[index] && (
-                          <TouchableOpacity
-                            style={styles.photoInput}
-                            onPress={() => openCameraForBodyInspection(index)}>
-                            <Text>{item}</Text>
-                          </TouchableOpacity>
-                        )}
-                      </View>
+{(windShieldSwitch.length === 0 ||
+                        windShieldSwitch[index] === 2) && (
+                   <>
+                          <View style={{marginTop: 14}}>
+                            <TextInput
+                              style={styles.photoInput}
+                              placeholder="Enter remarks"
+                              value={windShieldRemarks[index]}
+                              onChangeText={text =>
+                                handleBodyInspectionRemarks(text, index)
+                              }
+                            />
+                          </View>
+                          <View style={{marginTop: 14}}>
+                            <Picker
+                              style={styles.photoInput}
+                              selectedValue={windShieldCondition[index]}
+                              onValueChange={itemValue =>
+                                handleBodyInspectionDropDown(itemValue, index)
+                              }>
+                              <Picker.Item label="Select Condition" value="" />
+                              <Picker.Item label="Damaged" value="Damaged" />
+                              <Picker.Item label="Rusting" value="Rusting" />
+                              <Picker.Item label="Replaced" value="Replaced" />
+                              <Picker.Item label="Repaired" value="Repaired" />
+
+                              {/* Add other items as needed */}
+                            </Picker>
+                          </View>
+                          <View style={{marginTop: 14}}>
+                            {!windShieldPhoto[index] && (
+                              <TouchableOpacity
+                                style={styles.photoInput}
+                                onPress={() =>
+                                  openCameraForBodyInspection(index)
+                                }>
+                                <Text>{item}</Text>
+                              </TouchableOpacity>
+                            )}
+                          </View>
+                      </>
+                          )}
                     </View>
                   ))}
               </View>
@@ -9964,10 +12738,10 @@ const OrderCreation = ({navigation}) => {
         visible={carDetailsInspection}
         animationType="slide"
         transparent={true}
-        onRequestClose={() => handleCarDetailsOkPress()}>
+        onRequestClose={() => setCarDetailsInspection(false)}>
         <View style={styles.modalOverlay}>
           <View style={styles.modalContainer}>
-            <TouchableOpacity onPress={() => setCarDetailsInspection(false)}>
+            <TouchableOpacity onPress={() => handleCarDetailsOkPress()}>
               <Text style={{textAlign: 'right', marginRight: 8}}>Close</Text>
             </TouchableOpacity>
             <ScrollView
@@ -9976,33 +12750,15 @@ const OrderCreation = ({navigation}) => {
               <View style={{paddingHorizontal: 8, marginTop: 18}}>
                 <View style={{paddingHorizontal: 0}}>
                   {carDetailsIndex === 0 &&
-                    chassisList.map((item, index) => (
+                     lhsViewList.map((item, index) => (
                       <View key={index} style={styles.itemContainer}>
                         <Text>{item}</Text>
-
-                        <View
-                          style={{
-                            // marginLeft: 9,
-                            // marginRight: 9,
-                            // marginBottom: 20,
-                            marginTop: 5,
-                          }}>
-                          <CustomSwitch
-                            selectionMode={item}
-                            roundCorner={false}
-                            option1={'Ok'}
-                            option2={'Not Ok'}
-                            onSelectSwitch={val =>
-                              handleCarDetailsChange(index, val)
-                            }
-                            selectionColor={'#007BFF'}
-                            index={index} // Pass the index as a prop
-                          />
-                        </View>
-                        {chassisPunchPhoto[index] && (
-                          <View style={{position: 'relative'}}>
+  
+                       
+                        {lhsViewPhoto[index] && (
+                          <View stylle={{position: 'relative'}}>
                             <Image
-                              source={{uri: chassisPunchPhoto[index]}}
+                              source={{uri: lhsViewPhoto[index]}}
                               style={styles.uploadedImage}
                             />
                             <TouchableOpacity
@@ -10017,82 +12773,52 @@ const OrderCreation = ({navigation}) => {
                                 justifyContent: 'center',
                                 alignItems: 'center',
                               }}
-                              onPress={() => carDetailsClosePress(index)}>
+                              onPress={() => handleCamera5(index)}>
                               <Text style={{fontSize: 14, color: 'white'}}>
                                 Cancel
                               </Text>
                             </TouchableOpacity>
                           </View>
                         )}
-
-                        <View style={{marginTop: 14}}>
-                          <TextInput
-                            style={styles.photoInput}
-                            placeholder="Enter remarks"
-                            value={chassisRemarks[index]}
-                            onChangeText={text =>
-                              handleCarDetailsRemarks(text, index)
-                            }
-                          />
-                        </View>
-                        <View style={{marginTop: 14}}>
-                          <Picker
-                            style={styles.photoInput}
-                            selectedValue={chassisCondition[index]}
-                            onValueChange={itemValue =>
-                              handleCarDetailsDropDown(itemValue, index)
-                            }>
-                            <Picker.Item label="Select Condition" value="" />
-                            <Picker.Item
-                              label="Re Punched"
-                              value="Re Punched"
-                            />
-                            <Picker.Item label="Rusted" value="Rusted" />
-
-                            {/* Add other items as needed */}
-                          </Picker>
-                        </View>
-                        <View style={{marginTop: 14}}>
-                          {!chassisPunchPhoto[index] && (
-                            <TouchableOpacity
-                              style={styles.photoInput}
-                              onPress={() => openCameraForCarDetails(index)}>
-                              <Text>{item}</Text>
-                            </TouchableOpacity>
-                          )}
-                        </View>
+  
+                       
+                           
+                          
+                            <View style={{marginTop: 14}}>
+                              {!lhsViewPhoto[index] && (
+                                <TouchableOpacity
+                                  style={styles.photoInput}
+                                  onPress={() => openCamera5(index)}>
+                                  <Text>{item}</Text>
+                                </TouchableOpacity>
+                              )}
+                            </View>
+  
+                            <View style={{marginTop: 14}}>
+                              <TextInput
+                                style={styles.photoInput}
+                                placeholder="Enter remarks"
+                                value={lhsViewRemarks[index]}
+                                onChangeText={text =>
+                                  handleRemarks5(text, index)
+                                }
+                              />
+                            </View>
+                        
                       </View>
                     ))}
                 </View>
                 <View style={{paddingHorizontal: 0}}>
                   {carDetailsIndex === 1 &&
-                    vinPlateList.map((item, index) => (
+                    rearViewList.map((item, index) => (
                       <View key={index} style={styles.itemContainer}>
                         <Text>{item}</Text>
-
-                        <View
-                          style={{
-                            // marginLeft: 9,
-                            // marginRight: 9,
-                            // marginBottom: 20,
-                            marginTop: 5,
-                          }}>
-                          <CustomSwitch
-                            selectionMode={item}
-                            roundCorner={false}
-                            option1={'Ok'}
-                            option2={'Not Ok'}
-                            onSelectSwitch={val =>
-                              handleCarDetailsChange(index, val)
-                            }
-                            selectionColor={'#007BFF'}
-                            index={index} // Pass the index as a prop
-                          />
-                        </View>
-                        {vinPlatePunchPhoto[index] && (
-                          <View style={{position: 'relative'}}>
+  
+                       
+                        {rearViewPhoto[index] && (
+                          <View stylle={{position: 'relative'}}>
                             <Image
-                              source={{uri: vinPlatePunchPhoto[index]}}
+                              source={{uri: rearViewPhoto[index]}}
                               style={styles.uploadedImage}
                             />
                             <TouchableOpacity
@@ -10107,52 +12833,43 @@ const OrderCreation = ({navigation}) => {
                                 justifyContent: 'center',
                                 alignItems: 'center',
                               }}
-                              onPress={() => carDetailsClosePress(index)}>
+                              onPress={() => handleCamera5(index)}>
                               <Text style={{fontSize: 14, color: 'white'}}>
                                 Cancel
                               </Text>
                             </TouchableOpacity>
                           </View>
                         )}
-
-                        <View style={{marginTop: 14}}>
-                          <TextInput
-                            style={styles.photoInput}
-                            placeholder="Enter remarks"
-                            value={vinPlateRemarks[index]}
-                            onChangeText={text =>
-                              handleCarDetailsChange(text, index)
-                            }
-                          />
-                        </View>
-                        <View style={{marginTop: 14}}>
-                          <Picker
-                            style={styles.photoInput}
-                            selectedValue={vinPlateCondition[index]}
-                            onValueChange={itemValue =>
-                              handleCarDetailsDropDown(itemValue, index)
-                            }>
-                            <Picker.Item label="Select Condition" value="" />
-                            <Picker.Item label="Damaged" value="Damaged" />
-                            <Picker.Item label="Missing" value="Missing" />
-
-                            {/* Add other items as needed */}
-                          </Picker>
-                        </View>
-                        <View style={{marginTop: 14}}>
-                          {!vinPlatePunchPhoto[index] && (
-                            <TouchableOpacity
-                              style={styles.photoInput}
-                              onPress={() => openCameraForCarDetails(index)}>
-                              <Text>{item}</Text>
-                            </TouchableOpacity>
-                          )}
-                        </View>
+  
+                       
+                           
+                          
+                            <View style={{marginTop: 14}}>
+                              {!rearViewPhoto[index] && (
+                                <TouchableOpacity
+                                  style={styles.photoInput}
+                                  onPress={() => openCamera5(index)}>
+                                  <Text>{item}</Text>
+                                </TouchableOpacity>
+                              )}
+                            </View>
+  
+                            <View style={{marginTop: 14}}>
+                              <TextInput
+                                style={styles.photoInput}
+                                placeholder="Enter remarks"
+                                value={rearViewRemarks[index]}
+                                onChangeText={text =>
+                                  handleRemarks5(text, index)
+                                }
+                              />
+                            </View>
+                        
                       </View>
                     ))}
                 </View>
                 <View style={{paddingHorizontal: 0}}>
-                  {carDetailsIndex === 2 &&
+                  {carDetailsIndex === 7 &&
                     tyresList.map((item, index) => (
                       <View key={index} style={styles.itemContainer}>
                         <Text>{item}</Text>
@@ -10165,12 +12882,12 @@ const OrderCreation = ({navigation}) => {
                             marginTop: 5,
                           }}>
                           <CustomSwitch
-                            selectionMode={item}
+                            selectionMode={tyreSwitch[index]}
                             roundCorner={false}
                             option1={'Ok'}
                             option2={'Not Ok'}
                             onSelectSwitch={val =>
-                              handleCarDetailsChange(index, val)
+                              handleSwitch5(index, val)
                             }
                             selectionColor={'#007BFF'}
                             index={index} // Pass the index as a prop
@@ -10194,7 +12911,7 @@ const OrderCreation = ({navigation}) => {
                                 justifyContent: 'center',
                                 alignItems: 'center',
                               }}
-                              onPress={() => carDetailsClosePress(index)}>
+                              onPress={() => handleCamera5(index)}>
                               <Text style={{fontSize: 14, color: 'white'}}>
                                 Cancel
                               </Text>
@@ -10202,41 +12919,118 @@ const OrderCreation = ({navigation}) => {
                           </View>
                         )}
 
+                        {/* {tyreSwitch.length===0 || tyreSwitch[index] === 2 && ( */}
                         <View style={{marginTop: 14}}>
                           <TextInput
                             style={styles.photoInput}
                             placeholder="Enter remarks"
                             value={tyreRemarks[index]}
                             onChangeText={text =>
-                              handleCarDetailsRemarks(text, index)
+                              handleRemarks5(text, index)
                             }
                           />
                         </View>
-                        <View style={{marginTop: 14}}>
-                          {/* <View key={index} style={styles.sliderContainer}>
-            <Text style={styles.percentageText}>{Math.round(value * 100)}%</Text>
-            <Slider
-              style={styles.slider}
-              minimumValue={0}
-              maximumValue={1}
-              value={value}
-              onValueChange={(val) => handleValueChange(val, index)}
-              minimumTrackTintColor={getTrackColor(value)}
-              maximumTrackTintColor="#000000"
-              thumbTintColor="#007BFF"
-            />
-          </View> */}
-                        </View>
+                        {/* )} */}
 
+                        {index === 0 && (
+                          <View style={{marginTop: 14}}>
+                            <View key={index} style={styles.sliderContainer}>
+                              <Text style={styles.percentageText}>
+                                {Math.round(values[0] * 100)}%
+                              </Text>
+                              <Slider
+                                style={styles.slider}
+                                minimumValue={0}
+                                maximumValue={1}
+                                value={values[0]}
+                                onValueChange={val =>
+                                  handleValueChange(val, index)
+                                }
+                                minimumTrackTintColor={getTrackColor(values[0])}
+                                maximumTrackTintColor="#000000"
+                                thumbTintColor="#007BFF"
+                              />
+                            </View>
+                          </View>
+                        )}
+
+                        {/* {(tyreSwitch.length === 0 || tyreSwitch[1] === 2) && index === 1 && ( */}
+                        {index === 1 && (
+                          <View style={{marginTop: 14}}>
+                            <View style={styles.sliderContainer}>
+                              <Text style={styles.percentageText}>
+                                {Math.round(values[1] * 100)}%
+                              </Text>
+                              <Slider
+                                style={styles.slider}
+                                minimumValue={0}
+                                maximumValue={1}
+                                value={values[1]}
+                                onValueChange={val =>
+                                  handleValueChange(val, index)
+                                }
+                                minimumTrackTintColor={getTrackColor(values[1])}
+                                maximumTrackTintColor="#000000"
+                                thumbTintColor="#007BFF"
+                              />
+                            </View>
+                          </View>
+                        )}
+
+                        {index === 2 && (
+                          <View style={{marginTop: 14}}>
+                            <View style={styles.sliderContainer}>
+                              <Text style={styles.percentageText}>
+                                {Math.round(values[2] * 100)}%
+                              </Text>
+                              <Slider
+                                style={styles.slider}
+                                minimumValue={0}
+                                maximumValue={1}
+                                value={values[2]}
+                                onValueChange={val =>
+                                  handleValueChange(val, index)
+                                }
+                                minimumTrackTintColor={getTrackColor(values[2])}
+                                maximumTrackTintColor="#000000"
+                                thumbTintColor="#007BFF"
+                              />
+                            </View>
+                          </View>
+                        )}
+                        {index === 3 && (
+                          <View style={{marginTop: 14}}>
+                            <View style={styles.sliderContainer}>
+                              <Text style={styles.percentageText}>
+                                {Math.round(values[3] * 100)}%
+                              </Text>
+                              <Slider
+                                style={styles.slider}
+                                minimumValue={0}
+                                maximumValue={1}
+                                value={values[3]}
+                                onValueChange={val =>
+                                  handleValueChange(val, index)
+                                }
+                                minimumTrackTintColor={getTrackColor(values[3])}
+                                maximumTrackTintColor="#000000"
+                                thumbTintColor="#007BFF"
+                              />
+                            </View>
+                          </View>
+                        )}
+
+                        {/* {(tyreSwitch.length === 0 || tyreSwitch[index] === 2) && ( */}
                         <View style={{marginTop: 14}}>
                           {!tyrePunchPhoto[index] && (
                             <TouchableOpacity
                               style={styles.photoInput}
-                              onPress={() => openCameraForCarDetails(index)}>
+                              onPress={() => openCamera5(index)}>
                               <Text>{item}</Text>
                             </TouchableOpacity>
                           )}
                         </View>
+                        {/* )} */}
                       </View>
                     ))}
                 </View>
@@ -10254,12 +13048,12 @@ const OrderCreation = ({navigation}) => {
                             marginTop: 5,
                           }}>
                           <CustomSwitch
-                            selectionMode={item}
+                            selectionMode={spareWheelSwitch[index]}
                             roundCorner={false}
-                            option1={'Available'}
-                            option2={'Not Available'}
+                            option1={'Not Available'}
+                            option2={'Available'}
                             onSelectSwitch={val =>
-                              handleCarDetailsChange(index, val)
+                              handleSwitch5(index, val)
                             }
                             selectionColor={'#007BFF'}
                             index={index} // Pass the index as a prop
@@ -10283,7 +13077,7 @@ const OrderCreation = ({navigation}) => {
                                 justifyContent: 'center',
                                 alignItems: 'center',
                               }}
-                              onPress={() => carDetailsClosePress(index)}>
+                              onPress={() => handleCamera5(index)}>
                               <Text style={{fontSize: 14, color: 'white'}}>
                                 Cancel
                               </Text>
@@ -10291,13 +13085,40 @@ const OrderCreation = ({navigation}) => {
                           </View>
                         )}
 
+                        
+       {(spareWheelSwitch.length === 0 ||
+                        spareWheelSwitch[index] === 2) && (
+                        <>
+
+                        <View style={{marginTop: 14}}>
+                          <View key={index} style={styles.sliderContainer}>
+                            <Text style={styles.percentageText}>
+                              {Math.round(spareWheel[0] * 100)}%
+                            </Text>
+                            <Slider
+                              style={styles.slider}
+                              minimumValue={0}
+                              maximumValue={1}
+                              value={spareWheel[0]}
+                              onValueChange={val =>
+                                handleValueChange4(val, index)
+                              }
+                              minimumTrackTintColor={getTrackColor(
+                                spareWheel[0],
+                              )}
+                              maximumTrackTintColor="#000000"
+                              thumbTintColor="#007BFF"
+                            />
+                          </View>
+                        </View>
+
                         <View style={{marginTop: 14}}>
                           <TextInput
                             style={styles.photoInput}
                             placeholder="Enter remarks"
                             value={spareWheelRemarks[index]}
                             onChangeText={text =>
-                              handleCarDetailsRemarks(text, index)
+                              handleRemarks5(text, index)
                             }
                           />
                         </View>
@@ -10317,11 +13138,13 @@ const OrderCreation = ({navigation}) => {
                           {!spareWheelPunchPhoto[index] && (
                             <TouchableOpacity
                               style={styles.photoInput}
-                              onPress={() => openCameraForCarDetails(index)}>
+                              onPress={() => openCamera5(index)}>
                               <Text>{item}</Text>
                             </TouchableOpacity>
                           )}
                         </View>
+                        </>
+                        )}
                       </View>
                     ))}
                 </View>
@@ -10339,12 +13162,12 @@ const OrderCreation = ({navigation}) => {
                             marginTop: 5,
                           }}>
                           <CustomSwitch
-                            selectionMode={item}
+                            selectionMode={toolKitSwitch[index]}
                             roundCorner={false}
-                            option1={'Available'}
-                            option2={'Not Available'}
+                            option1={'Not Available'}
+                            option2={'Available'}
                             onSelectSwitch={val =>
-                              handleCarDetailsChange(index, val)
+                              handleSwitch5(index, val)
                             }
                             selectionColor={'#007BFF'}
                             index={index} // Pass the index as a prop
@@ -10368,7 +13191,7 @@ const OrderCreation = ({navigation}) => {
                                 justifyContent: 'center',
                                 alignItems: 'center',
                               }}
-                              onPress={() => carDetailsClosePress(index)}>
+                              onPress={() => handleCamera5(index)}>
                               <Text style={{fontSize: 14, color: 'white'}}>
                                 Cancel
                               </Text>
@@ -10382,7 +13205,7 @@ const OrderCreation = ({navigation}) => {
                             placeholder="Enter remarks"
                             value={toolKitRemarks[index]}
                             onChangeText={text =>
-                              handleCarDetailsRemarks(text, index)
+                              handleRemarks5(text, index)
                             }
                           />
                         </View>
@@ -10391,7 +13214,7 @@ const OrderCreation = ({navigation}) => {
                             style={styles.photoInput}
                             selectedValue={toolKitCondition[index]}
                             onValueChange={itemValue =>
-                              handleCarDetailsDropDown(itemValue, index)
+                              handleDropDown5(itemValue, index)
                             }>
                             <Picker.Item label="Select Condition" value="" />
                             <Picker.Item label="Good" value="Good" />
@@ -10404,7 +13227,7 @@ const OrderCreation = ({navigation}) => {
                           {!toolKitPunchPhoto[index] && (
                             <TouchableOpacity
                               style={styles.photoInput}
-                              onPress={() => openCameraForCarDetails(index)}>
+                              onPress={() => openCamera5(index)}>
                               <Text>{item}</Text>
                             </TouchableOpacity>
                           )}
@@ -10413,34 +13236,16 @@ const OrderCreation = ({navigation}) => {
                     ))}
                 </View>
                 <View style={{paddingHorizontal: 0}}>
-                  {carDetailsIndex === 5 &&
-                    keyList.map((item, index) => (
+                  {carDetailsIndex === 2 &&
+                     trunkBootList.map((item, index) => (
                       <View key={index} style={styles.itemContainer}>
                         <Text>{item}</Text>
-
-                        <View
-                          style={{
-                            // marginLeft: 9,
-                            // marginRight: 9,
-                            // marginBottom: 20,
-                            marginTop: 5,
-                          }}>
-                          <CustomSwitch
-                            selectionMode={item}
-                            roundCorner={false}
-                            option1={'Available'}
-                            option2={'Not Available'}
-                            onSelectSwitch={val =>
-                              handleCarDetailsChange(index, val)
-                            }
-                            selectionColor={'#007BFF'}
-                            index={index} // Pass the index as a prop
-                          />
-                        </View>
-                        {keyPunchPhoto[index] && (
-                          <View style={{position: 'relative'}}>
+  
+                       
+                        {trunkBootPhoto[index] && (
+                          <View stylle={{position: 'relative'}}>
                             <Image
-                              source={{uri: keyPunchPhoto[index]}}
+                              source={{uri: trunkBootPhoto[index]}}
                               style={styles.uploadedImage}
                             />
                             <TouchableOpacity
@@ -10455,50 +13260,167 @@ const OrderCreation = ({navigation}) => {
                                 justifyContent: 'center',
                                 alignItems: 'center',
                               }}
-                              onPress={() => carDetailsClosePress(index)}>
+                              onPress={() => handleCamera5(index)}>
                               <Text style={{fontSize: 14, color: 'white'}}>
                                 Cancel
                               </Text>
                             </TouchableOpacity>
                           </View>
                         )}
-
-                        <View style={{marginTop: 14}}>
-                          <TextInput
-                            style={styles.photoInput}
-                            placeholder="Enter remarks"
-                            value={keyRemarks[index]}
-                            onChangeText={text =>
-                              handleCarDetailsRemarks(text, index)
-                            }
-                          />
-                        </View>
-                        <View style={{marginTop: 14}}>
-                          <Picker
-                            style={styles.photoInput}
-                            selectedValue={keyCondition[index]}
-                            onValueChange={itemValue =>
-                              handleCarDetailsDropDown(itemValue, index)
-                            }>
-                            <Picker.Item label="Select Condition" value="" />
-                            <Picker.Item label="Good" value="Good" />
-                            <Picker.Item label="Damaged" value="Damaged" />
-
-                            {/* Add other items as needed */}
-                          </Picker>
-                        </View>
-                        <View style={{marginTop: 14}}>
-                          {!keyPunchPhoto[index] && (
-                            <TouchableOpacity
-                              style={styles.photoInput}
-                              onPress={() => openCameraForCarDetails(index)}>
-                              <Text>{item}</Text>
-                            </TouchableOpacity>
-                          )}
-                        </View>
+  
+                       
+                           
+                          
+                            <View style={{marginTop: 14}}>
+                              {!trunkBootPhoto[index] && (
+                                <TouchableOpacity
+                                  style={styles.photoInput}
+                                  onPress={() => openCamera5(index)}>
+                                  <Text>{item}</Text>
+                                </TouchableOpacity>
+                              )}
+                            </View>
+  
+                            <View style={{marginTop: 14}}>
+                              <TextInput
+                                style={styles.photoInput}
+                                placeholder="Enter remarks"
+                                value={trunkBootRemarks[index]}
+                                onChangeText={text =>
+                                  handleRemarks5(text, index)
+                                }
+                              />
+                            </View>
+                        
                       </View>
                     ))}
                 </View>
+
+
+                <View style={{paddingHorizontal: 0}}>
+                  {carDetailsIndex === 5 &&
+                     roofList.map((item, index) => (
+                      <View key={index} style={styles.itemContainer}>
+                        <Text>{item}</Text>
+  
+                       
+                        {roofPhoto[index] && (
+                          <View stylle={{position: 'relative'}}>
+                            <Image
+                              source={{uri: roofPhoto[index]}}
+                              style={styles.uploadedImage}
+                            />
+                            <TouchableOpacity
+                              style={{
+                                position: 'absolute',
+                                top: 20,
+                                right: 0,
+                                backgroundColor: 'black',
+                                // borderRadius: 15,
+                                width: 60,
+                                height: 30,
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                              }}
+                              onPress={() => handleCamera5(index)}>
+                              <Text style={{fontSize: 14, color: 'white'}}>
+                                Cancel
+                              </Text>
+                            </TouchableOpacity>
+                          </View>
+                        )}
+  
+                       
+                           
+                          
+                            <View style={{marginTop: 14}}>
+                              {!roofPhoto[index] && (
+                                <TouchableOpacity
+                                  style={styles.photoInput}
+                                  onPress={() => openCamera5(index)}>
+                                  <Text>{item}</Text>
+                                </TouchableOpacity>
+                              )}
+                            </View>
+  
+                            <View style={{marginTop: 14}}>
+                              <TextInput
+                                style={styles.photoInput}
+                                placeholder="Enter remarks"
+                                value={roofRemarks[index]}
+                                onChangeText={text =>
+                                  handleRemarks5(text, index)
+                                }
+                              />
+                            </View>
+                        
+                      </View>
+                    ))}
+                </View>
+
+                <View style={{paddingHorizontal: 0}}>
+                  {carDetailsIndex === 6 &&
+                     underChassisList.map((item, index) => (
+                      <View key={index} style={styles.itemContainer}>
+                        <Text>{item}</Text>
+  
+                       
+                        {underChassisPhoto[index] && (
+                          <View stylle={{position: 'relative'}}>
+                            <Image
+                              source={{uri: underChassisPhoto[index]}}
+                              style={styles.uploadedImage}
+                            />
+                            <TouchableOpacity
+                              style={{
+                                position: 'absolute',
+                                top: 20,
+                                right: 0,
+                                backgroundColor: 'black',
+                                // borderRadius: 15,
+                                width: 60,
+                                height: 30,
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                              }}
+                              onPress={() => handleCamera5(index)}>
+                              <Text style={{fontSize: 14, color: 'white'}}>
+                                Cancel
+                              </Text>
+                            </TouchableOpacity>
+                          </View>
+                        )}
+  
+                       
+                           
+                          
+                            <View style={{marginTop: 14}}>
+                              {!underChassisPhoto[index] && (
+                                <TouchableOpacity
+                                  style={styles.photoInput}
+                                  onPress={() => openCamera5(index)}>
+                                  <Text>{item}</Text>
+                                </TouchableOpacity>
+                              )}
+                            </View>
+  
+                            <View style={{marginTop: 14}}>
+                              <TextInput
+                                style={styles.photoInput}
+                                placeholder="Enter remarks"
+                                value={underChassisRemarks[index]}
+                                onChangeText={text =>
+                                  handleRemarks5(text, index)
+                                }
+                              />
+                            </View>
+                        
+                      </View>
+                    ))}
+                </View>
+
+
+
                 <CustomButton
                   title="Submit"
                   onPress={handleCarDetailsOkPress}
@@ -10544,160 +13466,193 @@ const OrderCreation = ({navigation}) => {
               style={[styles.progressBar, {width: getProgressBarWidth()}]}
             />
           </View>
-          <Text style={styles.indicator}>{`${currentIndex + 1}/${role ==="Reinspector"?8:7}`}</Text>
+          <Text style={styles.indicator}>{`${currentIndex + 1}/${
+            role === 'Reinspector' ? 8 : 7
+          }`}</Text>
 
-          <ScrollView showsVerticalScrollIndicator={false}>
-            <View style={styles.wrapperContainer}>
-              <CustomTextInput
-                label="Make"
-                value={make}
-                editible={true}
-                onChangeText={value => setMake(value)}
-                placeholder="Enter your Make"
-              />
+          {refreshing ? (
+            <ActivityIndicator size="large" color="#0000ff" />
+          ) : (
+            <ScrollView showsVerticalScrollIndicator={false}>
+              <View style={styles.wrapperContainer}>
+                <CustomTextInput
+                  label="Make"
+                  value={make}
+                  editible={true}
+                  onChangeText={value => setMake(value)}
+                  placeholder="Enter your Make"
+                />
 
-              <CustomTextInput
-                label="Model"
-                value={model}
-                editible={false}
-                onChangeText={value => setModel(value)}
-                placeholder="Enter the Model"
-              />
+                <CustomTextInput
+                  label="Model"
+                  value={model}
+                  editible={false}
+                  onChangeText={value => setModel(value)}
+                  placeholder="Enter the Model"
+                />
 
-              <CustomTextInput
-                label="Owner Details"
-                value={ownerDetails}
-                editible={false}
-                onChangeText={value => setOwnerDetails(value)}
-                placeholder="Enter the Owner Details"
-              />
+                <CustomTextInput
+                  label="Owner Username"
+                  value={ownerDetails}
+                  editible={false}
+                  onChangeText={value => setOwnerDetails(value)}
+                  placeholder="Owner Username"
+                />
 
-              <CustomTextInput
-                label="Year of Manufacture"
-                value={year}
-                editible={false}
-                onChangeText={value => setModel(value)}
-                placeholder="Enter the Year of Manufacture"
-              />
-              <CustomTextInput
-                label="Variant"
-                value={variant}
-                editible={false}
-                onChangeText={value => setVariant(value)}
-                placeholder="Enter the Variant"
-              />
-              <CustomTextInput
-                label="Mileage"
-                keyboardType="numeric"
-                value={mileage}
-                onChangeText={value => setMileage(value)}
-                placeholder="Enter the Mileage"
-              />
-              <CustomTextInput
-                label="Color"
-                editible={false}
-                value={color}
-                onChangeText={value => setColor(value)}
-                placeholder="Enter the Color"
-              />
-              <SingleSwitch
-                selectionMode={selectedOption}
-                roundCorner={true}
-                options={['Automatic', 'Manual']}
-                onSelectSwitch={handleSwitchSelection}
-                selectionColor="#007BFF"
-                label="Transmission"
-              />
+                <CustomTextInput
+                  label="Owner Address"
+                  value={ownerAddress}
+                  editible={false}
+                  onChangeText={value => setOwnerAddress(value)}
+                  placeholder="Owner Address"
+                />
 
-              <SingleSwitch
-                selectionMode={selectedOption1}
-                roundCorner={true}
-                options={['Diesel', 'Petrol', 'EV', 'CNG', 'LPG']}
-                onSelectSwitch={handleSwitchSelection1}
-                selectionColor="#007BFF"
-                label="Fuel Type"
-              />
-              <SingleSwitch
-                selectionMode={selectedOption2}
-                roundCorner={true}
-                options={['CNG', 'LPG', 'COLOUR']}
-                onSelectSwitch={handleSwitchSelection2}
-                selectionColor="#007BFF"
-                label="Alteration"
-              />
-              <CustomTextInput
-                label="Number of Owners"
-                value={owners}
-                editible={false}
-                onChangeText={value => setOwners(value)}
-                placeholder="Enter the Number of Owners"
-              />
+                {/* ownerAddress */}
 
-              <SingleSwitch
-                selectionMode={selectedOption3}
-                roundCorner={true}
-                options={['Yes', 'No']}
-                onSelectSwitch={handleSwitchSelection3}
-                selectionColor="#007BFF"
-                label="Has Hypothecated"
-              />
+                <CustomTextInput
+                  label="Year of Manufacture"
+                  value={year}
+                  editible={false}
+                  onChangeText={value => setModel(value)}
+                  placeholder="Enter the Year of Manufacture"
+                />
+                <CustomTextInput
+                  label="Variant"
+                  value={variant}
+                  editible={false}
+                  onChangeText={value => setVariant(value)}
+                  placeholder="Enter the Variant"
+                />
+                <CustomTextInput
+                  label="Mileage"
+                  keyboardType="numeric"
+                  value={mileage}
+                  onChangeText={value => setMileage(value)}
+                  placeholder="Enter the Mileage"
+                />
+                <CustomTextInput
+                  label="Color"
+                  editible={false}
+                  value={color}
+                  onChangeText={value => setColor(value)}
+                  placeholder="Enter the Color"
+                />
+                <SingleSwitch
+                  selectionMode={selectedOption}
+                  roundCorner={true}
+                  options={['Automatic', 'Manual']}
+                  onSelectSwitch={handleSwitchSelection}
+                  selectionColor="#007BFF"
+                  label="Transmission"
+                />
 
-              <CustomTextInput
-                label="Hypothicated by"
-                editible={false}
-                value={hypothecatedBy}
-                onChangeText={value => setHypothecatedBy(value)}
-                placeholder="Enter the Hypothicated by"
-              />
+                <SingleSwitch
+                  selectionMode={selectedOption1}
+                  roundCorner={true}
+                  options={['Diesel', 'Petrol', 'EV', 'CNG', 'LPG']}
+                  onSelectSwitch={handleSwitchSelection1}
+                  selectionColor="#007BFF"
+                  label="Fuel Type"
+                />
+                <SingleSwitch
+                  selectionMode={selectedOption2}
+                  roundCorner={true}
+                  options={['Yes', 'No']}
+                  onSelectSwitch={handleSwitchSelection2Boolean}
+                  selectionColor="#007BFF"
+                  label="Alteration"
+                />
+                {showAlterationOptions && (
+                  <SingleSwitch
+                    selectionMode={selectedOption2}
+                    roundCorner={true}
+                    options={['CNG', 'LPG', 'COLOUR']}
+                    onSelectSwitch={handleSwitchSelection2}
+                    selectionColor="#007BFF"
+                    label="Choose Alteration"
+                  />
+                )}
+                <CustomTextInput
+                  label="Number of Owners"
+                  value={owners}
+                  editible={false}
+                  onChangeText={value => setOwners(value)}
+                  placeholder="Enter the Number of Owners"
+                />
 
-              <SingleSwitch
-                selectionMode={selectedOption4}
-                roundCorner={true}
-                options={['Yes', 'No']}
-                onSelectSwitch={handleSwitchSelection4}
-                selectionColor="#007BFF"
-                label="NOC"
-              />
+                <SingleSwitch
+                  selectionMode={selectedOption3}
+                  roundCorner={true}
+                  options={['Yes', 'No']}
+                  onSelectSwitch={handleSwitchSelection3}
+                  selectionColor="#007BFF"
+                  label="Has Hypothecated"
+                />
 
-              <CustomTextInput
+                <CustomTextInput
+                  label="Hypothicated by"
+                  editible={false}
+                  value={hypothecatedBy}
+                  onChangeText={value => setHypothecatedBy(value)}
+                  placeholder="Enter the Hypothicated by"
+                />
+
+                <SingleSwitch
+                  selectionMode={selectedOption4}
+                  roundCorner={true}
+                  options={['Yes', 'No']}
+                  onSelectSwitch={handleSwitchSelection4}
+                  selectionColor="#007BFF"
+                  label="NOC"
+                />
+
+                {/* <CustomTextInput
                 label="Road tax is valid"
                 value={roadTaxValid}
                 onChangeText={value => setRoadTaxValid(value)}
                 placeholder="Enter the Road tax is valid"
-              />
+              /> */}
 
-              <SingleSwitch
-                selectionMode={selectedOption5}
-                roundCorner={true}
-                options={['Yes', 'No']}
-                onSelectSwitch={handleSwitchSelection5}
-                selectionColor="#007BFF"
-                label="Re-Registered"
-              />
-
-              <CustomTextInput
-                label="Cubic Capacity"
-                value={cubicapacity}
-                editible={false}
-                onChangeText={value => setCubicCapacity(value)}
-                placeholder="Enter the Cubic Capacity"
-              />
-
-              <View style={{bottom: 25, marginTop: 20}}>
-                <CustomButton
-                  title="Next"
-                  loading={loading}
-                  onPress={() => {
-                    if (id) {
-                      handleNext(1);
-                    } else {
-                      handleNext(1);
-                    }
-                  }}
+                <CustomTextInputWithDatePicker
+                  label="Road tax is valid"
+                  value={roadTaxValid}
+                  onChangeText={setRoadTaxValid}
+                  placeholder="Enter the Road tax validity date"
                 />
+
+                <SingleSwitch
+                  selectionMode={selectedOption5}
+                  roundCorner={true}
+                  options={['Yes', 'No']}
+                  onSelectSwitch={handleSwitchSelection5}
+                  selectionColor="#007BFF"
+                  label="Re-Registered"
+                />
+
+                <CustomTextInput
+                  label="Cubic Capacity"
+                  value={cubicapacity}
+                  editible={false}
+                  onChangeText={value => setCubicCapacity(value)}
+                  placeholder="Enter the Cubic Capacity"
+                />
+
+                <View style={{bottom: 25, marginTop: 20}}>
+                  <CustomButton
+                    title="Next"
+                    loading={loading}
+                    onPress={() => {
+                      if (id) {
+                        handleNext(1);
+                      } else {
+                        handleNext(1);
+                      }
+                    }}
+                  />
+                </View>
               </View>
-            </View>
-          </ScrollView>
+            </ScrollView>
+          )}
         </View>
 
         <View style={styles.slide}>
@@ -10709,7 +13664,9 @@ const OrderCreation = ({navigation}) => {
               style={[styles.progressBar, {width: getProgressBarWidth()}]}
             />
           </View>
-          <Text style={styles.indicator}>{`${currentIndex + 1}/${role ==="Reinspector"?8:7}`}</Text>
+          <Text style={styles.indicator}>{`${currentIndex + 1}/${
+            role === 'Reinspector' ? 8 : 7
+          }`}</Text>
 
           <ScrollView showsVerticalScrollIndicator={false}>
             <View style={styles.wrapperContainer}>
@@ -10881,7 +13838,9 @@ const OrderCreation = ({navigation}) => {
               style={[styles.progressBar, {width: getProgressBarWidth()}]}
             />
           </View>
-          <Text style={styles.indicator}>{`${currentIndex + 1}/${role ==="Reinspector"?8:7}`}</Text>
+          <Text style={styles.indicator}>{`${currentIndex + 1}/${
+            role === 'Reinspector' ? 8 : 7
+          }`}</Text>
 
           <ScrollView showsVerticalScrollIndicator={false}>
             <View style={styles.wrapperContainer}>
@@ -10929,7 +13888,9 @@ const OrderCreation = ({navigation}) => {
               style={[styles.progressBar, {width: getProgressBarWidth()}]}
             />
           </View>
-          <Text style={styles.indicator}>{`${currentIndex + 1}/${role ==="Reinspector"?8:7}`}</Text>
+          <Text style={styles.indicator}>{`${currentIndex + 1}/${
+            role === 'Reinspector' ? 8 : 7
+          }`}</Text>
 
           <ScrollView showsVerticalScrollIndicator={false}>
             <View style={styles.wrapperContainer}>
@@ -10953,7 +13914,7 @@ const OrderCreation = ({navigation}) => {
                 </View>
               ))}
 
-              <View style={{bottom: 25, marginTop: 25}}>
+              <View style={{bottom: 25, marginTop: 410}}>
                 <CustomButton
                   title="Next"
                   loading={loading}
@@ -10978,7 +13939,9 @@ const OrderCreation = ({navigation}) => {
               style={[styles.progressBar, {width: getProgressBarWidth()}]}
             />
           </View>
-          <Text style={styles.indicator}>{`${currentIndex + 1}/${role ==="Reinspector"?8:7}`}</Text>
+          <Text style={styles.indicator}>{`${currentIndex + 1}/${
+            role === 'Reinspector' ? 8 : 7
+          }`}</Text>
 
           <ScrollView showsVerticalScrollIndicator={false}>
             <View style={styles.wrapperContainer}>
@@ -11025,7 +13988,9 @@ const OrderCreation = ({navigation}) => {
               style={[styles.progressBar, {width: getProgressBarWidth()}]}
             />
           </View>
-          <Text style={styles.indicator}>{`${currentIndex + 1}/${role ==="Reinspector"?8:7}`}</Text>
+          <Text style={styles.indicator}>{`${currentIndex + 1}/${
+            role === 'Reinspector' ? 8 : 7
+          }`}</Text>
 
           <ScrollView showsVerticalScrollIndicator={false}>
             <View style={styles.wrapperContainer}>
@@ -11072,7 +14037,9 @@ const OrderCreation = ({navigation}) => {
               style={[styles.progressBar, {width: getProgressBarWidth()}]}
             />
           </View>
-          <Text style={styles.indicator}>{`${currentIndex + 1}/${role ==="Reinspector"?8:7}`}</Text>
+          <Text style={styles.indicator}>{`${currentIndex + 1}/${
+            role === 'Reinspector' ? 8 : 7
+          }`}</Text>
 
           <ScrollView showsVerticalScrollIndicator={false}>
             <View style={styles.wrapperContainer}>
@@ -11096,7 +14063,7 @@ const OrderCreation = ({navigation}) => {
 
               <View style={{bottom: 25, marginTop: 20}}>
                 <CustomButton
-   title={role=="Reinspector" ?"Next":"Save"}
+                  title={role == 'Reinspector' ? 'Next' : 'Save'}
                   loading={loading}
                   onPress={() => {
                     if (id) {
@@ -11106,58 +14073,60 @@ const OrderCreation = ({navigation}) => {
                     }
                   }}
                 />
-              
               </View>
             </View>
           </ScrollView>
         </View>
 
-
-        {role ==="Reinspector" && (
-  <View style={styles.slide}>
-  <Text style={{color: 'black', fontSize: 22, fontWeight: 'bold'}}>
-   Car Photos
-  </Text>
-  <View style={styles.progressBarContainer}>
-    <View
-      style={[styles.progressBar, {width: getProgressBarWidth()}]}
-    />
-  </View>
-  <Text style={styles.indicator}>{`${currentIndex + 1}/${role ==="Reinspector"?8:7}`}</Text>
-
-  <ScrollView showsVerticalScrollIndicator={false}>
-    <View style={styles.wrapperContainer}>
-      {reinspectorList.map((title, index) => (
-        <View key={index} style={styles.photoContainer}>
-          <Text style={styles.label}>{title}</Text>
-          <TouchableOpacity
-            style={styles.photoInput}
-            onPress={() => handleCarPhotosForLastPage(index)}>
-            <View style={styles.touchableContent}>
-              <Text style={styles.touchableText}>
-                {reinspectorValidation[index] ? 'Update / View' : 'Upload'}
-              </Text>
-              <Text style={styles.icon}>
-                {reinspectorValidation[index] ? '✅' : '☒'}
-              </Text>
+        {role === 'Reinspector' && (
+          <View style={styles.slide}>
+            <Text style={{color: 'black', fontSize: 22, fontWeight: 'bold'}}>
+              Car Photos
+            </Text>
+            <View style={styles.progressBarContainer}>
+              <View
+                style={[styles.progressBar, {width: getProgressBarWidth()}]}
+              />
             </View>
-          </TouchableOpacity>
-        </View>
-      ))}
+            <Text style={styles.indicator}>{`${currentIndex + 1}/${
+              role === 'Reinspector' ? 8 : 7
+            }`}</Text>
 
-      <View style={{bottom: 25, marginTop: 20}}>
-        <CustomButton
-          title="Submit"
-          loading={loading}
-          onPress={() => {
-            if (id) {
-              handleNext(8);
-            } else {
-              handleNext(8);
-            }
-          }}
-        />
-        {/* <CustomSubmitButton
+            <ScrollView showsVerticalScrollIndicator={false}>
+              <View style={styles.wrapperContainer}>
+                {reinspectorList.map((title, index) => (
+                  <View key={index} style={styles.photoContainer}>
+                    <Text style={styles.label}>{title}</Text>
+                    <TouchableOpacity
+                      style={styles.photoInput}
+                      onPress={() => handleCarPhotosForLastPage(index)}>
+                      <View style={styles.touchableContent}>
+                        <Text style={styles.touchableText}>
+                          {reinspectorValidation[index]
+                            ? 'Update / View'
+                            : 'Upload'}
+                        </Text>
+                        <Text style={styles.icon}>
+                          {reinspectorValidation[index] ? '✅' : '☒'}
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+                  </View>
+                ))}
+
+                <View style={{bottom: 25, marginTop: 20}}>
+                  <CustomButton
+                    title="Submit"
+                    loading={loading}
+                    onPress={() => {
+                      if (id) {
+                        handleNext(8);
+                      } else {
+                        handleNext(8);
+                      }
+                    }}
+                  />
+                  {/* <CustomSubmitButton
           title="Submit"
           refreshing={refreshing}
           onPress={() => {
@@ -11168,13 +14137,11 @@ const OrderCreation = ({navigation}) => {
             }
           }}
         /> */}
-      </View>
-    </View>
-  </ScrollView>
-</View>
+                </View>
+              </View>
+            </ScrollView>
+          </View>
         )}
-
-      
       </Swiper>
     </>
   );
@@ -11257,7 +14224,7 @@ const styles = StyleSheet.create({
     padding: 5,
   },
   sliderContainer: {
-    width: '80%',
+    width: '100%',
     alignItems: 'center',
     marginVertical: 10,
   },

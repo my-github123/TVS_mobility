@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import Login from '../screen/auth/Login';
 
 const CustomSwitch = ({
   selectionMode,
@@ -17,6 +18,8 @@ const CustomSwitch = ({
   }, [selectionMode]);
 
   const updatedSwitchData = val => {
+
+    console.log(val,"VALUE  IS THERE.............");
     setSelectionMode(val);
     onSelectSwitch(val);
   };
@@ -31,7 +34,7 @@ const CustomSwitch = ({
           style={[
             styles.option,
             {
-              backgroundColor: getSelectionMode === 1 ? selectionColor : 'white',
+              backgroundColor: getSelectionMode ===1 ? selectionColor : 'white',
               borderTopLeftRadius: roundCorner ? 25 : 0,
               borderBottomLeftRadius: roundCorner ? 25 : 0,
             }

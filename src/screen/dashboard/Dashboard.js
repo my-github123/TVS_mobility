@@ -4,6 +4,8 @@ import {
   View,
   StyleSheet,
   Image,
+  DatePickerAndroid,
+  PermissionsAndroid,
   TextInput,
   RefreshControl,
   ActivityIndicator,
@@ -41,6 +43,8 @@ const Dashboard = ({navigation}) => {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [userName, setUsername] = useState('');
+  const [fromDate, setFromDate] = useState(null);
+  const [toDate, setToDate] = useState(null);
 
   console.log(orderListCount,"ORDER list ciue  rnw");
 
@@ -66,6 +70,36 @@ const Dashboard = ({navigation}) => {
     getData();
     
   }, []);
+
+
+  async function requestCameraPermission() {
+    console.log("iiiiiiiiii");
+    try {
+        const granted = await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.CAMERA,
+            {
+                title: 'Camera Permission',
+                message: 'App needs access to your camera',
+                buttonNeutral: 'Ask Me Later',
+                buttonNegative: 'Cancel',
+                buttonPositive: 'OK',
+            }
+        );
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+            console.log('Camera permission granted');
+        } else {
+            console.log('Camera permission denied');
+        }
+    } catch (err) {
+        console.warn(err);
+    }
+}
+
+
+useEffect(() => {
+  requestCameraPermission();
+}, []);
+
 
   useEffect(() => {
     const backAction = () => {
@@ -103,6 +137,55 @@ const Dashboard = ({navigation}) => {
       console.error('GET error:', error);
     }
     
+  };
+
+  const handleFromDateSelect = async () => {
+    try {
+      const { action, year, month, day } = await DatePickerAndroid.open({
+        date: new Date(),
+      });
+      if (action !== DatePickerAndroid.dismissedAction) {
+        const selectedDate = new Date(year, month, day);
+        setFromDate(selectedDate);
+        if (toDate) {
+          getAllOrders(selectedDate, toDate);
+        }
+      }
+    } catch ({ code, message }) {
+      console.warn('Cannot open date picker', message);
+    }
+  };
+
+  const handleToDateSelect = async () => {
+    try {
+      const { action, year, month, day } = await DatePickerAndroid.open({
+        date: new Date(),
+      });
+      if (action !== DatePickerAndroid.dismissedAction) {
+        const selectedDate = new Date(year, month, day);
+        setToDate(selectedDate);
+        if (fromDate) {
+          getAllOrders(fromDate, selectedDate);
+        }
+      }
+    } catch ({ code, message }) {
+      console.warn('Cannot open date picker', message);
+    }
+  };
+
+  const getAllOrders = async (fromDate, toDate) => {
+    const fromDateStr = `${fromDate.getDate()}/${fromDate.getMonth() + 1}/${fromDate.getFullYear()}`;
+    const toDateStr = `${toDate.getDate()}/${toDate.getMonth() + 1}/${toDate.getFullYear()}`;
+    const apiUrl = `https://tvscertified.in:8083/getAllOrders/?fromdate="${fromDateStr}"&toDate="${toDateStr}"`;
+
+    try {
+      const response = await apiGetWithToken(`getAllOrders/?fromdate="${fromDateStr}"&toDate="${toDateStr}"`);
+     // const data = await response.json();
+     
+      setFilteredData(response.data.data)
+    } catch (error) {
+      console.error('Error fetching orders:', error);
+    }
   };
 
 
@@ -348,7 +431,15 @@ const Dashboard = ({navigation}) => {
         <CustomBox color="#6ecb96" number={orderListCount?.orderCreatedCount}  text="Inspection - Initiated" />
         <CustomBox color="#4375fa" number={orderListCount?.orderCompletedCount}  text="Inspection - Completed" />
       </ScrollView>
+      {/* <View style={{flexDirection:"row"}}> */}
       <Text style={styles.wrappertext2}>My Orders</Text>
+      {/* <TouchableOpacity style={styles.dateContainer} onPress={handleFromDateSelect}>
+        <Text>{fromDate ? fromDate.toLocaleDateString() : 'Select From Date'}</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.dateContainer} onPress={handleToDateSelect}>
+        <Text>{toDate ? toDate.toLocaleDateString() : 'Select To Date'}</Text>
+      </TouchableOpacity> */}
+      {/* </View> */}
       <TextInput
         style={styles.searchInput}
         placeholder="Search..."
@@ -589,6 +680,14 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#666',
     marginTop:4
+  },
+  dateContainer: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    padding: 10,
+    marginVertical: 10,
+    width: '80%',
+    alignItems: 'center',
   },
   // name: {
   //   color: 'black',

@@ -99,6 +99,12 @@ export default function DealerList({navigation}) {
 
         // Extract the values
 
+        const ownerDetails = {
+          userName: data.data.user_name,
+          userPresentAddress: data.data.user_present_address
+      };
+      
+
         const vehicleMakeModel = data.data.vehicle_make_model;
         const vehicleMakerDescription = data.data.vehicle_maker_description;
         const vehicleManufacturedDate = data.data.vehicle_manufactured_date;
@@ -115,6 +121,9 @@ export default function DealerList({navigation}) {
         const fuelType = data.data.vehicle_fuel_description;
         const vehicleFinanced = data.data.vehicle_financed;
         const blacklist = data.data.rc_blacklist_status;
+        const userName = ownerDetails.userName;
+        const userPresentAddress = ownerDetails.userPresentAddress;
+        
 
    
 
@@ -167,7 +176,9 @@ export default function DealerList({navigation}) {
             fuelType,
             vehicleFinanced,
             blacklist,
-            orderId:dataResponse.data.id
+            orderId:dataResponse.data.id,
+            userName,
+            userPresentAddress
           });
   
         
@@ -230,14 +241,14 @@ export default function DealerList({navigation}) {
             {item.dealerLocation == null ? '-' : item.dealerLocation}
           </Text>
         </View>
-        <TouchableOpacity
+        {/* <TouchableOpacity
           style={styles.phoneIconContainer}
           onPress={() => handleCall(item.dealerPhoneNumber)}>
           <Image
             source={require('../../../assets/images/phone.png')}
             style={styles.phoneIcon}
           />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
     </TouchableOpacity>
   );

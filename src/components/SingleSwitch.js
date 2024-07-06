@@ -11,11 +11,14 @@ const SingleSwitch = ({
 }) => {
   const [getSelectionMode, setSelectionMode] = useState(selectionMode);
 
+  console.log(options,"OPTION SI HERE........");
+
   useEffect(() => {
     setSelectionMode(selectionMode);
   }, [selectionMode]);
 
   const updatedSwitchData = val => {
+    console.log(val,"VALUE IS THERE.............");
     setSelectionMode(val);
     onSelectSwitch(val);
   };
