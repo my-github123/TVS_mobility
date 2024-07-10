@@ -5960,15 +5960,15 @@ const OrderCreation = ({navigation}) => {
       case 0:
         for (let i = 0; i < suspensionSwitch.length; i++) {
           console.log(suspensionSwitch[i], 'jjjjjj');
+          // Check if the value is not "Rahim" and if the switch value is 2 or not set
           if (
             (suspensionSwitch[i] === 2 || !suspensionSwitch[i]) &&
-            (!suspensionPhoto[i] || !suspensionDropdown[i])
+            (suspensionDropdown[i] !== "Not Available" && (!suspensionPhoto[i] || !suspensionDropdown[i]))
           ) {
             return false;
           }
         }
         return true;
-        break;
 
       case 1:
         for (let i = 0; i < steeringSwitch.length; i++) {
@@ -5999,42 +5999,42 @@ const OrderCreation = ({navigation}) => {
       case 3:
         for (let i = 0; i < transmissionSwitch.length; i++) {
           console.log(transmissionSwitch[i], 'jjjjjj');
+          // Check if the value is not "Rahim" and if the switch value is 2 or not set
           if (
             (transmissionSwitch[i] === 2 || !transmissionSwitch[i]) &&
-            (!transmissionPhoto[i] || !transmissionDropdown[i])
+            (transmissionDropdown[i] !== "Not Available" && (!transmissionPhoto[i] || !transmissionDropdown[i]))
           ) {
             return false;
           }
         }
         return true;
-        break;
-
+        
+      
       case 4:
         for (let i = 0; i < engineSwitch.length; i++) {
           console.log(engineSwitch[i], 'jjjjjj');
+          // Check if the value is not "Rahim" and if the switch value is 2 or not set
           if (
             (engineSwitch[i] === 2 || !engineSwitch[i]) &&
-            (!enginePhoto[i] || !engineDropdown[i])
+            (engineDropdown[i] !== "Not Available" && (!enginePhoto[i] || !engineDropdown[i]))
           ) {
             return false;
           }
         }
         return true;
-        break;
 
       case 5:
         for (let i = 0; i < electricalSwitch.length; i++) {
           console.log(electricalSwitch[i], 'jjjjjj');
+          // Check if the value is not "Rahim" and if the switch value is 2 or not set
           if (
             (electricalSwitch[i] === 2 || !electricalSwitch[i]) &&
-            (!electricalPhoto[i] || !electricalDropdown[i])
+            (electricalDropdown[i] !== "Not Available" && (!electricalPhoto[i] || !electricalDropdown[i]))
           ) {
             return false;
           }
         }
-
         return true;
-        break;
 
       case 6:
         for (let i = 0; i < acSwitch.length; i++) {
@@ -6051,15 +6051,16 @@ const OrderCreation = ({navigation}) => {
 
       case 7:
         for (let i = 0; i < accessoriesSwitch.length; i++) {
+          console.log(accessoriesSwitch[i], 'jjjjjj');
+          // Check if the value is not "Rahim" and if the switch value is 2 or not set
           if (
-            (accessoriesSwitch[i] === 2 || accessoriesSwitch[i] === '') &&
-            (!accessoriesPhoto[i] || !accessoriesDropdown[i])
+            (accessoriesSwitch[i] === 2 || !accessoriesSwitch[i]) &&
+            (accessoriesDropdown[i] !== "Not Available" && (!accessoriesPhoto[i] || !accessoriesDropdown[i]))
           ) {
             return false;
           }
         }
         return true;
-        break;
 
       case 8:
         for (let i = 0; i < oliSwitch.length; i++) {
@@ -6098,7 +6099,7 @@ const OrderCreation = ({navigation}) => {
         for (let i = 0; i < bonetSwitch.length; i++) {
           console.log(bonetSwitch[i], 'jjjjjj');
           if (
-            (bonetSwitch[i] === 2 || !pillarSwitch[i]) &&
+            (bonetSwitch[i] === 2 || !bonetSwitch[i]) &&
             (!bonetPhoto[i] || !bonetCondition[i])
           ) {
             return false;
@@ -6256,7 +6257,7 @@ const OrderCreation = ({navigation}) => {
         for (let i = 0; i < wheelTypeSwitch.length; i++) {
           if (
             (wheelTypeSwitch[i] === 2 || !wheelTypeSwitch[i]) &&
-            (!wheelTypePhoto[i] || !wheelTypeCondition[i])
+            (!wheelTypePhoto[i] || wheelTypeCondition[i])
           ) {
             return false;
           }
@@ -6333,7 +6334,7 @@ const OrderCreation = ({navigation}) => {
         for (let i = 0; i < spareWheelSwitch.length; i++) {
           if (
             (spareWheelSwitch[i] === 2 || !spareWheelSwitch[i]) &&
-            (!spareWheelPunchPhoto[i] || !spareWheelCondition[i])
+            (!spareWheelPunchPhoto[i] || spareWheel[i] == 0.0)
           ) {
             return false;
           }
@@ -6402,12 +6403,14 @@ const OrderCreation = ({navigation}) => {
   const validateCarDetails4 = () => {
     switch (selectedContainerIndex1) {
       case 0:
+        for (let i = 0; i < frontViewPhoto.length; i++) {
         if (
         
           (!frontViewPhoto[i])
         ) {
           return false;
         }
+      }
       
       return true;
       break;
@@ -8694,7 +8697,7 @@ const handleCamera5=(index)=>{
         visible={modalVisible}
         animationType="slide"
         transparent={true}
-        onRequestClose={() => setModalVisible(false)}>
+        onRequestClose={() => handleOkPress()}>
         <View style={styles.modalOverlay}>
           <View style={styles.modalContainer}>
             <TouchableOpacity onPress={() => handleOkPress()}>
@@ -8887,7 +8890,7 @@ const handleCamera5=(index)=>{
         visible={modalVisible1}
         animationType="slide"
         transparent={true}
-        onRequestClose={() => setModalVisible1(false)}>
+        onRequestClose={() => handleOkPressCarPhotos()}>
         <View style={styles.modalOverlay}>
           <View style={styles.modalContainer}>
             <TouchableOpacity onPress={() => handleOkPressCarPhotos()}>
@@ -8985,7 +8988,7 @@ const handleCamera5=(index)=>{
                      
                          
                         
-                          <View style={{marginTop: 14}}>
+                          <View style={{marginTop:0}}>
                             {!frontViewPhoto[index] && (
                               <TouchableOpacity
                                 style={styles.photoInput}
@@ -9046,7 +9049,7 @@ const handleCamera5=(index)=>{
                      
                         
                         
-                          <View style={{marginTop: 14}}>
+                          <View style={{marginTop:0}}>
                             {!engineRoomPhoto[index] && (
                               <TouchableOpacity
                                 style={styles.photoInput}
@@ -9292,7 +9295,7 @@ const handleCamera5=(index)=>{
 
                      
                         
-                          <View style={{marginTop: 14}}>
+                          <View style={{marginTop:0}}>
                             {!rhsViewPhoto[index] && (
                               <TouchableOpacity
                                 style={styles.photoInput}
@@ -9445,7 +9448,7 @@ const handleCamera5=(index)=>{
                      
                          
                         
-                          <View style={{marginTop: 14}}>
+                          <View style={{marginTop: 0}}>
                             {!odometerPhoto[index] && (
                               <TouchableOpacity
                                 style={styles.photoInput}
@@ -9506,7 +9509,7 @@ const handleCamera5=(index)=>{
                      
                          
                         
-                          <View style={{marginTop: 14}}>
+                          <View style={{marginTop:0}}>
                             {!interiorPhoto[index] && (
                               <TouchableOpacity
                                 style={styles.photoInput}
@@ -9546,7 +9549,7 @@ const handleCamera5=(index)=>{
         visible={reinspectorPage}
         animationType="slide"
         transparent={true}
-        onRequestClose={() => setReinspectorPage(false)}>
+        onRequestClose={() => handleOkReinspector()}>
         <View style={styles.modalOverlay}>
           <View style={styles.modalContainer}>
             <TouchableOpacity onPress={() => handleOkReinspector()}>
@@ -9627,7 +9630,7 @@ const handleCamera5=(index)=>{
         visible={inspectionVisible}
         animationType="slide"
         transparent={true}
-        onRequestClose={() => setInspectionVisible(false)}>
+        onRequestClose={() => handleInspectionOkPress()}>
         <View style={styles.modalOverlay}>
           <View style={styles.modalContainer}>
             <TouchableOpacity onPress={() => handleInspectionOkPress()}>
@@ -9662,7 +9665,10 @@ const handleCamera5=(index)=>{
                           index={index} // Pass the index as a prop
                         />
                       </View>
-                      {suspensionPhoto[index] && (
+                      {(suspensionSwitch.length === 0 || 
+  suspensionSwitch[index] === 2) && 
+  suspensionDropdown[index] !== 'Not Available' && 
+  suspensionPhoto[index] && (
                         <View stylle={{position: 'relative'}}>
                           <Image
                             source={{uri: suspensionPhoto[index]}}
@@ -9687,10 +9693,12 @@ const handleCamera5=(index)=>{
                           </TouchableOpacity>
                         </View>
                       )}
+                 
 
                       {(suspensionSwitch.length === 0 ||
                         suspensionSwitch[index] === 2) && (
                         <>
+                          {suspensionDropdown[index] !== 'Not Available' && (
                           <View style={{marginTop: 14}}>
                             <TextInput
                               style={styles.photoInput}
@@ -9701,6 +9709,7 @@ const handleCamera5=(index)=>{
                               }
                             />
                           </View>
+                          )}
                           <View style={{marginTop: 14}}>
                             <Picker
                               style={styles.photoInput}
@@ -9810,6 +9819,8 @@ const handleCamera5=(index)=>{
                               {/* Add other items as needed */}
                             </Picker>
                           </View>
+
+                          {suspensionDropdown[index] !== 'Not Available' && (
                           <View style={{marginTop: 14}}>
                             {!suspensionPhoto[index] && (
                               <TouchableOpacity
@@ -9819,6 +9830,7 @@ const handleCamera5=(index)=>{
                               </TouchableOpacity>
                             )}
                           </View>
+                          )}
                         </>
                       )}
                     </View>
@@ -9850,6 +9862,9 @@ const handleCamera5=(index)=>{
                           index={index} // Pass the index as a prop
                         />
                       </View>
+                      {(steeringSwitch.length === 0 ||
+                        steeringSwitch[index] === 2) && (
+                          <>
                       {steeringPhoto[index] && (
                         <View style={{position: 'relative'}}>
                           <Image
@@ -9875,6 +9890,8 @@ const handleCamera5=(index)=>{
                           </TouchableOpacity>
                         </View>
                       )}
+                      </>
+                        )}
 
                       {(steeringSwitch.length === 0 ||
                         steeringSwitch[index] === 2) && (
@@ -9981,7 +9998,10 @@ const handleCamera5=(index)=>{
                           index={index} // Pass the index as a prop
                         />
                       </View>
-                      {brakePhoto[index] && (
+                      {(brakeSwitch.length === 0 || 
+  brakeSwitch[index] === 2) && 
+  brakeDropdown[index] !== 'Not Available' && 
+  brakePhoto[index] && (
                         <View style={{position: 'relative'}}>
                           <Image
                             source={{uri: brakePhoto[index]}}
@@ -10007,9 +10027,12 @@ const handleCamera5=(index)=>{
                           </TouchableOpacity>
                         </View>
                       )}
+                      
+                  
                       {(brakeSwitch.length === 0 ||
                         brakeSwitch[index] === 2) && (
                         <>
+                         {brakeDropdown[index] !== 'Not Available' && (
                           <View style={{marginTop: 14}}>
                             <TextInput
                               style={styles.photoInput}
@@ -10020,6 +10043,7 @@ const handleCamera5=(index)=>{
                               }
                             />
                           </View>
+                            )}
                           <View style={{marginTop: 14}}>
                             <Picker
                               style={styles.photoInput}
@@ -10112,6 +10136,7 @@ const handleCamera5=(index)=>{
                               {/* Add other items as needed */}
                             </Picker>
                           </View>
+                          {brakeDropdown[index] !== 'Not Available' && (
                           <View style={{marginTop: 14}}>
                             {!brakePhoto[index] && (
                               <TouchableOpacity
@@ -10121,6 +10146,7 @@ const handleCamera5=(index)=>{
                               </TouchableOpacity>
                             )}
                           </View>
+                          )}
                         </>
                       )}
                     </View>
@@ -10135,9 +10161,6 @@ const handleCamera5=(index)=>{
 
                       <View
                         style={{
-                          // marginLeft: 9,
-                          // marginRight: 9,
-                          // marginBottom: 20,
                           marginTop: 5,
                         }}>
                         <CustomSwitch
@@ -10152,199 +10175,213 @@ const handleCamera5=(index)=>{
                           index={index} // Pass the index as a prop
                         />
                       </View>
-                      {transmissionPhoto[index] && (
-                        <View style={{position: 'relative'}}>
-                          <Image
-                            source={{uri: transmissionPhoto[index]}}
-                            style={styles.uploadedImage}
-                          />
-                          <TouchableOpacity
-                            style={{
-                              position: 'absolute',
-                              top: 20,
-                              right: 0,
-                              backgroundColor: 'black',
-                              // borderRadius: 15,
-                              width: 60,
-                              height: 30,
-                              justifyContent: 'center',
-                              alignItems: 'center',
-                            }}
-                            onPress={() => handleSuspensionClosePress(index)}>
-                            <Text style={{fontSize: 14, color: 'white'}}>
-                              Cancel
-                            </Text>
-                          </TouchableOpacity>
-                        </View>
-                      )}
+                      {(transmissionSwitch.length === 0 || 
+  transmissionSwitch[index] === 2) && 
+  transmissionDropdown[index] !== 'Not Available' && 
+  transmissionPhoto[index] && (
+    <View style={{position: 'relative'}}>
+      <Image
+        source={{uri: transmissionPhoto[index]}}
+        style={styles.uploadedImage}
+      />
+      <TouchableOpacity
+        style={{
+          position: 'absolute',
+          top: 20,
+          right: 0,
+          backgroundColor: 'black',
+          width: 60,
+          height: 30,
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+        onPress={() => handleSuspensionClosePress(index)}
+      >
+        <Text style={{fontSize: 14, color: 'white'}}>
+          Cancel
+        </Text>
+      </TouchableOpacity>
+    </View>
+  )
+}
 
-                      {(transmissionSwitch.length === 0 ||
-                        transmissionSwitch[index] === 2) && (
-                        <>
-                          <View style={{marginTop: 14}}>
-                            <TextInput
-                              style={styles.photoInput}
-                              placeholder="Enter remarks"
-                              value={transmissionRemarks[index]}
-                              onChangeText={text =>
-                                handleSuspensionRemarks(text, index)
-                              }
-                            />
-                          </View>
-                          <View style={{marginTop: 14}}>
-                            <Picker
-                              style={styles.photoInput}
-                              selectedValue={transmissionDropdown[index]}
-                              onValueChange={itemValue =>
-                                handleSuspensionDropDownChange(itemValue, index)
-                              }>
-                              <Picker.Item label="Select Condition" value="" />
-                              <Picker.Item
-                                label={
-                                  index == 0
-                                    ? 'Hard'
-                                    : index == 1
-                                    ? 'Hard'
-                                    : index == 2
-                                    ? 'Noise'
-                                    : index == 3
-                                    ? 'Noise'
-                                    : index == 4
-                                    ? 'Noise'
-                                    : index == 5
-                                    ? 'Noise'
-                                    : 'Noise'
-                                }
-                                value={
-                                  index == 0
-                                    ? 'Hard'
-                                    : index == 1
-                                    ? 'Hard'
-                                    : index == 2
-                                    ? 'Noise'
-                                    : index == 3
-                                    ? 'Noise'
-                                    : index == 4
-                                    ? 'Noise'
-                                    : index == 5
-                                    ? 'Noise'
-                                    : 'Noise'
-                                }
-                              />
-                              <Picker.Item
-                                label={
-                                  index == 0
-                                    ? 'Wornout'
-                                    : index == 1
-                                    ? 'Noise'
-                                    : index == 2
-                                    ? 'Damage'
-                                    : index == 3
-                                    ? 'Damage'
-                                    : index == 4
-                                    ? 'Damage'
-                                    : index == 5
-                                    ? 'Damage'
-                                    : 'Damage'
-                                }
-                                value={
-                                  index == 0
-                                    ? 'Wornout'
-                                    : index == 1
-                                    ? 'Noise'
-                                    : index == 2
-                                    ? 'Damage'
-                                    : index == 3
-                                    ? 'Damage'
-                                    : index == 4
-                                    ? 'Damage'
-                                    : index == 5
-                                    ? 'Damage'
-                                    : 'Damage'
-                                }
-                              />
-                              <Picker.Item
-                                label={
-                                  index == 0
-                                    ? 'Shuttering'
-                                    : index == 1
-                                    ? 'Need to Replace'
-                                    : index == 2
-                                    ? 'leak'
-                                    : index == 3
-                                    ? 'leak'
-                                    : index == 4
-                                    ? 'leak'
-                                    : index == 5
-                                    ? 'leak'
-                                    : ''
-                                }
-                                value={
-                                  index == 0
-                                    ? 'Shuttering'
-                                    : index == 1
-                                    ? 'Need to Replace'
-                                    : index == 2
-                                    ? 'leak'
-                                    : index == 3
-                                    ? 'leak'
-                                    : index == 4
-                                    ? 'leak'
-                                    : index == 5
-                                    ? 'leak'
-                                    : ''
-                                }
-                              />
-                              <Picker.Item
-                                label={
-                                  index == 0
-                                    ? ''
-                                    : index == 1
-                                    ? ''
-                                    : index == 2
-                                    ? 'Not Availble'
-                                    : index == 3
-                                    ? 'Not Availble'
-                                    : index == 4
-                                    ? 'Not Availble'
-                                    : index == 5
-                                    ? 'Not Availble'
-                                    : ''
-                                }
-                                value={
-                                  index == 0
-                                    ? ''
-                                    : index == 1
-                                    ? ''
-                                    : index == 2
-                                    ? 'Not Availble'
-                                    : index == 3
-                                    ? 'Not Availble'
-                                    : index == 4
-                                    ? 'Not Availble'
-                                    : index == 5
-                                    ? 'Not Availble'
-                                    : ''
-                                }
-                              />
+                   
+                  
+        {(transmissionSwitch.length === 0 ||
+          transmissionSwitch[index] === 2) && 
+        
+          <>
+            {transmissionDropdown[index] !== 'Not Available' && (
+           <View style={{marginTop: 14}}>
+              <TextInput
+                style={styles.photoInput}
+                placeholder="Enter remarks"
+                value={transmissionRemarks[index]}
+                onChangeText={text =>
+                  handleSuspensionRemarks(text, index)
+                }
+              />
+            </View>
+       
+              )}
+            <View style={{marginTop: 14}}>
+              <Picker
+                style={styles.photoInput}
+                selectedValue={transmissionDropdown[index]}
+                onValueChange={itemValue =>
+                  handleSuspensionDropDownChange(itemValue, index)
+                }>
+                <Picker.Item label="Select Condition" value="" />
+                <Picker.Item
+                  label={
+                    index == 0
+                      ? 'Hard'
+                      : index == 1
+                      ? 'Hard'
+                      : index == 2
+                      ? 'Noise'
+                      : index == 3
+                      ? 'Noise'
+                      : index == 4
+                      ? 'Noise'
+                      : index == 5
+                      ? 'Noise'
+                      : 'Noise'
+                  }
+                  value={
+                    index == 0
+                      ? 'Hard'
+                      : index == 1
+                      ? 'Hard'
+                      : index == 2
+                      ? 'Noise'
+                      : index == 3
+                      ? 'Noise'
+                      : index == 4
+                      ? 'Noise'
+                      : index == 5
+                      ? 'Noise'
+                      : 'Noise'
+                  }
+                />
+                <Picker.Item
+                  label={
+                    index == 0
+                      ? 'Wornout'
+                      : index == 1
+                      ? 'Noise'
+                      : index == 2
+                      ? 'Damage'
+                      : index == 3
+                      ? 'Damage'
+                      : index == 4
+                      ? 'Damage'
+                      : index == 5
+                      ? 'Damage'
+                      : 'Damage'
+                  }
+                  value={
+                    index == 0
+                      ? 'Wornout'
+                      : index == 1
+                      ? 'Noise'
+                      : index == 2
+                      ? 'Damage'
+                      : index == 3
+                      ? 'Damage'
+                      : index == 4
+                      ? 'Damage'
+                      : index == 5
+                      ? 'Damage'
+                      : 'Damage'
+                  }
+                />
+                <Picker.Item
+                  label={
+                    index == 0
+                      ? 'Shuttering'
+                      : index == 1
+                      ? 'Need to Replace'
+                      : index == 2
+                      ? 'leak'
+                      : index == 3
+                      ? 'leak'
+                      : index == 4
+                      ? 'leak'
+                      : index == 5
+                      ? 'leak'
+                      : ''
+                  }
+                  value={
+                    index == 0
+                      ? 'Shuttering'
+                      : index == 1
+                      ? 'Need to Replace'
+                      : index == 2
+                      ? 'leak'
+                      : index == 3
+                      ? 'leak'
+                      : index == 4
+                      ? 'leak'
+                      : index == 5
+                      ? 'leak'
+                      : ''
+                  }
+                />
+                <Picker.Item
+                  label={
+                    index == 0
+                      ? ''
+                      : index == 1
+                      ? ''
+                      : index == 2
+                      ? 'Not Available'
+                      : index == 3
+                      ? 'Not Available'
+                      : index == 4
+                      ? 'Not Available'
+                      : index == 5
+                      ? 'Not Available'
+                      : ''
+                  }
+                  value={
+                    index == 0
+                      ? ''
+                      : index == 1
+                      ? ''
+                      : index == 2
+                      ? 'Not Available'
+                      : index == 3
+                      ? 'Not Available'
+                      : index == 4
+                      ? 'Not Available'
+                      : index == 5
+                      ? 'Not Available'
+                      : ''
+                  }
+                />
+             
+              </Picker>
+            </View>
 
-                              {/* Add other items as needed */}
-                            </Picker>
-                          </View>
-                          <View style={{marginTop: 14}}>
-                            {!transmissionPhoto[index] && (
-                              <TouchableOpacity
-                                style={styles.photoInput}
-                                onPress={() => openCameraForInspection(index)}>
-                                <Text>{item}</Text>
-                              </TouchableOpacity>
-                            )}
-                          </View>
-                        </>
-                      )}
-                    </View>
+             {transmissionDropdown[index] !== 'Not Available' && (
+            <View style={{marginTop: 14}}>
+            {!transmissionPhoto[index] && (
+              <TouchableOpacity
+                style={styles.photoInput}
+                onPress={() => openCameraForInspection(index)}>
+                <Text>{item}</Text>
+              </TouchableOpacity>
+            )}
+          </View>
+             )}
+
+          </>
+        }
+
+</View>
                   ))}
-              </View>
+  </View> 
 
               <View style={{paddingHorizontal: 0}}>
                 {selectedInspectionIndex === 4 &&
@@ -10371,7 +10408,10 @@ const handleCamera5=(index)=>{
                           index={index} // Pass the index as a prop
                         />
                       </View>
-                      {enginePhoto[index] && (
+                      {(engineSwitch.length === 0 || 
+  engineSwitch[index] === 2) && 
+  engineDropdown[index] !== 'Not Available' && 
+  enginePhoto[index] && (
                         <View style={{position: 'relative'}}>
                           <Image
                             source={{uri: enginePhoto[index]}}
@@ -10396,10 +10436,12 @@ const handleCamera5=(index)=>{
                           </TouchableOpacity>
                         </View>
                       )}
+                    
 
                       {(engineSwitch.length === 0 ||
                         engineSwitch[index] === 2) && (
                         <>
+                         {engineDropdown[index] !== 'Not Available' && (
                           <View style={{marginTop: 14}}>
                             <TextInput
                               style={styles.photoInput}
@@ -10409,7 +10451,9 @@ const handleCamera5=(index)=>{
                                 handleSuspensionRemarks(text, index)
                               }
                             />
+
                           </View>
+                         )}
                           <View style={{marginTop: 14}}>
                             <Picker
                               style={styles.photoInput}
@@ -10661,6 +10705,7 @@ const handleCamera5=(index)=>{
                               {/* Add other items as needed */}
                             </Picker>
                           </View>
+                          {engineDropdown[index] !== 'Not Available' && (
                           <View style={{marginTop: 14}}>
                             {!enginePhoto[index] && (
                               <TouchableOpacity
@@ -10670,6 +10715,7 @@ const handleCamera5=(index)=>{
                               </TouchableOpacity>
                             )}
                           </View>
+                          )}
                         </>
                       )}
                     </View>
@@ -10701,7 +10747,11 @@ const handleCamera5=(index)=>{
                           index={index} // Pass the index as a prop
                         />
                       </View>
-                      {electricalPhoto[index] && (
+
+                      {(electricalSwitch.length === 0 || 
+  electricalSwitch[index] === 2) && 
+  electricalDropdown[index] !== 'Not Available' && 
+  electricalPhoto[index] && (
                         <View style={{position: 'relative'}}>
                           <Image
                             source={{uri: electricalPhoto[index]}}
@@ -10726,10 +10776,11 @@ const handleCamera5=(index)=>{
                           </TouchableOpacity>
                         </View>
                       )}
-
+                  
                       {(electricalSwitch.length === 0 ||
                         electricalSwitch[index] === 2) && (
                         <>
+                        {electricalDropdown[index] !== 'Not Available' && (
                           <View style={{marginTop: 14}}>
                             <TextInput
                               style={styles.photoInput}
@@ -10740,6 +10791,7 @@ const handleCamera5=(index)=>{
                               }
                             />
                           </View>
+                        )}
                           <View style={{marginTop: 14}}>
                             <Picker
                               style={styles.photoInput}
@@ -10944,6 +10996,7 @@ const handleCamera5=(index)=>{
                               {/* Add other items as needed */}
                             </Picker>
                           </View>
+                          {electricalDropdown[index] !== 'Not Available' && (
                           <View style={{marginTop: 14}}>
                             {!electricalPhoto[index] && (
                               <TouchableOpacity
@@ -10953,6 +11006,7 @@ const handleCamera5=(index)=>{
                               </TouchableOpacity>
                             )}
                           </View>
+                          )}
                         </>
                       )}
                     </View>
@@ -10983,7 +11037,10 @@ const handleCamera5=(index)=>{
                           index={index} // Pass the index as a prop
                         />
                       </View>
-                      {acPhoto[index] && (
+                      {(acSwitch.length === 0 || 
+  acSwitch[index] === 2) && 
+  acDropdown[index] !== 'Not Available' && 
+  acPhoto[index] && (
                         <View style={{position: 'relative'}}>
                           <Image
                             source={{uri: acPhoto[index]}}
@@ -11008,6 +11065,7 @@ const handleCamera5=(index)=>{
                           </TouchableOpacity>
                         </View>
                       )}
+                     
                       {(acSwitch.length === 0 || acSwitch[index] === 2) && (
                         <>
                           <View style={{marginTop: 14}}>
@@ -11127,7 +11185,11 @@ const handleCamera5=(index)=>{
                           index={index} // Pass the index as a prop
                         />
                       </View>
-                      {accessoriesPhoto[index] && (
+
+                      {(accessoriesSwitch.length === 0 || 
+  accessoriesSwitch[index] === 2) && 
+  accessoriesDropdown[index] !== 'Not Available' && 
+  accessoriesPhoto[index] && (
                         <View style={{position: 'relative'}}>
                           <Image
                             source={{uri: accessoriesPhoto[index]}}
@@ -11156,6 +11218,7 @@ const handleCamera5=(index)=>{
                       {(accessoriesSwitch.length === 0 ||
                         accessoriesSwitch[index] === 2) && (
                         <>
+                           {accessoriesDropdown[index] !== 'Not Available' && (
                           <View style={{marginTop: 14}}>
                             <TextInput
                               style={styles.photoInput}
@@ -11166,6 +11229,7 @@ const handleCamera5=(index)=>{
                               }
                             />
                           </View>
+                           )}
                           <View style={{marginTop: 14}}>
                             <Picker
                               style={styles.photoInput}
@@ -11321,6 +11385,7 @@ const handleCamera5=(index)=>{
                               {/* Add other items as needed */}
                             </Picker>
                           </View>
+                          {accessoriesDropdown[index] !== 'Not Available' && (
                           <View style={{marginTop: 14}}>
                             {!accessoriesPhoto[index] && (
                               <TouchableOpacity
@@ -11330,6 +11395,7 @@ const handleCamera5=(index)=>{
                               </TouchableOpacity>
                             )}
                           </View>
+                          )}
                         </>
                       )}
                     </View>
@@ -11452,7 +11518,7 @@ const handleCamera5=(index)=>{
         visible={bodyInspectionVisible}
         animationType="slide"
         transparent={true}
-        onRequestClose={() => setBodyInspectionVisible(false)}>
+        onRequestClose={() => handleBodyInspectionOkPress()}>
         <View style={styles.modalOverlay}>
           <View style={styles.modalContainer}>
             <TouchableOpacity onPress={() => handleBodyInspectionOkPress()}>
@@ -11486,6 +11552,9 @@ const handleCamera5=(index)=>{
                           index={index} // Pass the index as a prop
                         />
                       </View>
+                      {(pillarSwitch.length === 0 ||
+                        pillarSwitch[index] === 2) && (
+                        <>
                       {pillarsPhoto[index] && (
                         <View style={{position: 'relative'}}>
                           <Image
@@ -11513,6 +11582,8 @@ const handleCamera5=(index)=>{
                           </TouchableOpacity>
                         </View>
                       )}
+                      </>
+                        )}
                       {(pillarSwitch.length === 0 ||
                         pillarSwitch[index] === 2) && (
                         <>
@@ -11584,6 +11655,11 @@ const handleCamera5=(index)=>{
                           index={index} // Pass the index as a prop
                         />
                       </View>
+
+
+                      {(apronSwitch.length === 0 ||
+                        apronSwitch[index] === 2) && (
+                        <>
                       {apronPhoto[index] && (
                         <View style={{position: 'relative'}}>
                           <Image
@@ -11611,6 +11687,8 @@ const handleCamera5=(index)=>{
                           </TouchableOpacity>
                         </View>
                       )}
+                      </>
+                        )}
                       {(apronSwitch.length === 0 ||
                         apronSwitch[index] === 2) && (
                         <>
@@ -11682,13 +11760,39 @@ const handleCamera5=(index)=>{
                           index={index} // Pass the index as a prop
                         />
                       </View>
+                      
+                      {(fenderSwitch.length === 0 ||
+                        fenderSwitch[index] === 2) && (
+                        <>
                       {fenderPhoto[index] && (
-                        <Image
-                          source={{uri: fenderPhoto[index]}}
-                          style={styles.uploadedImage}
-                        />
+                        <View style={{position: 'relative'}}>
+                          <Image
+                            source={{uri: fenderPhoto[index]}}
+                            style={styles.uploadedImage}
+                          />
+                          <TouchableOpacity
+                            style={{
+                              position: 'absolute',
+                              top: 20,
+                              right: 0,
+                              backgroundColor: 'black',
+                              // borderRadius: 15,
+                              width: 60,
+                              height: 30,
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                            }}
+                            onPress={() =>
+                              handleBodyInspectionClosePress(index)
+                            }>
+                            <Text style={{fontSize: 14, color: 'white'}}>
+                              Cancel
+                            </Text>
+                          </TouchableOpacity>
+                        </View>
                       )}
-
+                      </>
+                        )}
                       {(fenderSwitch.length === 0 ||
                         fenderSwitch[index] === 2) && (
                         <>
@@ -11859,6 +11963,9 @@ const handleCamera5=(index)=>{
                           index={index} // Pass the index as a prop
                         />
                       </View>
+                      {(runningBoardSwitch.length === 0 ||
+                        runningBoardSwitch[index] === 2) && (
+                          <>
                       {runningBoardPhoto[index] && (
                         <View style={{position: 'relative'}}>
                           <Image
@@ -11886,6 +11993,8 @@ const handleCamera5=(index)=>{
                           </TouchableOpacity>
                         </View>
                       )}
+                      </>
+                        )}
 
                       {(runningBoardSwitch.length === 0 ||
                         runningBoardSwitch[index] === 2) && (
@@ -11958,13 +12067,38 @@ const handleCamera5=(index)=>{
                           index={index} // Pass the index as a prop
                         />
                       </View>
+                      {(doorSwitch.length === 0 ||
+                        doorSwitch[index] === 2) && (
+                        <>
                       {doorPhoto[index] && (
+                        <View style={{position:"relative"}}>
                         <Image
                           source={{uri: doorPhoto[index]}}
                           style={styles.uploadedImage}
                         />
+                        <TouchableOpacity
+                        style={{
+                          position: 'absolute',
+                          top: 20,
+                          right: 0,
+                          backgroundColor: 'black',
+                          // borderRadius: 15,
+                          width: 60,
+                          height: 30,
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                        }}
+                        onPress={() =>
+                          handleBodyInspectionClosePress(index)
+                        }>
+                        <Text style={{fontSize: 14, color: 'white'}}>
+                          Cancel
+                        </Text>
+                      </TouchableOpacity>
+                      </View>
                       )}
-
+</>
+                        )}
                       {(doorSwitch.length === 0 || doorSwitch[index] === 2) && (
                         <>
                           <View style={{marginTop: 14}}>
@@ -12035,6 +12169,9 @@ const handleCamera5=(index)=>{
                           index={index} // Pass the index as a prop
                         />
                       </View>
+                      {(dickyDoorSwitch.length === 0 ||
+                        dickyDoorSwitch[index] === 2) && (
+                          <>
                       {dickyDoorPhoto[index] && (
                         <View style={{position: 'relative'}}>
                           <Image
@@ -12062,6 +12199,9 @@ const handleCamera5=(index)=>{
                           </TouchableOpacity>
                         </View>
                       )}
+                      </>
+                        )}
+
 
                       {(dickyDoorSwitch.length === 0 ||
                         dickyDoorSwitch[index] === 2) && (
@@ -12134,6 +12274,10 @@ const handleCamera5=(index)=>{
                           index={index} // Pass the index as a prop
                         />
                       </View>
+
+                      {(dickySkirtSwitch.length === 0 ||
+                        dickySkirtSwitch[index] === 2) && (
+                    <>
                       {dickySkirtPhoto[index] && (
                         <View style={{position: 'relative'}}>
                           <Image
@@ -12162,6 +12306,8 @@ const handleCamera5=(index)=>{
                         </View>
                       )}
 
+</>
+                        )}
                       {(dickySkirtSwitch.length === 0 ||
                         dickySkirtSwitch[index] === 2) && (
                         <>
@@ -12233,6 +12379,9 @@ const handleCamera5=(index)=>{
                           index={index} // Pass the index as a prop
                         />
                       </View>
+                      {(bonetSwitch.length === 0 ||
+                        bonetSwitch[index] === 2) && (
+                          <>
                       {bonetPhoto[index] && (
                         <View style={{position: 'relative'}}>
                           <Image
@@ -12260,6 +12409,8 @@ const handleCamera5=(index)=>{
                           </TouchableOpacity>
                         </View>
                       )}
+                      </>
+                        )}
                       {(bonetSwitch.length === 0 ||
                         bonetSwitch[index] === 2) && (
                         <>
@@ -12331,6 +12482,9 @@ const handleCamera5=(index)=>{
                           index={index} // Pass the index as a prop
                         />
                       </View>
+                      {(supportMembersSwitch.length === 0 ||
+                        supportMembersSwitch[index] === 2) && (
+                          <>
                       {supportMembersPhoto[index] && (
                         <View style={{position: 'relative'}}>
                           <Image
@@ -12358,6 +12512,8 @@ const handleCamera5=(index)=>{
                           </TouchableOpacity>
                         </View>
                       )}
+                      </>
+                        )}
 
                       {(supportMembersSwitch.length === 0 ||
                         supportMembersSwitch[index] === 2) && (
@@ -12430,6 +12586,9 @@ const handleCamera5=(index)=>{
                           index={index} // Pass the index as a prop
                         />
                       </View>
+                      {(bumperSwitch.length === 0 ||
+                        bumperSwitch[index] === 2) && (
+                        <>
                       {bumperPhoto[index] && (
                         <View style={{position: 'relative'}}>
                           <Image
@@ -12458,6 +12617,8 @@ const handleCamera5=(index)=>{
                         </View>
                       )}
 
+</>
+                        )}
                       {(bumperSwitch.length === 0 ||
                         bumperSwitch[index] === 2) && (
                         <>
@@ -12648,6 +12809,9 @@ const handleCamera5=(index)=>{
                           index={index} // Pass the index as a prop
                         />
                       </View>
+                      {(windShieldSwitch.length === 0 ||
+                        windShieldSwitch[index] === 2) && (
+                   <>
                       {windShieldPhoto[index] && (
                         <View style={{position: 'relative'}}>
                           <Image
@@ -12675,6 +12839,8 @@ const handleCamera5=(index)=>{
                           </TouchableOpacity>
                         </View>
                       )}
+                      </>
+                        )}
 
 
 {(windShieldSwitch.length === 0 ||
@@ -12738,7 +12904,7 @@ const handleCamera5=(index)=>{
         visible={carDetailsInspection}
         animationType="slide"
         transparent={true}
-        onRequestClose={() => setCarDetailsInspection(false)}>
+        onRequestClose={() => handleCarDetailsOkPress()}>
         <View style={styles.modalOverlay}>
           <View style={styles.modalContainer}>
             <TouchableOpacity onPress={() => handleCarDetailsOkPress()}>
@@ -12784,7 +12950,7 @@ const handleCamera5=(index)=>{
                        
                            
                           
-                            <View style={{marginTop: 14}}>
+                            <View style={{marginTop:0}}>
                               {!lhsViewPhoto[index] && (
                                 <TouchableOpacity
                                   style={styles.photoInput}
@@ -12844,7 +13010,7 @@ const handleCamera5=(index)=>{
                        
                            
                           
-                            <View style={{marginTop: 14}}>
+                            <View style={{marginTop: 0}}>
                               {!rearViewPhoto[index] && (
                                 <TouchableOpacity
                                   style={styles.photoInput}
@@ -13271,7 +13437,7 @@ const handleCamera5=(index)=>{
                        
                            
                           
-                            <View style={{marginTop: 14}}>
+                            <View style={{marginTop:0}}>
                               {!trunkBootPhoto[index] && (
                                 <TouchableOpacity
                                   style={styles.photoInput}
@@ -13333,7 +13499,7 @@ const handleCamera5=(index)=>{
                        
                            
                           
-                            <View style={{marginTop: 14}}>
+                            <View style={{marginTop:0}}>
                               {!roofPhoto[index] && (
                                 <TouchableOpacity
                                   style={styles.photoInput}
@@ -13394,7 +13560,7 @@ const handleCamera5=(index)=>{
                        
                            
                           
-                            <View style={{marginTop: 14}}>
+                            <View style={{marginTop:0}}>
                               {!underChassisPhoto[index] && (
                                 <TouchableOpacity
                                   style={styles.photoInput}

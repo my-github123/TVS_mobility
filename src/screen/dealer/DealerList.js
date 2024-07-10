@@ -78,6 +78,9 @@ export default function DealerList({navigation}) {
   const callSearch = async () => {
 
     const itemId = await getItem('dealarId');
+      const locationId= await getItem('locationId');
+
+      console.log(locationId,"LOCATION ID IS THERE.....");
     if (!searchText) {
       ToastAndroid.show('Please enter vehicle number', ToastAndroid.SHORT);
       return;
@@ -130,6 +133,7 @@ export default function DealerList({navigation}) {
         const params = {
           dealerId: itemId,
           orderStatus: 1,
+          locationId:locationId,
           vechNumber: searchText,
           make: vehicleMakerDescription,
           model: vehicleMakeModel,

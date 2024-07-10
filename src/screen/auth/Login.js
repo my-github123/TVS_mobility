@@ -35,55 +35,67 @@ export default function Login({navigation}) {
   };
 
   const handlePress = async () => {
+    // Trim the username and password
+    const trimmedUsername = username.trim();
+    const trimmedPassword = password.trim();
+  
+    // Check if either username or password is empty
+    if (!trimmedUsername || !trimmedPassword) {
+      ToastAndroid.show("Username and password cannot be empty", ToastAndroid.LONG);
+      return;
+    }
+  
     const params = {
-      username: username.trim(),
-      password: password.trim(),
+      username: trimmedUsername,
+      password: trimmedPassword,
     };
-
+  
     try {
       const data = await apiPostWithoutToken('fitAuthenticate', params);
-      console.log(data, 'DATA IS THEEE......');
-
-
-      if(data.data[0]?.error === "User Not Found.") {
-        ToastAndroid.show("User Not Found", ToastAndroid.LONG);
-
-      }  else {
-
-      const token = data.data.data[0].token;
-
-
-      
-
-
-
-      const userName = data.data.data[0].userData[0].user_name;
-
-      const role=data.data.data[0].userData[0].role;
-
-      console.log(userName,"username is trr");
-
-      await setItem('username',userName);
-
-
-      await setItem('role',role)
-
-
-      await setItem('token', token);
-
-
-      setUsername("");
-      setPassword("")
-
-      // console.log(data, 'DATA IS THERE..............');
-      // Navigate to the dashboard or handle the successful response
-      navigation.navigate('Dashboard');
+      console.log(data, 'DATA IS THERE......');
+  
+      // if (data.data[0]?.error === "User Not Found.") {
+      //   ToastAndroid.show("User Not Found", ToastAndroid.LONG);
+      // } else {
+        const flattenedData = data?.data?.data.map(item => {
+          return item.userData.map(user => ({
+            token: item.token,
+            name: item.name,
+            user_name: user.user_name,
+            email: user.email,
+            mobile: user.mobile,
+            role: user.role,
+            user_type: user.user_type,
+            locationId: user.locationId
+          }));
+        }).flat();
+  
+        // Extract the token and role
+        const { token, user_name, role, locationId } = flattenedData[0];
+  
+        console.log(user_name, "username is there");
+  
+        await setItem('username', user_name);
+        await setItem('locationId', locationId);
+        await setItem('role', role);
+        await setItem('token', token);
+  
+        setUsername("");
+        setPassword("");
+  
+        // Navigate to the dashboard or handle the successful response
+        navigation.navigate('Dashboard');
       }
-    } catch (error) {
-      // Handle errors here
-      console.error('Request failed:', error);
+    catch (error) {
+      // Check if the error message matches the invalid credentials error
+      if (error.message === 'Invalid Credentials. Please try again.') {
+        ToastAndroid.show(error.message, ToastAndroid.LONG);
+      } else {
+        console.error('Request failed:', error);
+      }
     }
   };
+  
 
   return (
     <View style={styles.container}>

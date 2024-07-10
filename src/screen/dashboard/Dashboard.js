@@ -18,7 +18,7 @@ import {
   FlatList,
   TouchableOpacity,
 } from 'react-native';
-
+import DatePicker from 'react-native-date-picker';
 import CustomBox from '../../components/CustomBox';
 import CustomTextInput from "../../components/customTextInput";
 import moment from 'moment';
@@ -45,6 +45,8 @@ const Dashboard = ({navigation}) => {
   const [userName, setUsername] = useState('');
   const [fromDate, setFromDate] = useState(null);
   const [toDate, setToDate] = useState(null);
+  const [openFromDatePicker, setOpenFromDatePicker] = useState(false);
+  const [openToDatePicker, setOpenToDatePicker] = useState(false);
 
   console.log(orderListCount,"ORDER list ciue  rnw");
 
@@ -70,6 +72,8 @@ const Dashboard = ({navigation}) => {
     getData();
     
   }, []);
+
+  
 
 
   async function requestCameraPermission() {
@@ -122,6 +126,20 @@ useEffect(() => {
     return () => backHandler.remove();
   }, []);
 
+  useEffect(() => {
+    const currentDate = new Date();
+    const pastDate = new Date(currentDate);
+    pastDate.setDate(pastDate.getDate() - 30);
+
+    console.log(pastDate,"pastDate");
+
+    setFromDate(pastDate);
+    console.log(currentDate,"cureent date is there......");
+    setToDate(currentDate);
+
+    getAllOrders(pastDate, currentDate);
+  }, []);
+
   const getOrderList = async () => {
    
     try {
@@ -139,52 +157,52 @@ useEffect(() => {
     
   };
 
-  const handleFromDateSelect = async () => {
-    try {
-      const { action, year, month, day } = await DatePickerAndroid.open({
-        date: new Date(),
-      });
-      if (action !== DatePickerAndroid.dismissedAction) {
-        const selectedDate = new Date(year, month, day);
-        setFromDate(selectedDate);
-        if (toDate) {
-          getAllOrders(selectedDate, toDate);
-        }
-      }
-    } catch ({ code, message }) {
-      console.warn('Cannot open date picker', message);
+
+  const handleFromDateSelect = (date) => {
+    setFromDate(date);
+    setOpenFromDatePicker(false);
+  };
+
+  const handleToDateSelect = (date) => {
+    setToDate(date);
+    setOpenToDatePicker(false);
+    if (fromDate && date) {
+      getAllOrders(fromDate, date);
     }
   };
 
-  const handleToDateSelect = async () => {
-    try {
-      const { action, year, month, day } = await DatePickerAndroid.open({
-        date: new Date(),
-      });
-      if (action !== DatePickerAndroid.dismissedAction) {
-        const selectedDate = new Date(year, month, day);
-        setToDate(selectedDate);
-        if (fromDate) {
-          getAllOrders(fromDate, selectedDate);
-        }
-      }
-    } catch ({ code, message }) {
-      console.warn('Cannot open date picker', message);
-    }
+ 
+  const formatDate = (date) => {
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}-${month}-${year}`;
   };
+
+
+
 
   const getAllOrders = async (fromDate, toDate) => {
-    const fromDateStr = `${fromDate.getDate()}/${fromDate.getMonth() + 1}/${fromDate.getFullYear()}`;
-    const toDateStr = `${toDate.getDate()}/${toDate.getMonth() + 1}/${toDate.getFullYear()}`;
-    const apiUrl = `https://tvscertified.in:8083/getAllOrders/?fromdate="${fromDateStr}"&toDate="${toDateStr}"`;
 
+    const formattedFromDate =formatDate(fromDate)
+    const formattedToDate =formatDate(toDate);
+
+    console.log(formattedFromDate,"kjkhjkjh");
+    console.log(formattedToDate,"looiiu");
+
+   // const apiUrl = `https://tvscertified.in:8083/getAllOrders/?fromdate="${formattedFromDate}"&toDate="${formattedToDate}"`;
+   
+   setRefreshing(true);
     try {
-      const response = await apiGetWithToken(`getAllOrders/?fromdate="${fromDateStr}"&toDate="${toDateStr}"`);
+      const response = await apiGetWithToken(`getAllOrders/?fromdate="${formattedFromDate}"&toDate="${formattedToDate}"`);
      // const data = await response.json();
      
-      setFilteredData(response.data.data)
+      setFilteredData(response.data.data);
+      console.log(response.data,"response data is there...........");
     } catch (error) {
       console.error('Error fetching orders:', error);
+    } finally {
+      setRefreshing(false);
     }
   };
 
@@ -222,7 +240,10 @@ useEffect(() => {
 
   const onRefresh = () => {
     setRefreshing(true);
+
     getOrderList();
+    setFromDate("");
+    setToDate("");
   };
 
   const openDealarList = item => {
@@ -431,15 +452,34 @@ useEffect(() => {
         <CustomBox color="#6ecb96" number={orderListCount?.orderCreatedCount}  text="Inspection - Initiated" />
         <CustomBox color="#4375fa" number={orderListCount?.orderCompletedCount}  text="Inspection - Completed" />
       </ScrollView>
-      {/* <View style={{flexDirection:"row"}}> */}
       <Text style={styles.wrappertext2}>My Orders</Text>
-      {/* <TouchableOpacity style={styles.dateContainer} onPress={handleFromDateSelect}>
+      <View style={{flexDirection:"row",paddingHorizontal:12}}>  
+      <TouchableOpacity style={styles.dateContainer} onPress={() => setOpenFromDatePicker(true)}>
         <Text>{fromDate ? fromDate.toLocaleDateString() : 'Select From Date'}</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.dateContainer} onPress={handleToDateSelect}>
+      <TouchableOpacity style={styles.dateContainer} onPress={() => setOpenToDatePicker(true)}>
         <Text>{toDate ? toDate.toLocaleDateString() : 'Select To Date'}</Text>
-      </TouchableOpacity> */}
-      {/* </View> */}
+      </TouchableOpacity>
+       </View>  
+       <DatePicker
+        modal
+        mode="date"
+        open={openFromDatePicker}
+        date={fromDate || new Date()}
+        onConfirm={handleFromDateSelect}
+        onCancel={() => setOpenFromDatePicker(false)}
+        maximumDate={new Date()}
+      />
+           <DatePicker
+        modal
+        mode="date"
+        open={openToDatePicker}
+       date={toDate || new Date()}
+        onConfirm={handleToDateSelect}
+        onCancel={() => setOpenToDatePicker(false)}
+        maximumDate={new Date()}
+      />
+
       <TextInput
         style={styles.searchInput}
         placeholder="Search..."
@@ -686,7 +726,7 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
     padding: 10,
     marginVertical: 10,
-    width: '80%',
+    width: '50%',
     alignItems: 'center',
   },
   // name: {

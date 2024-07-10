@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     textAlign: 'left',
     color:"white",
-    bottom:15,
+    bottom:20,
     fontWeight:"bold"
   },
   boxText1: {
