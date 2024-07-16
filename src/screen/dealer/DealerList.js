@@ -60,7 +60,7 @@ export default function DealerList({navigation}) {
     try {
       const response = await apiGetWithToken('getDealers');
       setDealerList(response.data);
-      console.log(response.data, 'datra us there..');
+      response.data, 'datra us there..');
     } catch (error) {
       console.error('GET error:', error);
     }
@@ -80,7 +80,7 @@ export default function DealerList({navigation}) {
     const itemId = await getItem('dealarId');
       const locationId= await getItem('locationId');
 
-      console.log(locationId,"LOCATION ID IS THERE.....");
+      locationId,"LOCATION ID IS THERE.....");
     if (!searchText) {
       ToastAndroid.show('Please enter vehicle number', ToastAndroid.SHORT);
       return;
@@ -91,7 +91,7 @@ export default function DealerList({navigation}) {
       };
       const data = await apiPostWithToken('getVahanData', params);
 
-      console.log(data.data, 'data is there///');
+      data.data, 'data is there///');
 
       if (data.data.message === 'No Record Found') {
         ToastAndroid.show('No Record Found', ToastAndroid.SHORT);
@@ -186,7 +186,7 @@ export default function DealerList({navigation}) {
           });
   
         
-          console.log(params,"DATA IS GGNERE");
+          params,"DATA IS GGNERE");
         } catch (error) {
           // Handle errors here
           console.error('Request failed:', error);
@@ -194,7 +194,7 @@ export default function DealerList({navigation}) {
          
         }
 
-        console.log(
+        
           vehicleMakeModel,
           vehicleMakerDescription,
           vehicleOwnerNumber,

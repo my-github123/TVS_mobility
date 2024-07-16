@@ -135,6 +135,9 @@ const OrderCreation = ({navigation}) => {
       : 5,
   );
   const [selectedOption2, setSelectedOption2] = useState('');
+  
+  const [chooseAlteration,setChooseAlteration] = useState('');
+
   const [selectedOption3, setSelectedOption3] = useState(
     vehicleFinanced === 'NA' ? 2 : 1,
   );
@@ -369,7 +372,7 @@ const OrderCreation = ({navigation}) => {
     Array.from({length: 7}, () => ''),
   );
   const [suspensionSwitch, setSuspensionSwitch] = useState(
-    Array.from({length: 7}, () => false),
+    Array.from({length: 7}, () =>''),
   );
   const [suspensionDropdown, setSuspensionDropdown] = useState(
     Array.from({length: 7}, () => ''),
@@ -643,7 +646,7 @@ const OrderCreation = ({navigation}) => {
     Array.from({length: 6}, () => ''),
   );
   const [pillarSwitch, setPillarSwitch] = useState(
-    Array.from({length: 6}, () => false),
+    Array.from({length: 6}, () =>''),
   );
   const [pillarsCondition, setPillarsCondition] = useState(
     Array.from({length: 6}, () => ''),
@@ -659,7 +662,7 @@ const OrderCreation = ({navigation}) => {
     Array.from({length: 2}, () => ''),
   );
   const [apronSwitch, setApronSwitch] = useState(
-    Array.from({length: 2}, () => false),
+    Array.from({length: 2}, () =>''),
   );
   const [apronCondition, setApronCondition] = useState(
     Array.from({length: 2}, () => ''),
@@ -675,7 +678,7 @@ const OrderCreation = ({navigation}) => {
     Array.from({length: 2}, () => ''),
   );
   const [fenderSwitch, setFenderSwitch] = useState(
-    Array.from({length: 2}, () => false),
+    Array.from({length: 2}, () => ''),
   );
   const [fenderCondition, setFenderCondition] = useState(
     Array.from({length: 2}, () => ''),
@@ -691,7 +694,7 @@ const OrderCreation = ({navigation}) => {
     Array.from({length: 2}, () => ''),
   );
   const [quarterPanlesSwitch, setQuarterPanlesSwitch] = useState(
-    Array.from({length: 2}, () => false),
+    Array.from({length: 2}, () =>''),
   );
   const [quarterPanlesCondition, setQuarterPanlesCondition] = useState(
     Array.from({length: 2}, () => ''),
@@ -707,7 +710,7 @@ const OrderCreation = ({navigation}) => {
     Array.from({length: 2}, () => ''),
   );
   const [runningBoardSwitch, setRunningBoardSwitch] = useState(
-    Array.from({length: 2}, () => false),
+    Array.from({length: 2}, () => ''),
   );
   const [runnningBoardCondition, setRunningBoardCondition] = useState(
     Array.from({length: 2}, () => ''),
@@ -721,7 +724,7 @@ const OrderCreation = ({navigation}) => {
     Array.from({length: 4}, () => ''),
   );
   const [doorSwitch, setDoorSwitch] = useState(
-    Array.from({length: 4}, () => false),
+    Array.from({length: 4}, () =>''),
   );
   const [doorCondition, setDoorCondition] = useState(
     Array.from({length: 4}, () => ''),
@@ -737,7 +740,7 @@ const OrderCreation = ({navigation}) => {
     Array.from({length: 1}, () => ''),
   );
   const [dickyDoorSwitch, setDickyDoorSwitch] = useState(
-    Array.from({length: 1}, () => false),
+    Array.from({length: 1}, () => ''),
   );
   const [dickyDoorCondition, setDickyDoorCondition] = useState(
     Array.from({length: 1}, () => ''),
@@ -753,7 +756,7 @@ const OrderCreation = ({navigation}) => {
     Array.from({length: 1}, () => ''),
   );
   const [dickySkirtSwitch, setDickySkirtSwitch] = useState(
-    Array.from({length: 1}, () => false),
+    Array.from({length: 1}, () =>''),
   );
   const [dickySkirtCondition, setDickySkirtCondition] = useState(
     Array.from({length: 1}, () => ''),
@@ -769,7 +772,7 @@ const OrderCreation = ({navigation}) => {
     Array.from({length: 1}, () => ''),
   );
   const [bonetSwitch, setBonetSwitch] = useState(
-    Array.from({length: 1}, () => false),
+    Array.from({length: 1}, () =>''),
   );
   const [bonetCondition, setBonetCondition] = useState(
     Array.from({length: 1}, () => ''),
@@ -785,7 +788,7 @@ const OrderCreation = ({navigation}) => {
     Array.from({length: 4}, () => ''),
   );
   const [supportMembersSwitch, setSupportMembersSwitch] = useState(
-    Array.from({length: 4}, () => false),
+    Array.from({length: 4}, () => ''),
   );
   const [supportMembersCondition, setSupportMembersCondition] = useState(
     Array.from({length: 4}, () => ''),
@@ -801,7 +804,7 @@ const OrderCreation = ({navigation}) => {
     Array.from({length: 2}, () => ''),
   );
   const [bumperSwitch, setBumperSwitch] = useState(
-    Array.from({length: 2}, () => false),
+    Array.from({length: 2}, () => ''),
   );
   const [bumperCondition, setBumperCondition] = useState(
     Array.from({length: 2}, () => ''),
@@ -817,14 +820,14 @@ const OrderCreation = ({navigation}) => {
     Array.from({length: 1}, () => ''),
   );
   const [wheelTypeSwitch, setWheelTypeSwitch] = useState(
-    Array.from({length: 1}, () => false),
+    Array.from({length: 1}, () => ''),
   );
 
   const [selectWheelTypeSwitch, setSelectWheelTypeSwitch] = useState(
-    Array.from({length: 1}, () => false),
+    Array.from({length: 1}, () =>''),
   );
   const [wheelTypeCondition, setWheelTypeCondition] = useState(
-    Array.from({length: 2}, () => ''),
+    Array.from({length: 1}, () => ''),
   );
 
   const [windShieldPhoto, setWindShieldPhoto] = useState(
@@ -837,7 +840,7 @@ const OrderCreation = ({navigation}) => {
     Array.from({length: 2}, () => ''),
   );
   const [windShieldSwitch, setWindShieldSwitch] = useState(
-    Array.from({length: 2}, () => false),
+    Array.from({length: 2}, () => ''),
   );
   const [windShieldCondition, setWindShieldCondition] = useState(
     Array.from({length: 2}, () => ''),
@@ -927,7 +930,7 @@ const OrderCreation = ({navigation}) => {
     Array.from({length: 1}, () => ''),
   );
   const [chassisSwitch, setChassisSwitch] = useState(
-    Array.from({length: 1}, () => false),
+    Array.from({length: 1}, () =>''),
   );
   const [chassisCondition, setChasisCondition] = useState(
     Array.from({length: 1}, () => ''),
@@ -943,7 +946,7 @@ const OrderCreation = ({navigation}) => {
     Array.from({length: 1}, () => ''),
   );
   const [vinPlateSwitch, setVinPlateSwitch] = useState(
-    Array.from({length: 1}, () => false),
+    Array.from({length: 1}, () => ''),
   );
   const [vinPlateCondition, setVinPlateCondition] = useState(
     Array.from({length: 1}, () => ''),
@@ -1066,7 +1069,7 @@ const OrderCreation = ({navigation}) => {
     Array.from({length: 4}, () => ''),
   );
   const [tyreSwitch, setTyreSwitch] = useState(
-    Array.from({length: 4}, () => false),
+    Array.from({length: 4}, () =>''),
   );
   const [tyreCondition, setTyreCondition] = useState(
     Array.from({length: 4}, () => ''),
@@ -1082,7 +1085,7 @@ const OrderCreation = ({navigation}) => {
     Array.from({length: 1}, () => ''),
   );
   const [spareWheelSwitch, setSpareWheelSwitch] = useState(
-    Array.from({length: 1}, () => false),
+    Array.from({length: 1}, () =>''),
   );
   const [spareWheelCondition, setSpareWheelCondition] = useState(
     Array.from({length: 1}, () => ''),
@@ -1098,7 +1101,7 @@ const OrderCreation = ({navigation}) => {
     Array.from({length: 1}, () => ''),
   );
   const [toolKitSwitch, setToolkitSwitch] = useState(
-    Array.from({length: 1}, () => false),
+    Array.from({length: 1}, () => ''),
   );
   const [toolKitCondition, setToolkitCondition] = useState(
     Array.from({length: 1}, () => ''),
@@ -1112,7 +1115,7 @@ const OrderCreation = ({navigation}) => {
   );
   const [keyBase64, setKeyBase64] = useState(Array.from({length: 2}, () => ''));
   const [keySwitch, setKeySwitch] = useState(
-    Array.from({length: 2}, () => false),
+    Array.from({length: 2}, () => ''),
   );
   const [keyCondition, setKeyCondition] = useState(
     Array.from({length: 2}, () => ''),
@@ -1373,10 +1376,34 @@ const OrderCreation = ({navigation}) => {
     return switchValue === 1 ? 'Not Available' : 'Available';
   };
 
+
+  const printStatusFields = (params) => {
+    for (const key in params) {
+      if (key.endsWith("Status")) {
+        console.log(`${key}:`, params[key]);
+      }
+    }
+  };
+  
+
   const handleNext = async step => {
     const itemId = await getItem('dealarId');
     setLoading(true);
     let params = {};
+
+    const alterationResult = showAlterationOptions 
+  ? (selectedOption2 == 1 ? 'CNG' 
+    : selectedOption2 == 2 ? 'LPG' 
+    : 'COLOUR') 
+  : 'No';
+
+  const data = {
+    wheelTypeCondition:`${Math.round(spareWheel[0] * 100)}%`,
+    tyre1Condition:`${Math.round(values[0] * 100)}%`,
+    tyre2Condition:`${Math.round(values[1] * 100)}%`,
+    tyre3Condition:`${Math.round(values[2] * 100)}%`,
+    tyre4Condition:`${Math.round(values[3] * 100)}%`,
+  };
 
     switch (step) {
       case 1:
@@ -1394,6 +1421,7 @@ const OrderCreation = ({navigation}) => {
           transmission: selectedOption == 1 ? 'Automatic' : 'Manual',
           fuelType: selectedOption1 == 1 ? 'Diesel' : 'Petrol',
           alteration: selectedOption2 == 1 ? 'CNG' : 'LPG',
+          alteration:alterationResult,
           owners: owners,
           hasHypothecated: selectedOption3 == 1 ? 'Yes' : 'No',
           hypothecatedBy: hypothecatedBy,
@@ -1430,14 +1458,14 @@ const OrderCreation = ({navigation}) => {
           orderStatus: 1,
           rcFrontPhoto: rcBase64[0],
           rcBackPhoto: rcBase64[1],
-          RCOthers: rcBase64[2],
+          RCOthersPhoto: rcBase64[2],
           rcRemarks: rcRemarks,
           insuranceOwnDamagePhoto: insuranceBase64[0],
           insuranceThirdPartyPhoto: insuranceBase64[1],
-          insuranceOthers: insuranceBase64[2],
+          insuranceOthersPhoto: insuranceBase64[2],
           insuranceRemarks: insuranceRemarks,
           nocPhoto: nocBase64[0],
-          nocOthers: nocBase64[1],
+          nocOthersPhoto: nocBase64[1],
           nocRemarks: nocRemarks,
         };
         params = Object.fromEntries(
@@ -1464,7 +1492,7 @@ const OrderCreation = ({navigation}) => {
           vinPlateStatus: getSwitch(vinPlateSwitch[0]),
           vinPlateCondition: vinPlateCondition[0],
           vinPlateRemarks: vinPlateRemarks[0],
-         rhsViewPhoto: rhsViewBase64[0],
+          rhsViewPhoto: rhsViewBase64[0],
           rhsViewRemarks:rhsViewRemarks[0],
           primaryKeyPhoto: keyBase64[0],
           primaryKeyStatus: getSwitchForAvailable(keySwitch[0]),
@@ -1511,15 +1539,15 @@ const OrderCreation = ({navigation}) => {
           dealerId: itemId,
           id: id ? id : orderId,
           orderStatus: 1,
-             lhsViewPhoto: lhsViewBase64[0],
-         lhsViewRemarks: lhsViewRemarks[0],
-         rearViewPhoto: rearViewBase64[0],
+          lhsViewPhoto: lhsViewBase64[0],
+          lhsViewRemarks: lhsViewRemarks[0],
+          rearViewPhoto: rearViewBase64[0],
           rearViewRemarks: rearViewRemarks[0],
           trunkBootPhoto: trunkBootBase64[0],
-           trunkBootRemarks: trunkBootRemarks[0],
-           spareWheelPhoto: spareWheelBase64[0],
+          trunkBootRemarks: trunkBootRemarks[0],
+          spareWheelPhoto: spareWheelBase64[0],
           spareWheelStatus: getSwitchForAvailable(spareWheelSwitch[0]),
-          spareWheelPercentage: spareWheel[0],
+          spareWheelCondition:data?.wheelTypeCondition,
           spareWheelRemarks: spareWheelRemarks[0],
           toolKitJackPhoto: toolKitBase64[0],
           toolKitJackStatus: getSwitchForAvailable(toolKitSwitch[0]),
@@ -1528,23 +1556,23 @@ const OrderCreation = ({navigation}) => {
           roofPhoto: roofBase64[0],
           roofRemarks:roofRemarks[0],
           underChassisPhoto: underChassisBase64[0],
-         underChassisRemarks: underChassisRemarks[0],
-         frontTyreLeftPhoto: tyreBase64[0],
-         frontTyreLeftStatus: getSwitch(tyreSwitch[0]),
-         frontTyreLeftPercentage: values[0],
-         frontTyreLeftRemarks: tyreRemarks[0],
-         frontTyreRightPhoto: tyreBase64[1],
-         frontTyreRightStatus: getSwitch(tyreSwitch[1]),
-         frontTyreRightPercentage: values[1],
-         frontTyreRightRemarks: tyreRemarks[1],
-         rearTyreLeftPhoto: tyreBase64[2],
-         rearTyreLeftStatus: getSwitch(tyreSwitch[2]),
-         rearTyreLeftPercentage: values[2],
-         rearTyreLeftRemarks: tyreRemarks[2],
-         rearTyreRightPhoto: tyreBase64[3],
-         rearTyreRightStatus: getSwitch(tyreSwitch[3]),
-         rearTyreRightPercentage: values[3],
-         rearTyreRightRemarks: tyreRemarks[3],
+          underChassisRemarks: underChassisRemarks[0],
+          frontTyreLeftPhoto: tyreBase64[0],
+          frontTyreLeftStatus: getSwitch(tyreSwitch[0]),
+          frontTyreLeftCondition:data?.tyre1Condition,
+          frontTyreLeftRemarks: tyreRemarks[0],
+          frontTyreRightPhoto: tyreBase64[1],
+          frontTyreRightStatus: getSwitch(tyreSwitch[1]),
+          frontTyreRightCondition:data?.tyre2Condition,
+          frontTyreRightRemarks: tyreRemarks[1],
+          rearTyreLeftPhoto: tyreBase64[2],
+          rearTyreLeftStatus: getSwitch(tyreSwitch[2]),
+          rearTyreLeftCondition:data?.tyre3Condition,
+          rearTyreLeftRemarks: tyreRemarks[2],
+          rearTyreRightPhoto: tyreBase64[3],
+          rearTyreRightStatus: getSwitch(tyreSwitch[3]),
+          rearTyreRightCondition:data?.tyre4Condition,
+          rearTyreRightRemarks: tyreRemarks[3],
         
         };
 
@@ -1597,14 +1625,14 @@ const OrderCreation = ({navigation}) => {
           bumperRearStatus: getSwitch(bumperSwitch[1]),
           bumperRearCondition: bumperCondition[1],
           bumperRearRemarks: bumperRemarks[1],
-          windShieldFrontTyrePhoto: windShieldBase64[0],
-          windShieldFrontTyreStatus: getSwitch(windShieldSwitch[0]),
-          windShieldFrontTyreCondition: windShieldCondition[0],
-          windShieldFrontTyreRemarks: windShieldRemarks[0],
-          windShieldRearTyrePhoto: windShieldBase64[1],
-          windShieldRearTyreStatus: getSwitch(windShieldSwitch[1]),
-          windShieldRearTyreCondition: windShieldCondition[1],
-          windShieldRearTyreRemarks: windShieldRemarks[1],
+          windShieldFrontPhoto: windShieldBase64[0],
+          windShieldFrontStatus: getSwitch(windShieldSwitch[0]),
+          windShieldFrontCondition: windShieldCondition[0],
+          windShieldFrontRemarks: windShieldRemarks[0],
+          windShieldRearPhoto: windShieldBase64[1],
+          windShieldRearStatus: getSwitch(windShieldSwitch[1]),
+          windShieldRearCondition: windShieldCondition[1],
+          windShieldRearRemarks: windShieldRemarks[1],
           fendersRightSidePhoto: fennderBase64[1],
           fendersRightSideStatus: getSwitch(fenderSwitch[1]),
           fendersRightSideCondition: fenderCondition[1],
@@ -1680,10 +1708,9 @@ const OrderCreation = ({navigation}) => {
           wheelType: selectWheelTypeSwitch[0],
           wheelTypePhoto: wheelTypeBase64[0],
           wheelTypeStatus: getSwitch(wheelTypeSwitch[0]),
-          wheelTypeCondition: wheelTypeCondition[0],
+          wheelTypeCondition:wheelTypeCondition[0],
           wheelTypeRemarks: wheelTypeRemarks[0],
-        
-        
+     
         };
 
         params = Object.fromEntries(
@@ -1727,7 +1754,6 @@ const OrderCreation = ({navigation}) => {
           leafSpringStatus: getSwitch(suspensionSwitch[6]),
           leafSpringCondition: suspensionDropdown[6],
           leafSpringRemarks: suspensionRemarks[6],
-
           rackAndPinionPhoto: steeringBase64[0],
           rackAndPinionStatus: getSwitch(steeringSwitch[0]),
           rackAndPinionCondition: steeringDropdown[0],
@@ -2048,25 +2074,25 @@ const OrderCreation = ({navigation}) => {
           steeringControlsCondition: accessoriesDropdown[10],
           steeringControlsRemarks: accessoriesRemarks[10],
 
-          engineOilCondition: getSwitch(oliSwitch[0]),
+          engineOilStatus: getSwitch(oliSwitch[0]),
           engineOilRemarks: oilRemarks[0],
-          engineOilDropDown: oilDropDown[0],
+          engineOilCondition: oilDropDown[0],
 
-          brakeOilCondition: getSwitch(oliSwitch[1]),
+          brakeOilStatus: getSwitch(oliSwitch[1]),
           brakeOilRemarks: oilRemarks[1],
-          brakeOilDropDown: oilDropDown[1],
+          brakeOilCondition: oilDropDown[1],
 
-          coolentOilCondition: getSwitch(oliSwitch[2]),
+          coolentOilStatus: getSwitch(oliSwitch[2]),
           coolentOilRemarks: oilRemarks[2],
-          coolentOilDropDown: oilDropDown[2],
+          coolentOilCondition: oilDropDown[2],
 
-          gearOilCondition: getSwitch(oliSwitch[3]),
+          gearOilStatus: getSwitch(oliSwitch[3]),
           gearOilRemarks: oilRemarks[3],
-          gearOilDropDown: oilDropDown[3],
+          gearOilCondition: oilDropDown[3],
 
-          crownOilCondition: getSwitch(oliSwitch[4]),
+          crownOilStatus: getSwitch(oliSwitch[4]),
           crownOilRemarks: oilRemarks[4],
-          crownOilDropDown: oilDropDown[4],
+          crownOilCondition: oilDropDown[4],
 
           roadTestRemarks: roadTestRemarks,
         };
@@ -2117,7 +2143,16 @@ const OrderCreation = ({navigation}) => {
 
     // Call the API
     try {
-      console.log(params, 'params');
+  
+
+    
+
+
+     printStatusFields(params);
+
+
+
+    
       const data = await apiPostWithToken('updateOrder', params);
 
       if (role === 'Reinspector') {
@@ -6257,7 +6292,7 @@ const OrderCreation = ({navigation}) => {
         for (let i = 0; i < wheelTypeSwitch.length; i++) {
           if (
             (wheelTypeSwitch[i] === 2 || !wheelTypeSwitch[i]) &&
-            (!wheelTypePhoto[i] || wheelTypeCondition[i])
+            (!wheelTypePhoto[i] || !wheelTypeCondition[i])
           ) {
             return false;
           }
@@ -13721,7 +13756,7 @@ const handleCamera5=(index)=>{
                   label="Fuel Type"
                 />
                 <SingleSwitch
-                  selectionMode={selectedOption2}
+                  selectionMode={chooseAlteration}
                   roundCorner={true}
                   options={['Yes', 'No']}
                   onSelectSwitch={handleSwitchSelection2Boolean}
