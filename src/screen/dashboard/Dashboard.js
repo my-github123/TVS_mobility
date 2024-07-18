@@ -451,6 +451,7 @@ useEffect(() => {
         <CustomBox color="#ffbd52" number={orderListCount?.allOrderCount} text="Total" />
         <CustomBox color="#6ecb96" number={orderListCount?.orderCreatedCount}  text="Inspection - Initiated" />
         <CustomBox color="#4375fa" number={orderListCount?.orderCompletedCount}  text="Inspection - Completed" />
+      
       </ScrollView>
       <Text style={styles.wrappertext2}>My Orders</Text>
       <View style={{flexDirection:"row",paddingHorizontal:12}}>  
@@ -541,7 +542,7 @@ useEffect(() => {
                 fontFamily: 'DMSans-Bold',
                 color: 'black',
               }}>
-              No OrderList available
+              No Order List Available
             </Text>
             <TouchableOpacity onPress={onRefresh} style={{marginTop: 20}}>
               <Text

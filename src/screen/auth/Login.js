@@ -44,6 +44,13 @@ export default function Login({navigation}) {
       ToastAndroid.show("Username and password cannot be empty", ToastAndroid.LONG);
       return;
     }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailRegex.test(trimmedUsername)) {
+      ToastAndroid.show("Invalid email format", ToastAndroid.LONG);
+      return;
+    }
   
     const params = {
       username: trimmedUsername,

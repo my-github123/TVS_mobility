@@ -60,7 +60,7 @@ export default function DealerList({navigation}) {
     try {
       const response = await apiGetWithToken('getDealers');
       setDealerList(response.data);
-      response.data, 'datra us there..');
+      console.log(response.data, 'datra us there..');
     } catch (error) {
       console.error('GET error:', error);
     }
@@ -76,38 +76,37 @@ export default function DealerList({navigation}) {
   };
 
   const callSearch = async () => {
-
     const itemId = await getItem('dealarId');
-      const locationId= await getItem('locationId');
-
-      locationId,"LOCATION ID IS THERE.....");
+    const locationId = await getItem('locationId');
+  
+    console.log(locationId, "LOCATION ID IS THERE.....");
+  
     if (!searchText) {
       ToastAndroid.show('Please enter vehicle number', ToastAndroid.SHORT);
       return;
     }
+  
     try {
       const params = {
         vechicleNumber: searchText,
       };
       const data = await apiPostWithToken('getVahanData', params);
-
-      data.data, 'data is there///');
-
+  
+      console.log(data.data, 'data is there///');
+  
       if (data.data.message === 'No Record Found') {
         ToastAndroid.show('No Record Found', ToastAndroid.SHORT);
         setModalVisible(false);
         setSearchText('');
       } else {
         storeData('vehicleDataList', data.data);
-
+  
         // Extract the values
-
         const ownerDetails = {
-          userName: data.data.user_name,
+          userName: data?.data?.user_name,
           userPresentAddress: data.data.user_present_address
-      };
-      
-
+        };
+  
         const vehicleMakeModel = data.data.vehicle_make_model;
         const vehicleMakerDescription = data.data.vehicle_maker_description;
         const vehicleManufacturedDate = data.data.vehicle_manufactured_date;
@@ -126,42 +125,59 @@ export default function DealerList({navigation}) {
         const blacklist = data.data.rc_blacklist_status;
         const userName = ownerDetails.userName;
         const userPresentAddress = ownerDetails.userPresentAddress;
-        
-
-   
-
+  
+        console.log("Extracted vehicle details:", {
+          vehicleMakeModel,
+          vehicleMakerDescription,
+          vehicleManufacturedDate,
+          vehicleColor,
+          vehicleOwnerNumber,
+          cubicCapacity,
+          vehicleSeatingCapacity,
+          rcEngineNumber,
+          rcChassisNumber,
+          insuranceCompany,
+          expiryDate,
+          registerDate,
+          financer,
+          fuelType,
+          vehicleFinanced,
+          blacklist,
+          userName,
+          userPresentAddress
+        });
+  
         const params = {
           dealerId: itemId,
           orderStatus: 1,
-          locationId:locationId,
+          locationId: locationId,
           vechNumber: searchText,
           make: vehicleMakerDescription,
           model: vehicleMakeModel,
           year: vehicleManufacturedDate,
           variant: vehicleMakeModel,
           color: vehicleColor,
-
           fuelType: fuelType,
-
           owners: vehicleOwnerNumber,
           hasHypothecated: vehicleFinanced == 'NA' ? 'No' : 'Yes',
           hypothecatedBy: vehicleFinanced,
-
           reRegistered: registerDate,
           cubicCapacity: cubicCapacity,
           numberOfSeats: vehicleSeatingCapacity,
-
           registrationDate: registerDate,
-
           insuranceCompany: insuranceCompany,
           insuranceValidity: expiryDate,
           blacklisted: blacklist,
           chassisNumber: rcChassisNumber,
           engineNumber: rcEngineNumber,
         };
-
+  
+        console.log("Params for createOrder API:", params);
+  
         try {
           const dataResponse = await apiPostWithToken('createOrder', params);
+          console.log("Order creation response:", dataResponse);
+  
           navigation.navigate('OrderCreation', {
             vehicleMakeModel,
             vehicleMakerDescription,
@@ -180,43 +196,32 @@ export default function DealerList({navigation}) {
             fuelType,
             vehicleFinanced,
             blacklist,
-            orderId:dataResponse.data.id,
+            orderId: dataResponse.data.id,
             userName,
             userPresentAddress
           });
   
-        
-          params,"DATA IS GGNERE");
+          setSearchText('');
+          setModalVisible(false);
+          console.log(params, "DATA IS GGNERE");
         } catch (error) {
-          // Handle errors here
-          console.error('Request failed:', error);
-        } finally {
-         
+          console.error('Request failed in createOrder API:', error);
         }
-
-        
+  
+        console.log(
           vehicleMakeModel,
           vehicleMakerDescription,
           vehicleOwnerNumber,
           cubicCapacity,
-          'VEHICLE DETAILS',
+          'VEHICLE DETAILS'
         );
-
-        // Pass the values as navigation parameters
-        
-
-        setSearchText('');
-        setModalVisible(false);
       }
     } catch (error) {
-      // Handle errors here
-      console.error('Request failed:', error);
-      ToastAndroid.show(
-        'An error occurred. Please try again.',
-        ToastAndroid.SHORT,
-      );
+      console.error('Request failed in getVahanData API:', error);
+      ToastAndroid.show('An error occurred. Please try again.', ToastAndroid.SHORT);
     }
   };
+  
 
   const handlePress = async item => {
     try {
