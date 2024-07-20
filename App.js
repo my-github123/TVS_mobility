@@ -28,6 +28,21 @@ export default function App({navigation}) {
     }, 1000); // 2 seconds delay
   }, []);
 
+  // useEffect(() => {
+  //   const newValidations = photoUpdates1.map(({ setter, index, key }) => {
+  //     const photoValue = response.data[key];
+  //     return !!photoValue; // true if value exists, otherwise false
+  //   });
+  //   setValidations(newValidations);
+  // }, [response]);
+
+  // {photoUpdates1.map(({ index, key }, idx) => (
+  //   <Text key={key} style={styles.touchableText}>
+  //     {validations[idx] ? 'Update / View' : 'Upload'}
+  //   </Text>
+  // ))}
+
+
   return loading ? <SplashScreen /> : <ScreenList />;
 }
 
@@ -45,3 +60,21 @@ const styles = StyleSheet.create({
 // //  android:screenOrientation="portrait"
 
 //2526
+
+
+
+// "dealerId": "440",
+// "orderStatus": 1,
+// "locationId": "5",
+// "vechNumber": "TN45BD0553",
+// "make": "HERO MOTOCORP LTD",
+// "model": "MAESTRO DELUXE BS III",
+// "year": "03/2013",
+// "variant": "MAESTRO DELUXE BS III",
+// "color": "RED",
+// "fuelType": "Petrol",
+// "owners": "1",
+// "hasHypothecated": "Yes",
+// "hypothecatedBy": "Y",
+// "reRegistered": "No",
+// "cubicCapacity": "109",

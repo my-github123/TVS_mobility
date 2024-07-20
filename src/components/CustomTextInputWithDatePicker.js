@@ -1,24 +1,40 @@
 import React, { useState, useEffect } from 'react';
 import { TextInput, StyleSheet, View, Text, TouchableOpacity, Modal, Button } from 'react-native';
 import DatePicker from 'react-native-date-picker';
+import { format, parseISO, isValid } from 'date-fns';
 
 const CustomTextInputWithDatePicker = ({ label, value, onChangeText, placeholder, secureTextEntry, editable = true, style, ...props }) => {
   const [isDatePickerVisible, setDatePickerVisible] = useState(false);
-  const [selectedDate, setSelectedDate] = useState(null); // Initialize with null
+  const [selectedDate, setSelectedDate] = useState(null);
 
   useEffect(() => {
-    // Update selectedDate when value changes (like when props.value changes)
-    if (value) {
-      setSelectedDate(new Date(value));
+    if (value && value !== 'null 00:00:00') {
+      // Trim the value to remove any extra parts if necessary
+      const trimmedValue = value.split(' ')[0];
+      try {
+        const parsedDate = parseISO(trimmedValue);
+        if (isValid(parsedDate)) {
+          setSelectedDate(parsedDate);
+        } else {
+          setSelectedDate(null);
+        }
+      } catch (error) {
+        setSelectedDate(null);
+      }
     } else {
-      setSelectedDate(null); // Reset to null if value is empty
+      setSelectedDate(null);
     }
   }, [value]);
 
   const handleConfirm = (date) => {
-    setDatePickerVisible(false);
-    setSelectedDate(date);
-    onChangeText(date.toISOString().split('T')[0]); // Formatting date to YYYY-MM-DD
+    try {
+      const formattedDate = format(date, 'yyyy-MM-dd');
+      setDatePickerVisible(false);
+      setSelectedDate(date);
+      onChangeText(formattedDate);
+    } catch (error) {
+      console.error('Invalid date format', error);
+    }
   };
 
   const handleCancel = () => {
@@ -31,7 +47,7 @@ const CustomTextInputWithDatePicker = ({ label, value, onChangeText, placeholder
       <TouchableOpacity onPress={() => setDatePickerVisible(true)}>
         <View pointerEvents="none">
           <TextInput
-            value={selectedDate ? selectedDate.toISOString().split('T')[0] : ''}
+            value={selectedDate ? format(selectedDate, 'yyyy-MM-dd') : ''}
             placeholder={placeholder}
             editable={editable}
             secureTextEntry={secureTextEntry}
@@ -48,12 +64,12 @@ const CustomTextInputWithDatePicker = ({ label, value, onChangeText, placeholder
         <View style={styles.modalContainer}>
           <View style={styles.datePickerContainer}>
             <DatePicker
-              date={selectedDate || new Date()} // Use selectedDate or default to current date
+              date={selectedDate || new Date()}
               onDateChange={setSelectedDate}
               mode="date"
             />
             <Button title="Confirm" onPress={() => handleConfirm(selectedDate || new Date())} />
-            <Button title="Cancel" style={{marginTop:4}} onPress={handleCancel} />
+            <Button title="Cancel" style={{ marginTop: 4 }} onPress={handleCancel} />
           </View>
         </View>
       </Modal>

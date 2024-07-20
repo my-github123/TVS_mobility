@@ -13,6 +13,7 @@ import {
   TouchableWithoutFeedback,
   BackHandler,
   Text,
+  ToastAndroid,
   StatusBar,
   Modal,
   FlatList,
@@ -140,22 +141,46 @@ useEffect(() => {
     getAllOrders(pastDate, currentDate);
   }, []);
 
+  // YourComponent.js
+
   const getOrderList = async () => {
-   
     try {
       const response = await apiGetWithToken('getAllOrders');
-      setDashboardDetails(response.data.data);
-      setFilteredData(response.data.data);
-      setOrderListCount(response.data.counts);
-      setRefreshing(false);
-      setLoading(false);
-      console.log(response.data.counts,"COUNT INNDIA");
-     
+  
+      // Check if the response contains an error
+      if (response.error === 'Unauthorized') {
+        Alert.alert(
+          'Session Expired',
+          'Your session has expired. Please log in again.',
+          [
+            {
+              text: 'OK',
+              onPress: async () => {
+                await deleteItem('token'); // Remove token
+                navigation.dispatch(
+                  CommonActions.reset({
+                    index: 0,
+                    routes: [{ name: 'Login' }],
+                  })
+                );
+              }
+            }
+          ]
+        );
+      } else {
+        // Process the response if no error
+        setDashboardDetails(response.data.data);
+        setFilteredData(response.data.data);
+        setOrderListCount(response.data.counts);
+        setRefreshing(false);
+        setLoading(false);
+        console.log(response.data.counts, "COUNT INNDIA");
+      }
     } catch (error) {
       console.error('GET error:', error);
     }
-    
   };
+
 
 
   const handleFromDateSelect = (date) => {
@@ -205,11 +230,13 @@ useEffect(() => {
       setRefreshing(false);
     }
   };
-
+const [role,setRole]=useState("");
 
   const getData = async () => {
     try {
       const username = await getItem('username');
+      const roleType = await getItem('role');
+      setRole(roleType)
 
       console.log(username,"kjjh");
 
@@ -309,13 +336,23 @@ useEffect(() => {
 
   }
 
+  const handlePress = (item) => {
+    if (role === 'Reinspector') {
+      callInitiated(item);
+    }
+    else {
+      ToastAndroid.show('You do not have permission to initiate', ToastAndroid.SHORT);
+    }
+  };
+
+
   const handleImageClick = () => {
     setModalVisible(true);
   };
 
 
   const renderItem = ({ item }) => (
-    <TouchableOpacity style={styles.card}  onPress={()=>callInitiated(item)}>
+    <TouchableOpacity style={styles.card}  onPress={()=>handlePress(item)}>
       <View style={styles.row}>
         <Text style={styles.vechNumber}>{item.vechNumber===""?"-":item.vechNumber}</Text>
         <Text style={[styles.status, { backgroundColor: item.orderStatus === 1 ? '#4375fa' : '#6ecb96' }]}>

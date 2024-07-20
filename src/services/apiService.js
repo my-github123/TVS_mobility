@@ -12,20 +12,27 @@ const axiosInstance = axios.create({
   },
 });
 
-export const apiGetWithToken = async endpoint => {
+export const apiGetWithToken = async (endpoint) => {
   try {
     const token = await getItem('token');
     console.log('Retrieved token:', token);
+
     const response = await axiosInstance.get(endpoint, {
       headers: {
-        Authorization:token,
-        apiKey:apiKey
+        Authorization: token,
+        apiKey: apiKey
       },
     });
+
     return response.data;
   } catch (error) {
-    console.error('Error:', error);
-    throw error;
+    if (error.response && error.response.status === 401) {
+      // Return a specific error message for 401 errors
+      return { error: 'Unauthorized' };
+    } else {
+      console.error('Error:', error);
+      throw error;
+    }
   }
 };
 

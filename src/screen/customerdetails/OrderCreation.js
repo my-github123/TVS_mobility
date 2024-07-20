@@ -72,7 +72,7 @@ const OrderCreation = ({navigation}) => {
     userPresentAddress,
   } = route.params;
 
-  console.log(id, orderId, 'VECHICLE NUMBER');
+  console.log(id, 'RUNING ID IS THERE......');
 
   const dispatch = useDispatch();
 
@@ -146,9 +146,11 @@ const OrderCreation = ({navigation}) => {
   const [selectedOption4, setSelectedOption4] = useState('');
   const [selectedOption5, setSelectedOption5] = useState('');
   const [selectedOption6, setSelectedOption6] = useState('');
-  const [selectedOption7, setSelectedOption7] = useState(
-    blacklist === 'NA' ? 2 : blacklist === null ? 2 : 1,
-  );
+  const [selectedOption7, setSelectedOption7] = useState('');
+  const [dealerIdNumbers,setDealerIdNumbers]=useState(Array.from({length:4},()=>""))
+  const [spareWheelIdNumber,setSpareWheelIdNumber]=useState(Array.from({length:1},()=>""))
+  
+  // blacklist === 'NA' ? 2 : blacklist === null ? 2 : 1,
   const [selectedOption8, setSelectedOption8] = useState('');
   const [selectedOption9, setSelectedOption9] = useState('');
   const [selectedOption10, setSelectedOption10] = useState('');
@@ -264,9 +266,13 @@ const OrderCreation = ({navigation}) => {
   // const [value2, setValue2] = useState(0.0); // Initialize value state
   //   const [value3, setValue3] = useState(0.0); // Initialize value state
   const [values, setValues] = useState(Array(4).fill(0.0));
+ 
 
   const [spareWheel, setSpareWheel] = useState(Array(1).fill(0.0));
   const handleValueChange = (val, index) => {
+    const newId=[...dealerIdNumbers];
+    newId[index]="";
+    setDealerIdNumbers(newId)
     const newValues = [...values]; // Create a copy of the current values
     newValues[index] = val; // Update the value at the specific index
     setValues(newValues); // Set the new values array
@@ -291,6 +297,10 @@ const OrderCreation = ({navigation}) => {
   // };
 
   const handleValueChange4 = (val, index) => {
+
+    const newId=[...spareWheelIdNumber];
+    newId[index]="";
+    setSpareWheelIdNumber(newId)
     const newValues = [...spareWheel];
     newValues[index] = val;
     setSpareWheel(newValues);
@@ -382,6 +392,20 @@ const OrderCreation = ({navigation}) => {
     Array.from({length: 7}, () => ''),
   );
 
+  const [suspensionPhotoBoolean, setSuspensionPhotoBoolean] = useState(
+    Array.from({length: 7}, () => false),
+  );
+  const [suspensionRemarksBoolean, setSuspensionRemarksBoolean] = useState(
+    Array.from({length: 7}, () => false),
+  );
+
+  const [suspensionSwitchBoolean, setSuspensionSwitchBoolean] = useState(
+    Array.from({length: 7}, () => false),
+  );
+  const [suspensionDropdownBoolean, setSuspensionDropdownBoolean] = useState(
+    Array.from({length: 7}, () => false),
+  );
+
   const [steeringPhoto, setSteeringPhoto] = useState(
     Array.from({length: 4}, () => ''),
   );
@@ -398,6 +422,20 @@ const OrderCreation = ({navigation}) => {
     Array.from({length: 4}, () => ''),
   );
 
+  const [steeringPhotoBoolean, setSteeringPhotoBoolean] = useState(
+    Array.from({length: 4}, () => false),
+  );
+
+  const [steeringRemarksBoolean, setSteeringRemarksBoolean] = useState(
+    Array.from({length: 4}, () => false),
+  );
+  const [steeringSwitchBoolean, setSteeringSwitchBoolean] = useState(
+    Array.from({length: 4}, () => false),
+  );
+  const [steeringDropdownBoolean, setSteeringDropdownBoolean] = useState(
+    Array.from({length: 4}, () => false),
+  );
+
   const [brakePhoto, setBrakePhoto] = useState(
     Array.from({length: 6}, () => ''),
   );
@@ -410,6 +448,20 @@ const OrderCreation = ({navigation}) => {
   );
   const [brakeDropdown, setBrakeDropdown] = useState(
     Array.from({length: 6}, () => ''),
+  );
+
+  const [brakePhotoBoolean, setBrakePhotoBoolean] = useState(
+    Array.from({length: 6}, () => false),
+  );
+
+  const [brakeRemarksBoolean, setBrakeRemarksBoolean] = useState(
+    Array.from({length: 6}, () => false),
+  );
+  const [brakeSwitchBoolean, setBrakeSwitchBoolean] = useState(
+    Array.from({length: 6}, () => false),
+  );
+  const [brakeDropdownBoolean, setBrakeDropdownBoolean] = useState(
+    Array.from({length: 6}, () => false),
   );
 
   const [transmissionPhoto, setTransmissionPhoto] = useState(
@@ -428,6 +480,19 @@ const OrderCreation = ({navigation}) => {
     Array.from({length: 8}, () => ''),
   );
 
+  const [transmissionPhotoBoolean, setTransmissionPhotoBoolean] = useState(
+    Array.from({length: 8}, () => false),
+  );
+
+  const [transmissionRemarksBoolean, setTransmissionRemarksBoolean] = useState(
+    Array.from({length: 8}, () => false),
+  );
+  const [transmissionSwitchBoolean, setTransmissionSwitchBoolean] = useState(
+    Array.from({length: 8}, () => false),
+  );
+  const [transmissionDropdownBoolean, setTransmissionDropdownBoolean] =
+    useState(Array.from({length: 8}, () => false));
+
   const [enginePhoto, setEnginePhoto] = useState(
     Array.from({length: 19}, () => ''),
   );
@@ -442,6 +507,20 @@ const OrderCreation = ({navigation}) => {
   );
   const [engineDropdown, setEngineDropdown] = useState(
     Array.from({length: 19}, () => ''),
+  );
+
+  const [enginePhotoBoolean, setEnginePhotoBoolean] = useState(
+    Array.from({length: 19}, () => false),
+  );
+
+  const [engineRemarksBoolean, setEngineRemarksBoolean] = useState(
+    Array.from({length: 19}, () => false),
+  );
+  const [engineSwitchBoolean, setEngineSwitchBoolean] = useState(
+    Array.from({length: 19}, () => false),
+  );
+  const [engineDropdownBoolean, setEngineDropdownBoolean] = useState(
+    Array.from({length: 19}, () => false),
   );
 
   const [electricalPhoto, setElectricalPhoto] = useState(
@@ -459,6 +538,22 @@ const OrderCreation = ({navigation}) => {
   const [electricalDropdown, setElectricalDropdown] = useState(
     Array.from({length: 15}, () => ''),
   );
+
+  // New state declarations for Boolean values for electrical
+  const [electricalPhotoBoolean, setElectricalPhotoBoolean] = useState(
+    Array.from({length: 15}, () => false),
+  );
+
+  const [electricalRemarksBoolean, setElectricalRemarksBoolean] = useState(
+    Array.from({length: 15}, () => false),
+  );
+  const [electricalSwitchBoolean, setElectricalSwitchBoolean] = useState(
+    Array.from({length: 15}, () => false),
+  );
+  const [electricalDropdownBoolean, setElectricalDropdownBoolean] = useState(
+    Array.from({length: 15}, () => false),
+  );
+
   const [roadTestRemarks, setRoadTestRemarks] = useState('');
 
   const [acPhoto, setAcPhoto] = useState(Array.from({length: 6}, () => ''));
@@ -467,6 +562,21 @@ const OrderCreation = ({navigation}) => {
   const [acSwitch, setAcSwitch] = useState(Array.from({length: 6}, () => ''));
   const [acDropdown, setAcDropdown] = useState(
     Array.from({length: 6}, () => ''),
+  );
+
+  // New state declarations for Boolean values for AC
+  const [acPhotoBoolean, setAcPhotoBoolean] = useState(
+    Array.from({length: 6}, () => false),
+  );
+
+  const [acRemarksBoolean, setAcRemarksBoolean] = useState(
+    Array.from({length: 6}, () => false),
+  );
+  const [acSwitchBoolean, setAcSwitchBoolean] = useState(
+    Array.from({length: 6}, () => false),
+  );
+  const [acDropdownBoolean, setAcDropdownBoolean] = useState(
+    Array.from({length: 6}, () => false),
   );
 
   const [accessoriesPhoto, setAccessoriesPhoto] = useState(
@@ -485,6 +595,20 @@ const OrderCreation = ({navigation}) => {
     Array.from({length: 11}, () => ''),
   );
 
+  const [accessoriesPhotoBoolean, setAccessoriesPhotoBoolean] = useState(
+    Array.from({length: 11}, () => false),
+  );
+
+  const [accessoriesRemarksBoolean, setAccessoriesRemarksBoolean] = useState(
+    Array.from({length: 11}, () => false),
+  );
+  const [accessoriesSwitchBoolean, setAccessoriesSwitchBoolean] = useState(
+    Array.from({length: 11}, () => false),
+  );
+  const [accessoriesDropdownBoolean, setAccessoriesDropdownBoolean] = useState(
+    Array.from({length: 11}, () => false),
+  );
+
   const [oliSwitch, setoilSwitch] = useState(Array.from({length: 5}, () => ''));
 
   const [oilRemarks, setOilRemarks] = useState(
@@ -493,6 +617,17 @@ const OrderCreation = ({navigation}) => {
 
   const [oilDropDown, setOilDropDown] = useState(
     Array.from({length: 5}, () => ''),
+  );
+
+  // New state declarations for Boolean values for Oil
+  const [oliSwitchBoolean, setOliSwitchBoolean] = useState(
+    Array.from({length: 5}, () => false),
+  );
+  const [oilRemarksBoolean, setOilRemarksBoolean] = useState(
+    Array.from({length: 5}, () => false),
+  );
+  const [oilDropDownBoolean, setOilDropDownBoolean] = useState(
+    Array.from({length: 5}, () => false),
   );
 
   const suspensionList = [
@@ -656,6 +791,20 @@ const OrderCreation = ({navigation}) => {
     Array.from({length: 6}, () => ''),
   );
 
+  const [pillarsPhotoBoolean, setPillarsPhotoBoolean] = useState(
+    Array.from({length: 6}, () => false),
+  );
+  const [pillarsPhotoRemarksBoolean, setPillarsPhotoRemarksBoolean] = useState(
+    Array.from({length: 6}, () => false),
+  );
+
+  const [pillarSwitchBoolean, setPillarSwitchBoolean] = useState(
+    Array.from({length: 6}, () => false),
+  );
+  const [pillarsConditionBoolean, setPillarsConditionBoolean] = useState(
+    Array.from({length: 6}, () => false),
+  );
+
   const [apronPhoto, setApronPhoto] = useState(
     Array.from({length: 2}, () => ''),
   );
@@ -670,6 +819,21 @@ const OrderCreation = ({navigation}) => {
   );
   const [apronCondition, setApronCondition] = useState(
     Array.from({length: 2}, () => ''),
+  );
+
+  // New state declarations for Boolean values for apron
+  const [apronPhotoBoolean, setApronPhotoBoolean] = useState(
+    Array.from({length: 2}, () => false),
+  );
+  const [apronRemarksBoolean, setApronRemarksBoolean] = useState(
+    Array.from({length: 2}, () => false),
+  );
+
+  const [apronSwitchBoolean, setApronSwitchBoolean] = useState(
+    Array.from({length: 2}, () => false),
+  );
+  const [apronConditionBoolean, setApronConditionBoolean] = useState(
+    Array.from({length: 2}, () => false),
   );
 
   const [fenderPhoto, setFendersPhoto] = useState(
@@ -688,6 +852,20 @@ const OrderCreation = ({navigation}) => {
     Array.from({length: 2}, () => ''),
   );
 
+  const [fenderPhotoBoolean, setFenderPhotoBoolean] = useState(
+    Array.from({length: 2}, () => false),
+  );
+  const [fenderRemarksBoolean, setFenderRemarksBoolean] = useState(
+    Array.from({length: 2}, () => false),
+  );
+
+  const [fenderSwitchBoolean, setFenderSwitchBoolean] = useState(
+    Array.from({length: 2}, () => false),
+  );
+  const [fenderConditionBoolean, setFenderConditionBoolean] = useState(
+    Array.from({length: 2}, () => false),
+  );
+
   const [quarterPanlesPhoto, setQuarterPanlesPhoto] = useState(
     Array.from({length: 2}, () => ''),
   );
@@ -703,6 +881,18 @@ const OrderCreation = ({navigation}) => {
   const [quarterPanlesCondition, setQuarterPanlesCondition] = useState(
     Array.from({length: 2}, () => ''),
   );
+
+  const [quarterPanlesPhotoBoolean, setQuarterPanlesPhotoBoolean] = useState(
+    Array.from({length: 2}, () => false),
+  );
+  const [quarterPanlesRemarksBoolean, setQuarterPanlesRemarksBoolean] =
+    useState(Array.from({length: 2}, () => false));
+
+  const [quarterPanlesSwitchBoolean, setQuarterPanlesSwitchBoolean] = useState(
+    Array.from({length: 2}, () => false),
+  );
+  const [quarterPanlesConditionBoolean, setQuarterPanlesConditionBoolean] =
+    useState(Array.from({length: 2}, () => false));
 
   const [runningBoardPhoto, setRunningBoardPhoto] = useState(
     Array.from({length: 2}, () => ''),
@@ -720,6 +910,19 @@ const OrderCreation = ({navigation}) => {
     Array.from({length: 2}, () => ''),
   );
 
+  const [runningBoardPhotoBoolean, setRunningBoardPhotoBoolean] = useState(
+    Array.from({length: 2}, () => false),
+  );
+  const [runningBoardRemarksBoolean, setRunningBoardRemarksBoolean] = useState(
+    Array.from({length: 2}, () => false),
+  );
+
+  const [runningBoardSwitchBoolean, setRunningBoardSwitchBoolean] = useState(
+    Array.from({length: 2}, () => false),
+  );
+  const [runningBoardConditionBoolean, setRunningBoardConditionBoolean] =
+    useState(Array.from({length: 2}, () => false));
+
   const [doorPhoto, setDoorPhoto] = useState(Array.from({length: 4}, () => ''));
   const [doorRemarks, setDoorRemarks] = useState(
     Array.from({length: 4}, () => ''),
@@ -732,6 +935,20 @@ const OrderCreation = ({navigation}) => {
   );
   const [doorCondition, setDoorCondition] = useState(
     Array.from({length: 4}, () => ''),
+  );
+
+  const [doorPhotoBoolean, setDoorPhotoBoolean] = useState(
+    Array.from({length: 4}, () => false),
+  );
+  const [doorRemarksBoolean, setDoorRemarksBoolean] = useState(
+    Array.from({length: 4}, () => false),
+  );
+
+  const [doorSwitchBoolean, setDoorSwitchBoolean] = useState(
+    Array.from({length: 4}, () => false),
+  );
+  const [doorConditionBoolean, setDoorConditionBoolean] = useState(
+    Array.from({length: 4}, () => false),
   );
 
   const [dickyDoorPhoto, setDickyDoorPhoto] = useState(
@@ -750,6 +967,20 @@ const OrderCreation = ({navigation}) => {
     Array.from({length: 1}, () => ''),
   );
 
+  const [dickyDoorPhotoBoolean, setDickyDoorPhotoBoolean] = useState(
+    Array.from({length: 1}, () => false),
+  );
+  const [dickyDoorRemarksBoolean, setDickyDoorRemarksBoolean] = useState(
+    Array.from({length: 1}, () => false),
+  );
+
+  const [dickyDoorSwitchBoolean, setDickyDoorSwitchBoolean] = useState(
+    Array.from({length: 1}, () => false),
+  );
+  const [dickyDoorConditionBoolean, setDickyDoorConditionBoolean] = useState(
+    Array.from({length: 1}, () => false),
+  );
+
   const [dickySkirtPhoto, setDickySkirtPhoto] = useState(
     Array.from({length: 1}, () => ''),
   );
@@ -766,11 +997,34 @@ const OrderCreation = ({navigation}) => {
     Array.from({length: 1}, () => ''),
   );
 
+  const [dickySkirtPhotoBoolean, setDickySkirtPhotoBoolean] = useState(
+    Array.from({length: 1}, () => false),
+  );
+  const [dickySkirtRemarksBoolean, setDickySkirtRemarksBoolean] = useState(
+    Array.from({length: 1}, () => false),
+  );
+
+  const [dickySkirtSwitchBoolean, setDickySkirtSwitchBoolean] = useState(
+    Array.from({length: 1}, () => false),
+  );
+  const [dickySkirtConditionBoolean, setDickySkirtConditionBoolean] = useState(
+    Array.from({length: 1}, () => false),
+  );
+
   const [bonetPhoto, setBonetPhoto] = useState(
     Array.from({length: 1}, () => ''),
   );
+
+  const [bonetPhotoBoolean, setBonetPhotoBoolean] = useState(
+    Array.from({length: 1}, () => false),
+  );
+
   const [bonetRemarks, setBonetRemarks] = useState(
     Array.from({length: 1}, () => ''),
+  );
+
+  const [bonetRemarksBoolean, setBonetRemarksBoolean] = useState(
+    Array.from({length: 1}, () => false),
   );
   const [bonetBase64, setBonetBase64] = useState(
     Array.from({length: 1}, () => ''),
@@ -778,8 +1032,17 @@ const OrderCreation = ({navigation}) => {
   const [bonetSwitch, setBonetSwitch] = useState(
     Array.from({length: 1}, () => ''),
   );
+
+  const [bonetSwitchBoolean, setBonetSwitchBoolean] = useState(
+    Array.from({length: 1}, () => false),
+  );
+
   const [bonetCondition, setBonetCondition] = useState(
     Array.from({length: 1}, () => ''),
+  );
+
+  const [bonetConditionBoolean, setBonetConditionBoolean] = useState(
+    Array.from({length: 1}, () => false),
   );
 
   const [supportMembersPhoto, setSupportMembersPhoto] = useState(
@@ -798,6 +1061,16 @@ const OrderCreation = ({navigation}) => {
     Array.from({length: 4}, () => ''),
   );
 
+  const [supportMembersPhotoBoolean, setSupportMembersPhotoBoolean] = useState(
+    Array.from({length: 4}, () => false),
+  );
+  const [supportMembersRemarksBoolean, setSupportMembersRemarksBoolean] =
+    useState(Array.from({length: 4}, () => false));
+  const [supportMembersSwitchBoolean, setSupportMembersSwitchBoolean] =
+    useState(Array.from({length: 4}, () => false));
+  const [supportMembersConditionBoolean, setSupportMembersConditionBoolean] =
+    useState(Array.from({length: 4}, () => false));
+
   const [bumperPhoto, setBumperPhoto] = useState(
     Array.from({length: 2}, () => ''),
   );
@@ -814,6 +1087,20 @@ const OrderCreation = ({navigation}) => {
     Array.from({length: 2}, () => ''),
   );
 
+  const [bumperPhotoBoolean, setBumperPhotoBoolean] = useState(
+    Array.from({length: 2}, () => false),
+  );
+  const [bumperRemarksBoolean, setBumperRemarksBoolean] = useState(
+    Array.from({length: 2}, () => false),
+  );
+
+  const [bumperSwitchBoolean, setBumperSwitchBoolean] = useState(
+    Array.from({length: 2}, () => false),
+  );
+  const [bumperConditionBoolean, setBumperConditionBoolean] = useState(
+    Array.from({length: 2}, () => false),
+  );
+
   const [wheelTypePhoto, setWheelTypePhoto] = useState(
     Array.from({length: 1}, () => ''),
   );
@@ -825,6 +1112,18 @@ const OrderCreation = ({navigation}) => {
   );
   const [wheelTypeSwitch, setWheelTypeSwitch] = useState(
     Array.from({length: 1}, () => ''),
+  );
+
+  // New state declarations for Boolean values for wheel type
+  const [wheelTypePhotoBoolean, setWheelTypePhotoBoolean] = useState(
+    Array.from({length: 1}, () => false),
+  );
+  const [wheelTypeRemarksBoolean, setWheelTypeRemarksBoolean] = useState(
+    Array.from({length: 1}, () => false),
+  );
+
+  const [wheelTypeSwitchBoolean, setWheelTypeSwitchBoolean] = useState(
+    Array.from({length: 1}, () => false),
   );
 
   const [selectWheelTypeSwitch, setSelectWheelTypeSwitch] = useState(
@@ -850,16 +1149,38 @@ const OrderCreation = ({navigation}) => {
     Array.from({length: 2}, () => ''),
   );
 
+  const [windShieldPhotoBoolean, setWindShieldPhotoBoolean] = useState(
+    Array.from({length: 2}, () => false),
+  );
+  const [windShieldRemarksBoolean, setWindShieldRemarksBoolean] = useState(
+    Array.from({length: 2}, () => false),
+  );
+
+  const [windShieldSwitchBoolean, setWindShieldSwitchBoolean] = useState(
+    Array.from({length: 2}, () => false),
+  );
+  const [windShieldConditionBoolean, setWindShieldConditionBoolean] = useState(
+    Array.from({length: 2}, () => false),
+  );
+
   const rcList = ['RC Front Photo', 'RC Back Photo', 'Others Photo'];
   const insuranceList = ['Page 1 Photo', 'Page 2 Photo', 'Others Photo'];
   const nocList = ['NOC Photo', 'NOC Others'];
 
   const [rcPhoto, setRcPhoto] = useState(Array.from({length: 3}, () => ''));
 
+  const [rcPhotoBoolean, setRcPhotoBoolean] = useState(
+    Array.from({length: 3}, () => false),
+  );
+
   const [rcBase64, setRcBase64] = useState(Array.from({length: 3}, () => ''));
 
   const [insurancePhoto, setInsuracePhoto] = useState(
     Array.from({length: 3}, () => ''),
+  );
+
+  const [insurancePhotoBoolean, setInsuracePhotoBoolean] = useState(
+    Array.from({length: 3}, () => false),
   );
 
   const [insuranceBase64, setInsuraceBase64] = useState(
@@ -868,7 +1189,11 @@ const OrderCreation = ({navigation}) => {
 
   const [nocPhoto, setNOCPhoto] = useState(Array.from({length: 2}, () => ''));
 
-  const [nocBase64, setNOCBase64] = useState(Array.from({length: 3}, () => ''));
+  const [nocBase64, setNOCBase64] = useState(Array.from({length: 2}, () => ''));
+
+  const [nocPhotoBoolean, setNOCPhotoBoolean] = useState(
+    Array.from({length: 2}, () => false),
+  );
 
   const tyresList = [
     'FrontTyre Left',
@@ -900,8 +1225,16 @@ const OrderCreation = ({navigation}) => {
     Array.from({length: 1}, () => ''),
   );
 
+  const [frontViewPhotoBoolean, setFrontViewPhotoBoolean] = useState(
+    Array.from({length: 1}, () => false),
+  );
+
   const [frontViewRemarks, setFrontViewRemarks] = useState(
     Array.from({length: 1}, () => ''),
+  );
+
+  const [frontViewRemarksBoolean, setFrontViewRemarksBoolean] = useState(
+    Array.from({length: 1}, () => false),
   );
 
   const [frontViewBase64, setFrontViewBase64] = useState(
@@ -912,6 +1245,10 @@ const OrderCreation = ({navigation}) => {
     Array.from({length: 1}, () => ''),
   );
 
+  const [engineRoomPhotoBoolean, setEngineRoomPhotoBoolean] = useState(
+    Array.from({length: 1}, () => false),
+  );
+
   const [engineRoomBase64, setEngineRoomBase64] = useState(
     Array.from({length: 1}, () => ''),
   );
@@ -920,10 +1257,22 @@ const OrderCreation = ({navigation}) => {
     Array.from({length: 1}, () => ''),
   );
 
+  const [engineRoomRemarksBoolean, setEngineRoomRemarksBoolean] = useState(
+    Array.from({length: 1}, () => false),
+  );
+
   const [chassisPunchPhoto, setChassisPunchPhoto] = useState(
     Array.from({length: 1}, () => ''),
   );
+
+  const [chassisPunchPhotoBoolean, setChassisPunchPhotoBoolean] = useState(
+    Array.from({length: 1}, () => false),
+  );
   const [chassisRemarks, setChassisRemarks] = useState(
+    Array.from({length: 1}, () => ''),
+  );
+
+  const [chassisRemarksBoolean, setChassisRemarksBoolean] = useState(
     Array.from({length: 1}, () => ''),
   );
   const [chassisBase64, setChassisBase64] = useState(
@@ -932,28 +1281,58 @@ const OrderCreation = ({navigation}) => {
   const [chassisSwitch, setChassisSwitch] = useState(
     Array.from({length: 1}, () => ''),
   );
+
+  const [chassisSwitchBoolean, setChassisSwitchBoolean] = useState(
+    Array.from({length: 1}, () => false),
+  );
+
   const [chassisCondition, setChasisCondition] = useState(
     Array.from({length: 1}, () => ''),
+  );
+
+  const [chassisConditionBoolean, setChasisConditionBoolean] = useState(
+    Array.from({length: 1}, () => false),
   );
 
   const [vinPlatePunchPhoto, setVinPlatePunchPhoto] = useState(
     Array.from({length: 1}, () => ''),
   );
+
+  const [vinPlatePunchPhotoBoolean, setVinPlatePunchPhotoBoolean] = useState(
+    Array.from({length: 1}, () => false),
+  );
   const [vinPlateRemarks, setVinPlateRemarks] = useState(
     Array.from({length: 1}, () => ''),
   );
+
+  const [vinPlateRemarksBoolean, setVinPlateRemarksBoolean] = useState(
+    Array.from({length: 1}, () => false),
+  );
+
   const [vinPlateBase64, setVinPlateBase64] = useState(
     Array.from({length: 1}, () => ''),
   );
   const [vinPlateSwitch, setVinPlateSwitch] = useState(
     Array.from({length: 1}, () => ''),
   );
+
+  const [vinPlateBoolean, setVinPlateSwitchBoolean] = useState(
+    Array.from({length: 1}, () => false),
+  );
   const [vinPlateCondition, setVinPlateCondition] = useState(
     Array.from({length: 1}, () => ''),
   );
 
+  const [vinPlateConditionBoolean, setVinPlateConditionBoolean] = useState(
+    Array.from({length: 1}, () => false),
+  );
+
   const [rhsViewPhoto, setRhsViewPhoto] = useState(
     Array.from({length: 1}, () => ''),
+  );
+
+  const [rhsViewPhotoBoolean, setRhsViewPhotoBoolean] = useState(
+    Array.from({length: 1}, () => false),
   );
 
   const [rhsViewBase64, setRhsViewBase64] = useState(
@@ -964,8 +1343,16 @@ const OrderCreation = ({navigation}) => {
     Array.from({length: 1}, () => ''),
   );
 
+  const [rhsViewRemarksBoolean, setRhsViewRemarksBoolean] = useState(
+    Array.from({length: 1}, () => false),
+  );
+
   const [lhsViewPhoto, setLhsViewPhoto] = useState(
     Array.from({length: 1}, () => ''),
+  );
+
+  const [lhsViewPhotoBoolean, setLhsViewPhotoBoolean] = useState(
+    Array.from({length: 1}, () => false),
   );
 
   const [lhsViewBase64, setLhsViewBase64] = useState(
@@ -976,8 +1363,16 @@ const OrderCreation = ({navigation}) => {
     Array.from({length: 1}, () => ''),
   );
 
+  const [lhsViewRemarksBoolean, setLhsViewRemarksBoolean] = useState(
+    Array.from({length: 1}, () => false),
+  );
+
   const [rearViewPhoto, setRearViewPhoto] = useState(
     Array.from({length: 1}, () => ''),
+  );
+
+  const [rearViewPhotoBoolean, setRearViewPhotoBoolean] = useState(
+    Array.from({length: 1}, () => false),
   );
 
   const [rearViewBase64, setRearViewBase64] = useState(
@@ -988,8 +1383,16 @@ const OrderCreation = ({navigation}) => {
     Array.from({length: 1}, () => ''),
   );
 
+  const [rearViewRemarksBoolean, setRearViewRemarksBoolean] = useState(
+    Array.from({length: 1}, () => false),
+  );
+
   const [trunkBootPhoto, setTrunkBootPhoto] = useState(
     Array.from({length: 1}, () => ''),
+  );
+
+  const [trunkBootPhotoBoolean, setTrunkBootPhotoBoolean] = useState(
+    Array.from({length: 1}, () => false),
   );
 
   const [trunkBootBase64, setTrunkBootBase64] = useState(
@@ -1000,7 +1403,15 @@ const OrderCreation = ({navigation}) => {
     Array.from({length: 1}, () => ''),
   );
 
+  const [trunkBootRemarksBoolean, setTrunkBootRemarksBoolean] = useState(
+    Array.from({length: 1}, () => false),
+  );
+
   const [roofPhoto, setRoofPhoto] = useState(Array.from({length: 1}, () => ''));
+
+  const [roofPhotoBoolean, setRoofPhotoBoolean] = useState(
+    Array.from({length: 1}, () => false),
+  );
 
   const [roofBase64, setRoofBase64] = useState(
     Array.from({length: 1}, () => ''),
@@ -1010,8 +1421,16 @@ const OrderCreation = ({navigation}) => {
     Array.from({length: 1}, () => ''),
   );
 
+  const [roofRemarksBoolean, setRoofRemarksBoolean] = useState(
+    Array.from({length: 1}, () => false),
+  );
+
   const [underChassisPhoto, setUnderChassisPhoto] = useState(
     Array.from({length: 1}, () => ''),
+  );
+
+  const [underChassisPhotoBoolean, setUnderChassisPhotoBoolean] = useState(
+    Array.from({length: 1}, () => false),
   );
 
   const [underChassisBase64, setUnderChassisBase64] = useState(
@@ -1022,8 +1441,16 @@ const OrderCreation = ({navigation}) => {
     Array.from({length: 1}, () => ''),
   );
 
+  const [underChassisRemarksBoolean, setUnderChassisRemarksBoolean] = useState(
+    Array.from({length: 1}, () => false),
+  );
+
   const [odometerPhoto, setOdometerPhoto] = useState(
     Array.from({length: 1}, () => ''),
+  );
+
+  const [odometerPhotoBoolean, setOdometerPhotoBoolean] = useState(
+    Array.from({length: 1}, () => false),
   );
 
   const [odometerBase64, setOdometerBase64] = useState(
@@ -1034,7 +1461,15 @@ const OrderCreation = ({navigation}) => {
     Array.from({length: 1}, () => ''),
   );
 
+  const [odometerRemarksBoolean, setOdometerRemarksBoolean] = useState(
+    Array.from({length: 1}, () => false),
+  );
+
   const [interiorPhoto, setInteriorPhoto] = useState(
+    Array.from({length: 1}, () => ''),
+  );
+
+  const [interiorPhotoBoolean, setInteriorPhotoBoolean] = useState(
     Array.from({length: 1}, () => ''),
   );
 
@@ -1046,64 +1481,143 @@ const OrderCreation = ({navigation}) => {
     Array.from({length: 1}, () => ''),
   );
 
+  const [interiorRemarksBoolean, setInteriorRemarksBoolean] = useState(
+    Array.from({length: 1}, () => ''),
+  );
+
   const [tyrePunchPhoto, setTyrePunchPhoto] = useState(
     Array.from({length: 4}, () => ''),
   );
+
+  const [tyrePunchPhotoBoolean, setTyrePunchPhotoBoolean] = useState(
+    Array.from({length: 4}, () => false),
+  );
+
   const [tyreRemarks, setTyreRemarks] = useState(
     Array.from({length: 4}, () => ''),
   );
+
+  const [tyreRemarksBoolean, setTyreRemarksBoolean] = useState(
+    Array.from({length: 4}, () => false),
+  );
+
   const [tyreBase64, setTyreBase64] = useState(
     Array.from({length: 4}, () => ''),
   );
   const [tyreSwitch, setTyreSwitch] = useState(
     Array.from({length: 4}, () => ''),
   );
+
+  const [tyreSwitchBoolean, setTyreSwitchBoolean] = useState(
+    Array.from({length: 4}, () => false),
+  );
+
   const [tyreCondition, setTyreCondition] = useState(
     Array.from({length: 4}, () => ''),
+  );
+
+  const [tyreConditionBoolean, setTyreConditionBoolean] = useState(
+    Array.from({length: 4}, () => false),
   );
 
   const [spareWheelPunchPhoto, setSpareWheelPunchPhoto] = useState(
     Array.from({length: 1}, () => ''),
   );
+
+  const [spareWheelPunchPhotoBoolean, setSpareWheelPunchPhotoBoolean] =
+    useState(Array.from({length: 1}, () => false));
+
   const [spareWheelRemarks, setSpareWheelRemarks] = useState(
     Array.from({length: 1}, () => ''),
   );
+
+  const [spareWheelRemarksBoolean, setSpareWheelRemarksBoolean] = useState(
+    Array.from({length: 1}, () => false),
+  );
+
   const [spareWheelBase64, setSpareWheelBase64] = useState(
     Array.from({length: 1}, () => ''),
   );
   const [spareWheelSwitch, setSpareWheelSwitch] = useState(
     Array.from({length: 1}, () => ''),
   );
+
+  const [spareWheelSwitchBoolean, setSpareWheelSwitchBoolean] = useState(
+    Array.from({length: 1}, () => false),
+  );
+
   const [spareWheelCondition, setSpareWheelCondition] = useState(
     Array.from({length: 1}, () => ''),
+  );
+
+  const [spareWheelConditionBoolean, setSpareWheelConditionBoolean] = useState(
+    Array.from({length: 1}, () => false),
   );
 
   const [toolKitPunchPhoto, setToolkitPunchPhoto] = useState(
     Array.from({length: 1}, () => ''),
   );
+
+  const [toolKitPunchPhotoBoolean, setToolkitPunchPhotoBoolean] = useState(
+    Array.from({length: 1}, () => false),
+  );
+
   const [toolKitRemarks, setToolkitRemarks] = useState(
     Array.from({length: 1}, () => ''),
   );
+
+  const [toolKitRemarksBoolean, setToolkitRemarksBoolean] = useState(
+    Array.from({length: 1}, () => false),
+  );
+
   const [toolKitBase64, setToolkitBase64] = useState(
     Array.from({length: 1}, () => ''),
   );
   const [toolKitSwitch, setToolkitSwitch] = useState(
     Array.from({length: 1}, () => ''),
   );
+
+  const [toolKitSwitchBoolean, setToolkitSwitchBoolean] = useState(
+    Array.from({length: 1}, () => false),
+  );
+
   const [toolKitCondition, setToolkitCondition] = useState(
     Array.from({length: 1}, () => ''),
+  );
+
+  const [toolKitConditionBoolean, setToolkitConditionBoolean] = useState(
+    Array.from({length: 1}, () => false),
   );
 
   const [keyPunchPhoto, setKeyPunchPhoto] = useState(
     Array.from({length: 2}, () => ''),
   );
+
+  const [keyPunchPhotoBoolean, setKeyPunchPhotoBoolean] = useState(
+    Array.from({length: 2}, () => false),
+  );
+
   const [keyRemarks, setKeyRemarks] = useState(
     Array.from({length: 2}, () => ''),
   );
+
+  const [keyRemarksBoolean, setKeyRemarksBoolean] = useState(
+    Array.from({length: 2}, () => false),
+  );
+
   const [keyBase64, setKeyBase64] = useState(Array.from({length: 2}, () => ''));
   const [keySwitch, setKeySwitch] = useState(Array.from({length: 2}, () => ''));
+
+  const [keySwitchBoolean, setKeySwitchBoolean] = useState(
+    Array.from({length: 2}, () => false),
+  );
+
   const [keyCondition, setKeyCondition] = useState(
     Array.from({length: 2}, () => ''),
+  );
+
+  const [keyConditionBoolean, setKeyConditionBoolean] = useState(
+    Array.from({length: 2}, () => false),
   );
 
   const [modalVisible, setModalVisible] = useState(false);
@@ -1453,7 +1967,10 @@ const OrderCreation = ({navigation}) => {
   const getFieldValue = (status, value) => (status === 'Not Ok' ? value : '');
 
   const handleNext = async step => {
+    console.log('after.............................................');
     const itemId = await getItem('dealarId');
+
+    console.log(itemId, 'DELAR ID IS THERE...... ID IS THERE................');
     setLoading(true);
     let params = {};
 
@@ -1480,6 +1997,7 @@ const OrderCreation = ({navigation}) => {
           dealerId: itemId,
           orderStatus: 1,
           vechNumber: vechicleNumber,
+          vechNumber: vechicleNumber,
           make: make,
           model: model,
           year: year,
@@ -1488,7 +2006,6 @@ const OrderCreation = ({navigation}) => {
           color: color,
           transmission: getSwitchType(selectedOption),
           fuelType: getFuelType(selectedOption1),
-          alteration: getCngType(selectedOption2),
           alteration: alterationResult,
           owners: owners,
           hasHypothecated: getSwitchYesOrNo(selectedOption3),
@@ -1498,6 +2015,7 @@ const OrderCreation = ({navigation}) => {
           reRegistered: getSwitchYesOrNo(selectedOption5),
           cubicCapacity: cubicCapacity,
         };
+
         break;
       case 2:
         params = {
@@ -1516,7 +2034,7 @@ const OrderCreation = ({navigation}) => {
           engineNumber: engineNumber,
           rcStatus: getOriginal(selectedOption8),
           stateNoc: getSwitchYesOrNo(selectedOption9),
-          flood: getSwitchYesOrNo(selectedOption10),
+          flood: getSwitchYesOrNo(selectedOption10)
         };
         break;
       case 3:
@@ -3258,10 +3776,13 @@ const OrderCreation = ({navigation}) => {
     return diff;
   };
 
-  const handleNextUpdate = async (step) => {
+  const handleNextUpdate = async step => {
+    console.log('pure.......................................');
     const itemId = await getItem('dealarId');
     setLoading(true);
     let params = {};
+
+    console.log(itemId, 'ITEM ID IS THERE........');
 
     const alterationResult = showAlterationOptions
       ? selectedOption2 == 1
@@ -3278,43 +3799,39 @@ const OrderCreation = ({navigation}) => {
       tyre3Condition: `${Math.round(values[2] * 100)}%`,
       tyre4Condition: `${Math.round(values[3] * 100)}%`,
     };
-   
 
     switch (step) {
       case 1:
-      
-      params = {
-        id: id ? id : orderId,
-        dealerId: itemId,
-        orderStatus: 1,
-        vechNumber: vechicleNumber,
-        make: make,
-        model: model,
-        year: year,
-        variant: variant,
-        mileage: mileage,
-        color: color,
-        transmission: getSwitchType(selectedOption),
-        fuelType: getFuelType(selectedOption1),
-        alteration: getCngType(selectedOption2),
-        alteration: alterationResult,
-        owners: owners,
-        hasHypothecated: getSwitchYesOrNo(selectedOption3),
-        hypothecatedBy: hypothecatedBy,
-        noc: getSwitchYesOrNo(selectedOption4),
-        roadTaxValid:`${roadTaxValid} 00:00:00`,
-        reRegistered: getSwitchYesOrNo(selectedOption5),
-        cubicCapacity: cubicCapacity,
-      };
+        params = {
+          id: id ? id : orderId,
+          dealerId: dealerIdNumber,
+          orderStatus: 1,
+          vechNumber: vechicleNumber,
+          make: make,
+          model: model,
+          year: year,
+          variant: variant,
+          mileage: mileage,
+          color: color,
+          transmission: getSwitchType(selectedOption),
+          fuelType: getFuelType(selectedOption1),
+          alteration: getCngType(selectedOption2),
+          alteration: alterationResult,
+          owners: owners,
+          hasHypothecated: getSwitchYesOrNo(selectedOption3),
+          hypothecatedBy: hypothecatedBy,
+          noc: getSwitchYesOrNo(selectedOption4),
+          roadTaxValid: `${roadTaxValid} 00:00:00`,
+          reRegistered: getSwitchYesOrNo(selectedOption5),
+          cubicCapacity: cubicCapacity,
+        };
 
-      await getOneOrder();
+        await getOneOrder();
 
-       
         break;
       case 2:
-       
         params = {
-          dealerId: itemId,
+          dealerId: dealerIdNumber,
           id: id ? id : orderId,
           orderStatus: 1,
           numberOfSeats: numberOfSeats,
@@ -3331,46 +3848,43 @@ const OrderCreation = ({navigation}) => {
           stateNoc: getSwitchYesOrNo(selectedOption9),
           flood: getSwitchYesOrNo(selectedOption10),
         };
-      await getTwoOrder()
-       
+        await getTwoOrder();
+
         break;
       case 3:
+        params = {
+          dealerId: dealerIdNumber,
+          id: id ? id : orderId,
+          orderStatus: 1,
+          rcFrontPhoto: rcBase64[0],
+          rcBackPhoto: rcBase64[1],
+          rcOthersPhoto: rcBase64[2],
+          rcRemarks: rcRemarks,
+          insuranceOwnDamagePhoto: insuranceBase64[0],
+          insuranceThirdPartyPhoto: insuranceBase64[1],
+          insuranceOthersPhoto: insuranceBase64[2],
+          insuranceRemarks: insuranceRemarks,
+          nocPhoto: nocBase64[0],
+          nocOthersPhoto: nocBase64[1],
+          nocRemarks: nocRemarks,
+        };
 
-       params={
-      dealerId: itemId,
-      id: id ? id : orderId,
-      orderStatus: 1,
-      rcFrontPhoto: rcBase64[0],
-      rcBackPhoto: rcBase64[1],
-      rcOthersPhoto: rcBase64[2],
-      rcRemarks: rcRemarks,
-      insuranceOwnDamagePhoto: insuranceBase64[0],
-      insuranceThirdPartyPhoto: insuranceBase64[1],
-      insuranceOthersPhoto: insuranceBase64[2],
-      insuranceRemarks: insuranceRemarks,
-      nocPhoto: nocBase64[0],
-      nocOthersPhoto: nocBase64[1],
-      nocRemarks: nocRemarks,
-    };
+        await getThreeOrder();
 
-    await getThreeOrder();
-
-    params = Object.fromEntries(
-      Object.entries(params).filter(
-        ([_, value]) =>
-          value !== '' &&
-          value !== null &&
-          value !== false &&
-          value !== undefined,
-      ),
-    );
+        params = Object.fromEntries(
+          Object.entries(params).filter(
+            ([_, value]) =>
+              value !== '' &&
+              value !== null &&
+              value !== false &&
+              value !== undefined,
+          ),
+        );
 
         break;
       case 4:
-       
-       
- params = {
-          dealerId: itemId,
+        params = {
+          dealerId: dealerIdNumber,
           id: id ? id : orderId,
           orderStatus: 1,
           frontViewPhoto: frontViewBase64[0],
@@ -3414,1586 +3928,1584 @@ const OrderCreation = ({navigation}) => {
 
         break;
       case 5:
-        
-      params = {
-        dealerId: itemId,
-        id: id ? id : orderId,
-        orderStatus: 1,
-        lhsViewPhoto: lhsViewBase64[0],
-        lhsViewRemarks: lhsViewRemarks[0],
-        rearViewPhoto: rearViewBase64[0],
-        rearViewRemarks: rearViewRemarks[0],
-        trunkBootPhoto: trunkBootBase64[0],
-        trunkBootRemarks: trunkBootRemarks[0],
-        spareWheelPhoto: spareWheelBase64[0],
-        spareWheelStatus: getSwitchForAvailable(spareWheelSwitch[0]),
-        spareWheelCondition: data?.wheelTypeCondition,
-        spareWheelRemarks: spareWheelRemarks[0],
-        toolKitJackPhoto: toolKitBase64[0],
-        toolKitJackStatus: getSwitchForAvailable(toolKitSwitch[0]),
-        toolKitJackCondition: toolKitCondition[0],
-        toolKitJackRemarks: toolKitRemarks[0],
-        roofPhoto: roofBase64[0],
-        roofRemarks: roofRemarks[0],
-        underChassisPhoto: underChassisBase64[0],
-        underChassisRemarks: underChassisRemarks[0],
-        frontTyreLeftPhoto: tyreBase64[0],
-        frontTyreLeftStatus: getSwitch(tyreSwitch[0]),
-        frontTyreLeftCondition: data?.tyre1Condition,
-        frontTyreLeftRemarks: tyreRemarks[0],
-        frontTyreRightPhoto: tyreBase64[1],
-        frontTyreRightStatus: getSwitch(tyreSwitch[1]),
-        frontTyreRightCondition: data?.tyre2Condition,
-        frontTyreRightRemarks: tyreRemarks[1],
-        rearTyreLeftPhoto: tyreBase64[2],
-        rearTyreLeftStatus: getSwitch(tyreSwitch[2]),
-        rearTyreLeftCondition: data?.tyre3Condition,
-        rearTyreLeftRemarks: tyreRemarks[2],
-        rearTyreRightPhoto: tyreBase64[3],
-        rearTyreRightStatus: getSwitch(tyreSwitch[3]),
-        rearTyreRightCondition: data?.tyre4Condition,
-        rearTyreRightRemarks: tyreRemarks[3],
-      };
+        params = {
+          dealerId: dealerIdNumber,
+          id: id ? id : orderId,
+          orderStatus: 1,
+          lhsViewPhoto: lhsViewBase64[0],
+          lhsViewRemarks: lhsViewRemarks[0],
+          rearViewPhoto: rearViewBase64[0],
+          rearViewRemarks: rearViewRemarks[0],
+          trunkBootPhoto: trunkBootBase64[0],
+          trunkBootRemarks: trunkBootRemarks[0],
+          spareWheelPhoto: spareWheelBase64[0],
+          spareWheelStatus: getSwitchForAvailable(spareWheelSwitch[0]),
+          spareWheelCondition:spareWheelIdNumber[0] ? spareWheel[0] :`${Math.round(spareWheel[0] * 100)}%`,
+          spareWheelRemarks: spareWheelRemarks[0],
+          toolKitJackPhoto: toolKitBase64[0],
+          toolKitJackStatus: getSwitchForAvailable(toolKitSwitch[0]),
+          toolKitJackCondition: toolKitCondition[0],
+          toolKitJackRemarks: toolKitRemarks[0],
+          roofPhoto: roofBase64[0],
+          roofRemarks: roofRemarks[0],
+          underChassisPhoto: underChassisBase64[0],
+          underChassisRemarks: underChassisRemarks[0],
+          
+          frontTyreLeftPhoto: tyreBase64[0],
+          frontTyreLeftStatus: getSwitch(tyreSwitch[0]),
+          frontTyreLeftCondition:dealerIdNumbers[0] ? values[0] :`${Math.round(values[0] * 100)}%`,
+          frontTyreLeftRemarks: tyreRemarks[0],
+          frontTyreRightPhoto: tyreBase64[1],
+          frontTyreRightStatus: getSwitch(tyreSwitch[1]),
+          frontTyreRightCondition:dealerIdNumbers[1] ? values[1] :`${Math.round(values[1] * 100)}%`,
+          frontTyreRightRemarks: tyreRemarks[1],
+          rearTyreLeftPhoto: tyreBase64[2],
+          rearTyreLeftStatus: getSwitch(tyreSwitch[2]),
+          rearTyreLeftCondition: dealerIdNumbers[2] ? values[2] :`${Math.round(values[2] * 100)}%`,
+          rearTyreLeftRemarks: tyreRemarks[2],
+          rearTyreRightPhoto: tyreBase64[3],
+          rearTyreRightStatus: getSwitch(tyreSwitch[3]),
+          rearTyreRightCondition:dealerIdNumbers[3] ? values[3] :`${Math.round(values[3] * 100)}%`,
+          rearTyreRightRemarks: tyreRemarks[3],
+        };
 
-      await getFifthOrder();
-      params = Object.fromEntries(
-        Object.entries(params).filter(
-          ([_, value]) =>
-            value !== '' &&
-            value !== null &&
-            value !== false &&
-            value !== undefined,
-        ),
-      );
-       
+        await getFifthOrder();
+        params = Object.fromEntries(
+          Object.entries(params).filter(
+            ([_, value]) =>
+              value !== '' &&
+              value !== null &&
+              value !== false &&
+              value !== undefined,
+          ),
+        );
+
         break;
 
       case 6:
-       
-      params = {
-        dealerId: itemId,
-        id: id ? id : orderId,
-        orderStatus: 1,
-        bonnetPhoto:
-          getSwitch(bonetSwitch[0]) === 'Not Ok' ? bonetBase64[0] : '',
-        bonnetStatus: getSwitch(bonetSwitch[0]),
-        bonnetCondition:
-          getSwitch(bonetSwitch[0]) === 'Not Ok' ? bonetCondition[0] : '',
-        bonnetRemarks:
-          getSwitch(bonetSwitch[0]) === 'Not Ok' ? bonetRemarks[0] : '',
-        apronLeftSidePhoto: getFieldValue(
-          getSwitch(apronSwitch[0]),
-          apronBase64[0],
-        ),
-        apronLeftSideStatus: getSwitch(apronSwitch[0]),
-        apronLeftSideCondition: getFieldValue(
-          getSwitch(apronSwitch[0]),
-          apronCondition[0],
-        ),
-        apronLeftSideRemarks: getFieldValue(
-          getSwitch(apronSwitch[0]),
-          apronRemarks[0],
-        ),
+        params = {
+          dealerId: dealerIdNumber,
+          id: id ? id : orderId,
+          orderStatus: 1,
+          bonnetPhoto:
+            getSwitch(bonetSwitch[0]) === 'Not Ok' ? bonetBase64[0] : '',
+          bonnetStatus: getSwitch(bonetSwitch[0]),
+          bonnetCondition:
+            getSwitch(bonetSwitch[0]) === 'Not Ok' ? bonetCondition[0] : '',
+          bonnetRemarks:
+            getSwitch(bonetSwitch[0]) === 'Not Ok' ? bonetRemarks[0] : '',
+          apronLeftSidePhoto: getFieldValue(
+            getSwitch(apronSwitch[0]),
+            apronBase64[0],
+          ),
+          apronLeftSideStatus: getSwitch(apronSwitch[0]),
+          apronLeftSideCondition: getFieldValue(
+            getSwitch(apronSwitch[0]),
+            apronCondition[0],
+          ),
+          apronLeftSideRemarks: getFieldValue(
+            getSwitch(apronSwitch[0]),
+            apronRemarks[0],
+          ),
 
-        apronRightSidePhoto: getFieldValue(
-          getSwitch(apronSwitch[1]),
-          apronBase64[1],
-        ),
-        apronRightSideStatus: getSwitch(apronSwitch[1]),
-        apronRightSideCondition: getFieldValue(
-          getSwitch(apronSwitch[1]),
-          apronCondition[1],
-        ),
-        apronRightSideRemarks: getFieldValue(
-          getSwitch(apronSwitch[1]),
-          apronRemarks[1],
-        ),
+          apronRightSidePhoto: getFieldValue(
+            getSwitch(apronSwitch[1]),
+            apronBase64[1],
+          ),
+          apronRightSideStatus: getSwitch(apronSwitch[1]),
+          apronRightSideCondition: getFieldValue(
+            getSwitch(apronSwitch[1]),
+            apronCondition[1],
+          ),
+          apronRightSideRemarks: getFieldValue(
+            getSwitch(apronSwitch[1]),
+            apronRemarks[1],
+          ),
 
-        headLampSupportRightSidePhoto: getFieldValue(
-          getSwitch(supportMembersSwitch[2]),
-          supportMembersBase64[2],
-        ),
-        headLampSupportRightSideStatus: getSwitch(supportMembersSwitch[2]),
-        headLampSupportRightSideCondition: getFieldValue(
-          getSwitch(supportMembersSwitch[2]),
-          supportMembersCondition[2],
-        ),
-        headLampSupportRightSideRemarks: getFieldValue(
-          getSwitch(supportMembersSwitch[2]),
-          supportMembersRemarks[2],
-        ),
+          headLampSupportRightSidePhoto: getFieldValue(
+            getSwitch(supportMembersSwitch[2]),
+            supportMembersBase64[2],
+          ),
+          headLampSupportRightSideStatus: getSwitch(supportMembersSwitch[2]),
+          headLampSupportRightSideCondition: getFieldValue(
+            getSwitch(supportMembersSwitch[2]),
+            supportMembersCondition[2],
+          ),
+          headLampSupportRightSideRemarks: getFieldValue(
+            getSwitch(supportMembersSwitch[2]),
+            supportMembersRemarks[2],
+          ),
 
-        headLampSupportLeftSidePhoto: getFieldValue(
-          getSwitch(supportMembersSwitch[3]),
-          supportMembersBase64[3],
-        ),
-        headLampSupportLeftSideStatus: getSwitch(supportMembersSwitch[3]),
-        headLampSupportLeftSideCondition: getFieldValue(
-          getSwitch(supportMembersSwitch[3]),
-          supportMembersCondition[3],
-        ),
-        headLampSupportLeftSideRemarks: getFieldValue(
-          getSwitch(supportMembersSwitch[3]),
-          supportMembersRemarks[3],
-        ),
+          headLampSupportLeftSidePhoto: getFieldValue(
+            getSwitch(supportMembersSwitch[3]),
+            supportMembersBase64[3],
+          ),
+          headLampSupportLeftSideStatus: getSwitch(supportMembersSwitch[3]),
+          headLampSupportLeftSideCondition: getFieldValue(
+            getSwitch(supportMembersSwitch[3]),
+            supportMembersCondition[3],
+          ),
+          headLampSupportLeftSideRemarks: getFieldValue(
+            getSwitch(supportMembersSwitch[3]),
+            supportMembersRemarks[3],
+          ),
 
-        supportMemberUpperPhoto: getFieldValue(
-          getSwitch(supportMembersSwitch[0]),
-          supportMembersBase64[0],
-        ),
-        supportMemberUpperStatus: getSwitch(supportMembersSwitch[0]),
-        supportMemberUpperCondition: getFieldValue(
-          getSwitch(supportMembersSwitch[0]),
-          supportMembersCondition[0],
-        ),
-        supportMemberUpperRemarks: getFieldValue(
-          getSwitch(supportMembersSwitch[0]),
-          supportMembersRemarks[0],
-        ),
+          supportMemberUpperPhoto: getFieldValue(
+            getSwitch(supportMembersSwitch[0]),
+            supportMembersBase64[0],
+          ),
+          supportMemberUpperStatus: getSwitch(supportMembersSwitch[0]),
+          supportMemberUpperCondition: getFieldValue(
+            getSwitch(supportMembersSwitch[0]),
+            supportMembersCondition[0],
+          ),
+          supportMemberUpperRemarks: getFieldValue(
+            getSwitch(supportMembersSwitch[0]),
+            supportMembersRemarks[0],
+          ),
 
-        supportMemberLowerPhoto: getFieldValue(
-          getSwitch(supportMembersSwitch[1]),
-          supportMembersBase64[1],
-        ),
-        supportMemberLowerStatus: getSwitch(supportMembersSwitch[1]),
-        supportMemberLowerCondition: getFieldValue(
-          getSwitch(supportMembersSwitch[1]),
-          supportMembersCondition[1],
-        ),
-        supportMemberLowerRemarks: getFieldValue(
-          getSwitch(supportMembersSwitch[1]),
-          supportMembersRemarks[1],
-        ),
+          supportMemberLowerPhoto: getFieldValue(
+            getSwitch(supportMembersSwitch[1]),
+            supportMembersBase64[1],
+          ),
+          supportMemberLowerStatus: getSwitch(supportMembersSwitch[1]),
+          supportMemberLowerCondition: getFieldValue(
+            getSwitch(supportMembersSwitch[1]),
+            supportMembersCondition[1],
+          ),
+          supportMemberLowerRemarks: getFieldValue(
+            getSwitch(supportMembersSwitch[1]),
+            supportMembersRemarks[1],
+          ),
 
-        bumperFrontPhoto: getFieldValue(
-          getSwitch(bumperSwitch[0]),
-          bumperBase64[0],
-        ),
-        bumperFrontStatus: getSwitch(bumperSwitch[0]),
-        bumperFrontCondition: getFieldValue(
-          getSwitch(bumperSwitch[0]),
-          bumperCondition[0],
-        ),
-        bumperFrontRemarks: getFieldValue(
-          getSwitch(bumperSwitch[0]),
-          bumperRemarks[0],
-        ),
+          bumperFrontPhoto: getFieldValue(
+            getSwitch(bumperSwitch[0]),
+            bumperBase64[0],
+          ),
+          bumperFrontStatus: getSwitch(bumperSwitch[0]),
+          bumperFrontCondition: getFieldValue(
+            getSwitch(bumperSwitch[0]),
+            bumperCondition[0],
+          ),
+          bumperFrontRemarks: getFieldValue(
+            getSwitch(bumperSwitch[0]),
+            bumperRemarks[0],
+          ),
 
-        bumperRearPhoto: getFieldValue(
-          getSwitch(bumperSwitch[1]),
-          bumperBase64[1],
-        ),
-        bumperRearStatus: getSwitch(bumperSwitch[1]),
-        bumperRearCondition: getFieldValue(
-          getSwitch(bumperSwitch[1]),
-          bumperCondition[1],
-        ),
-        bumperRearRemarks: getFieldValue(
-          getSwitch(bumperSwitch[1]),
-          bumperRemarks[1],
-        ),
+          bumperRearPhoto: getFieldValue(
+            getSwitch(bumperSwitch[1]),
+            bumperBase64[1],
+          ),
+          bumperRearStatus: getSwitch(bumperSwitch[1]),
+          bumperRearCondition: getFieldValue(
+            getSwitch(bumperSwitch[1]),
+            bumperCondition[1],
+          ),
+          bumperRearRemarks: getFieldValue(
+            getSwitch(bumperSwitch[1]),
+            bumperRemarks[1],
+          ),
 
-        windShieldFrontPhoto: getFieldValue(
-          getSwitch(windShieldSwitch[0]),
-          windShieldBase64[0],
-        ),
-        windShieldFrontStatus: getSwitch(windShieldSwitch[0]),
-        windShieldFrontCondition: getFieldValue(
-          getSwitch(windShieldSwitch[0]),
-          windShieldCondition[0],
-        ),
-        windShieldFrontRemarks: getFieldValue(
-          getSwitch(windShieldSwitch[0]),
-          windShieldRemarks[0],
-        ),
+          windShieldFrontPhoto: getFieldValue(
+            getSwitch(windShieldSwitch[0]),
+            windShieldBase64[0],
+          ),
+          windShieldFrontStatus: getSwitch(windShieldSwitch[0]),
+          windShieldFrontCondition: getFieldValue(
+            getSwitch(windShieldSwitch[0]),
+            windShieldCondition[0],
+          ),
+          windShieldFrontRemarks: getFieldValue(
+            getSwitch(windShieldSwitch[0]),
+            windShieldRemarks[0],
+          ),
 
-        windShieldRearPhoto: getFieldValue(
-          getSwitch(windShieldSwitch[1]),
-          windShieldBase64[1],
-        ),
-        windShieldRearStatus: getSwitch(windShieldSwitch[1]),
-        windShieldRearCondition: getFieldValue(
-          getSwitch(windShieldSwitch[1]),
-          windShieldCondition[1],
-        ),
-        windShieldRearRemarks: getFieldValue(
-          getSwitch(windShieldSwitch[1]),
-          windShieldRemarks[1],
-        ),
+          windShieldRearPhoto: getFieldValue(
+            getSwitch(windShieldSwitch[1]),
+            windShieldBase64[1],
+          ),
+          windShieldRearStatus: getSwitch(windShieldSwitch[1]),
+          windShieldRearCondition: getFieldValue(
+            getSwitch(windShieldSwitch[1]),
+            windShieldCondition[1],
+          ),
+          windShieldRearRemarks: getFieldValue(
+            getSwitch(windShieldSwitch[1]),
+            windShieldRemarks[1],
+          ),
 
-        fendersRightSidePhoto: getFieldValue(
-          getSwitch(fenderSwitch[1]),
-          fennderBase64[1],
-        ),
-        fendersRightSideStatus: getSwitch(fenderSwitch[1]),
-        fendersRightSideCondition: getFieldValue(
-          getSwitch(fenderSwitch[1]),
-          fenderCondition[1],
-        ),
-        fendersRightSideRemarks: getFieldValue(
-          getSwitch(fenderSwitch[1]),
-          fenderRemarks[1],
-        ),
+          fendersRightSidePhoto: getFieldValue(
+            getSwitch(fenderSwitch[1]),
+            fennderBase64[1],
+          ),
+          fendersRightSideStatus: getSwitch(fenderSwitch[1]),
+          fendersRightSideCondition: getFieldValue(
+            getSwitch(fenderSwitch[1]),
+            fenderCondition[1],
+          ),
+          fendersRightSideRemarks: getFieldValue(
+            getSwitch(fenderSwitch[1]),
+            fenderRemarks[1],
+          ),
 
-        fendersLeftSidePhoto: getFieldValue(
-          getSwitch(fenderSwitch[0]),
-          fennderBase64[0],
-        ),
-        fendersLeftSideStatus: getSwitch(fenderSwitch[0]),
-        fendersLeftSideCondition: getFieldValue(
-          getSwitch(fenderSwitch[0]),
-          fenderCondition[0],
-        ),
-        fendersLeftSideRemarks: getFieldValue(
-          getSwitch(fenderSwitch[0]),
-          fenderRemarks[0],
-        ),
-        pillarARightSidePhoto: getFieldValue(
-          getSwitch(pillarSwitch[0]),
-          pillarBase64[0],
-        ),
+          fendersLeftSidePhoto: getFieldValue(
+            getSwitch(fenderSwitch[0]),
+            fennderBase64[0],
+          ),
+          fendersLeftSideStatus: getSwitch(fenderSwitch[0]),
+          fendersLeftSideCondition: getFieldValue(
+            getSwitch(fenderSwitch[0]),
+            fenderCondition[0],
+          ),
+          fendersLeftSideRemarks: getFieldValue(
+            getSwitch(fenderSwitch[0]),
+            fenderRemarks[0],
+          ),
+          pillarARightSidePhoto: getFieldValue(
+            getSwitch(pillarSwitch[0]),
+            pillarBase64[0],
+          ),
 
-        pillarARightSideStatus: getSwitch(pillarSwitch[0]),
-        pillarARightSideCondition: getFieldValue(
-          getSwitch(pillarSwitch[0]),
-          pillarsCondition[0],
-        ),
-        pillarARightSideRemarks: getFieldValue(
-          getSwitch(pillarSwitch[0]),
-          pillarsPhotoRemarks[0],
-        ),
+          pillarARightSideStatus: getSwitch(pillarSwitch[0]),
+          pillarARightSideCondition: getFieldValue(
+            getSwitch(pillarSwitch[0]),
+            pillarsCondition[0],
+          ),
+          pillarARightSideRemarks: getFieldValue(
+            getSwitch(pillarSwitch[0]),
+            pillarsPhotoRemarks[0],
+          ),
 
-        pillarBRightSidePhoto: getFieldValue(
-          getSwitch(pillarSwitch[1]),
-          pillarBase64[1],
-        ),
-        pillarBRightSideStatus: getSwitch(pillarSwitch[1]),
-        pillarBRightSideCondition: getFieldValue(
-          getSwitch(pillarSwitch[1]),
-          pillarsCondition[1],
-        ),
-        pillarBRightSideRemarks: getFieldValue(
-          getSwitch(pillarSwitch[1]),
-          pillarsPhotoRemarks[1],
-        ),
+          pillarBRightSidePhoto: getFieldValue(
+            getSwitch(pillarSwitch[1]),
+            pillarBase64[1],
+          ),
+          pillarBRightSideStatus: getSwitch(pillarSwitch[1]),
+          pillarBRightSideCondition: getFieldValue(
+            getSwitch(pillarSwitch[1]),
+            pillarsCondition[1],
+          ),
+          pillarBRightSideRemarks: getFieldValue(
+            getSwitch(pillarSwitch[1]),
+            pillarsPhotoRemarks[1],
+          ),
 
-        pillarCRightSidePhoto: getFieldValue(
-          getSwitch(pillarSwitch[2]),
-          pillarBase64[2],
-        ),
-        pillarCRightSideStatus: getSwitch(pillarSwitch[2]),
-        pillarCRightSideCondition: getFieldValue(
-          getSwitch(pillarSwitch[2]),
-          pillarsCondition[2],
-        ),
-        pillarCRightSideRemarks: getFieldValue(
-          getSwitch(pillarSwitch[2]),
-          pillarsPhotoRemarks[2],
-        ),
+          pillarCRightSidePhoto: getFieldValue(
+            getSwitch(pillarSwitch[2]),
+            pillarBase64[2],
+          ),
+          pillarCRightSideStatus: getSwitch(pillarSwitch[2]),
+          pillarCRightSideCondition: getFieldValue(
+            getSwitch(pillarSwitch[2]),
+            pillarsCondition[2],
+          ),
+          pillarCRightSideRemarks: getFieldValue(
+            getSwitch(pillarSwitch[2]),
+            pillarsPhotoRemarks[2],
+          ),
 
-        pillarALeftSidePhoto: getFieldValue(
-          getSwitch(pillarSwitch[3]),
-          pillarBase64[3],
-        ),
-        pillarALeftSideStatus: getSwitch(pillarSwitch[3]),
-        pillarALeftSideCondition: getFieldValue(
-          getSwitch(pillarSwitch[3]),
-          pillarsCondition[3],
-        ),
-        pillarALeftSideRemarks: getFieldValue(
-          getSwitch(pillarSwitch[3]),
-          pillarsPhotoRemarks[3],
-        ),
+          pillarALeftSidePhoto: getFieldValue(
+            getSwitch(pillarSwitch[3]),
+            pillarBase64[3],
+          ),
+          pillarALeftSideStatus: getSwitch(pillarSwitch[3]),
+          pillarALeftSideCondition: getFieldValue(
+            getSwitch(pillarSwitch[3]),
+            pillarsCondition[3],
+          ),
+          pillarALeftSideRemarks: getFieldValue(
+            getSwitch(pillarSwitch[3]),
+            pillarsPhotoRemarks[3],
+          ),
 
-        pillarBLeftSidePhoto: getFieldValue(
-          getSwitch(pillarSwitch[4]),
-          pillarBase64[4],
-        ),
-        pillarBLeftSideStatus: getSwitch(pillarSwitch[4]),
-        pillarBLeftSideCondition: getFieldValue(
-          getSwitch(pillarSwitch[4]),
-          pillarsCondition[4],
-        ),
-        pillarBLeftSideRemarks: getFieldValue(
-          getSwitch(pillarSwitch[4]),
-          pillarsPhotoRemarks[4],
-        ),
+          pillarBLeftSidePhoto: getFieldValue(
+            getSwitch(pillarSwitch[4]),
+            pillarBase64[4],
+          ),
+          pillarBLeftSideStatus: getSwitch(pillarSwitch[4]),
+          pillarBLeftSideCondition: getFieldValue(
+            getSwitch(pillarSwitch[4]),
+            pillarsCondition[4],
+          ),
+          pillarBLeftSideRemarks: getFieldValue(
+            getSwitch(pillarSwitch[4]),
+            pillarsPhotoRemarks[4],
+          ),
 
-        pillarCLeftSidePhoto: getFieldValue(
-          getSwitch(pillarSwitch[5]),
-          pillarBase64[5],
-        ),
-        pillarCLeftSideStatus: getSwitch(pillarSwitch[5]),
-        pillarCLeftSideCondition: getFieldValue(
-          getSwitch(pillarSwitch[5]),
-          pillarsCondition[5],
-        ),
-        pillarCLeftSideRemarks: getFieldValue(
-          getSwitch(pillarSwitch[5]),
-          pillarsPhotoRemarks[5],
-        ),
+          pillarCLeftSidePhoto: getFieldValue(
+            getSwitch(pillarSwitch[5]),
+            pillarBase64[5],
+          ),
+          pillarCLeftSideStatus: getSwitch(pillarSwitch[5]),
+          pillarCLeftSideCondition: getFieldValue(
+            getSwitch(pillarSwitch[5]),
+            pillarsCondition[5],
+          ),
+          pillarCLeftSideRemarks: getFieldValue(
+            getSwitch(pillarSwitch[5]),
+            pillarsPhotoRemarks[5],
+          ),
 
-        doorsFrontLeftSidePhoto: getFieldValue(
-          getSwitch(doorSwitch[0]),
-          doorBase64[0],
-        ),
-        doorsFrontLeftSideStatus: getSwitch(doorSwitch[0]),
-        doorsFrontLeftSideCondition: getFieldValue(
-          getSwitch(doorSwitch[0]),
-          doorCondition[0],
-        ),
-        doorsFrontLeftSideRemarks: getFieldValue(
-          getSwitch(doorSwitch[0]),
-          doorRemarks[0],
-        ),
+          doorsFrontLeftSidePhoto: getFieldValue(
+            getSwitch(doorSwitch[0]),
+            doorBase64[0],
+          ),
+          doorsFrontLeftSideStatus: getSwitch(doorSwitch[0]),
+          doorsFrontLeftSideCondition: getFieldValue(
+            getSwitch(doorSwitch[0]),
+            doorCondition[0],
+          ),
+          doorsFrontLeftSideRemarks: getFieldValue(
+            getSwitch(doorSwitch[0]),
+            doorRemarks[0],
+          ),
 
-        doorsRearLeftSidePhoto: getFieldValue(
-          getSwitch(doorSwitch[1]),
-          doorBase64[1],
-        ),
-        doorsRearLeftSideStatus: getSwitch(doorSwitch[1]),
-        doorsRearLeftSideCondition: getFieldValue(
-          getSwitch(doorSwitch[1]),
-          doorCondition[1],
-        ),
-        doorsRearLeftSideRemarks: getFieldValue(
-          getSwitch(doorSwitch[1]),
-          doorRemarks[1],
-        ),
+          doorsRearLeftSidePhoto: getFieldValue(
+            getSwitch(doorSwitch[1]),
+            doorBase64[1],
+          ),
+          doorsRearLeftSideStatus: getSwitch(doorSwitch[1]),
+          doorsRearLeftSideCondition: getFieldValue(
+            getSwitch(doorSwitch[1]),
+            doorCondition[1],
+          ),
+          doorsRearLeftSideRemarks: getFieldValue(
+            getSwitch(doorSwitch[1]),
+            doorRemarks[1],
+          ),
 
-        doorsFrontRightSidePhoto: getFieldValue(
-          getSwitch(doorSwitch[2]),
-          doorBase64[2],
-        ),
-        doorsFrontRightSideStatus: getSwitch(doorSwitch[2]),
-        doorsFrontRightSideCondition: getFieldValue(
-          getSwitch(doorSwitch[2]),
-          doorCondition[2],
-        ),
-        doorsFrontRightSideRemarks: getFieldValue(
-          getSwitch(doorSwitch[2]),
-          doorRemarks[2],
-        ),
+          doorsFrontRightSidePhoto: getFieldValue(
+            getSwitch(doorSwitch[2]),
+            doorBase64[2],
+          ),
+          doorsFrontRightSideStatus: getSwitch(doorSwitch[2]),
+          doorsFrontRightSideCondition: getFieldValue(
+            getSwitch(doorSwitch[2]),
+            doorCondition[2],
+          ),
+          doorsFrontRightSideRemarks: getFieldValue(
+            getSwitch(doorSwitch[2]),
+            doorRemarks[2],
+          ),
 
-        doorsRearRightSidePhoto: getFieldValue(
-          getSwitch(doorSwitch[3]),
-          doorBase64[3],
-        ),
-        doorsRearRightSideStatus: getSwitch(doorSwitch[3]),
-        doorsRearRightSideCondition: getFieldValue(
-          getSwitch(doorSwitch[3]),
-          doorCondition[3],
-        ),
-        doorsRearRightSideRemarks: getFieldValue(
-          getSwitch(doorSwitch[3]),
-          doorRemarks[3],
-        ),
+          doorsRearRightSidePhoto: getFieldValue(
+            getSwitch(doorSwitch[3]),
+            doorBase64[3],
+          ),
+          doorsRearRightSideStatus: getSwitch(doorSwitch[3]),
+          doorsRearRightSideCondition: getFieldValue(
+            getSwitch(doorSwitch[3]),
+            doorCondition[3],
+          ),
+          doorsRearRightSideRemarks: getFieldValue(
+            getSwitch(doorSwitch[3]),
+            doorRemarks[3],
+          ),
 
-        runningBoardLeftSidePhoto: getFieldValue(
-          getSwitch(runningBoardSwitch[1]),
-          runningBoardBase64[1],
-        ),
-        runningBoardLeftSideStatus: getSwitch(runningBoardSwitch[1]),
-        runningBoardLeftSideCondition: getFieldValue(
-          getSwitch(runningBoardSwitch[1]),
-          runnningBoardCondition[1],
-        ),
-        runningBoardLeftSideRemarks: getFieldValue(
-          getSwitch(runningBoardSwitch[1]),
-          runningBoardRemarks[1],
-        ),
+          runningBoardLeftSidePhoto: getFieldValue(
+            getSwitch(runningBoardSwitch[1]),
+            runningBoardBase64[1],
+          ),
+          runningBoardLeftSideStatus: getSwitch(runningBoardSwitch[1]),
+          runningBoardLeftSideCondition: getFieldValue(
+            getSwitch(runningBoardSwitch[1]),
+            runnningBoardCondition[1],
+          ),
+          runningBoardLeftSideRemarks: getFieldValue(
+            getSwitch(runningBoardSwitch[1]),
+            runningBoardRemarks[1],
+          ),
 
-        runningBoardRightSidePhoto: getFieldValue(
-          getSwitch(runningBoardSwitch[0]),
-          runningBoardBase64[0],
-        ),
-        runningBoardRightSideStatus: getSwitch(runningBoardSwitch[0]),
-        runningBoardRightSideCondition: getFieldValue(
-          getSwitch(runningBoardSwitch[0]),
-          runnningBoardCondition[0],
-        ),
-        runningBoardRightSideRemarks: getFieldValue(
-          getSwitch(runningBoardSwitch[0]),
-          runningBoardRemarks[0],
-        ),
+          runningBoardRightSidePhoto: getFieldValue(
+            getSwitch(runningBoardSwitch[0]),
+            runningBoardBase64[0],
+          ),
+          runningBoardRightSideStatus: getSwitch(runningBoardSwitch[0]),
+          runningBoardRightSideCondition: getFieldValue(
+            getSwitch(runningBoardSwitch[0]),
+            runnningBoardCondition[0],
+          ),
+          runningBoardRightSideRemarks: getFieldValue(
+            getSwitch(runningBoardSwitch[0]),
+            runningBoardRemarks[0],
+          ),
 
-        quarterPanelsLeftSidePhoto: getFieldValue(
-          getSwitch(quarterPanlesSwitch[0]),
-          quarterPanlesBase64[0],
-        ),
-        quarterPanelsLeftSideStatus: getSwitch(quarterPanlesSwitch[0]),
-        quarterPanelsLeftSideCondition: getFieldValue(
-          getSwitch(quarterPanlesSwitch[0]),
-          quarterPanlesCondition[0],
-        ),
-        quarterPanelsLeftSideRemarks: getFieldValue(
-          getSwitch(quarterPanlesSwitch[0]),
-          quarterPanlesRemarks[0],
-        ),
+          quarterPanelsLeftSidePhoto: getFieldValue(
+            getSwitch(quarterPanlesSwitch[0]),
+            quarterPanlesBase64[0],
+          ),
+          quarterPanelsLeftSideStatus: getSwitch(quarterPanlesSwitch[0]),
+          quarterPanelsLeftSideCondition: getFieldValue(
+            getSwitch(quarterPanlesSwitch[0]),
+            quarterPanlesCondition[0],
+          ),
+          quarterPanelsLeftSideRemarks: getFieldValue(
+            getSwitch(quarterPanlesSwitch[0]),
+            quarterPanlesRemarks[0],
+          ),
 
-        quarterPanelsRightSidePhoto: getFieldValue(
-          getSwitch(quarterPanlesSwitch[1]),
-          quarterPanlesBase64[1],
-        ),
-        quarterPanelsRightSideStatus: getSwitch(quarterPanlesSwitch[1]),
-        quarterPanelsRightSideCondition: getFieldValue(
-          getSwitch(quarterPanlesSwitch[1]),
-          quarterPanlesCondition[1],
-        ),
-        quarterPanelsRightSideRemarks: getFieldValue(
-          getSwitch(quarterPanlesSwitch[1]),
-          quarterPanlesRemarks[1],
-        ),
+          quarterPanelsRightSidePhoto: getFieldValue(
+            getSwitch(quarterPanlesSwitch[1]),
+            quarterPanlesBase64[1],
+          ),
+          quarterPanelsRightSideStatus: getSwitch(quarterPanlesSwitch[1]),
+          quarterPanelsRightSideCondition: getFieldValue(
+            getSwitch(quarterPanlesSwitch[1]),
+            quarterPanlesCondition[1],
+          ),
+          quarterPanelsRightSideRemarks: getFieldValue(
+            getSwitch(quarterPanlesSwitch[1]),
+            quarterPanlesRemarks[1],
+          ),
 
-        bootPhoto: getFieldValue(
-          getSwitch(dickyDoorSwitch[0]),
-          dickyDoorBase64[0],
-        ),
-        bootStatus: getSwitch(dickyDoorSwitch[0]),
-        bootCondition: getFieldValue(
-          getSwitch(dickyDoorSwitch[0]),
-          dickyDoorCondition[0],
-        ),
-        bootRemarks: getFieldValue(
-          getSwitch(dickyDoorSwitch[0]),
-          dickyDoorRemarks[0],
-        ),
+          bootPhoto: getFieldValue(
+            getSwitch(dickyDoorSwitch[0]),
+            dickyDoorBase64[0],
+          ),
+          bootStatus: getSwitch(dickyDoorSwitch[0]),
+          bootCondition: getFieldValue(
+            getSwitch(dickyDoorSwitch[0]),
+            dickyDoorCondition[0],
+          ),
+          bootRemarks: getFieldValue(
+            getSwitch(dickyDoorSwitch[0]),
+            dickyDoorRemarks[0],
+          ),
 
-        bootSkirtPhoto: getFieldValue(
-          getSwitch(dickySkirtSwitch[0]),
-          dickySkirtBase64[0],
-        ),
-        bootSkirtStatus: getSwitch(dickySkirtSwitch[0]),
-        bootSkirtCondition: getFieldValue(
-          getSwitch(dickySkirtSwitch[0]),
-          dickySkirtCondition[0],
-        ),
-        bootSkirtRemarks: getFieldValue(
-          getSwitch(dickySkirtSwitch[0]),
-          dickySkirtRemarks[0],
-        ),
-        wheelType: getSwitchForTyre(selectWheelTypeSwitch[0]),
-        wheelTypePhoto: wheelTypeBase64[0],
-        wheelTypeStatus: getSwitch(wheelTypeSwitch[0]),
-        wheelTypeCondition: wheelTypeCondition[0],
-        wheelTypeRemarks: wheelTypeRemarks[0],
-      };
+          bootSkirtPhoto: getFieldValue(
+            getSwitch(dickySkirtSwitch[0]),
+            dickySkirtBase64[0],
+          ),
+          bootSkirtStatus: getSwitch(dickySkirtSwitch[0]),
+          bootSkirtCondition: getFieldValue(
+            getSwitch(dickySkirtSwitch[0]),
+            dickySkirtCondition[0],
+          ),
+          bootSkirtRemarks: getFieldValue(
+            getSwitch(dickySkirtSwitch[0]),
+            dickySkirtRemarks[0],
+          ),
+          wheelType: getSwitchForTyre(selectWheelTypeSwitch[0]),
+          wheelTypePhoto: wheelTypeBase64[0],
+          wheelTypeStatus: getSwitch(wheelTypeSwitch[0]),
+          wheelTypeCondition: wheelTypeCondition[0],
+          wheelTypeRemarks: wheelTypeRemarks[0],
+        };
 
-      await getSixthOrder();
-      params = Object.fromEntries(
-        Object.entries(params).filter(
-          ([_, value]) =>
-            value !== '' &&
-            value !== null &&
-            value !== false &&
-            value !== undefined,
-        ),
-      );
-    
+        await getSixthOrder();
+        params = Object.fromEntries(
+          Object.entries(params).filter(
+            ([_, value]) =>
+              value !== '' &&
+              value !== null &&
+              value !== false &&
+              value !== undefined,
+          ),
+        );
+
         break;
 
       case 7:
-       
-      params = {
-        dealerId: itemId,
-        id: id ? id : orderId,
-        orderStatus: 1,
-        strutPhoto: getFieldValue(
-          getSwitch(suspensionSwitch[0]),
-          suspensionBase64[0],
-        ),
-        strutStatus: getSwitch(suspensionSwitch[0]),
-        strutCondition: getFieldValue(
-          getSwitch(suspensionSwitch[0]),
-          suspensionDropdown[0],
-        ),
-        strutRemarks: getFieldValue(
-          getSwitch(suspensionSwitch[0]),
-          suspensionRemarks[0],
-        ),
-
-        lowerArmPhoto: getFieldValue(
-          getSwitch(suspensionSwitch[1]),
-          suspensionBase64[1],
-        ),
-        lowerArmStatus: getSwitch(suspensionSwitch[1]),
-        lowerArmCondition: getFieldValue(
-          getSwitch(suspensionSwitch[1]),
-          suspensionDropdown[1],
-        ),
-        lowerArmRemarks: getFieldValue(
-          getSwitch(suspensionSwitch[1]),
-          suspensionRemarks[1],
-        ),
-
-        linkRodPhoto: getFieldValue(
-          getSwitch(suspensionSwitch[2]),
-          suspensionBase64[2],
-        ),
-        linkRodStatus: getSwitch(suspensionSwitch[2]),
-        linkRodCondition: getFieldValue(
-          getSwitch(suspensionSwitch[2]),
-          suspensionDropdown[2],
-        ),
-        linkRodRemarks: getFieldValue(
-          getSwitch(suspensionSwitch[2]),
-          suspensionRemarks[2],
-        ),
-
-        stabilizerBarPhoto: getFieldValue(
-          getSwitch(suspensionSwitch[3]),
-          suspensionBase64[3],
-        ),
-        stabilizerBarStatus: getSwitch(suspensionSwitch[3]),
-        stabilizerBarCondition: getFieldValue(
-          getSwitch(suspensionSwitch[3]),
-          suspensionDropdown[3],
-        ),
-        stabilizerBarRemarks: getFieldValue(
-          getSwitch(suspensionSwitch[3]),
-          suspensionRemarks[3],
-        ),
-
-        shockAbsorberPhoto: getFieldValue(
-          getSwitch(suspensionSwitch[4]),
-          suspensionBase64[4],
-        ),
-        shockAbsorberStatus: getSwitch(suspensionSwitch[4]),
-        shockAbsorberCondition: getFieldValue(
-          getSwitch(suspensionSwitch[4]),
-          suspensionDropdown[4],
-        ),
-        shockAbsorberRemarks: getFieldValue(
-          getSwitch(suspensionSwitch[4]),
-          suspensionRemarks[4],
-        ),
-
-        coilSpringPhoto: getFieldValue(
-          getSwitch(suspensionSwitch[5]),
-          suspensionBase64[5],
-        ),
-        coilSpringStatus: getSwitch(suspensionSwitch[5]),
-        coilSpringCondition: getFieldValue(
-          getSwitch(suspensionSwitch[5]),
-          suspensionDropdown[5],
-        ),
-        coilSpringRemarks: getFieldValue(
-          getSwitch(suspensionSwitch[5]),
-          suspensionRemarks[5],
-        ),
-
-        leafSpringPhoto: getFieldValue(
-          getSwitch(suspensionSwitch[6]),
-          suspensionBase64[6],
-        ),
-        leafSpringStatus: getSwitch(suspensionSwitch[6]),
-        leafSpringCondition: getFieldValue(
-          getSwitch(suspensionSwitch[6]),
-          suspensionDropdown[6],
-        ),
-        leafSpringRemarks: getFieldValue(
-          getSwitch(suspensionSwitch[6]),
-          suspensionRemarks[6],
-        ),
-
-        rackAndPinionPhoto: getFieldValue(
-          getSwitch(steeringSwitch[0]),
-          steeringBase64[0],
-        ),
-        rackAndPinionStatus: getSwitch(steeringSwitch[0]),
-        rackAndPinionCondition: getFieldValue(
-          getSwitch(steeringSwitch[0]),
-          steeringDropdown[0],
-        ),
-        rackAndPinionRemarks: getFieldValue(
-          getSwitch(steeringSwitch[0]),
-          steeringRemarks[0],
-        ),
-
-        steeringColumnPhoto: getFieldValue(
-          getSwitch(steeringSwitch[1]),
-          steeringBase64[1],
-        ),
-        steeringColumnStatus: getSwitch(steeringSwitch[1]),
-        steeringColumnCondition: getFieldValue(
-          getSwitch(steeringSwitch[1]),
-          steeringDropdown[1],
-        ),
-        steeringColumnRemarks: getFieldValue(
-          getSwitch(steeringSwitch[1]),
-          steeringRemarks[1],
-        ),
-
-        hardnessPhoto: getFieldValue(
-          getSwitch(steeringSwitch[2]),
-          steeringBase64[2],
-        ),
-        hardnessStatus: getSwitch(steeringSwitch[2]),
-        hardnessCondition: getFieldValue(
-          getSwitch(steeringSwitch[2]),
-          steeringDropdown[2],
-        ),
-        hardnessRemarks: getFieldValue(
-          getSwitch(steeringSwitch[2]),
-          steeringRemarks[2],
-        ),
-
-        ballJointEndPhoto: getFieldValue(
-          getSwitch(steeringSwitch[3]),
-          steeringBase64[3],
-        ),
-        ballJointEndStatus: getSwitch(steeringSwitch[3]),
-        ballJointEndCondition: getFieldValue(
-          getSwitch(steeringSwitch[3]),
-          steeringDropdown[3],
-        ),
-        ballJointEndRemarks: getFieldValue(
-          getSwitch(steeringSwitch[3]),
-          steeringRemarks[3],
-        ),
-
-        padPhoto: getFieldValue(getSwitch(brakeSwitch[0]), brakeBase64[0]),
-        padStatus: getSwitch(brakeSwitch[0]),
-        padCondition: getFieldValue(
-          getSwitch(brakeSwitch[0]),
-          brakeDropdown[0],
-        ),
-        padRemarks: getFieldValue(getSwitch(brakeSwitch[0]), brakeRemarks[0]),
-
-        discPhoto: getFieldValue(getSwitch(brakeSwitch[1]), brakeBase64[1]),
-        discStatus: getSwitch(brakeSwitch[1]),
-        discCondition: getFieldValue(
-          getSwitch(brakeSwitch[1]),
-          brakeDropdown[1],
-        ),
-        discRemarks: getFieldValue(
-          getSwitch(brakeSwitch[1]),
-          brakeRemarks[1],
-        ),
-
-        shoePhoto: getFieldValue(getSwitch(brakeSwitch[2]), brakeBase64[2]),
-        shoeStatus: getSwitch(brakeSwitch[2]),
-        shoeCondition: getFieldValue(
-          getSwitch(brakeSwitch[2]),
-          brakeDropdown[2],
-        ),
-        shoeRemarks: getFieldValue(
-          getSwitch(brakeSwitch[2]),
-          brakeRemarks[2],
-        ),
-
-        drumPhoto: getFieldValue(getSwitch(brakeSwitch[3]), brakeBase64[3]),
-        drumStatus: getSwitch(brakeSwitch[3]),
-        drumCondition: getFieldValue(
-          getSwitch(brakeSwitch[3]),
-          brakeDropdown[3],
-        ),
-        drumRemarks: getFieldValue(
-          getSwitch(brakeSwitch[3]),
-          brakeRemarks[3],
-        ),
-
-        wheelCylinderPhoto: getFieldValue(
-          getSwitch(brakeSwitch[4]),
-          brakeBase64[4],
-        ),
-        wheelCylinderStatus: getSwitch(brakeSwitch[4]),
-        wheelCylinderCondition: getFieldValue(
-          getSwitch(brakeSwitch[4]),
-          brakeDropdown[4],
-        ),
-        wheelCylinderRemarks: getFieldValue(
-          getSwitch(brakeSwitch[4]),
-          brakeRemarks[4],
-        ),
-
-        mcBoosterPhoto: getFieldValue(
-          getSwitch(brakeSwitch[5]),
-          brakeBase64[5],
-        ),
-        mcBoosterStatus: getSwitch(brakeSwitch[5]),
-        mcBoosterCondition: getFieldValue(
-          getSwitch(brakeSwitch[5]),
-          brakeDropdown[5],
-        ),
-        mcBoosterRemarks: getFieldValue(
-          getSwitch(brakeSwitch[5]),
-          brakeRemarks[5],
-        ),
-
-        clutchPhoto: getFieldValue(
-          getSwitch(transmissionSwitch[0]),
-          transmissionBase64[0],
-        ),
-        clutchStatus: getSwitch(transmissionSwitch[0]),
-        clutchCondition: getFieldValue(
-          getSwitch(transmissionSwitch[0]),
-          transmissionDropdown[0],
-        ),
-        clutchRemarks: getFieldValue(
-          getSwitch(transmissionSwitch[0]),
-          transmissionRemarks[0],
-        ),
-
-        gearShiftingPhoto: getFieldValue(
-          getSwitch(transmissionSwitch[1]),
-          transmissionBase64[1],
-        ),
-        gearShiftingStatus: getSwitch(transmissionSwitch[1]),
-        gearShiftingCondition: getFieldValue(
-          getSwitch(transmissionSwitch[1]),
-          transmissionDropdown[1],
-        ),
-        gearShiftingRemarks: getFieldValue(
-          getSwitch(transmissionSwitch[1]),
-          transmissionRemarks[1],
-        ),
-
-        driveShaftPhoto: getFieldValue(
-          getSwitch(transmissionSwitch[2]),
-          transmissionBase64[2],
-        ),
-        driveShaftStatus: getSwitch(transmissionSwitch[2]),
-        driveShaftCondition: getFieldValue(
-          getSwitch(transmissionSwitch[2]),
-          transmissionDropdown[2],
-        ),
-        driveShaftRemarks: getFieldValue(
-          getSwitch(transmissionSwitch[2]),
-          transmissionRemarks[2],
-        ),
-
-        axlePhoto: getFieldValue(
-          getSwitch(transmissionSwitch[3]),
-          transmissionBase64[3],
-        ),
-        axleStatus: getSwitch(transmissionSwitch[3]),
-        axleCondition: getFieldValue(
-          getSwitch(transmissionSwitch[3]),
-          transmissionDropdown[3],
-        ),
-        axleRemarks: getFieldValue(
-          getSwitch(transmissionSwitch[3]),
-          transmissionRemarks[3],
-        ),
-
-        propellerShaftPhoto: getFieldValue(
-          getSwitch(transmissionSwitch[4]),
-          transmissionBase64[4],
-        ),
-        propellerShaftStatus: getSwitch(transmissionSwitch[4]),
-        propellerShaftCondition: getFieldValue(
-          getSwitch(transmissionSwitch[4]),
-          transmissionDropdown[4],
-        ),
-        propellerShaftRemarks: getFieldValue(
-          getSwitch(transmissionSwitch[4]),
-          transmissionRemarks[4],
-        ),
-        differentialPhoto: getFieldValue(
-          getSwitch(transmissionSwitch[5]),
-          transmissionBase64[5],
-        ),
-        differentialStatus: getSwitch(transmissionSwitch[5]),
-        differentialCondition: getFieldValue(
-          getSwitch(transmissionSwitch[5]),
-          transmissionDropdown[5],
-        ),
-        differentialRemarks: getFieldValue(
-          getSwitch(transmissionSwitch[5]),
-          transmissionRemarks[5],
-        ),
-
-        bearingPhoto: getFieldValue(
-          getSwitch(transmissionSwitch[6]),
-          transmissionBase64[6],
-        ),
-        bearingStatus: getSwitch(transmissionSwitch[6]),
-        bearingCondition: getFieldValue(
-          getSwitch(transmissionSwitch[6]),
-          transmissionDropdown[6],
-        ),
-        bearingRemarks: getFieldValue(
-          getSwitch(transmissionSwitch[6]),
-          transmissionRemarks[6],
-        ),
-
-        mountingPhoto: getFieldValue(
-          getSwitch(transmissionSwitch[7]),
-          transmissionBase64[7],
-        ),
-        mountingStatus: getSwitch(transmissionSwitch[7]),
-        mountingCondition: getFieldValue(
-          getSwitch(transmissionSwitch[7]),
-          transmissionDropdown[7],
-        ),
-        mountingRemarks: getFieldValue(
-          getSwitch(transmissionSwitch[7]),
-          transmissionRemarks[7],
-        ),
-
-        smokePhoto: getFieldValue(
-          getSwitch(engineSwitch[0]),
-          engineBase64[0],
-        ),
-        smokeStatus: getSwitch(engineSwitch[0]),
-        smokeCondition: getFieldValue(
-          getSwitch(engineSwitch[0]),
-          engineDropdown[0],
-        ),
-        smokeRemarks: getFieldValue(
-          getSwitch(engineSwitch[0]),
-          engineRemarks[0],
-        ),
-        turboPhoto: getFieldValue(
-          getSwitch(engineSwitch[1]),
-          engineBase64[1],
-        ),
-        turboStatus: getSwitch(engineSwitch[1]),
-        turboCondition: getFieldValue(
-          getSwitch(engineSwitch[1]),
-          engineDropdown[1],
-        ),
-        turboRemarks: getFieldValue(
-          getSwitch(engineSwitch[1]),
-          engineRemarks[1],
-        ),
-
-        misfiringPhoto: getFieldValue(
-          getSwitch(engineSwitch[2]),
-          engineBase64[2],
-        ),
-        misfiringStatus: getSwitch(engineSwitch[2]),
-        misfiringCondition: getFieldValue(
-          getSwitch(engineSwitch[2]),
-          engineDropdown[2],
-        ),
-        misfiringRemarks: getFieldValue(
-          getSwitch(engineSwitch[2]),
-          engineRemarks[2],
-        ),
-
-        tappetPhoto: getFieldValue(
-          getSwitch(engineSwitch[3]),
-          engineBase64[3],
-        ),
-        tappetStatus: getSwitch(engineSwitch[3]),
-        tappetCondition: getFieldValue(
-          getSwitch(engineSwitch[3]),
-          engineDropdown[3],
-        ),
-        tappetRemarks: getFieldValue(
-          getSwitch(engineSwitch[3]),
-          engineRemarks[3],
-        ),
-
-        knockingPhoto: getFieldValue(
-          getSwitch(engineSwitch[4]),
-          engineBase64[4],
-        ),
-        knockingStatus: getSwitch(engineSwitch[4]),
-        knockingCondition: getFieldValue(
-          getSwitch(engineSwitch[4]),
-          engineDropdown[4],
-        ),
-        knockingRemarks: getFieldValue(
-          getSwitch(engineSwitch[4]),
-          engineRemarks[4],
-        ),
-
-        exhaustPhoto: getFieldValue(
-          getSwitch(engineSwitch[5]),
-          engineBase64[5],
-        ),
-        exhaustStatus: getSwitch(engineSwitch[5]),
-        exhaustCondition: getFieldValue(
-          getSwitch(engineSwitch[5]),
-          engineDropdown[5],
-        ),
-        exhaustRemarks: getFieldValue(
-          getSwitch(engineSwitch[5]),
-          engineRemarks[5],
-        ),
-
-        beltsPhoto: getFieldValue(
-          getSwitch(engineSwitch[6]),
-          engineBase64[6],
-        ),
-        beltsStatus: getSwitch(engineSwitch[6]),
-        beltsCondition: getFieldValue(
-          getSwitch(engineSwitch[6]),
-          engineDropdown[6],
-        ),
-        beltsRemarks: getFieldValue(
-          getSwitch(engineSwitch[6]),
-          engineRemarks[6],
-        ),
-
-        tensionerPhoto: getFieldValue(
-          getSwitch(engineSwitch[7]),
-          engineBase64[7],
-        ),
-        tensionerStatus: getSwitch(engineSwitch[7]),
-        tensionerCondition: getFieldValue(
-          getSwitch(engineSwitch[7]),
-          engineDropdown[7],
-        ),
-        tensionerRemarks: getFieldValue(
-          getSwitch(engineSwitch[7]),
-          engineRemarks[7],
-        ),
-
-        mountingPhoto: getFieldValue(
-          getSwitch(engineSwitch[8]),
-          engineBase64[8],
-        ),
-        mountingStatus: getSwitch(engineSwitch[8]),
-        mountingCondition: getFieldValue(
-          getSwitch(engineSwitch[8]),
-          engineDropdown[8],
-        ),
-        mountingRemarks: getFieldValue(
-          getSwitch(engineSwitch[8]),
-          engineRemarks[8],
-        ),
-
-        fuelPumpPhoto: getFieldValue(
-          getSwitch(engineSwitch[9]),
-          engineBase64[9],
-        ),
-        fuelPumpStatus: getSwitch(engineSwitch[9]),
-        fuelPumpCondition: getFieldValue(
-          getSwitch(engineSwitch[9]),
-          engineDropdown[9],
-        ),
-        fuelPumpRemarks: getFieldValue(
-          getSwitch(engineSwitch[9]),
-          engineRemarks[9],
-        ),
-
-        highPressurePumpPhoto: getFieldValue(
-          getSwitch(engineSwitch[10]),
-          engineBase64[10],
-        ),
-        highPressurePumpStatus: getSwitch(engineSwitch[10]),
-        highPressurePumpCondition: getFieldValue(
-          getSwitch(engineSwitch[10]),
-          engineDropdown[10],
-        ),
-        highPressurePumpRemarks: getFieldValue(
-          getSwitch(engineSwitch[10]),
-          engineRemarks[10],
-        ),
-
-        commonrailPhoto: getFieldValue(
-          getSwitch(engineSwitch[11]),
-          engineBase64[11],
-        ),
-        commonrailStatus: getSwitch(engineSwitch[11]),
-        commonrailCondition: getFieldValue(
-          getSwitch(engineSwitch[11]),
-          engineDropdown[11],
-        ),
-        commonrailRemarks: getFieldValue(
-          getSwitch(engineSwitch[11]),
-          engineRemarks[11],
-        ),
-
-        injectorPhoto: getFieldValue(
-          getSwitch(engineSwitch[12]),
-          engineBase64[12],
-        ),
-        injectorStatus: getSwitch(engineSwitch[12]),
-        injectorCondition: getFieldValue(
-          getSwitch(engineSwitch[12]),
-          engineDropdown[12],
-        ),
-        injectorRemarks: getFieldValue(
-          getSwitch(engineSwitch[12]),
-          engineRemarks[12],
-        ),
-
-        // Engine items
-        fuelTankPhoto: getFieldValue(
-          getSwitch(engineSwitch[13]),
-          engineBase64[13],
-        ),
-        fuelTankStatus: getSwitch(engineSwitch[13]),
-        fuelTankCondition: getFieldValue(
-          getSwitch(engineSwitch[13]),
-          engineDropdown[13],
-        ),
-        fuelTankRemarks: getFieldValue(
-          getSwitch(engineSwitch[13]),
-          engineRemarks[13],
-        ),
-
-        hosePhoto: getFieldValue(
-          getSwitch(engineSwitch[14]),
-          engineBase64[14],
-        ),
-        hoseStatus: getSwitch(engineSwitch[14]),
-        hoseCondition: getFieldValue(
-          getSwitch(engineSwitch[14]),
-          engineDropdown[14],
-        ),
-        hoseRemarks: getFieldValue(
-          getSwitch(engineSwitch[14]),
-          engineRemarks[14],
-        ),
-
-        radiatorPhoto: getFieldValue(
-          getSwitch(engineSwitch[15]),
-          engineBase64[15],
-        ),
-        radiatorStatus: getSwitch(engineSwitch[15]),
-        radiatorCondition: getFieldValue(
-          getSwitch(engineSwitch[15]),
-          engineDropdown[15],
-        ),
-        radiatorRemarks: getFieldValue(
-          getSwitch(engineSwitch[15]),
-          engineRemarks[15],
-        ),
-
-        fanPhoto: getFieldValue(
-          getSwitch(engineSwitch[16]),
-          engineBase64[16],
-        ),
-        fanStatus: getSwitch(engineSwitch[16]),
-        fanCondition: getFieldValue(
-          getSwitch(engineSwitch[16]),
-          engineDropdown[16],
-        ),
-        fanRemarks: getFieldValue(
-          getSwitch(engineSwitch[16]),
-          engineRemarks[16],
-        ),
-
-        overHeatingPhoto: getFieldValue(
-          getSwitch(engineSwitch[17]),
-          engineBase64[17],
-        ),
-        overHeatingStatus: getSwitch(engineSwitch[17]),
-        overHeatingCondition: getFieldValue(
-          getSwitch(engineSwitch[17]),
-          engineDropdown[17],
-        ),
-        overHeatingRemarks: getFieldValue(
-          getSwitch(engineSwitch[17]),
-          engineRemarks[17],
-        ),
-
-        allBearingsPhoto: getFieldValue(
-          getSwitch(engineSwitch[18]),
-          engineBase64[18],
-        ),
-        allBearingsStatus: getSwitch(engineSwitch[18]),
-        allBearingsCondition: getFieldValue(
-          getSwitch(engineSwitch[18]),
-          engineDropdown[18],
-        ),
-        allBearingsRemarks: getFieldValue(
-          getSwitch(engineSwitch[18]),
-          engineRemarks[18],
-        ),
-
-        // Electrical items
-        batteryPhoto: getFieldValue(
-          getSwitch(electricalSwitch[0]),
-          electricalBase64[0],
-        ),
-        batteryStatus: getSwitch(electricalSwitch[0]),
-        batteryCondition: getFieldValue(
-          getSwitch(electricalSwitch[0]),
-          electricalDropdown[0],
-        ),
-        batteryRemarks: getFieldValue(
-          getSwitch(electricalSwitch[0]),
-          electricalRemarks[0],
-        ),
-
-        alternatorPhoto: getFieldValue(
-          getSwitch(electricalSwitch[1]),
-          electricalBase64[1],
-        ),
-        alternatorStatus: getSwitch(electricalSwitch[1]),
-        alternatorCondition: getFieldValue(
-          getSwitch(electricalSwitch[1]),
-          electricalDropdown[1],
-        ),
-        alternatorRemarks: getFieldValue(
-          getSwitch(electricalSwitch[1]),
-          electricalRemarks[1],
-        ),
-
-        selfMotorPhoto: getFieldValue(
-          getSwitch(electricalSwitch[2]),
-          electricalBase64[2],
-        ),
-        selfMotorStatus: getSwitch(electricalSwitch[2]),
-        selfMotorCondition: getFieldValue(
-          getSwitch(electricalSwitch[2]),
-          electricalDropdown[2],
-        ),
-        selfMotorRemarks: getFieldValue(
-          getSwitch(electricalSwitch[2]),
-          electricalRemarks[2],
-        ),
-
-        wiringHarnessPhoto: getFieldValue(
-          getSwitch(electricalSwitch[3]),
-          electricalBase64[3],
-        ),
-        wiringHarnessStatus: getSwitch(electricalSwitch[3]),
-        wiringHarnessCondition: getFieldValue(
-          getSwitch(electricalSwitch[3]),
-          electricalDropdown[3],
-        ),
-        wiringHarnessRemarks: getFieldValue(
-          getSwitch(electricalSwitch[3]),
-          electricalRemarks[3],
-        ),
-
-        ecmPhoto: getFieldValue(
-          getSwitch(electricalSwitch[4]),
-          electricalBase64[4],
-        ),
-        ecmStatus: getSwitch(electricalSwitch[4]),
-        ecmCondition: getFieldValue(
-          getSwitch(electricalSwitch[4]),
-          electricalDropdown[4],
-        ),
-        ecmRemarks: getFieldValue(
-          getSwitch(electricalSwitch[4]),
-          electricalRemarks[4],
-        ),
-
-        allSensorsPhoto: getFieldValue(
-          getSwitch(electricalSwitch[5]),
-          electricalBase64[5],
-        ),
-        allSensorsStatus: getSwitch(electricalSwitch[5]),
-        allSensorsCondition: getFieldValue(
-          getSwitch(electricalSwitch[5]),
-          electricalDropdown[5],
-        ),
-        allSensorsRemarks: getFieldValue(
-          getSwitch(electricalSwitch[5]),
-          electricalRemarks[5],
-        ),
-
-        wiperMotorPhoto: getFieldValue(
-          getSwitch(electricalSwitch[6]),
-          electricalBase64[6],
-        ),
-        wiperMotorStatus: getSwitch(electricalSwitch[6]),
-        wiperMotorCondition: getFieldValue(
-          getSwitch(electricalSwitch[6]),
-          electricalDropdown[6],
-        ),
-        wiperMotorRemarks: getFieldValue(
-          getSwitch(electricalSwitch[6]),
-          electricalRemarks[6],
-        ),
-
-        clusterPhoto: getFieldValue(
-          getSwitch(electricalSwitch[7]),
-          electricalBase64[7],
-        ),
-        clusterStatus: getSwitch(electricalSwitch[7]),
-        clusterCondition: getFieldValue(
-          getSwitch(electricalSwitch[7]),
-          electricalDropdown[7],
-        ),
-        clusterRemarks: getFieldValue(
-          getSwitch(electricalSwitch[7]),
-          electricalRemarks[7],
-        ),
-
-        headLightsAndDrlPhoto: getFieldValue(
-          getSwitch(electricalSwitch[8]),
-          electricalBase64[8],
-        ),
-        headLightsAndDrlStatus: getSwitch(electricalSwitch[8]),
-        headLightsAndDrlCondition: getFieldValue(
-          getSwitch(electricalSwitch[8]),
-          electricalDropdown[8],
-        ),
-        headLightsAndDrlRemarks: getFieldValue(
-          getSwitch(electricalSwitch[8]),
-          electricalRemarks[8],
-        ),
-
-        tailLightPhoto: getFieldValue(
-          getSwitch(electricalSwitch[9]),
-          electricalBase64[9],
-        ),
-        tailLightStatus: getSwitch(electricalSwitch[9]),
-        tailLightCondition: getFieldValue(
-          getSwitch(electricalSwitch[9]),
-          electricalDropdown[9],
-        ),
-        tailLightRemarks: getFieldValue(
-          getSwitch(electricalSwitch[9]),
-          electricalRemarks[9],
-        ),
-
-        cabinLightPhoto: getFieldValue(
-          getSwitch(electricalSwitch[10]),
-          electricalBase64[10],
-        ),
-        cabinLightStatus: getSwitch(electricalSwitch[10]),
-        cabinLightCondition: getFieldValue(
-          getSwitch(electricalSwitch[10]),
-          electricalDropdown[10],
-        ),
-        cabinLightRemarks: getFieldValue(
-          getSwitch(electricalSwitch[10]),
-          electricalRemarks[10],
-        ),
-
-        combinationSwitchPhoto: getFieldValue(
-          getSwitch(electricalSwitch[11]),
-          electricalBase64[11],
-        ),
-        combinationSwitchStatus: getSwitch(electricalSwitch[11]),
-        combinationSwitchCondition: getFieldValue(
-          getSwitch(electricalSwitch[11]),
-          electricalDropdown[11],
-        ),
-        combinationSwitchRemarks: getFieldValue(
-          getSwitch(electricalSwitch[11]),
-          electricalRemarks[11],
-        ),
-
-        absPhoto: getFieldValue(
-          getSwitch(electricalSwitch[12]),
-          electricalBase64[12],
-        ),
-        absStatus: getSwitch(electricalSwitch[12]),
-        absCondition: getFieldValue(
-          getSwitch(electricalSwitch[12]),
-          electricalDropdown[12],
-        ),
-        absRemarks: getFieldValue(
-          getSwitch(electricalSwitch[12]),
-          electricalRemarks[12],
-        ),
-
-        airBagPhoto: getFieldValue(
-          getSwitch(electricalSwitch[13]),
-          electricalBase64[13],
-        ),
-        airBagStatus: getSwitch(electricalSwitch[13]),
-        airBagCondition: getFieldValue(
-          getSwitch(electricalSwitch[13]),
-          electricalDropdown[13],
-        ),
-        airBagRemarks: getFieldValue(
-          getSwitch(electricalSwitch[13]),
-          electricalRemarks[13],
-        ),
-
-        powerWindowsPhoto: getFieldValue(
-          getSwitch(electricalSwitch[14]),
-          electricalBase64[14],
-        ),
-        powerWindowsStatus: getSwitch(electricalSwitch[14]),
-        powerWindowsCondition: getFieldValue(
-          getSwitch(electricalSwitch[14]),
-          electricalDropdown[14],
-        ),
-        powerWindowsRemarks: getFieldValue(
-          getSwitch(electricalSwitch[14]),
-          electricalRemarks[14],
-        ),
-
-        coolingPhoto: getFieldValue(getSwitch(acSwitch[0]), acBase64[0]),
-        coolingStatus: getSwitch(acSwitch[0]),
-        coolingCondition: getFieldValue(
-          getSwitch(acSwitch[0]),
-          acDropdown[0],
-        ),
-        coolingRemarks: getFieldValue(getSwitch(acSwitch[0]), acRemarks[0]),
-
-        blowerPhoto: getFieldValue(getSwitch(acSwitch[1]), acBase64[1]),
-        blowerStatus: getSwitch(acSwitch[1]),
-        blowerCondition: getFieldValue(getSwitch(acSwitch[1]), acDropdown[1]),
-        blowerRemarks: getFieldValue(getSwitch(acSwitch[1]), acRemarks[1]),
-
-        condenserPhoto: getFieldValue(getSwitch(acSwitch[2]), acBase64[2]),
-        condenserStatus: getSwitch(acSwitch[2]),
-        condenserCondition: getFieldValue(
-          getSwitch(acSwitch[2]),
-          acDropdown[2],
-        ),
-        condenserRemarks: getFieldValue(getSwitch(acSwitch[2]), acRemarks[2]),
-
-        fanPhoto: getFieldValue(getSwitch(acSwitch[3]), acBase64[3]),
-        fanStatus: getSwitch(acSwitch[3]),
-        fanCondition: getFieldValue(getSwitch(acSwitch[3]), acDropdown[3]),
-        fanRemarks: getFieldValue(getSwitch(acSwitch[3]), acRemarks[3]),
-
-        controlSwitchPhoto: getFieldValue(
-          getSwitch(acSwitch[4]),
-          acBase64[4],
-        ),
-        controlSwitchStatus: getSwitch(acSwitch[4]),
-        controlSwitchCondition: getFieldValue(
-          getSwitch(acSwitch[4]),
-          acDropdown[4],
-        ),
-        controlSwitchRemarks: getFieldValue(
-          getSwitch(acSwitch[4]),
-          acRemarks[4],
-        ),
-
-        ventPhoto: getFieldValue(getSwitch(acSwitch[5]), acBase64[5]),
-        ventStatus: getSwitch(acSwitch[5]),
-        ventCondition: getFieldValue(getSwitch(acSwitch[5]), acDropdown[5]),
-        ventRemarks: getFieldValue(getSwitch(acSwitch[5]), acRemarks[5]),
-
-        musicSystemPhoto: getFieldValue(
-          getSwitch(accessoriesSwitch[0]),
-          accessoriesBase64[0],
-        ),
-        musicSystemStatus: getSwitch(accessoriesSwitch[0]),
-        musicSystemCondition: getFieldValue(
-          getSwitch(accessoriesSwitch[0]),
-          accessoriesDropdown[0],
-        ),
-        musicSystemRemarks: getFieldValue(
-          getSwitch(accessoriesSwitch[0]),
-          accessoriesRemarks[0],
-        ),
-
-        parkingSensorPhoto: getFieldValue(
-          getSwitch(accessoriesSwitch[1]),
-          accessoriesBase64[1],
-        ),
-        parkingSensorStatus: getSwitch(accessoriesSwitch[1]),
-        parkingSensorCondition: getFieldValue(
-          getSwitch(accessoriesSwitch[1]),
-          accessoriesDropdown[1],
-        ),
-        parkingSensorRemarks: getFieldValue(
-          getSwitch(accessoriesSwitch[1]),
-          accessoriesRemarks[1],
-        ),
-
-        reverseCameraPhoto: getFieldValue(
-          getSwitch(accessoriesSwitch[2]),
-          accessoriesBase64[2],
-        ),
-        reverseCameraStatus: getSwitch(accessoriesSwitch[2]),
-        reverseCameraCondition: getFieldValue(
-          getSwitch(accessoriesSwitch[2]),
-          accessoriesDropdown[2],
-        ),
-        reverseCameraRemarks: getFieldValue(
-          getSwitch(accessoriesSwitch[2]),
-          accessoriesRemarks[2],
-        ),
-
-        ovrmAdjusterPhoto: getFieldValue(
-          getSwitch(accessoriesSwitch[3]),
-          accessoriesBase64[3],
-        ),
-        ovrmAdjusterStatus: getSwitch(accessoriesSwitch[3]),
-        ovrmAdjusterCondition: getFieldValue(
-          getSwitch(accessoriesSwitch[3]),
-          accessoriesDropdown[3],
-        ),
-        ovrmAdjusterRemarks: getFieldValue(
-          getSwitch(accessoriesSwitch[3]),
-          accessoriesRemarks[3],
-        ),
-
-        seatHeightAdjusterPhoto: getFieldValue(
-          getSwitch(accessoriesSwitch[4]),
-          accessoriesBase64[4],
-        ),
-        seatHeightAdjusterStatus: getSwitch(accessoriesSwitch[4]),
-        seatHeightAdjusterCondition: getFieldValue(
-          getSwitch(accessoriesSwitch[4]),
-          accessoriesDropdown[4],
-        ),
-        seatHeightAdjusterRemarks: getFieldValue(
-          getSwitch(accessoriesSwitch[4]),
-          accessoriesRemarks[4],
-        ),
-
-        seatBeltPhoto: getFieldValue(
-          getSwitch(accessoriesSwitch[5]),
-          accessoriesBase64[5],
-        ),
-        seatBeltStatus: getSwitch(accessoriesSwitch[5]),
-        seatBeltCondition: getFieldValue(
-          getSwitch(accessoriesSwitch[5]),
-          accessoriesDropdown[5],
-        ),
-        seatBeltRemarks: getFieldValue(
-          getSwitch(accessoriesSwitch[5]),
-          accessoriesRemarks[5],
-        ),
-
-        sunRoofPhoto: getFieldValue(
-          getSwitch(accessoriesSwitch[6]),
-          accessoriesBase64[6],
-        ),
-        sunRoofStatus: getSwitch(accessoriesSwitch[6]),
-        sunRoofCondition: getFieldValue(
-          getSwitch(accessoriesSwitch[6]),
-          accessoriesDropdown[6],
-        ),
-        sunRoofRemarks: getFieldValue(
-          getSwitch(accessoriesSwitch[6]),
-          accessoriesRemarks[6],
-        ),
-
-        roofRailPhoto: getFieldValue(
-          getSwitch(accessoriesSwitch[7]),
-          accessoriesBase64[7],
-        ),
-        roofRailStatus: getSwitch(accessoriesSwitch[7]),
-        roofRailCondition: getFieldValue(
-          getSwitch(accessoriesSwitch[7]),
-          accessoriesDropdown[7],
-        ),
-        roofRailRemarks: getFieldValue(
-          getSwitch(accessoriesSwitch[7]),
-          accessoriesRemarks[7],
-        ),
-
-        spoilerPhoto: getFieldValue(
-          getSwitch(accessoriesSwitch[8]),
-          accessoriesBase64[8],
-        ),
-        spoilerStatus: getSwitch(accessoriesSwitch[8]),
-        spoilerCondition: getFieldValue(
-          getSwitch(accessoriesSwitch[8]),
-          accessoriesDropdown[8],
-        ),
-        spoilerRemarks: getFieldValue(
-          getSwitch(accessoriesSwitch[8]),
-          accessoriesRemarks[8],
-        ),
-
-        skirtPhoto: getFieldValue(
-          getSwitch(accessoriesSwitch[9]),
-          accessoriesBase64[9],
-        ),
-        skirtStatus: getSwitch(accessoriesSwitch[9]),
-        skirtCondition: accessoriesDropdown[9],
-        skirtRemarks: accessoriesRemarks[9],
-
-        steeringControlsPhoto: getFieldValue(
-          getSwitch(accessoriesSwitch[10]),
-          accessoriesBase64[10],
-        ),
-        steeringControlsStatus: getSwitch(accessoriesSwitch[10]),
-        steeringControlsCondition: getFieldValue(
-          getSwitch(accessoriesSwitch[10]),
-          accessoriesDropdown[10],
-        ),
-        steeringControlsRemarks: getFieldValue(
-          getSwitch(accessoriesSwitch[10]),
-          accessoriesRemarks[10],
-        ),
-
-        engineOilStatus: getSwitch(oliSwitch[0]),
-        engineOilRemarks: getFieldValue(
-          getSwitch(oliSwitch[0]),
-          oilRemarks[0],
-        ),
-        engineOilCondition: getFieldValue(
-          getSwitch(oliSwitch[0]),
-          oilDropDown[0],
-        ),
-
-        brakeOilStatus: getSwitch(oliSwitch[1]),
-        brakeOilRemarks: getFieldValue(
-          getSwitch(oliSwitch[1]),
-          oilRemarks[1],
-        ),
-        brakeOilCondition: getFieldValue(
-          getSwitch(oliSwitch[1]),
-          oilDropDown[1],
-        ),
-
-        coolentOilStatus: getSwitch(oliSwitch[2]),
-        coolentOilRemarks: getFieldValue(
-          getSwitch(oliSwitch[2]),
-          oilRemarks[2],
-        ),
-        coolentOilCondition: getFieldValue(
-          getSwitch(oliSwitch[2]),
-          oilDropDown[2],
-        ),
-
-        gearOilStatus: getSwitch(oliSwitch[3]),
-        gearOilRemarks: getFieldValue(getSwitch(oliSwitch[3]), oilRemarks[3]),
-        gearOilCondition: getFieldValue(
-          getSwitch(oliSwitch[3]),
-          oilDropDown[3],
-        ),
-
-        crownOilStatus: getSwitch(oliSwitch[4]),
-        crownOilRemarks: getFieldValue(
-          getSwitch(oliSwitch[4]),
-          oilRemarks[4],
-        ),
-        crownOilCondition: getFieldValue(
-          getSwitch(oliSwitch[4]),
-          oilDropDown[4],
-        ),
-
-        roadTestRemarks: roadTestRemarks,
-      };
-      params = Object.fromEntries(
-        Object.entries(params).filter(
-          ([_, value]) =>
-            value !== '' &&
-            value !== null &&
-            value !== false &&
-            value !== undefined,
-        ),
-      );
-      
+        params = {
+          dealerId: dealerIdNumber,
+          id: id ? id : orderId,
+          orderStatus: 1,
+          strutPhoto: getFieldValue(
+            getSwitch(suspensionSwitch[0]),
+            suspensionBase64[0],
+          ),
+          strutStatus: getSwitch(suspensionSwitch[0]),
+          strutCondition: getFieldValue(
+            getSwitch(suspensionSwitch[0]),
+            suspensionDropdown[0],
+          ),
+          strutRemarks: getFieldValue(
+            getSwitch(suspensionSwitch[0]),
+            suspensionRemarks[0],
+          ),
+
+          lowerArmPhoto: getFieldValue(
+            getSwitch(suspensionSwitch[1]),
+            suspensionBase64[1],
+          ),
+          lowerArmStatus: getSwitch(suspensionSwitch[1]),
+          lowerArmCondition: getFieldValue(
+            getSwitch(suspensionSwitch[1]),
+            suspensionDropdown[1],
+          ),
+          lowerArmRemarks: getFieldValue(
+            getSwitch(suspensionSwitch[1]),
+            suspensionRemarks[1],
+          ),
+
+          linkRodPhoto: getFieldValue(
+            getSwitch(suspensionSwitch[2]),
+            suspensionBase64[2],
+          ),
+          linkRodStatus: getSwitch(suspensionSwitch[2]),
+          linkRodCondition: getFieldValue(
+            getSwitch(suspensionSwitch[2]),
+            suspensionDropdown[2],
+          ),
+          linkRodRemarks: getFieldValue(
+            getSwitch(suspensionSwitch[2]),
+            suspensionRemarks[2],
+          ),
+
+          stabilizerBarPhoto: getFieldValue(
+            getSwitch(suspensionSwitch[3]),
+            suspensionBase64[3],
+          ),
+          stabilizerBarStatus: getSwitch(suspensionSwitch[3]),
+          stabilizerBarCondition: getFieldValue(
+            getSwitch(suspensionSwitch[3]),
+            suspensionDropdown[3],
+          ),
+          stabilizerBarRemarks: getFieldValue(
+            getSwitch(suspensionSwitch[3]),
+            suspensionRemarks[3],
+          ),
+
+          shockAbsorberPhoto: getFieldValue(
+            getSwitch(suspensionSwitch[4]),
+            suspensionBase64[4],
+          ),
+          shockAbsorberStatus: getSwitch(suspensionSwitch[4]),
+          shockAbsorberCondition: getFieldValue(
+            getSwitch(suspensionSwitch[4]),
+            suspensionDropdown[4],
+          ),
+          shockAbsorberRemarks: getFieldValue(
+            getSwitch(suspensionSwitch[4]),
+            suspensionRemarks[4],
+          ),
+
+          coilSpringPhoto: getFieldValue(
+            getSwitch(suspensionSwitch[5]),
+            suspensionBase64[5],
+          ),
+          coilSpringStatus: getSwitch(suspensionSwitch[5]),
+          coilSpringCondition: getFieldValue(
+            getSwitch(suspensionSwitch[5]),
+            suspensionDropdown[5],
+          ),
+          coilSpringRemarks: getFieldValue(
+            getSwitch(suspensionSwitch[5]),
+            suspensionRemarks[5],
+          ),
+
+          leafSpringPhoto: getFieldValue(
+            getSwitch(suspensionSwitch[6]),
+            suspensionBase64[6],
+          ),
+          leafSpringStatus: getSwitch(suspensionSwitch[6]),
+          leafSpringCondition: getFieldValue(
+            getSwitch(suspensionSwitch[6]),
+            suspensionDropdown[6],
+          ),
+          leafSpringRemarks: getFieldValue(
+            getSwitch(suspensionSwitch[6]),
+            suspensionRemarks[6],
+          ),
+
+          rackAndPinionPhoto: getFieldValue(
+            getSwitch(steeringSwitch[0]),
+            steeringBase64[0],
+          ),
+          rackAndPinionStatus: getSwitch(steeringSwitch[0]),
+          rackAndPinionCondition: getFieldValue(
+            getSwitch(steeringSwitch[0]),
+            steeringDropdown[0],
+          ),
+          rackAndPinionRemarks: getFieldValue(
+            getSwitch(steeringSwitch[0]),
+            steeringRemarks[0],
+          ),
+
+          steeringColumnPhoto: getFieldValue(
+            getSwitch(steeringSwitch[1]),
+            steeringBase64[1],
+          ),
+          steeringColumnStatus: getSwitch(steeringSwitch[1]),
+          steeringColumnCondition: getFieldValue(
+            getSwitch(steeringSwitch[1]),
+            steeringDropdown[1],
+          ),
+          steeringColumnRemarks: getFieldValue(
+            getSwitch(steeringSwitch[1]),
+            steeringRemarks[1],
+          ),
+
+          hardnessPhoto: getFieldValue(
+            getSwitch(steeringSwitch[2]),
+            steeringBase64[2],
+          ),
+          hardnessStatus: getSwitch(steeringSwitch[2]),
+          hardnessCondition: getFieldValue(
+            getSwitch(steeringSwitch[2]),
+            steeringDropdown[2],
+          ),
+          hardnessRemarks: getFieldValue(
+            getSwitch(steeringSwitch[2]),
+            steeringRemarks[2],
+          ),
+
+          ballJointEndPhoto: getFieldValue(
+            getSwitch(steeringSwitch[3]),
+            steeringBase64[3],
+          ),
+          ballJointEndStatus: getSwitch(steeringSwitch[3]),
+          ballJointEndCondition: getFieldValue(
+            getSwitch(steeringSwitch[3]),
+            steeringDropdown[3],
+          ),
+          ballJointEndRemarks: getFieldValue(
+            getSwitch(steeringSwitch[3]),
+            steeringRemarks[3],
+          ),
+
+          padPhoto: getFieldValue(getSwitch(brakeSwitch[0]), brakeBase64[0]),
+          padStatus: getSwitch(brakeSwitch[0]),
+          padCondition: getFieldValue(
+            getSwitch(brakeSwitch[0]),
+            brakeDropdown[0],
+          ),
+          padRemarks: getFieldValue(getSwitch(brakeSwitch[0]), brakeRemarks[0]),
+
+          discPhoto: getFieldValue(getSwitch(brakeSwitch[1]), brakeBase64[1]),
+          discStatus: getSwitch(brakeSwitch[1]),
+          discCondition: getFieldValue(
+            getSwitch(brakeSwitch[1]),
+            brakeDropdown[1],
+          ),
+          discRemarks: getFieldValue(
+            getSwitch(brakeSwitch[1]),
+            brakeRemarks[1],
+          ),
+
+          shoePhoto: getFieldValue(getSwitch(brakeSwitch[2]), brakeBase64[2]),
+          shoeStatus: getSwitch(brakeSwitch[2]),
+          shoeCondition: getFieldValue(
+            getSwitch(brakeSwitch[2]),
+            brakeDropdown[2],
+          ),
+          shoeRemarks: getFieldValue(
+            getSwitch(brakeSwitch[2]),
+            brakeRemarks[2],
+          ),
+
+          drumPhoto: getFieldValue(getSwitch(brakeSwitch[3]), brakeBase64[3]),
+          drumStatus: getSwitch(brakeSwitch[3]),
+          drumCondition: getFieldValue(
+            getSwitch(brakeSwitch[3]),
+            brakeDropdown[3],
+          ),
+          drumRemarks: getFieldValue(
+            getSwitch(brakeSwitch[3]),
+            brakeRemarks[3],
+          ),
+
+          wheelCylinderPhoto: getFieldValue(
+            getSwitch(brakeSwitch[4]),
+            brakeBase64[4],
+          ),
+          wheelCylinderStatus: getSwitch(brakeSwitch[4]),
+          wheelCylinderCondition: getFieldValue(
+            getSwitch(brakeSwitch[4]),
+            brakeDropdown[4],
+          ),
+          wheelCylinderRemarks: getFieldValue(
+            getSwitch(brakeSwitch[4]),
+            brakeRemarks[4],
+          ),
+
+          mcBoosterPhoto: getFieldValue(
+            getSwitch(brakeSwitch[5]),
+            brakeBase64[5],
+          ),
+          mcBoosterStatus: getSwitch(brakeSwitch[5]),
+          mcBoosterCondition: getFieldValue(
+            getSwitch(brakeSwitch[5]),
+            brakeDropdown[5],
+          ),
+          mcBoosterRemarks: getFieldValue(
+            getSwitch(brakeSwitch[5]),
+            brakeRemarks[5],
+          ),
+
+          clutchPhoto: getFieldValue(
+            getSwitch(transmissionSwitch[0]),
+            transmissionBase64[0],
+          ),
+          clutchStatus: getSwitch(transmissionSwitch[0]),
+          clutchCondition: getFieldValue(
+            getSwitch(transmissionSwitch[0]),
+            transmissionDropdown[0],
+          ),
+          clutchRemarks: getFieldValue(
+            getSwitch(transmissionSwitch[0]),
+            transmissionRemarks[0],
+          ),
+
+          gearShiftingPhoto: getFieldValue(
+            getSwitch(transmissionSwitch[1]),
+            transmissionBase64[1],
+          ),
+          gearShiftingStatus: getSwitch(transmissionSwitch[1]),
+          gearShiftingCondition: getFieldValue(
+            getSwitch(transmissionSwitch[1]),
+            transmissionDropdown[1],
+          ),
+          gearShiftingRemarks: getFieldValue(
+            getSwitch(transmissionSwitch[1]),
+            transmissionRemarks[1],
+          ),
+
+          driveShaftPhoto: getFieldValue(
+            getSwitch(transmissionSwitch[2]),
+            transmissionBase64[2],
+          ),
+          driveShaftStatus: getSwitch(transmissionSwitch[2]),
+          driveShaftCondition: getFieldValue(
+            getSwitch(transmissionSwitch[2]),
+            transmissionDropdown[2],
+          ),
+          driveShaftRemarks: getFieldValue(
+            getSwitch(transmissionSwitch[2]),
+            transmissionRemarks[2],
+          ),
+
+          axlePhoto: getFieldValue(
+            getSwitch(transmissionSwitch[3]),
+            transmissionBase64[3],
+          ),
+          axleStatus: getSwitch(transmissionSwitch[3]),
+          axleCondition: getFieldValue(
+            getSwitch(transmissionSwitch[3]),
+            transmissionDropdown[3],
+          ),
+          axleRemarks: getFieldValue(
+            getSwitch(transmissionSwitch[3]),
+            transmissionRemarks[3],
+          ),
+
+          propellerShaftPhoto: getFieldValue(
+            getSwitch(transmissionSwitch[4]),
+            transmissionBase64[4],
+          ),
+          propellerShaftStatus: getSwitch(transmissionSwitch[4]),
+          propellerShaftCondition: getFieldValue(
+            getSwitch(transmissionSwitch[4]),
+            transmissionDropdown[4],
+          ),
+          propellerShaftRemarks: getFieldValue(
+            getSwitch(transmissionSwitch[4]),
+            transmissionRemarks[4],
+          ),
+          differentialPhoto: getFieldValue(
+            getSwitch(transmissionSwitch[5]),
+            transmissionBase64[5],
+          ),
+          differentialStatus: getSwitch(transmissionSwitch[5]),
+          differentialCondition: getFieldValue(
+            getSwitch(transmissionSwitch[5]),
+            transmissionDropdown[5],
+          ),
+          differentialRemarks: getFieldValue(
+            getSwitch(transmissionSwitch[5]),
+            transmissionRemarks[5],
+          ),
+
+          bearingPhoto: getFieldValue(
+            getSwitch(transmissionSwitch[6]),
+            transmissionBase64[6],
+          ),
+          bearingStatus: getSwitch(transmissionSwitch[6]),
+          bearingCondition: getFieldValue(
+            getSwitch(transmissionSwitch[6]),
+            transmissionDropdown[6],
+          ),
+          bearingRemarks: getFieldValue(
+            getSwitch(transmissionSwitch[6]),
+            transmissionRemarks[6],
+          ),
+
+          mountingPhoto: getFieldValue(
+            getSwitch(transmissionSwitch[7]),
+            transmissionBase64[7],
+          ),
+          mountingStatus: getSwitch(transmissionSwitch[7]),
+          mountingCondition: getFieldValue(
+            getSwitch(transmissionSwitch[7]),
+            transmissionDropdown[7],
+          ),
+          mountingRemarks: getFieldValue(
+            getSwitch(transmissionSwitch[7]),
+            transmissionRemarks[7],
+          ),
+
+          smokePhoto: getFieldValue(
+            getSwitch(engineSwitch[0]),
+            engineBase64[0],
+          ),
+          smokeStatus: getSwitch(engineSwitch[0]),
+          smokeCondition: getFieldValue(
+            getSwitch(engineSwitch[0]),
+            engineDropdown[0],
+          ),
+          smokeRemarks: getFieldValue(
+            getSwitch(engineSwitch[0]),
+            engineRemarks[0],
+          ),
+          turboPhoto: getFieldValue(
+            getSwitch(engineSwitch[1]),
+            engineBase64[1],
+          ),
+          turboStatus: getSwitch(engineSwitch[1]),
+          turboCondition: getFieldValue(
+            getSwitch(engineSwitch[1]),
+            engineDropdown[1],
+          ),
+          turboRemarks: getFieldValue(
+            getSwitch(engineSwitch[1]),
+            engineRemarks[1],
+          ),
+
+          misfiringPhoto: getFieldValue(
+            getSwitch(engineSwitch[2]),
+            engineBase64[2],
+          ),
+          misfiringStatus: getSwitch(engineSwitch[2]),
+          misfiringCondition: getFieldValue(
+            getSwitch(engineSwitch[2]),
+            engineDropdown[2],
+          ),
+          misfiringRemarks: getFieldValue(
+            getSwitch(engineSwitch[2]),
+            engineRemarks[2],
+          ),
+
+          tappetPhoto: getFieldValue(
+            getSwitch(engineSwitch[3]),
+            engineBase64[3],
+          ),
+          tappetStatus: getSwitch(engineSwitch[3]),
+          tappetCondition: getFieldValue(
+            getSwitch(engineSwitch[3]),
+            engineDropdown[3],
+          ),
+          tappetRemarks: getFieldValue(
+            getSwitch(engineSwitch[3]),
+            engineRemarks[3],
+          ),
+
+          knockingPhoto: getFieldValue(
+            getSwitch(engineSwitch[4]),
+            engineBase64[4],
+          ),
+          knockingStatus: getSwitch(engineSwitch[4]),
+          knockingCondition: getFieldValue(
+            getSwitch(engineSwitch[4]),
+            engineDropdown[4],
+          ),
+          knockingRemarks: getFieldValue(
+            getSwitch(engineSwitch[4]),
+            engineRemarks[4],
+          ),
+
+          exhaustPhoto: getFieldValue(
+            getSwitch(engineSwitch[5]),
+            engineBase64[5],
+          ),
+          exhaustStatus: getSwitch(engineSwitch[5]),
+          exhaustCondition: getFieldValue(
+            getSwitch(engineSwitch[5]),
+            engineDropdown[5],
+          ),
+          exhaustRemarks: getFieldValue(
+            getSwitch(engineSwitch[5]),
+            engineRemarks[5],
+          ),
+
+          beltsPhoto: getFieldValue(
+            getSwitch(engineSwitch[6]),
+            engineBase64[6],
+          ),
+          beltsStatus: getSwitch(engineSwitch[6]),
+          beltsCondition: getFieldValue(
+            getSwitch(engineSwitch[6]),
+            engineDropdown[6],
+          ),
+          beltsRemarks: getFieldValue(
+            getSwitch(engineSwitch[6]),
+            engineRemarks[6],
+          ),
+
+          tensionerPhoto: getFieldValue(
+            getSwitch(engineSwitch[7]),
+            engineBase64[7],
+          ),
+          tensionerStatus: getSwitch(engineSwitch[7]),
+          tensionerCondition: getFieldValue(
+            getSwitch(engineSwitch[7]),
+            engineDropdown[7],
+          ),
+          tensionerRemarks: getFieldValue(
+            getSwitch(engineSwitch[7]),
+            engineRemarks[7],
+          ),
+
+          mountingPhoto: getFieldValue(
+            getSwitch(engineSwitch[8]),
+            engineBase64[8],
+          ),
+          mountingStatus: getSwitch(engineSwitch[8]),
+          mountingCondition: getFieldValue(
+            getSwitch(engineSwitch[8]),
+            engineDropdown[8],
+          ),
+          mountingRemarks: getFieldValue(
+            getSwitch(engineSwitch[8]),
+            engineRemarks[8],
+          ),
+
+          fuelPumpPhoto: getFieldValue(
+            getSwitch(engineSwitch[9]),
+            engineBase64[9],
+          ),
+          fuelPumpStatus: getSwitch(engineSwitch[9]),
+          fuelPumpCondition: getFieldValue(
+            getSwitch(engineSwitch[9]),
+            engineDropdown[9],
+          ),
+          fuelPumpRemarks: getFieldValue(
+            getSwitch(engineSwitch[9]),
+            engineRemarks[9],
+          ),
+
+          highPressurePumpPhoto: getFieldValue(
+            getSwitch(engineSwitch[10]),
+            engineBase64[10],
+          ),
+          highPressurePumpStatus: getSwitch(engineSwitch[10]),
+          highPressurePumpCondition: getFieldValue(
+            getSwitch(engineSwitch[10]),
+            engineDropdown[10],
+          ),
+          highPressurePumpRemarks: getFieldValue(
+            getSwitch(engineSwitch[10]),
+            engineRemarks[10],
+          ),
+
+          commonrailPhoto: getFieldValue(
+            getSwitch(engineSwitch[11]),
+            engineBase64[11],
+          ),
+          commonrailStatus: getSwitch(engineSwitch[11]),
+          commonrailCondition: getFieldValue(
+            getSwitch(engineSwitch[11]),
+            engineDropdown[11],
+          ),
+          commonrailRemarks: getFieldValue(
+            getSwitch(engineSwitch[11]),
+            engineRemarks[11],
+          ),
+
+          injectorPhoto: getFieldValue(
+            getSwitch(engineSwitch[12]),
+            engineBase64[12],
+          ),
+          injectorStatus: getSwitch(engineSwitch[12]),
+          injectorCondition: getFieldValue(
+            getSwitch(engineSwitch[12]),
+            engineDropdown[12],
+          ),
+          injectorRemarks: getFieldValue(
+            getSwitch(engineSwitch[12]),
+            engineRemarks[12],
+          ),
+
+          // Engine items
+          fuelTankPhoto: getFieldValue(
+            getSwitch(engineSwitch[13]),
+            engineBase64[13],
+          ),
+          fuelTankStatus: getSwitch(engineSwitch[13]),
+          fuelTankCondition: getFieldValue(
+            getSwitch(engineSwitch[13]),
+            engineDropdown[13],
+          ),
+          fuelTankRemarks: getFieldValue(
+            getSwitch(engineSwitch[13]),
+            engineRemarks[13],
+          ),
+
+          hosePhoto: getFieldValue(
+            getSwitch(engineSwitch[14]),
+            engineBase64[14],
+          ),
+          hoseStatus: getSwitch(engineSwitch[14]),
+          hoseCondition: getFieldValue(
+            getSwitch(engineSwitch[14]),
+            engineDropdown[14],
+          ),
+          hoseRemarks: getFieldValue(
+            getSwitch(engineSwitch[14]),
+            engineRemarks[14],
+          ),
+
+          radiatorPhoto: getFieldValue(
+            getSwitch(engineSwitch[15]),
+            engineBase64[15],
+          ),
+          radiatorStatus: getSwitch(engineSwitch[15]),
+          radiatorCondition: getFieldValue(
+            getSwitch(engineSwitch[15]),
+            engineDropdown[15],
+          ),
+          radiatorRemarks: getFieldValue(
+            getSwitch(engineSwitch[15]),
+            engineRemarks[15],
+          ),
+
+          fanPhoto: getFieldValue(
+            getSwitch(engineSwitch[16]),
+            engineBase64[16],
+          ),
+          fanStatus: getSwitch(engineSwitch[16]),
+          fanCondition: getFieldValue(
+            getSwitch(engineSwitch[16]),
+            engineDropdown[16],
+          ),
+          fanRemarks: getFieldValue(
+            getSwitch(engineSwitch[16]),
+            engineRemarks[16],
+          ),
+
+          overHeatingPhoto: getFieldValue(
+            getSwitch(engineSwitch[17]),
+            engineBase64[17],
+          ),
+          overHeatingStatus: getSwitch(engineSwitch[17]),
+          overHeatingCondition: getFieldValue(
+            getSwitch(engineSwitch[17]),
+            engineDropdown[17],
+          ),
+          overHeatingRemarks: getFieldValue(
+            getSwitch(engineSwitch[17]),
+            engineRemarks[17],
+          ),
+
+          allBearingsPhoto: getFieldValue(
+            getSwitch(engineSwitch[18]),
+            engineBase64[18],
+          ),
+          allBearingsStatus: getSwitch(engineSwitch[18]),
+          allBearingsCondition: getFieldValue(
+            getSwitch(engineSwitch[18]),
+            engineDropdown[18],
+          ),
+          allBearingsRemarks: getFieldValue(
+            getSwitch(engineSwitch[18]),
+            engineRemarks[18],
+          ),
+
+          // Electrical items
+          batteryPhoto: getFieldValue(
+            getSwitch(electricalSwitch[0]),
+            electricalBase64[0],
+          ),
+          batteryStatus: getSwitch(electricalSwitch[0]),
+          batteryCondition: getFieldValue(
+            getSwitch(electricalSwitch[0]),
+            electricalDropdown[0],
+          ),
+          batteryRemarks: getFieldValue(
+            getSwitch(electricalSwitch[0]),
+            electricalRemarks[0],
+          ),
+
+          alternatorPhoto: getFieldValue(
+            getSwitch(electricalSwitch[1]),
+            electricalBase64[1],
+          ),
+          alternatorStatus: getSwitch(electricalSwitch[1]),
+          alternatorCondition: getFieldValue(
+            getSwitch(electricalSwitch[1]),
+            electricalDropdown[1],
+          ),
+          alternatorRemarks: getFieldValue(
+            getSwitch(electricalSwitch[1]),
+            electricalRemarks[1],
+          ),
+
+          selfMotorPhoto: getFieldValue(
+            getSwitch(electricalSwitch[2]),
+            electricalBase64[2],
+          ),
+          selfMotorStatus: getSwitch(electricalSwitch[2]),
+          selfMotorCondition: getFieldValue(
+            getSwitch(electricalSwitch[2]),
+            electricalDropdown[2],
+          ),
+          selfMotorRemarks: getFieldValue(
+            getSwitch(electricalSwitch[2]),
+            electricalRemarks[2],
+          ),
+
+          wiringHarnessPhoto: getFieldValue(
+            getSwitch(electricalSwitch[3]),
+            electricalBase64[3],
+          ),
+          wiringHarnessStatus: getSwitch(electricalSwitch[3]),
+          wiringHarnessCondition: getFieldValue(
+            getSwitch(electricalSwitch[3]),
+            electricalDropdown[3],
+          ),
+          wiringHarnessRemarks: getFieldValue(
+            getSwitch(electricalSwitch[3]),
+            electricalRemarks[3],
+          ),
+
+          ecmPhoto: getFieldValue(
+            getSwitch(electricalSwitch[4]),
+            electricalBase64[4],
+          ),
+          ecmStatus: getSwitch(electricalSwitch[4]),
+          ecmCondition: getFieldValue(
+            getSwitch(electricalSwitch[4]),
+            electricalDropdown[4],
+          ),
+          ecmRemarks: getFieldValue(
+            getSwitch(electricalSwitch[4]),
+            electricalRemarks[4],
+          ),
+
+          allSensorsPhoto: getFieldValue(
+            getSwitch(electricalSwitch[5]),
+            electricalBase64[5],
+          ),
+          allSensorsStatus: getSwitch(electricalSwitch[5]),
+          allSensorsCondition: getFieldValue(
+            getSwitch(electricalSwitch[5]),
+            electricalDropdown[5],
+          ),
+          allSensorsRemarks: getFieldValue(
+            getSwitch(electricalSwitch[5]),
+            electricalRemarks[5],
+          ),
+
+          wiperMotorPhoto: getFieldValue(
+            getSwitch(electricalSwitch[6]),
+            electricalBase64[6],
+          ),
+          wiperMotorStatus: getSwitch(electricalSwitch[6]),
+          wiperMotorCondition: getFieldValue(
+            getSwitch(electricalSwitch[6]),
+            electricalDropdown[6],
+          ),
+          wiperMotorRemarks: getFieldValue(
+            getSwitch(electricalSwitch[6]),
+            electricalRemarks[6],
+          ),
+
+          clusterPhoto: getFieldValue(
+            getSwitch(electricalSwitch[7]),
+            electricalBase64[7],
+          ),
+          clusterStatus: getSwitch(electricalSwitch[7]),
+          clusterCondition: getFieldValue(
+            getSwitch(electricalSwitch[7]),
+            electricalDropdown[7],
+          ),
+          clusterRemarks: getFieldValue(
+            getSwitch(electricalSwitch[7]),
+            electricalRemarks[7],
+          ),
+
+          headLightsAndDrlPhoto: getFieldValue(
+            getSwitch(electricalSwitch[8]),
+            electricalBase64[8],
+          ),
+          headLightsAndDrlStatus: getSwitch(electricalSwitch[8]),
+          headLightsAndDrlCondition: getFieldValue(
+            getSwitch(electricalSwitch[8]),
+            electricalDropdown[8],
+          ),
+          headLightsAndDrlRemarks: getFieldValue(
+            getSwitch(electricalSwitch[8]),
+            electricalRemarks[8],
+          ),
+
+          tailLightPhoto: getFieldValue(
+            getSwitch(electricalSwitch[9]),
+            electricalBase64[9],
+          ),
+          tailLightStatus: getSwitch(electricalSwitch[9]),
+          tailLightCondition: getFieldValue(
+            getSwitch(electricalSwitch[9]),
+            electricalDropdown[9],
+          ),
+          tailLightRemarks: getFieldValue(
+            getSwitch(electricalSwitch[9]),
+            electricalRemarks[9],
+          ),
+
+          cabinLightPhoto: getFieldValue(
+            getSwitch(electricalSwitch[10]),
+            electricalBase64[10],
+          ),
+          cabinLightStatus: getSwitch(electricalSwitch[10]),
+          cabinLightCondition: getFieldValue(
+            getSwitch(electricalSwitch[10]),
+            electricalDropdown[10],
+          ),
+          cabinLightRemarks: getFieldValue(
+            getSwitch(electricalSwitch[10]),
+            electricalRemarks[10],
+          ),
+
+          combinationSwitchPhoto: getFieldValue(
+            getSwitch(electricalSwitch[11]),
+            electricalBase64[11],
+          ),
+          combinationSwitchStatus: getSwitch(electricalSwitch[11]),
+          combinationSwitchCondition: getFieldValue(
+            getSwitch(electricalSwitch[11]),
+            electricalDropdown[11],
+          ),
+          combinationSwitchRemarks: getFieldValue(
+            getSwitch(electricalSwitch[11]),
+            electricalRemarks[11],
+          ),
+
+          absPhoto: getFieldValue(
+            getSwitch(electricalSwitch[12]),
+            electricalBase64[12],
+          ),
+          absStatus: getSwitch(electricalSwitch[12]),
+          absCondition: getFieldValue(
+            getSwitch(electricalSwitch[12]),
+            electricalDropdown[12],
+          ),
+          absRemarks: getFieldValue(
+            getSwitch(electricalSwitch[12]),
+            electricalRemarks[12],
+          ),
+
+          airBagPhoto: getFieldValue(
+            getSwitch(electricalSwitch[13]),
+            electricalBase64[13],
+          ),
+          airBagStatus: getSwitch(electricalSwitch[13]),
+          airBagCondition: getFieldValue(
+            getSwitch(electricalSwitch[13]),
+            electricalDropdown[13],
+          ),
+          airBagRemarks: getFieldValue(
+            getSwitch(electricalSwitch[13]),
+            electricalRemarks[13],
+          ),
+
+          powerWindowsPhoto: getFieldValue(
+            getSwitch(electricalSwitch[14]),
+            electricalBase64[14],
+          ),
+          powerWindowsStatus: getSwitch(electricalSwitch[14]),
+          powerWindowsCondition: getFieldValue(
+            getSwitch(electricalSwitch[14]),
+            electricalDropdown[14],
+          ),
+          powerWindowsRemarks: getFieldValue(
+            getSwitch(electricalSwitch[14]),
+            electricalRemarks[14],
+          ),
+
+          coolingPhoto: getFieldValue(getSwitch(acSwitch[0]), acBase64[0]),
+          coolingStatus: getSwitch(acSwitch[0]),
+          coolingCondition: getFieldValue(
+            getSwitch(acSwitch[0]),
+            acDropdown[0],
+          ),
+          coolingRemarks: getFieldValue(getSwitch(acSwitch[0]), acRemarks[0]),
+
+          blowerPhoto: getFieldValue(getSwitch(acSwitch[1]), acBase64[1]),
+          blowerStatus: getSwitch(acSwitch[1]),
+          blowerCondition: getFieldValue(getSwitch(acSwitch[1]), acDropdown[1]),
+          blowerRemarks: getFieldValue(getSwitch(acSwitch[1]), acRemarks[1]),
+
+          condenserPhoto: getFieldValue(getSwitch(acSwitch[2]), acBase64[2]),
+          condenserStatus: getSwitch(acSwitch[2]),
+          condenserCondition: getFieldValue(
+            getSwitch(acSwitch[2]),
+            acDropdown[2],
+          ),
+          condenserRemarks: getFieldValue(getSwitch(acSwitch[2]), acRemarks[2]),
+
+          fanPhoto: getFieldValue(getSwitch(acSwitch[3]), acBase64[3]),
+          fanStatus: getSwitch(acSwitch[3]),
+          fanCondition: getFieldValue(getSwitch(acSwitch[3]), acDropdown[3]),
+          fanRemarks: getFieldValue(getSwitch(acSwitch[3]), acRemarks[3]),
+
+          controlSwitchPhoto: getFieldValue(
+            getSwitch(acSwitch[4]),
+            acBase64[4],
+          ),
+          controlSwitchStatus: getSwitch(acSwitch[4]),
+          controlSwitchCondition: getFieldValue(
+            getSwitch(acSwitch[4]),
+            acDropdown[4],
+          ),
+          controlSwitchRemarks: getFieldValue(
+            getSwitch(acSwitch[4]),
+            acRemarks[4],
+          ),
+
+          ventPhoto: getFieldValue(getSwitch(acSwitch[5]), acBase64[5]),
+          ventStatus: getSwitch(acSwitch[5]),
+          ventCondition: getFieldValue(getSwitch(acSwitch[5]), acDropdown[5]),
+          ventRemarks: getFieldValue(getSwitch(acSwitch[5]), acRemarks[5]),
+
+          musicSystemPhoto: getFieldValue(
+            getSwitch(accessoriesSwitch[0]),
+            accessoriesBase64[0],
+          ),
+          musicSystemStatus: getSwitch(accessoriesSwitch[0]),
+          musicSystemCondition: getFieldValue(
+            getSwitch(accessoriesSwitch[0]),
+            accessoriesDropdown[0],
+          ),
+          musicSystemRemarks: getFieldValue(
+            getSwitch(accessoriesSwitch[0]),
+            accessoriesRemarks[0],
+          ),
+
+          parkingSensorPhoto: getFieldValue(
+            getSwitch(accessoriesSwitch[1]),
+            accessoriesBase64[1],
+          ),
+          parkingSensorStatus: getSwitch(accessoriesSwitch[1]),
+          parkingSensorCondition: getFieldValue(
+            getSwitch(accessoriesSwitch[1]),
+            accessoriesDropdown[1],
+          ),
+          parkingSensorRemarks: getFieldValue(
+            getSwitch(accessoriesSwitch[1]),
+            accessoriesRemarks[1],
+          ),
+
+          reverseCameraPhoto: getFieldValue(
+            getSwitch(accessoriesSwitch[2]),
+            accessoriesBase64[2],
+          ),
+          reverseCameraStatus: getSwitch(accessoriesSwitch[2]),
+          reverseCameraCondition: getFieldValue(
+            getSwitch(accessoriesSwitch[2]),
+            accessoriesDropdown[2],
+          ),
+          reverseCameraRemarks: getFieldValue(
+            getSwitch(accessoriesSwitch[2]),
+            accessoriesRemarks[2],
+          ),
+
+          ovrmAdjusterPhoto: getFieldValue(
+            getSwitch(accessoriesSwitch[3]),
+            accessoriesBase64[3],
+          ),
+          ovrmAdjusterStatus: getSwitch(accessoriesSwitch[3]),
+          ovrmAdjusterCondition: getFieldValue(
+            getSwitch(accessoriesSwitch[3]),
+            accessoriesDropdown[3],
+          ),
+          ovrmAdjusterRemarks: getFieldValue(
+            getSwitch(accessoriesSwitch[3]),
+            accessoriesRemarks[3],
+          ),
+
+          seatHeightAdjusterPhoto: getFieldValue(
+            getSwitch(accessoriesSwitch[4]),
+            accessoriesBase64[4],
+          ),
+          seatHeightAdjusterStatus: getSwitch(accessoriesSwitch[4]),
+          seatHeightAdjusterCondition: getFieldValue(
+            getSwitch(accessoriesSwitch[4]),
+            accessoriesDropdown[4],
+          ),
+          seatHeightAdjusterRemarks: getFieldValue(
+            getSwitch(accessoriesSwitch[4]),
+            accessoriesRemarks[4],
+          ),
+
+          seatBeltPhoto: getFieldValue(
+            getSwitch(accessoriesSwitch[5]),
+            accessoriesBase64[5],
+          ),
+          seatBeltStatus: getSwitch(accessoriesSwitch[5]),
+          seatBeltCondition: getFieldValue(
+            getSwitch(accessoriesSwitch[5]),
+            accessoriesDropdown[5],
+          ),
+          seatBeltRemarks: getFieldValue(
+            getSwitch(accessoriesSwitch[5]),
+            accessoriesRemarks[5],
+          ),
+
+          sunRoofPhoto: getFieldValue(
+            getSwitch(accessoriesSwitch[6]),
+            accessoriesBase64[6],
+          ),
+          sunRoofStatus: getSwitch(accessoriesSwitch[6]),
+          sunRoofCondition: getFieldValue(
+            getSwitch(accessoriesSwitch[6]),
+            accessoriesDropdown[6],
+          ),
+          sunRoofRemarks: getFieldValue(
+            getSwitch(accessoriesSwitch[6]),
+            accessoriesRemarks[6],
+          ),
+
+          roofRailPhoto: getFieldValue(
+            getSwitch(accessoriesSwitch[7]),
+            accessoriesBase64[7],
+          ),
+          roofRailStatus: getSwitch(accessoriesSwitch[7]),
+          roofRailCondition: getFieldValue(
+            getSwitch(accessoriesSwitch[7]),
+            accessoriesDropdown[7],
+          ),
+          roofRailRemarks: getFieldValue(
+            getSwitch(accessoriesSwitch[7]),
+            accessoriesRemarks[7],
+          ),
+
+          spoilerPhoto: getFieldValue(
+            getSwitch(accessoriesSwitch[8]),
+            accessoriesBase64[8],
+          ),
+          spoilerStatus: getSwitch(accessoriesSwitch[8]),
+          spoilerCondition: getFieldValue(
+            getSwitch(accessoriesSwitch[8]),
+            accessoriesDropdown[8],
+          ),
+          spoilerRemarks: getFieldValue(
+            getSwitch(accessoriesSwitch[8]),
+            accessoriesRemarks[8],
+          ),
+
+          skirtPhoto: getFieldValue(
+            getSwitch(accessoriesSwitch[9]),
+            accessoriesBase64[9],
+          ),
+          skirtStatus: getSwitch(accessoriesSwitch[9]),
+          skirtCondition: accessoriesDropdown[9],
+          skirtRemarks: accessoriesRemarks[9],
+
+          steeringControlsPhoto: getFieldValue(
+            getSwitch(accessoriesSwitch[10]),
+            accessoriesBase64[10],
+          ),
+          steeringControlsStatus: getSwitch(accessoriesSwitch[10]),
+          steeringControlsCondition: getFieldValue(
+            getSwitch(accessoriesSwitch[10]),
+            accessoriesDropdown[10],
+          ),
+          steeringControlsRemarks: getFieldValue(
+            getSwitch(accessoriesSwitch[10]),
+            accessoriesRemarks[10],
+          ),
+
+          engineOilStatus: getSwitch(oliSwitch[0]),
+          engineOilRemarks: getFieldValue(
+            getSwitch(oliSwitch[0]),
+            oilRemarks[0],
+          ),
+          engineOilCondition: getFieldValue(
+            getSwitch(oliSwitch[0]),
+            oilDropDown[0],
+          ),
+
+          brakeOilStatus: getSwitch(oliSwitch[1]),
+          brakeOilRemarks: getFieldValue(
+            getSwitch(oliSwitch[1]),
+            oilRemarks[1],
+          ),
+          brakeOilCondition: getFieldValue(
+            getSwitch(oliSwitch[1]),
+            oilDropDown[1],
+          ),
+
+          coolentOilStatus: getSwitch(oliSwitch[2]),
+          coolentOilRemarks: getFieldValue(
+            getSwitch(oliSwitch[2]),
+            oilRemarks[2],
+          ),
+          coolentOilCondition: getFieldValue(
+            getSwitch(oliSwitch[2]),
+            oilDropDown[2],
+          ),
+
+          gearOilStatus: getSwitch(oliSwitch[3]),
+          gearOilRemarks: getFieldValue(getSwitch(oliSwitch[3]), oilRemarks[3]),
+          gearOilCondition: getFieldValue(
+            getSwitch(oliSwitch[3]),
+            oilDropDown[3],
+          ),
+
+          crownOilStatus: getSwitch(oliSwitch[4]),
+          crownOilRemarks: getFieldValue(
+            getSwitch(oliSwitch[4]),
+            oilRemarks[4],
+          ),
+          crownOilCondition: getFieldValue(
+            getSwitch(oliSwitch[4]),
+            oilDropDown[4],
+          ),
+
+          roadTestRemarks: roadTestRemarks,
+        };
+        params = Object.fromEntries(
+          Object.entries(params).filter(
+            ([_, value]) =>
+              value !== '' &&
+              value !== null &&
+              value !== false &&
+              value !== undefined,
+          ),
+        );
+
         break;
 
-        case 8:
-          params = {
-            dealerId: itemId,
-            id: id ? id : orderId,
-            orderStatus: 2,
-            finalFrontViewPhoto: base64ReinspectorPhoto[0],
-            finalFrontViewRemarks: reinspectorRemarks[0],
-            finalRearViewPhoto: base64ReinspectorPhoto[1],
-            finalRearViewRemarks: reinspectorRemarks[1],
-            finalLhsViewPhoto: base64ReinspectorPhoto[2],
-            finalLhsViewRemarks: reinspectorRemarks[2],
-            finalRhsViewPhoto: base64ReinspectorPhoto[3],
-            finalRhsViewRemarks: reinspectorRemarks[3],
-            finalOdometerPhoto: base64ReinspectorPhoto[4],
-            finalOdometerRemarks: reinspectorRemarks[4],
-            finalRoofPhoto: base64ReinspectorPhoto[5],
-            finalRoofRemarks: reinspectorRemarks[5],
-            finalInteriorPhoto: base64ReinspectorPhoto[6],
-            finalInteriorRemarks: reinspectorRemarks[6],
-          };
-  
-          params = Object.fromEntries(
-            Object.entries(params).filter(
-              ([_, value]) =>
-                value !== '' &&
-                value !== null &&
-                value !== false &&
-                value !== undefined,
-            ),
-          );
-          break;
+      case 8:
+        params = {
+          dealerId: dealerIdNumber,
+          id: id ? id : orderId,
+          orderStatus: 2,
+          finalFrontViewPhoto: base64ReinspectorPhoto[0],
+          finalFrontViewRemarks: reinspectorRemarks[0],
+          finalRearViewPhoto: base64ReinspectorPhoto[1],
+          finalRearViewRemarks: reinspectorRemarks[1],
+          finalLhsViewPhoto: base64ReinspectorPhoto[2],
+          finalLhsViewRemarks: reinspectorRemarks[2],
+          finalRhsViewPhoto: base64ReinspectorPhoto[3],
+          finalRhsViewRemarks: reinspectorRemarks[3],
+          finalOdometerPhoto: base64ReinspectorPhoto[4],
+          finalOdometerRemarks: reinspectorRemarks[4],
+          finalRoofPhoto: base64ReinspectorPhoto[5],
+          finalRoofRemarks: reinspectorRemarks[5],
+          finalInteriorPhoto: base64ReinspectorPhoto[6],
+          finalInteriorRemarks: reinspectorRemarks[6],
+        };
+
+        params = Object.fromEntries(
+          Object.entries(params).filter(
+            ([_, value]) =>
+              value !== '' &&
+              value !== null &&
+              value !== false &&
+              value !== undefined,
+          ),
+        );
+        break;
 
       default:
         throw new Error('Invalid step');
@@ -5003,20 +5515,51 @@ const OrderCreation = ({navigation}) => {
 
     try {
       console.log(params, 'pgyfy');
-      const data = await apiPostWithToken('updateOrder', updatedFields);
+      console.log(getSwitch(transmissionSwitch[7]),"hi therres");
+      console.log(itemId,"dealer id is there...");
+      const data = await apiPostWithToken('updateOrder', params);
 
-      if (step == 7) {
-        navigation.dispatch(
-          CommonActions.reset({
-            index: 0,
-            routes: [{name: 'Dashboard'}],
-          }),
-        );
+      if (role === 'Reinspector') {
+        if (step === 8) {
+          navigation.dispatch(
+            CommonActions.reset({
+              index: 0,
+              routes: [{name: 'Dashboard'}],
+            }),
+          );
+        } else {
+          if (swiperRef.current) {
+            swiperRef.current.scrollBy(1);
+          }
+        }
       } else {
-        if (swiperRef.current) {
-          swiperRef.current.scrollBy(1);
+        if (step === 7) {
+          navigation.dispatch(
+            CommonActions.reset({
+              index: 0,
+              routes: [{name: 'Dashboard'}],
+            }),
+          );
+        } else {
+          if (swiperRef.current) {
+            swiperRef.current.scrollBy(1);
+          }
         }
       }
+    
+
+      // if (step == 8) {
+      //   navigation.dispatch(
+      //     CommonActions.reset({
+      //       index: 0,
+      //       routes: [{name: 'Dashboard'}],
+      //     }),
+      //   );
+      // } else {
+      //   if (swiperRef.current) {
+      //     swiperRef.current.scrollBy(1);
+      //   }
+      // }
     } catch (error) {
       // Handle errors here
       console.error('Request failed:', error);
@@ -5801,6 +6344,11 @@ const OrderCreation = ({navigation}) => {
     launchCamera({mediaType: 'photo', cameraType: 'back'}, response => {
       switch (carDetailsIndex) {
         case 0:
+          if (id) {
+            const newBase64Strings = [...lhsViewPhotoBoolean];
+            newBase64Strings[index] = true;
+            setLhsViewPhotoBoolean(newBase64Strings);
+          }
           handleCameraResponse(
             response,
             lhsViewPhoto,
@@ -5810,6 +6358,17 @@ const OrderCreation = ({navigation}) => {
           );
           break;
         case 1:
+          if (id) {
+            // Create a copy of the current state of rearViewPhotoBoolean
+            const newBase64Strings = [...rearViewPhotoBoolean];
+
+            // Update the state at the specified index
+            newBase64Strings[index] = true; // Assuming true means "Yes" and false means "No"
+
+            // Update the state with the new values
+            setRearViewPhotoBoolean(newBase64Strings);
+          }
+
           handleCameraResponse(
             response,
             rearViewPhoto,
@@ -5819,6 +6378,17 @@ const OrderCreation = ({navigation}) => {
           );
           break;
         case 2:
+          if (id) {
+            // Create a copy of the current state of trunkBootPhotoBoolean
+            const newBase64Strings = [...trunkBootPhotoBoolean];
+
+            // Update the state at the specified index
+            newBase64Strings[index] = true; // Assuming true means "Yes" and false means "No"
+
+            // Update the state with the new values
+            setTrunkBootPhotoBoolean(newBase64Strings);
+          }
+
           handleCameraResponse(
             response,
             trunkBootPhoto,
@@ -5828,6 +6398,17 @@ const OrderCreation = ({navigation}) => {
           );
           break;
         case 3:
+          if (id) {
+            // Create a copy of the current state of spareWheelPunchPhotoBoolean
+            const newBase64Strings = [...spareWheelPunchPhotoBoolean];
+
+            // Update the state at the specified index
+            newBase64Strings[index] = true; // Assuming true means "Yes" and false means "No"
+
+            // Update the state with the new values
+            setSpareWheelPunchPhotoBoolean(newBase64Strings);
+          }
+
           handleCameraResponse(
             response,
             spareWheelPunchPhoto,
@@ -5837,6 +6418,17 @@ const OrderCreation = ({navigation}) => {
           );
           break;
         case 4:
+          if (id) {
+            // Create a copy of the current state of toolKitPunchPhotoBoolean
+            const newBase64Strings = [...toolKitPunchPhotoBoolean];
+
+            // Update the state at the specified index
+            newBase64Strings[index] = true; // Assuming true means "Yes" and false means "No"
+
+            // Update the state with the new values
+            setToolkitPunchPhotoBoolean(newBase64Strings);
+          }
+
           handleCameraResponse(
             response,
             toolKitPunchPhoto,
@@ -5846,6 +6438,17 @@ const OrderCreation = ({navigation}) => {
           );
           break;
         case 5:
+          if (id) {
+            // Create a copy of the current state of roofPhotoBoolean
+            const newBase64Strings = [...roofPhotoBoolean];
+
+            // Update the state at the specified index
+            newBase64Strings[index] = true; // Assuming true means "Yes" and false means "No"
+
+            // Update the state with the new values
+            setRoofPhotoBoolean(newBase64Strings);
+          }
+
           handleCameraResponse(
             response,
             roofPhoto,
@@ -5855,6 +6458,17 @@ const OrderCreation = ({navigation}) => {
           );
           break;
         case 6:
+          if (id) {
+            // Create a copy of the current state of underChassisPhotoBoolean
+            const newBase64Strings = [...underChassisPhotoBoolean];
+
+            // Update the state at the specified index
+            newBase64Strings[index] = true; // Assuming true means "Yes" and false means "No"
+
+            // Update the state with the new values
+            setUnderChassisPhotoBoolean(newBase64Strings);
+          }
+
           handleCameraResponse(
             response,
             underChassisPhoto,
@@ -5864,6 +6478,17 @@ const OrderCreation = ({navigation}) => {
           );
           break;
         case 7:
+          if (id) {
+            // Create a copy of the current state of tyrePunchPhotoBoolean
+            const newBase64Strings = [...tyrePunchPhotoBoolean];
+
+            // Update the state at the specified index
+            newBase64Strings[index] = true; // Assuming true means "Yes" and false means "No"
+
+            // Update the state with the new values
+            setTyrePunchPhotoBoolean(newBase64Strings);
+          }
+
           handleCameraResponse(
             response,
             tyrePunchPhoto,
@@ -5935,6 +6560,12 @@ const OrderCreation = ({navigation}) => {
     launchCamera({mediaType: 'photo', cameraType: 'back'}, response => {
       switch (selectedContainerIndex1) {
         case 0:
+          if (id) {
+            const updatePhoto = [...frontViewPhotoBoolean];
+            updatePhoto[index] = true;
+            setFrontViewPhotoBoolean(updatePhoto);
+          }
+
           handleCameraResponse(
             response,
             frontViewPhoto,
@@ -5944,6 +6575,12 @@ const OrderCreation = ({navigation}) => {
           );
           break;
         case 1:
+          if (id) {
+            const updatePhoto = [...engineRoomPhotoBoolean];
+            updatePhoto[index] = true;
+            setEngineRoomPhotoBoolean(updatePhoto);
+          }
+
           handleCameraResponse(
             response,
             engineRoomPhoto,
@@ -5953,6 +6590,11 @@ const OrderCreation = ({navigation}) => {
           );
           break;
         case 2:
+          if (id) {
+            const updatePhoto = [...chassisPunchPhotoBoolean];
+            updatePhoto[index] = true;
+            setChassisPunchPhotoBoolean(updatePhoto);
+          }
           handleCameraResponse(
             response,
             chassisPunchPhoto,
@@ -5962,6 +6604,12 @@ const OrderCreation = ({navigation}) => {
           );
           break;
         case 3:
+          if (id) {
+            const updatePhoto = [...vinPlatePunchPhotoBoolean];
+            updatePhoto[index] = true;
+            setVinPlatePunchPhotoBoolean(updatePhoto);
+          }
+
           handleCameraResponse(
             response,
             vinPlatePunchPhoto,
@@ -5971,6 +6619,12 @@ const OrderCreation = ({navigation}) => {
           );
           break;
         case 4:
+          if (id) {
+            const updatePhoto = [...rhsViewPhotoBoolean];
+            updatePhoto[index] = true;
+            setRhsViewPhotoBoolean(updatePhoto);
+          }
+
           handleCameraResponse(
             response,
             rhsViewPhoto,
@@ -5980,6 +6634,12 @@ const OrderCreation = ({navigation}) => {
           );
           break;
         case 5:
+          if (id) {
+            const updatePhoto = [...keyPunchPhotoBoolean];
+            updatePhoto[index] = true;
+            setKeyPunchPhotoBoolean(updatePhoto);
+          }
+
           handleCameraResponse(
             response,
             keyPunchPhoto,
@@ -5989,6 +6649,12 @@ const OrderCreation = ({navigation}) => {
           );
           break;
         case 6:
+          if (id) {
+            const updatePhoto = [...odometerPhotoBoolean];
+            updatePhoto[index] = true;
+            setOdometerPhotoBoolean(updatePhoto);
+          }
+
           handleCameraResponse(
             response,
             odometerPhoto,
@@ -5998,6 +6664,12 @@ const OrderCreation = ({navigation}) => {
           );
           break;
         case 7:
+          if (id) {
+            const updatePhoto = [...interiorPhotoBoolean];
+            updatePhoto[index] = true;
+            setInteriorPhotoBoolean(updatePhoto);
+          }
+
           handleCameraResponse(
             response,
             interiorPhoto,
@@ -6146,17 +6818,7 @@ const OrderCreation = ({navigation}) => {
       }
     });
   };
-  // const [updatedFields, setUpdatedFields] = useState([]);
 
-  // const markFieldAsUpdated = fieldName => {
-  //   setUpdatedFields(prevFields => {
-  //     // If the field is not already in the updatedFields array, add it
-  //     if (!prevFields.includes(fieldName)) {
-  //       return [...prevFields, fieldName];
-  //     }
-  //     return prevFields;
-  //   });
-  // };
   const openCamaraForCarDocuments = index => {
     if (isCameraOpen.current) return;
     isCameraOpen.current = true;
@@ -6213,6 +6875,11 @@ const OrderCreation = ({navigation}) => {
     launchCamera({mediaType: 'photo', cameraType: 'back'}, response => {
       switch (selectedContainerIndex) {
         case 0:
+          if (id) {
+            const updatePhoto = [...rcPhotoBoolean];
+            updatePhoto[index] = true;
+            setRcPhotoBoolean(updatePhoto);
+          }
           handleCameraResponse(
             response,
             rcPhoto,
@@ -6224,6 +6891,11 @@ const OrderCreation = ({navigation}) => {
           //    markFieldAsUpdated('rcBase64');
           break;
         case 1:
+          if (id) {
+            const updatePhoto = [...insurancePhotoBoolean];
+            updatePhoto[index] = true;
+            setInsuracePhotoBoolean(updatePhoto);
+          }
           handleCameraResponse(
             response,
             insurancePhoto,
@@ -6233,6 +6905,11 @@ const OrderCreation = ({navigation}) => {
           );
           break;
         case 2:
+          if (id) {
+            const updatePhoto = [...nocPhotoBoolean];
+            updatePhoto[index] = true;
+            setNOCPhotoBoolean(updatePhoto);
+          }
           handleCameraResponse(
             response,
             nocPhoto,
@@ -7864,6 +8541,7 @@ const OrderCreation = ({navigation}) => {
             return false;
           }
         }
+      
         return true;
         break;
 
@@ -8308,6 +8986,7 @@ const OrderCreation = ({navigation}) => {
         newPhotoUris = [...lhsViewPhoto];
         newPhotoUris[index] = null;
         setLhsViewPhoto(newPhotoUris);
+
         break;
       case 1:
         newPhotoUris = [...rearViewPhoto];
@@ -8788,41 +9467,83 @@ const OrderCreation = ({navigation}) => {
 
     switch (selectedContainerIndex1) {
       case 0:
+        if (id) {
+          const updatePhoto = [...frontViewRemarksBoolean];
+          updatePhoto[index] = true;
+          setFrontViewRemarksBoolean(updatePhoto);
+        }
+
         newRemarks = [...frontViewRemarks];
         newRemarks[index] = text;
         setFrontViewRemarks(newRemarks);
         break;
       case 1:
+        if (id) {
+          const updatePhoto = [...engineRoomRemarksBoolean];
+          updatePhoto[index] = true;
+          setFrontViewRemarksBoolean(updatePhoto);
+        }
         newRemarks = [...engineRoomRemarks];
         newRemarks[index] = text;
         setEngineRoomRemarks(newRemarks);
         break;
       case 2:
+        if (id) {
+          const newRemarks = [...chassisRemarksBoolean];
+          newRemarks[index] = true;
+          setChassisRemarksBoolean(newRemarks);
+        }
         newRemarks = [...chassisRemarks];
         newRemarks[index] = text;
         setChassisRemarks(newRemarks);
         break;
       case 3:
+        if (id) {
+          const newRemarks = [...vinPlateRemarksBoolean];
+          newRemarks[index] = true;
+          setVinPlateRemarksBoolean(newRemarks);
+        }
+
         newRemarks = [...vinPlateRemarks];
         newRemarks[index] = text;
         setVinPlateRemarks(newRemarks);
         break;
       case 4:
+        if (id) {
+          const newRemarks = [...rhsViewRemarksBoolean];
+          newRemarks[index] = true;
+          setRhsViewRemarksBoolean(newRemarks);
+        }
         newRemarks = [...rhsViewRemarks];
         newRemarks[index] = text;
         setRhsViewRemarks(newRemarks);
         break;
       case 5:
+        if (id) {
+          const newRemarks = [...keyRemarksBoolean];
+          newRemarks[index] = true;
+          setKeyRemarksBoolean(newRemarks);
+        }
         newRemarks = [...keyRemarks];
         newRemarks[index] = text;
         setKeyRemarks(newRemarks);
         break;
       case 6:
+        if (id) {
+          const newRemarks = [...odometerRemarksBoolean];
+          newRemarks[index] = true; // Set the boolean value to true
+          setOdometerRemarksBoolean(newRemarks);
+        }
         newRemarks = [...odometerRemarks];
         newRemarks[index] = text;
         setOdometerRemarks(newRemarks);
         break;
       case 7:
+        if (id) {
+          const newRemarks = [...interiorRemarksBoolean];
+          newRemarks[index] = true; // Set the boolean value to true
+          setInteriorRemarksBoolean(newRemarks);
+        }
         newRemarks = [...interiorRemarks];
         newRemarks[index] = text;
         setInteriorRemarks(newRemarks);
@@ -8839,41 +9560,123 @@ const OrderCreation = ({navigation}) => {
 
     switch (carDetailsIndex) {
       case 0:
+        if (id) {
+          newRemarks = [...lhsViewRemarksBoolean];
+          newRemarks[index] = true;
+          setLhsViewRemarksBoolean(newRemarks);
+        }
         newRemarks = [...lhsViewRemarks];
         newRemarks[index] = text;
         setLhsViewRemarks(newRemarks);
         break;
       case 1:
+        if (id) {
+          // Create a copy of the current state of rearViewRemarksBoolean
+          const newRemarks = [...rearViewRemarksBoolean];
+
+          // Update the state at the specified index
+          newRemarks[index] = true; // Assuming true means "Yes" and false means "No"
+
+          // Update the state with the new values
+          setRearViewRemarksBoolean(newRemarks);
+        }
+
         newRemarks = [...rearViewRemarks];
         newRemarks[index] = text;
         setRearViewRemarks(newRemarks);
         break;
       case 2:
+        if (id) {
+          // Create a copy of the current state of trunkBootRemarksBoolean
+          const newRemarks = [...trunkBootRemarksBoolean];
+
+          // Update the state at the specified index
+          newRemarks[index] = true; // Assuming true means "Yes" and false means "No"
+
+          // Update the state with the new values
+          setTrunkBootRemarksBoolean(newRemarks);
+        }
+
         newRemarks = [...trunkBootRemarks];
         newRemarks[index] = text;
         setTrunkBootRemarks(newRemarks);
         break;
       case 3:
+        if (id) {
+          // Create a copy of the current state of spareWheelRemarksBoolean
+          const newRemarks = [...spareWheelRemarksBoolean];
+
+          // Update the state at the specified index
+          newRemarks[index] = true; // Assuming true means "Yes" and false means "No"
+
+          // Update the state with the new values
+          setSpareWheelRemarksBoolean(newRemarks);
+        }
+
         newRemarks = [...spareWheelRemarks];
         newRemarks[index] = text;
         setSpareWheelRemarks(newRemarks);
         break;
       case 4:
+        if (id) {
+          // Create a copy of the current state of toolKitRemarksBoolean
+          const newRemarks = [...toolKitRemarksBoolean];
+
+          // Update the state at the specified index
+          newRemarks[index] = true; // Assuming true means "Yes" and false means "No"
+
+          // Update the state with the new values
+          setToolkitRemarksBoolean(newRemarks);
+        }
+
         newRemarks = [...toolKitRemarks];
         newRemarks[index] = text;
         setToolkitRemarks(newRemarks);
         break;
       case 5:
+        if (id) {
+          // Create a copy of the current state of roofRemarksBoolean
+          const newRemarks = [...roofRemarksBoolean];
+
+          // Update the state at the specified index
+          newRemarks[index] = true; // Assuming true means "Yes" and false means "No"
+
+          // Update the state with the new values
+          setRoofRemarksBoolean(newRemarks);
+        }
+
         newRemarks = [...roofRemarks];
         newRemarks[index] = text;
         setRoofRemarks(newRemarks);
         break;
       case 6:
+        if (id) {
+          // Create a copy of the current state of underChassisRemarksBoolean
+          const newRemarks = [...underChassisRemarksBoolean];
+
+          // Update the state at the specified index
+          newRemarks[index] = true; // Assuming true means "Yes" and false means "No"
+
+          // Update the state with the new values
+          setUnderChassisRemarksBoolean(newRemarks);
+        }
+
         newRemarks = [...underChassisRemarks];
         newRemarks[index] = text;
         setUnderChassisRemarks(newRemarks);
         break;
       case 7:
+        if (id) {
+          // Create a copy of the current state of tyreRemarksBoolean
+          const newRemarks = [...tyreRemarksBoolean];
+
+          // Update the state at the specified index
+          newRemarks[index] = true; // Assuming true means "Yes" and false means "No"
+
+          // Update the state with the new values
+          setTyreRemarksBoolean(newRemarks);
+        }
+
         newRemarks = [...tyreRemarks];
         newRemarks[index] = text;
         setTyreRemarks(newRemarks);
@@ -8891,46 +9694,139 @@ const OrderCreation = ({navigation}) => {
     console.log(selectedBodyInspectionIndex, 'SDSDDD');
     switch (selectedBodyInspectionIndex) {
       case 0:
+        if (id) {
+          newRemarks = [...bonetRemarksBoolean];
+          newRemarks[index] = true;
+          setBonetRemarksBoolean(newRemarks);
+        }
         newRemarks = [...bonetRemarks];
         newRemarks[index] = text;
         setBonetRemarks(newRemarks);
         break;
       case 1:
+        if (id) {
+          // Create a copy of the current state of apronRemarksBoolean
+          const newRemarks = [...apronRemarksBoolean];
+
+          // Update the state at the specified index
+          newRemarks[index] = true; // Assuming true means "Yes" and false means "No"
+
+          // Update the state with the new values
+          setApronRemarksBoolean(newRemarks);
+        }
+
         newRemarks = [...apronRemarks];
         newRemarks[index] = text;
         setApronRemarks(newRemarks);
         break;
       case 2:
+        if (id) {
+          // Create a copy of the current state of supportMembersRemarksBoolean
+          const newRemarks = [...supportMembersRemarksBoolean];
+
+          // Update the state at the specified index
+          newRemarks[index] = true; // Assuming true means "Yes" and false means "No"
+
+          // Update the state with the new values
+          setSupportMembersRemarksBoolean(newRemarks);
+        }
+
         newRemarks = [...supportMembersRemarks];
         newRemarks[index] = text;
         setSupportMembersRemarks(newRemarks);
         break;
       case 3:
+        if (id) {
+          // Create a copy of the current state of bumperRemarksBoolean
+          const newRemarks = [...bumperRemarksBoolean];
+
+          // Update the state at the specified index
+          newRemarks[index] = true; // Assuming true means "Yes" and false means "No"
+
+          // Update the state with the new values
+          setBumperRemarksBoolean(newRemarks);
+        }
+
         newRemarks = [...bumperRemarks];
         newRemarks[index] = text;
         setBumperRemarks(newRemarks);
         break;
       case 4:
+        if (id) {
+          // Create a copy of the current state of windShieldRemarksBoolean
+          const newRemarks = [...windShieldRemarksBoolean];
+
+          // Update the state at the specified index
+          newRemarks[index] = true; // Assuming true means "Yes" and false means "No"
+
+          // Update the state with the new values
+          setWindShieldRemarksBoolean(newRemarks);
+        }
+
         newRemarks = [...windShieldRemarks];
         newRemarks[index] = text;
         setWindShieldRemarks(newRemarks);
         break;
       case 5:
+        if (id) {
+          // Create a copy of the current state of fenderRemarksBoolean
+          const newRemarks = [...fenderRemarksBoolean];
+
+          // Update the state at the specified index
+          newRemarks[index] = true; // Assuming true means "Yes" and false means "No"
+
+          // Update the state with the new values
+          setFenderRemarksBoolean(newRemarks);
+        }
+
         newRemarks = [...fenderRemarks];
         newRemarks[index] = text;
         setFenderRemarks(newRemarks);
         break;
       case 6:
+        if (id) {
+          // Create a copy of the current state of pillarsPhotoRemarksBoolean
+          const newRemarks = [...pillarsPhotoRemarksBoolean];
+
+          // Update the state at the specified index
+          newRemarks[index] = true; // Assuming true means "Yes" and false means "No"
+
+          // Update the state with the new values
+          setPillarsPhotoRemarksBoolean(newRemarks);
+        }
+
         newRemarks = [...pillarsPhotoRemarks];
         newRemarks[index] = text;
         setPillarsPhotoRemarks(newRemarks);
         break;
       case 7:
+        if (id) {
+          // Create a copy of the current state of doorRemarksBoolean
+          const newRemarks = [...doorRemarksBoolean];
+
+          // Update the state at the specified index
+          newRemarks[index] = true; // Assuming true means "Yes" and false means "No"
+
+          // Update the state with the new values
+          setDoorRemarksBoolean(newRemarks);
+        }
+
         newRemarks = [...doorRemarks];
         newRemarks[index] = text;
         setDoorRemarks(newRemarks);
         break;
       case 8:
+        if (id) {
+          // Create a copy of the current state of runningBoardRemarksBoolean
+          const newRemarks = [...runningBoardRemarksBoolean];
+
+          // Update the state at the specified index
+          newRemarks[index] = true; // Assuming true means "Yes" and false means "No"
+
+          // Update the state with the new values
+          setRunningBoardRemarksBoolean(newRemarks);
+        }
+
         newRemarks = [...runningBoardRemarks];
         newRemarks[index] = text;
         setRunningBoardRemarks(newRemarks);
@@ -9220,6 +10116,11 @@ const OrderCreation = ({navigation}) => {
         setSpareWheelCondition(newSelectedValues);
         break;
       case 4:
+        if (id) {
+          newSelectedValues = [...toolKitConditionBoolean];
+          newSelectedValues[index] = true;
+          setToolkitConditionBoolean(newSelectedValues);
+        }
         newSelectedValues = [...toolKitCondition];
         newSelectedValues[index] = value;
         setToolkitCondition(newSelectedValues);
@@ -9242,17 +10143,32 @@ const OrderCreation = ({navigation}) => {
 
     switch (selectedContainerIndex1) {
       case 2:
+        if (id) {
+          newSelectedValues = [...chassisConditionBoolean];
+          newSelectedValues[index] = true;
+          setChasisConditionBoolean(newSelectedValues);
+        }
         newSelectedValues = [...chassisCondition];
         newSelectedValues[index] = value;
         setChasisCondition(newSelectedValues);
         break;
       case 3:
+        if (id) {
+          newSelectedValues = [...vinPlateConditionBoolean];
+          newSelectedValues[index] = true;
+          setVinPlateConditionBoolean(newSelectedValues);
+        }
         newSelectedValues = [...vinPlateCondition];
         newSelectedValues[index] = value;
         setVinPlateCondition(newSelectedValues);
         break;
 
       case 5:
+        if (id) {
+          newSelectedValues = [...keyConditionBoolean];
+          newSelectedValues[index] = true;
+          setKeyConditionBoolean(newSelectedValues);
+        }
         newSelectedValues = [...keyCondition];
         newSelectedValues[index] = value;
         setKeyCondition(newSelectedValues);
@@ -9322,46 +10238,126 @@ const OrderCreation = ({navigation}) => {
 
     switch (selectedInspectionIndex) {
       case 0:
+        if (id) {
+          newState = [...suspensionSwitchBoolean];
+          newState[index] = true; // 1 for Yes and 2 for No
+          setSuspensionSwitchBoolean(newState);
+        }
         newState = [...suspensionSwitch];
         newState[index] = value; // 1 for Yes and 2 for No
         setSuspensionSwitch(newState);
         break;
       case 1:
+        if (id) {
+          newState = [...steeringSwitchBoolean];
+          newState[index] = true; // 1 for Yes and 2 for No
+          setSteeringSwitchBoolean(newState);
+        }
+
         newState = [...steeringSwitch];
         newState[index] = value; // 1 for Yes and 2 for No
         setSteeringSwitch(newState);
         break;
       case 2:
+        if (id) {
+          newState = [...brakeSwitchBoolean];
+          newState[index] = true; // 1 for Yes and 2 for No
+          setBrakeSwitchBoolean(newState);
+        }
+
         newState = [...brakeSwitch];
         newState[index] = value; // 1 for Yes and 2 for No
         setBrakeSwitch(newState);
         break;
       case 3:
+        if (id) {
+          newState = [...transmissionSwitchBoolean];
+          newState[index] = true; // 1 for Yes and 2 for No
+          setTransmissionSwitchBoolean(newState);
+        }
+
         newState = [...transmissionSwitch];
         newState[index] = value; // 1 for Yes and 2 for No
         setTransmissionSwitch(newState);
+
+        console.log(newState,"new.............");
         break;
       case 4:
+        if (id) {
+          // Create a copy of the current state of engineSwitchBoolean
+          newState = [...engineSwitchBoolean];
+
+          // Update the switch state at the specified index
+          newState[index] = true; // Assuming true means "Yes" and false means "No"
+
+          // Update the state with the new switch values
+          setEngineSwitchBoolean(newState);
+        }
+
         newState = [...engineSwitch];
         newState[index] = value; // 1 for Yes and 2 for No
         setEngineSwitch(newState);
         break;
       case 5:
+        if (id) {
+          // Create a copy of the current state of electricalSwitchBoolean
+          const newState = [...electricalSwitchBoolean];
+
+          // Update the switch state at the specified index
+          newState[index] = true; // Assuming true means "Yes" and false means "No"
+
+          // Update the state with the new switch values
+          setElectricalSwitchBoolean(newState);
+        }
+
         newState = [...electricalSwitch];
         newState[index] = value; // 1 for Yes and 2 for No
         setElectricalSwitch(newState);
         break;
       case 6:
+        if (id) {
+          // Create a copy of the current state of acSwitchBoolean
+          const newState = [...acSwitchBoolean];
+
+          // Update the switch state at the specified index
+          newState[index] = true; // Assuming true means "Yes" and false means "No"
+
+          // Update the state with the new switch values
+          setAcSwitchBoolean(newState);
+        }
+
         newState = [...acSwitch];
         newState[index] = value; // 1 for Yes and 2 for No
         setAcSwitch(newState);
         break;
       case 7:
+        if (id) {
+          // Create a copy of the current state of accessoriesSwitchBoolean
+          const newState = [...accessoriesSwitchBoolean];
+
+          // Update the switch state at the specified index
+          newState[index] = true; // Assuming true means "Yes" and false means "No"
+
+          // Update the state with the new switch values
+          setAccessoriesSwitchBoolean(newState);
+        }
+
         newState = [...accessoriesSwitch];
         newState[index] = value; // 1 for Yes and 2 for No
         setAccessoriesSwitch(newState);
         break;
       case 8:
+        if (id) {
+          // Create a copy of the current state of oilSwitchBoolean
+          const newState = [...oliSwitchBoolean];
+
+          // Update the switch state at the specified index
+          newState[index] = true; // Assuming true means "Yes" and false means "No"
+
+          // Update the state with the new switch values
+          setOliSwitchBoolean(newState);
+        }
+
         newState = [...oliSwitch];
         newState[index] = value; // 1 for Yes and 2 for No
         setoilSwitch(newState);
@@ -9395,69 +10391,212 @@ const OrderCreation = ({navigation}) => {
     );
     switch (selectedBodyInspectionIndex) {
       case 0:
+        if (id) {
+          // Create a copy of the current state of bonnetSwitchBoolean
+          const newState = [...bonetSwitchBoolean];
+
+          // Update the switch state at the specified index
+          newState[index] = true; // Assuming true means "Yes" and false means "No"
+
+          // Update the state with the new switch values
+          setBonetSwitchBoolean(newState);
+        }
+
         newState = [...bonetSwitch];
         newState[index] = value; // 1 for Yes and 2 for No
         setBonetSwitch(newState);
         // checkSwitch(newState);
         break;
       case 1:
+        if (id) {
+          // Create a copy of the current state of apronSwitchBoolean
+          const newState = [...apronSwitchBoolean];
+
+          // Update the switch state at the specified index
+          newState[index] = true; // Assuming true means "Yes" and false means "No"
+
+          // Update the state with the new switch values
+          setApronSwitchBoolean(newState);
+        }
+
         newState = [...apronSwitch];
         newState[index] = value; // 1 for Yes and 2 for No
         setApronSwitch(newState);
         break;
       case 2:
+        if (id) {
+          // Create a copy of the current state of supportMemberSwitchBoolean
+          const newState = [...supportMembersSwitchBoolean];
+
+          // Update the switch state at the specified index
+          newState[index] = true; // Assuming true means "Yes" and false means "No"
+
+          // Update the state with the new switch values
+          setSupportMembersSwitchBoolean(newState);
+        }
+
         newState = [...supportMembersSwitch];
         newState[index] = value; // 1 for Yes and 2 for No
         setSupportMembersSwitch(newState);
         break;
       case 3:
+        if (id) {
+          // Create a copy of the current state of bumperSwitchBoolean
+          const newState = [...bumperSwitchBoolean];
+
+          // Update the switch state at the specified index
+          newState[index] = true; // Assuming true means "Yes" and false means "No"
+
+          // Update the state with the new switch values
+          setBumperSwitchBoolean(newState);
+        }
+
         newState = [...bumperSwitch];
         newState[index] = value; // 1 for Yes and 2 for No
         setBumperSwitch(newState);
         break;
       case 4:
+        if (id) {
+          // Create a copy of the current state of windShieldSwitchBoolean
+          const newState = [...windShieldSwitchBoolean];
+
+          // Update the switch state at the specified index
+          newState[index] = true; // Assuming true means "Yes" and false means "No"
+
+          // Update the state with the new switch values
+          setWindShieldSwitchBoolean(newState);
+        }
+
         newState = [...windShieldSwitch];
         newState[index] = value; // 1 for Yes and 2 for No
         setWindShieldSwitch(newState);
         break;
       case 5:
+        if (id) {
+          // Create a copy of the current state of fenderSwitchBoolean
+          const newState = [...fenderSwitchBoolean];
+
+          // Update the switch state at the specified index
+          newState[index] = true; // Assuming true means "Yes" and false means "No"
+
+          // Update the state with the new switch values
+          setFenderSwitchBoolean(newState);
+        }
+
         newState = [...fenderSwitch];
         newState[index] = value; // 1 for Yes and 2 for No
         setFenderSwitch(newState);
         break;
       case 6:
+        if (id) {
+          // Create a copy of the current state of pillarSwitchBoolean
+          const newState = [...pillarSwitchBoolean];
+
+          // Update the switch state at the specified index
+          newState[index] = true; // Assuming true means "Yes" and false means "No"
+
+          // Update the state with the new switch values
+          setPillarSwitchBoolean(newState);
+        }
+
         newState = [...pillarSwitch];
         newState[index] = value; // 1 for Yes and 2 for No
         setPillarSwitch(newState);
         break;
       case 7:
+        if (id) {
+          // Create a copy of the current state of doorSwitchBoolean
+          const newState = [...doorSwitchBoolean];
+
+          // Update the switch state at the specified index
+          newState[index] = true; // Assuming true means "Yes" and false means "No"
+
+          // Update the state with the new switch values
+          setDoorSwitchBoolean(newState);
+        }
+
         newState = [...doorSwitch];
         newState[index] = value; // 1 for Yes and 2 for No
         setDoorSwitch(newState);
         break;
       case 8:
+        if (id) {
+          // Create a copy of the current state of runningBoardBoolean
+          const newState = [...runningBoardSwitchBoolean];
+
+          // Update the switch state at the specified index
+          newState[index] = true; // Assuming true means "Yes" and false means "No"
+
+          // Update the state with the new switch values
+          setRunningBoardSwitchBoolean(newState);
+        }
+
         newState = [...runningBoardSwitch];
         newState[index] = value; // 1 for Yes and 2 for No
         setRunningBoardSwitch(newState);
         break;
 
       case 9:
+        if (id) {
+          // Create a copy of the current state of quarterPanelsSwitchBoolean
+          const newState = [...quarterPanlesSwitchBoolean];
+
+          // Update the switch state at the specified index
+          newState[index] = true; // Assuming true means "Yes" and false means "No"
+
+          // Update the state with the new switch values
+          setQuarterPanlesSwitchBoolean(newState);
+        }
+
         newState = [...quarterPanlesSwitch];
         newState[index] = value; // 1 for Yes and 2 for No
         setQuarterPanlesSwitch(newState);
         break;
       case 10:
+        if (id) {
+          // Create a copy of the current state of dickyDoorSwitchBoolean
+          const newState = [...dickyDoorSwitchBoolean];
+
+          // Update the switch state at the specified index
+          newState[index] = true; // Assuming true means "Yes" and false means "No"
+
+          // Update the state with the new switch values
+          setDickyDoorSwitchBoolean(newState);
+        }
+
         newState = [...dickyDoorSwitch];
         newState[index] = value; // 1 for Yes and 2 for No
         setDickyDoorSwitch(newState);
         break;
       case 11:
+        if (id) {
+          // Create a copy of the current state of dickySkirtSwitchBoolean
+          const newState = [...dickySkirtSwitchBoolean];
+
+          // Update the switch state at the specified index
+          newState[index] = true; // Assuming true means "Yes" and false means "No"
+
+          // Update the state with the new switch values
+          setDickySkirtSwitchBoolean(newState);
+        }
+
         newState = [...dickySkirtSwitch];
         newState[index] = value; // 1 for Yes and 2 for No
         setDickySkirtSwitch(newState);
         break;
 
       case 12:
+        if (id) {
+          // Create a copy of the current state of wheelTypeSwitchBoolean
+          const newState = [...wheelTypeSwitchBoolean];
+
+          // Update the switch state at the specified index
+          newState[index] = true; // Assuming true means "Yes" and false means "No"
+
+          // Update the state with the new switch values
+          setWheelTypeSwitchBoolean(newState);
+        }
+
         newState = [...wheelTypeSwitch];
         newState[index] = value; // 1 for Yes and 2 for No
         setWheelTypeSwitch(newState);
@@ -9473,22 +10612,37 @@ const OrderCreation = ({navigation}) => {
 
     switch (selectedContainerIndex1) {
       case 2:
+        if (id) {
+          newState = [...chassisSwitchBoolean];
+          newState[index] = true; // 1 for Yes and 2 for No
+          setChassisSwitchBoolean(newState);
+        }
         newState = [...chassisSwitch];
         newState[index] = value; // 1 for Yes and 2 for No
         setChassisSwitch(newState);
         break;
       case 3:
+        // if(id) {
+        //   newState = [...vinPlateSwitchBoolean];
+        //   newState[index] = value; // 1 for Yes and 2 for No
+        //   setVinPlateSwicthBoolean(newState);
+        // }
         newState = [...vinPlateSwitch];
         newState[index] = value; // 1 for Yes and 2 for No
         setVinPlateSwitch(newState);
         break;
-      case 2:
-        newState = [...tyreSwitch];
-        newState[index] = value; // 1 for Yes and 2 for No
-        setTyreSwitch(newState);
-        break;
+      // case 2:
+      //   newState = [...tyreSwitch];
+      //   newState[index] = value; // 1 for Yes and 2 for No
+      //   setTyreSwitch(newState);
+      //   break;
 
       case 5:
+        if (id) {
+          newState = [...keySwitchBoolean];
+          newState[index] = true; // 1 for Yes and 2 for No
+          setKeySwitchBoolean(newState);
+        }
         newState = [...keySwitch];
         newState[index] = value; // 1 for Yes and 2 for No
         setKeySwitch(newState);
@@ -9505,16 +10659,49 @@ const OrderCreation = ({navigation}) => {
 
     switch (carDetailsIndex) {
       case 3:
+        if (id) {
+          // Create a copy of the current state of spareWheelSwitchBoolean
+          const newState = [...spareWheelSwitchBoolean];
+
+          // Update the switch state at the specified index
+          newState[index] = true; // Assuming true means "Yes" and false means "No"
+
+          // Update the state with the new switch values
+          setSpareWheelSwitchBoolean(newState);
+        }
+
         newState = [...spareWheelSwitch];
         newState[index] = value; // 1 for Yes and 2 for No
         setSpareWheelSwitch(newState);
         break;
       case 4:
+        if (id) {
+          // Create a copy of the current state of toolKitSwitchBoolean
+          const newState = [...toolKitSwitchBoolean];
+
+          // Update the switch state at the specified index
+          newState[index] = true; // Assuming true means "Yes" and false means "No"
+
+          // Update the state with the new switch values
+          setToolkitSwitchBoolean(newState);
+        }
+
         newState = [...toolKitSwitch];
         newState[index] = value; // 1 for Yes and 2 for No
         setToolkitSwitch(newState);
         break;
       case 7:
+        if (id) {
+          // Create a copy of the current state of tyreSwitchBoolean
+          const newState = [...tyreSwitchBoolean];
+
+          // Update the switch state at the specified index
+          newState[index] = true; // Assuming true means "Yes" and false means "No"
+
+          // Update the state with the new switch values
+          setTyreSwitchBoolean(newState);
+        }
+
         newState = [...tyreSwitch];
         newState[index] = value; // 1 for Yes and 2 for No
         setTyreSwitch(newState);
@@ -9676,8 +10863,8 @@ const OrderCreation = ({navigation}) => {
     }
   }, [id]);
 
-  const remarksUpdates2=[
-        {setter: setBonetRemarks, index: 0, key: 'bonnetRemarks'},
+  const remarksUpdates2 = [
+    {setter: setBonetRemarks, index: 0, key: 'bonnetRemarks'},
     {setter: setApronRemarks, index: 0, key: 'apronLeftSideRemarks'},
     {setter: setApronRemarks, index: 1, key: 'apronRightSideRemarks'},
     {
@@ -9743,10 +10930,10 @@ const OrderCreation = ({navigation}) => {
     {setter: setDickyDoorRemarks, index: 0, key: 'bootRemarks'},
     {setter: setDickySkirtRemarks, index: 0, key: 'bootSkirtRemarks'},
     {setter: setWheelTypeRemarks, index: 0, key: 'wheelTypeRemarks'},
-  ]
+  ];
 
-  const remarksUpdates1=[
-        {setter: setSpareWheelRemarks, index: 0, key: 'spareWheelRemarks'},
+  const remarksUpdates1 = [
+    {setter: setSpareWheelRemarks, index: 0, key: 'spareWheelRemarks'},
     {setter: setToolkitRemarks, index: 0, key: 'toolKitJackRemarks'},
     {setter: setKeyRemarks, index: 0, key: 'primaryKeyRemarks'},
     {setter: setKeyRemarks, index: 1, key: 'spareKeyRemarks'},
@@ -9761,7 +10948,7 @@ const OrderCreation = ({navigation}) => {
     {setter: setTyreRemarks, index: 1, key: 'frontTyreRightRemarks'},
     {setter: setTyreRemarks, index: 2, key: 'rearTyreLeftRemarks'},
     {setter: setTyreRemarks, index: 3, key: 'rearTyreRightRemarks'},
-  ]
+  ];
 
   const remarksUpdates = [
     {setter: setFrontViewRemarks, index: 0, key: 'frontViewRemarks'},
@@ -9940,8 +11127,8 @@ const OrderCreation = ({navigation}) => {
     // {setter: setReinspectorRemarks, index: 6, key: 'finalInteriorRemarks'},
   ];
 
-  const conditionUpdate2=[
-      {setter: setBonetCondition, index: 0, key: 'bonnetCondition'},
+  const conditionUpdate2 = [
+    {setter: setBonetCondition, index: 0, key: 'bonnetCondition'},
     {setter: setApronCondition, index: 0, key: 'apronLeftSideCondition'},
     {setter: setApronCondition, index: 1, key: 'apronRightSideCondition'},
     {
@@ -10016,8 +11203,8 @@ const OrderCreation = ({navigation}) => {
     {setter: setDickyDoorCondition, index: 0, key: 'bootCondition'},
     {setter: setDickySkirtCondition, index: 0, key: 'bootSkirtCondition'},
 
-    {setter: setWheelTypeCondition, index: 0, key: 'wheelTypeCondition'},
-  ]
+    {setter: setSpareWheel, index: 0, key: 'wheelTypeCondition'},
+  ];
 
   const conditionUpdates = [
     {setter: setChasisCondition, index: 0, key: 'chassisPunchCondition'},
@@ -10197,12 +11384,10 @@ const OrderCreation = ({navigation}) => {
     // },
   ];
 
-  const stateUpdates3=[
+  const stateUpdates3 = [];
 
-  ]
-
-  const stateUpdates2=[
-      {setter: setBonetSwitch, index: 0, key: 'bonnetStatus'},
+  const stateUpdates2 = [
+    {setter: setBonetSwitch, index: 0, key: 'bonnetStatus'},
     {setter: setApronSwitch, index: 0, key: 'apronLeftSideStatus'},
     {setter: setApronSwitch, index: 1, key: 'apronRightSideStatus'},
     {
@@ -10264,23 +11449,33 @@ const OrderCreation = ({navigation}) => {
     {setter: setDickyDoorSwitch, index: 0, key: 'bootStatus'},
     {setter: setDickySkirtSwitch, index: 0, key: 'bootSkirtStatus'},
     {setter: setWheelTypeSwitch, index: 0, key: 'wheelTypeStatus'},
-  ]
+  ];
 
-  const stateUpdates1=[
- {setter: setSpareWheelSwitch, index: 0, key: 'spareWheelStatus'},
+  const stateUpdates1 = [
+    {setter: setSpareWheelSwitch, index: 0, key: 'spareWheelStatus'},
     {setter: setToolkitSwitch, index: 0, key: 'toolKitJackStatus'},
     {setter: setTyreSwitch, index: 0, key: 'frontTyreLeftStatus'},
     {setter: setTyreSwitch, index: 1, key: 'frontTyreRightStatus'},
     {setter: setTyreSwitch, index: 2, key: 'rearTyreLeftStatus'},
     {setter: setTyreSwitch, index: 3, key: 'rearTyreRightStatus'},
-  ]
+  ];
+
+
+  const conditionUpdates1 = [
+    {setter:setSpareWheel, index: 0, key: 'spareWheelCondition'},
+    {setter:setToolkitCondition, index: 0, key: 'toolkitJackCondition'},
+    {setter:setValues, index: 0, key: 'frontTyreLeftCondition'},
+    {setter: setValues, index: 1, key: 'frontTyreRightCondition'},
+    {setter: setValues, index: 2, key: 'rearTyreLeftCondition'},
+    {setter: setValues, index: 3, key: 'rearTyreRightCondition'},
+  ];
 
   const stateUpdates = [
     {setter: setChassisSwitch, index: 0, key: 'chassisPunchStatus'},
     {setter: setVinPlateSwitch, index: 0, key: 'vinPlateStatus'},
     {setter: setKeySwitch, index: 0, key: 'primaryKeyStatus'},
-    {setter: setKeySwitch, index:1, key: 'spareKeyStatus'},
-   
+    {setter: setKeySwitch, index: 1, key: 'spareKeyStatus'},
+
     // {setter: setBonetSwitch, index: 0, key: 'bonnetStatus'},
     // {setter: setApronSwitch, index: 0, key: 'apronLeftSideStatus'},
     // {setter: setApronSwitch, index: 1, key: 'apronRightSideStatus'},
@@ -10482,8 +11677,8 @@ const OrderCreation = ({navigation}) => {
     // {setter: setoilSwitch, index: 4, key: 'crownOilStatus'},
   ];
 
-  const statusUpdates3=[
-        {setter: setSuspensionSwitch, index: 0, key: 'strutStatus'},
+  const statusUpdates3 = [
+    {setter: setSuspensionSwitch, index: 0, key: 'strutStatus'},
     {setter: setSuspensionSwitch, index: 1, key: 'lowerArmStatus'},
     {setter: setSuspensionSwitch, index: 2, key: 'linkRodStatus'},
     {setter: setSuspensionSwitch, index: 3, key: 'stabilizerBarStatus'},
@@ -10620,10 +11815,10 @@ const OrderCreation = ({navigation}) => {
     {setter: setoilSwitch, index: 2, key: 'coolentOilStatus'},
     {setter: setoilSwitch, index: 3, key: 'gearOilStatus'},
     {setter: setoilSwitch, index: 4, key: 'crownOilStatus'},
-  ]
+  ];
 
-  const conditionUpdates3=[
-      {setter: setSuspensionDropdown, index: 0, key: 'strutCondition'},
+  const conditionUpdates3 = [
+    {setter: setSuspensionDropdown, index: 0, key: 'strutCondition'},
     {setter: setSuspensionDropdown, index: 1, key: 'lowerArmCondition'},
     {setter: setSuspensionDropdown, index: 2, key: 'linkRodCondition'},
     {setter: setSuspensionDropdown, index: 3, key: 'stabilizerBarCondition'},
@@ -10710,11 +11905,35 @@ const OrderCreation = ({navigation}) => {
       index: 10,
       key: 'steeringControlsCondition',
     },
+    {
+      setter: setOilDropDown,
+      index: 0,
+      key: 'engineOilCondition',
+    },
+    {
+      setter: setOilDropDown,
+      index: 1,
+      key: 'brakeOilCondition',
+    },
+    {
+      setter: setOilDropDown,
+      index: 2,
+      key: 'coolentOilCondition',
+    },
+    {
+      setter: setOilDropDown,
+      index: 3,
+      key: 'gearOilCondition',
+    },
+    {
+      setter: setOilDropDown,
+      index:4,
+      key: 'crownOilCondition',
+    },
+  ];
 
-  ]
-
-  const remarksUpdates3=[
-       {setter: setSuspensionRemarks, index: 0, key: 'strutRemarks'},
+  const remarksUpdates3 = [
+    {setter: setSuspensionRemarks, index: 0, key: 'strutRemarks'},
     {setter: setSuspensionRemarks, index: 1, key: 'lowerArmRemarks'},
     {setter: setSuspensionRemarks, index: 2, key: 'linkRodRemarks'},
     {setter: setSuspensionRemarks, index: 3, key: 'stabilizerBarRemarks'},
@@ -10790,10 +12009,18 @@ const OrderCreation = ({navigation}) => {
     {setter: setAccessoriesRemarks, index: 8, key: 'spoilerRemarks'},
     {setter: setAccessoriesRemarks, index: 9, key: 'skirtRemarks'},
     {setter: setAccessoriesRemarks, index: 10, key: 'steeringControlsRemarks'},
-  ]
+    {setter:setOilRemarks,index:0,key:'engineOilRemarks'},
+    {setter:setOilRemarks,index:1,key:'brakeOilRemarks'},
+    {setter:setOilRemarks,index:2,key:'coolentOilRemarks'},
+    {setter:setOilRemarks,index:3,key:'gearOilRemarks'},
+    {setter:setOilRemarks,index:4,key:'crownOilRemarks'},
+    
+    
+    
+  ];
 
-  const photoUpdates4=[
-         {setter: setSuspensionPhoto, index: 0, key: 'strutPhoto'},
+  const photoUpdates4 = [
+    {setter: setSuspensionPhoto, index: 0, key: 'strutPhoto'},
     {setter: setSuspensionPhoto, index: 1, key: 'lowerArmPhoto'},
     {setter: setSuspensionPhoto, index: 2, key: 'linkRodPhoto'},
     {setter: setSuspensionPhoto, index: 3, key: 'stabilizerBarPhoto'},
@@ -10873,10 +12100,10 @@ const OrderCreation = ({navigation}) => {
     {setter: setAccessoriesPhoto, index: 8, key: 'spoilerPhoto'},
     {setter: setAccessoriesPhoto, index: 9, key: 'skirtPhoto'},
     {setter: setAccessoriesPhoto, index: 10, key: 'steeringControlsPhoto'},
-  ]
+  ];
 
-  const photoUpdates3=[
-      {setter: setBonetPhoto, index: 0, key: 'bonnetPhoto'},
+  const photoUpdates3 = [
+    {setter: setBonetPhoto, index: 0, key: 'bonnetPhoto'},
     {setter: setApronPhoto, index: 0, key: 'apronLeftSidePhoto'},
     {setter: setApronPhoto, index: 1, key: 'apronRightSidePhoto'},
     {setter: setSupportMembersPhoto, index: 0, key: 'supportMemberUpperPhoto'},
@@ -10926,10 +12153,10 @@ const OrderCreation = ({navigation}) => {
     {setter: setDickySkirtPhoto, index: 0, key: 'bootSkirtPhoto'},
 
     {setter: setWheelTypePhoto, index: 0, key: 'wheelTypePhoto'},
-  ]
+  ];
 
-  const photoUpdates2=[
-     {setter: setLhsViewPhoto, index: 0, key: 'lhsViewPhoto'},
+  const photoUpdates2 = [
+    {setter: setLhsViewPhoto, index: 0, key: 'lhsViewPhoto'},
     {setter: setRearViewPhoto, index: 0, key: 'rearViewPhoto'},
     {setter: setTrunkBootPhoto, index: 0, key: 'trunkBootPhoto'},
     {setter: setSpareWheelPunchPhoto, index: 0, key: 'spareWheelPhoto'},
@@ -10940,10 +12167,10 @@ const OrderCreation = ({navigation}) => {
     {setter: setTyrePunchPhoto, index: 1, key: 'frontTyreRightPhoto'},
     {setter: setTyrePunchPhoto, index: 2, key: 'rearTyreLeftPhoto'},
     {setter: setTyrePunchPhoto, index: 3, key: 'rearTyreRightPhoto'},
-  ]
+  ];
 
-  const photoUpdates1=[
-      {setter: setFrontViewPhoto, index: 0, key: 'frontViewPhoto'},
+  const photoUpdates1 = [
+    {setter: setFrontViewPhoto, index: 0, key: 'frontViewPhoto'},
     {setter: setEngineRoomPhoto, index: 0, key: 'engineRoomPhoto'},
     {setter: setChassisPunchPhoto, index: 0, key: 'chassisPunchPhoto'},
     {setter: setVinPlatePunchPhoto, index: 0, key: 'vinPlatePhoto'},
@@ -10952,7 +12179,7 @@ const OrderCreation = ({navigation}) => {
     {setter: setKeyPunchPhoto, index: 1, key: 'spareKeyPhoto'},
     {setter: setOdometerPhoto, index: 0, key: 'odometerPhoto'},
     {setter: setInteriorPhoto, index: 0, key: 'interiorPhoto'},
-  ]
+  ];
 
   const photoUpdates = [
     {setter: setRcPhoto, index: 0, key: 'rcFrontPhoto'},
@@ -10963,7 +12190,7 @@ const OrderCreation = ({navigation}) => {
     {setter: setInsuracePhoto, index: 2, key: 'insuranceOthersPhoto'},
     {setter: setNOCPhoto, index: 0, key: 'nocPhoto'},
     {setter: setNOCPhoto, index: 1, key: 'nocOthersPhoto'},
-   
+
     // {setter: setLhsViewPhoto, index: 0, key: 'lhsViewPhoto'},
     // {setter: setRearViewPhoto, index: 0, key: 'rearViewPhoto'},
     // {setter: setTrunkBootPhoto, index: 0, key: 'trunkBootPhoto'},
@@ -11108,6 +12335,8 @@ const OrderCreation = ({navigation}) => {
     // {setter: setAccessoriesPhoto, index: 10, key: 'steeringControlsPhoto'},
   ];
 
+  const [dealerIdNumber,setDealerIdNumber]=useState("")
+
   useEffect(() => {
     const handleBackPress = () => {
       if (currentIndex === 0) {
@@ -11128,14 +12357,41 @@ const OrderCreation = ({navigation}) => {
     return () => backHandler.remove(); // Clean up event listener
   }, [navigation, swiperRef, currentIndex]);
 
+
+  const updateIndexValue = (index, value) => {
+    setDealerIdNumbers(prevState => {
+      const newState = [...prevState];
+      newState[index] = value;
+      return newState;
+    });
+  };
+
+  const updateIndexValue1 = (index, value) => {
+    setSpareWheelIdNumber(prevState => {
+      const newState = [...prevState];
+      newState[index] = value;
+      return newState;
+    });
+  };
+
   const setVehicleData = data => {
+    // transmission: getSwitchType(selectedOption),
+    // fuelType: getFuelType(selectedOption1),
+    // alteration: getCngType(selectedOption2),
+    console.log(data.roadTaxValid, 'log hypotherticated');
+    updateIndexValue(0,data.dealerId)
+    updateIndexValue(1,data.dealerId)
+    updateIndexValue(2,data.dealerId)
+    updateIndexValue(3,data.dealerId)
+    updateIndexValue1(0,data.dealerId)
+    setDealerIdNumber(data.dealerId);
     setMake(data.make);
     setModel(data.model);
     setYear(data.year);
     setVariant(data.variant);
     setMileage(data.mileage);
     setColor(data.color);
-    setSelectedOption(data.transmission === 'Automatic' ? 1 : 2);
+    setSelectedOption(data.transmission === 'Automatic' ? 1 :data.transmission==='Manual'?2:"");
     setSelectedOption1(
       data.fuelType === 'Diesel'
         ? 1
@@ -11147,12 +12403,17 @@ const OrderCreation = ({navigation}) => {
         ? 4
         : 5,
     );
+   
+    setChooseAlteration(data.alteration==="Yes"?1:data.alteration==="No"?2:"")
+   
+    setSelectedOption2(data.alteration==="CNG"?1:data.alteration==="LPG"?2:data.alteration===""?"":3)
     setOwners(data.owners);
-    setSelectedOption2(data.hasHypothecated === 'No' ? 2 : 1);
+    setSelectedOption3(data.hasHypothecated === 'Yes' ? 1 : data.hasHypothecated==="No"?  2:"");
     setHypothecatedBy(data.hypothecatedBy);
-    setSelectedOption3(data.noc === 'No' ? 2 : 1);
+    setSelectedOption4(data.noc === 'Yes' ? 1 : data.noc==="No"? 2:"");
     setRoadTaxValid(data.roadTaxValid);
-    setSelectedOption4(data.reRegistered === 'No' ? 2 : 1);
+  // setRoadTaxValid("2033-03-19 00:00:00")
+    setSelectedOption5(data.reRegistered === 'Yes' ? 1 :data.reRegistered==='No'? 2:"");
     setCubicCapacity(data.cubicCapacity);
     // setNumberOfSeats(data.numberOfSeats);
     // setRegistrationType(data.registrationType);
@@ -11168,21 +12429,36 @@ const OrderCreation = ({navigation}) => {
     // setStateNoc(data.stateNoc === 'No' ? 2 : 1);
     // setFlood(data.flood === 'No' ? 2 : 1);
   };
+
+  const parseDate = (dateString) => {
+    const [day, month, year] = dateString.split('-');
+    const monthIndex = [
+      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+    ].indexOf(month);
+  
+    if (monthIndex === -1) return null;
+  
+    return new Date(year, monthIndex, day);
+  };
+  
   const setVehicleOneData = data => {
+
   
     setNumberOfSeats(data.numberOfSeats);
     setRegistrationType(data.registrationType);
     setRegistrationDate(data.registrationDate);
-    setInsurance(data.insurance === 'No' ? 2 : 1);
+    setSelectedOption6(data.insurance === 'No' ? 2 : data.insurance==="Yes"?1:"");
     setInsuranceCompany(data.insuranceCompany);
     setInsuranceValidity(data.insuranceValidity);
     setChallanDetails(data.challanDetails);
-    setBlacklisted(data.blacklisted === 'No' ? 2 : 1);
+    setSelectedOption7(data.blacklisted === 'No' ? 2 :data.blacklisted==="Yes"? 1:"");
     setChassisNumber(data.chassisNumber);
     setEngineNumber(data.engineNumber);
-    setRcStatus(data.rcStatus === 'Original' ? 1 : 2);
-    setStateNoc(data.stateNoc === 'No' ? 2 : 1);
-    setFlood(data.flood === 'No' ? 2 : 1);
+    setSelectedOption8(data.rcStatus === 'Original' ? 1 :data.rcStatus===""?"": 2)
+   
+    setSelectedOption9(data.stateNoc === 'No' ? 2 : data.stateNoc==="Yes"? 1:"");
+    setSelectedOption10(data.flood === 'No' ? 2 :data.flood==="Yes"? 1:"");
   };
 
   // setMake(response.data.make);
@@ -11226,6 +12502,9 @@ const OrderCreation = ({navigation}) => {
 
   const getOrder = async () => {
     console.log('loading and loading');
+    const itemId = await getItem('dealarId');
+
+    console.log(itemId, 'DEALER ID IS THRERE.........');
     setRefreshing(true);
     try {
       const response = await apiGetWithToken(`getOneOrder?id=${id}`);
@@ -11252,8 +12531,6 @@ const OrderCreation = ({navigation}) => {
       // stateUpdates.forEach(({setter, index, key}) => {
       //   updateSwitchState(setter, index, response.data[key] || '');
       // });
-
-
 
       setRefreshing(false);
       // setLoading(false);
@@ -11292,8 +12569,6 @@ const OrderCreation = ({navigation}) => {
       //   updateSwitchState(setter, index, response.data[key] || '');
       // });
 
-
-
       setRefreshing(false);
       // setLoading(false);
       console.log(response.data, 'COUNT INNDIA');
@@ -11302,14 +12577,23 @@ const OrderCreation = ({navigation}) => {
     }
   };
 
+
+
+  const photoLists = [rcList, insuranceList, nocList];
+
   const getTwoOrder = async () => {
     console.log('loading and loading');
     setRefreshing(true);
     try {
       const response = await apiGetWithToken(`getOneOrder?id=${id}`);
 
-     // setVehicleOneData(response.data);
+      // setVehicleOneData(response.data);
       //dispatch(storeOrderData(response.data));
+
+          // Log specific photo URLs to check if they exist
+    
+
+    
 
       setRcRemarks(response?.data?.rcRemarks);
       setInsuranceRemarks(response?.data?.insuranceRemarks);
@@ -11318,6 +12602,8 @@ const OrderCreation = ({navigation}) => {
       photoUpdates.forEach(({setter, index, key}) => {
         updatePhotoState(setter, index, response.data[key] || '');
       });
+
+    
 
       // remarksUpdates.forEach(({setter, index, key}) => {
       //   updatePhotoState(setter, index, response.data[key] || '');
@@ -11331,24 +12617,23 @@ const OrderCreation = ({navigation}) => {
       //   updateSwitchState(setter, index, response.data[key] || '');
       // });
 
-
-
       setRefreshing(false);
       // setLoading(false);
-      console.log(response.data, 'COUNT INNDIA');
+     
     } catch (error) {
       console.error('GET error:', error);
     }
   };
+
+ 
+  
+
   const getThreeOrder = async () => {
     console.log('loading and loading');
     setRefreshing(true);
     try {
       const response = await apiGetWithToken(`getOneOrder?id=${id}`);
-
-    
-
-     
+      
 
       photoUpdates1.forEach(({setter, index, key}) => {
         updatePhotoState(setter, index, response.data[key] || '');
@@ -11366,8 +12651,6 @@ const OrderCreation = ({navigation}) => {
         updateSwitchState(setter, index, response.data[key] || '');
       });
 
-
-
       setRefreshing(false);
       // setLoading(false);
       console.log(response.data, 'COUNT INNDIA');
@@ -11382,10 +12665,6 @@ const OrderCreation = ({navigation}) => {
     try {
       const response = await apiGetWithToken(`getOneOrder?id=${id}`);
 
-    
-
-     
-
       photoUpdates2.forEach(({setter, index, key}) => {
         updatePhotoState(setter, index, response.data[key] || '');
       });
@@ -11393,16 +12672,16 @@ const OrderCreation = ({navigation}) => {
       remarksUpdates1.forEach(({setter, index, key}) => {
         updatePhotoState(setter, index, response.data[key] || '');
       });
+    
+    
 
-      // conditionUpdate1.forEach(({setter, index, key}) => {
-      //   updatePhotoState(setter, index, response.data[key] || '');
-      // });
+      conditionUpdates1.forEach(({setter, index, key}) => {
+        updatePhotoState(setter, index, response.data[key] || '');
+      });
 
       stateUpdates1.forEach(({setter, index, key}) => {
         updateSwitchState(setter, index, response.data[key] || '');
       });
-
-
 
       setRefreshing(false);
       // setLoading(false);
@@ -11417,10 +12696,6 @@ const OrderCreation = ({navigation}) => {
     setRefreshing(true);
     try {
       const response = await apiGetWithToken(`getOneOrder?id=${id}`);
-
-    
-
-     
 
       photoUpdates3.forEach(({setter, index, key}) => {
         updatePhotoState(setter, index, response.data[key] || '');
@@ -11438,8 +12713,6 @@ const OrderCreation = ({navigation}) => {
         updateSwitchState(setter, index, response.data[key] || '');
       });
 
-
-
       setRefreshing(false);
       // setLoading(false);
       console.log(response.data, 'COUNT INNDIA');
@@ -11453,10 +12726,6 @@ const OrderCreation = ({navigation}) => {
     setRefreshing(true);
     try {
       const response = await apiGetWithToken(`getOneOrder?id=${id}`);
-
-    
-
-     
 
       photoUpdates4.forEach(({setter, index, key}) => {
         updatePhotoState(setter, index, response.data[key] || '');
@@ -11473,8 +12742,6 @@ const OrderCreation = ({navigation}) => {
       statusUpdates3.forEach(({setter, index, key}) => {
         updateSwitchState(setter, index, response.data[key] || '');
       });
-
-
 
       setRefreshing(false);
       // setLoading(false);
@@ -12576,7 +13843,7 @@ const OrderCreation = ({navigation}) => {
                                   index == 0
                                     ? 'Damaged'
                                     : index === 1
-                                    ? ' '
+                                    ? ""
                                     : index == 2
                                     ? ''
                                     : index == 3
@@ -15851,17 +17118,20 @@ const OrderCreation = ({navigation}) => {
                           <View style={{marginTop: 14}}>
                             <View key={index} style={styles.sliderContainer}>
                               <Text style={styles.percentageText}>
-                                {Math.round(values[0] * 100)}%
+                              <Text style={styles.percentageText}>
+  {dealerIdNumbers[0] ? values[0] : `${Math.round(values[0] * 100)}%`}
+</Text>
+
                               </Text>
                               <Slider
                                 style={styles.slider}
                                 minimumValue={0}
                                 maximumValue={1}
-                                value={values[0]}
+                                value={dealerIdNumbers[0]? parseFloat(values[0]) / 100: values[0]}
                                 onValueChange={val =>
                                   handleValueChange(val, index)
                                 }
-                                minimumTrackTintColor={getTrackColor(values[0])}
+                                minimumTrackTintColor={getTrackColor(dealerIdNumbers[0]?parseFloat(values[0])/100:values[0])}
                                 maximumTrackTintColor="#000000"
                                 thumbTintColor="#007BFF"
                               />
@@ -15874,17 +17144,19 @@ const OrderCreation = ({navigation}) => {
                           <View style={{marginTop: 14}}>
                             <View style={styles.sliderContainer}>
                               <Text style={styles.percentageText}>
-                                {Math.round(values[1] * 100)}%
+                              <Text style={styles.percentageText}>
+  {dealerIdNumbers[1] ? values[1] : `${Math.round(values[1] * 100)}%`}
+</Text>
                               </Text>
                               <Slider
                                 style={styles.slider}
                                 minimumValue={0}
                                 maximumValue={1}
-                                value={values[1]}
+                                value={dealerIdNumbers[1]? parseFloat(values[1]) / 100: values[1]}
                                 onValueChange={val =>
                                   handleValueChange(val, index)
                                 }
-                                minimumTrackTintColor={getTrackColor(values[1])}
+                                minimumTrackTintColor={getTrackColor(dealerIdNumbers[1]?parseFloat(values[1])/100:values[1])}
                                 maximumTrackTintColor="#000000"
                                 thumbTintColor="#007BFF"
                               />
@@ -15895,18 +17167,18 @@ const OrderCreation = ({navigation}) => {
                         {index === 2 && (
                           <View style={{marginTop: 14}}>
                             <View style={styles.sliderContainer}>
-                              <Text style={styles.percentageText}>
-                                {Math.round(values[2] * 100)}%
-                              </Text>
+                            <Text style={styles.percentageText}>
+  {dealerIdNumbers[2] ? values[2] : `${Math.round(values[2] * 100)}%`}
+</Text>
                               <Slider
                                 style={styles.slider}
                                 minimumValue={0}
                                 maximumValue={1}
-                                value={values[2]}
+                                value={dealerIdNumbers[2]? parseFloat(values[2]) / 100: values[2]}
                                 onValueChange={val =>
                                   handleValueChange(val, index)
                                 }
-                                minimumTrackTintColor={getTrackColor(values[2])}
+                                minimumTrackTintColor={getTrackColor(dealerIdNumbers[2]?parseFloat(values[2])/100:values[2])}
                                 maximumTrackTintColor="#000000"
                                 thumbTintColor="#007BFF"
                               />
@@ -15916,18 +17188,18 @@ const OrderCreation = ({navigation}) => {
                         {index === 3 && (
                           <View style={{marginTop: 14}}>
                             <View style={styles.sliderContainer}>
-                              <Text style={styles.percentageText}>
-                                {Math.round(values[3] * 100)}%
-                              </Text>
+                            <Text style={styles.percentageText}>
+    {dealerIdNumbers[3] ? values[3] : `${Math.round(values[3] * 100)}%`}
+</Text>
                               <Slider
                                 style={styles.slider}
                                 minimumValue={0}
                                 maximumValue={1}
-                                value={values[3]}
+                                value={dealerIdNumbers[3]? parseFloat(values[3]) / 100: values[3]}
                                 onValueChange={val =>
                                   handleValueChange(val, index)
                                 }
-                                minimumTrackTintColor={getTrackColor(values[3])}
+                                minimumTrackTintColor={getTrackColor(dealerIdNumbers[3]?parseFloat(values[3])/100:values[3])}
                                 maximumTrackTintColor="#000000"
                                 thumbTintColor="#007BFF"
                               />
@@ -16004,19 +17276,18 @@ const OrderCreation = ({navigation}) => {
                             <View style={{marginTop: 14}}>
                               <View key={index} style={styles.sliderContainer}>
                                 <Text style={styles.percentageText}>
-                                  {Math.round(spareWheel[0] * 100)}%
+                                  
+                                  {spareWheelIdNumber[0] ? spareWheel[0] : `${Math.round(spareWheel[0] * 100)}%`}
                                 </Text>
                                 <Slider
                                   style={styles.slider}
                                   minimumValue={0}
                                   maximumValue={1}
-                                  value={spareWheel[0]}
+                                  value={spareWheelIdNumber[0]? parseFloat(spareWheel[0]) / 100: spareWheel[0]}
                                   onValueChange={val =>
                                     handleValueChange4(val, index)
                                   }
-                                  minimumTrackTintColor={getTrackColor(
-                                    spareWheel[0],
-                                  )}
+                                  minimumTrackTintColor={getTrackColor(spareWheelIdNumber[0]?parseFloat(spareWheel[0])/100:spareWheel[0])}
                                   maximumTrackTintColor="#000000"
                                   thumbTintColor="#007BFF"
                                 />
@@ -16489,13 +17760,6 @@ const OrderCreation = ({navigation}) => {
                   label="NOC"
                 />
 
-                {/* <CustomTextInput
-                label="Road tax is valid"
-                value={roadTaxValid}
-                onChangeText={value => setRoadTaxValid(value)}
-                placeholder="Enter the Road tax is valid"
-              /> */}
-
                 <CustomTextInputWithDatePicker
                   label="Road tax is valid"
                   value={roadTaxValid}
@@ -16550,120 +17814,121 @@ const OrderCreation = ({navigation}) => {
           <Text style={styles.indicator}>{`${currentIndex + 1}/${
             role === 'Reinspector' ? 8 : 7
           }`}</Text>
-         {refreshing ? (
+          {refreshing ? (
             <ActivityIndicator size="large" color="#0000ff" />
           ) : (
-          <ScrollView showsVerticalScrollIndicator={false}>
-            <View style={styles.wrapperContainer}>
-              <CustomTextInput
-                label="Number of seats"
-                editible={false}
-                value={numberOfSeats}
-                onChangeText={setNumberOfSeats}
-                placeholder="Enter number of seats"
-              />
-              <CustomTextInput
-                label="Registration type"
-                value={registrationType}
-                onChangeText={setRegistrationType}
-                placeholder="Enter registration type"
-              />
-              <CustomTextInput
-                label="Registration Date"
-                value={registrationDate}
-                onChangeText={setRegistrationDate}
-                placeholder="Enter registration date"
-                editible={false}
-              />
-              <SingleSwitch
-                selectionMode={selectedOption6}
-                roundCorner={true}
-                options={['Yes', 'No']}
-                onSelectSwitch={handleSwitchSelection6}
-                selectionColor="#007BFF"
-                label="Insurance"
-              />
-              <CustomTextInput
-                label="Insurance Company"
-                //   editable={false}
-                value={insuranceCompany}
-                onChangeText={setInsuranceCompany}
-                placeholder="Enter insurance company"
-              />
-              <CustomTextInput
-                label="Insurance Validity"
-                editible={false}
-                value={insuranceValidity}
-                onChangeText={setInsuranceValidity}
-                placeholder="Enter insurance validity"
-              />
-              <CustomTextInput
-                label="Challan Details"
-                value={challanDetails}
-                editible={false}
-                onChangeText={setChallanDetails}
-                placeholder="Enter challan details"
-              />
-              <SingleSwitch
-                selectionMode={selectedOption7}
-                roundCorner={true}
-                options={['Yes', 'No']}
-                onSelectSwitch={handleSwitchSelection7}
-                selectionColor="#007BFF"
-                label="Blacklisted"
-              />
-              <CustomTextInput
-                label="Chassis Number"
-                editible={false}
-                value={chassisNumber}
-                onChangeText={setChassisNumber}
-                placeholder="Enter chassis number"
-              />
-              <CustomTextInput
-                label="Engine Number"
-                value={engineNumber}
-                onChangeText={setEngineNumber}
-                placeholder="Enter engine number"
-              />
-              <SingleSwitch
-                selectionMode={selectedOption8}
-                roundCorner={true}
-                options={['Original', 'Duplicate']}
-                onSelectSwitch={handleSwitchSelection8}
-                selectionColor="#007BFF"
-                label="RC status"
-              />
-              <SingleSwitch
-                selectionMode={selectedOption9}
-                roundCorner={true}
-                options={['Yes', 'No']}
-                onSelectSwitch={handleSwitchSelection9}
-                selectionColor="#007BFF"
-                label="State NOC"
-              />
-              <SingleSwitch
-                selectionMode={selectedOption10}
-                roundCorner={true}
-                options={['Yes', 'No']}
-                onSelectSwitch={handleSwitchSelection10}
-                selectionColor="#007BFF"
-                label="Flood"
-              />
-              <View style={{bottom: 25, marginTop: 20}}>
-                <CustomButton
-                  title="Next"
-                  loading={loading}
-                  onPress={() => {
-                    if (id) {
-                      handleNextUpdate(2);
-                    } else {
-                      handleNext(2);
-                    }
-                  }}
+            <ScrollView showsVerticalScrollIndicator={false}>
+              <View style={styles.wrapperContainer}>
+                <CustomTextInput
+                  label="Number of seats"
+                  editible={false}
+                  value={numberOfSeats}
+                  onChangeText={setNumberOfSeats}
+                  placeholder="Enter number of seats"
                 />
+                <CustomTextInput
+                  label="Registration type"
+                  value={registrationType}
+                  onChangeText={setRegistrationType}
+                  placeholder="Enter registration type"
+                />
+                <CustomTextInput
+                  label="Registration Date"
+                  value={registrationDate}
+                  onChangeText={setRegistrationDate}
+                  placeholder="Enter registration date"
+                  editible={false}
+                />
+                <SingleSwitch
+                  selectionMode={selectedOption6}
+                  roundCorner={true}
+                  options={['Yes', 'No']}
+                  onSelectSwitch={handleSwitchSelection6}
+                  selectionColor="#007BFF"
+                  label="Insurance"
+                />
+                <CustomTextInput
+                  label="Insurance Company"
+                  //   editable={false}
+                  value={insuranceCompany}
+                  onChangeText={setInsuranceCompany}
+                  placeholder="Enter insurance company"
+                />
+                <CustomTextInput
+                  label="Insurance Validity"
+                  editible={false}
+                  value={insuranceValidity}
+                  onChangeText={setInsuranceValidity}
+                  placeholder="Enter insurance validity"
+                />
+                <CustomTextInput
+                  label="Challan Details"
+                  value={challanDetails}
+                  editible={false}
+                  onChangeText={setChallanDetails}
+                  placeholder="Enter challan details"
+                />
+                <SingleSwitch
+                  selectionMode={selectedOption7}
+                  roundCorner={true}
+                  options={['Yes', 'No']}
+                  onSelectSwitch={handleSwitchSelection7}
+                  selectionColor="#007BFF"
+                  label="Blacklisted"
+                />
+                <CustomTextInput
+                  label="Chassis Number"
+                  editible={false}
+                  value={chassisNumber}
+                  onChangeText={setChassisNumber}
+                  placeholder="Enter chassis number"
+                />
+                <CustomTextInput
+                  label="Engine Number"
+                  value={engineNumber}
+                  onChangeText={setEngineNumber}
+                  placeholder="Enter engine number"
+                />
+                <SingleSwitch
+                  selectionMode={selectedOption8}
+                  roundCorner={true}
+                  options={['Original', 'Duplicate']}
+                  onSelectSwitch={handleSwitchSelection8}
+                  selectionColor="#007BFF"
+                  label="RC status"
+                />
+                <SingleSwitch
+                  selectionMode={selectedOption9}
+                  roundCorner={true}
+                  options={['Yes', 'No']}
+                  onSelectSwitch={handleSwitchSelection9}
+                  selectionColor="#007BFF"
+                  label="State NOC"
+                />
+                <SingleSwitch
+                  selectionMode={selectedOption10}
+                  roundCorner={true}
+                  options={['Yes', 'No']}
+                  onSelectSwitch={handleSwitchSelection10}
+                  selectionColor="#007BFF"
+                  label="Flood"
+                />
+                <View style={{bottom: 25, marginTop: 20}}>
+                  <CustomButton
+                    title="Next"
+                    loading={loading}
+                    onPress={() => {
+                      if (id) {
+                        handleNextUpdate(2);
+                      } else {
+                        handleNext(2);
+                      }
+                    }}
+                  />
+                </View>
               </View>
-            </View>
-          </ScrollView> )}
+            </ScrollView>
+          )}
         </View>
 
         {/* <View style={styles.slide}>
@@ -16727,44 +17992,53 @@ const OrderCreation = ({navigation}) => {
             role === 'Reinspector' ? 8 : 7
           }`}</Text>
 
-{refreshing ? (
+          {refreshing ? (
             <ActivityIndicator size="large" color="#0000ff" />
           ) : (
-          <ScrollView showsVerticalScrollIndicator={false}>
-            <View style={styles.wrapperContainer}>
-              {photoTitles.map((title, index) => (
-                <View key={index} style={styles.photoContainer}>
-                  <Text style={styles.label}>{title}</Text>
-                  <TouchableOpacity
-                    style={styles.photoInput}
-                    onPress={() => handleSelectContainerPress(index)}>
-                    <View style={styles.touchableContent}>
-                      <Text style={styles.touchableText}>
-                        {validations[index] ? 'Update / View' : 'Upload'}
-                      </Text>
-                      <Text style={styles.icon}>
-                        {validations[index] ? '✅' : '☒'}
-                      </Text>
-                    </View>
-                  </TouchableOpacity>
-                </View>
-              ))}
+            <ScrollView showsVerticalScrollIndicator={false}>
+              <View style={styles.wrapperContainer}>
+                {photoTitles.map((title, index) => (
+                  <View key={index} style={styles.photoContainer}>
+                    <Text style={styles.label}>{title}</Text>
+                    <TouchableOpacity
+                      style={styles.photoInput}
+                      onPress={() => handleSelectContainerPress(index)}>
+                      <View style={styles.touchableContent}>
+                        <Text style={styles.touchableText}>
+                          {role === 'Reinspector'
+                            ? 'Update / View'
+                            : validations[index]
+                            ? 'Update / View'
+                            : 'Upload'}
+                        </Text>
+                        <Text style={styles.icon}>
+                          {role === 'Reinspector'
+                            ? '✅'
+                            : validations[index]
+                            ? '✅'
+                            : '☒'}
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+                  </View>
+                ))}
 
-              <View style={{bottom: 0, marginTop: 410}}>
-                <CustomButton
-                  title="Next"
-                  loading={loading}
-                  onPress={() => {
-                    if (id) {
-                      handleNextUpdate(3);
-                    } else {
-                      handleNext(3);
-                    }
-                  }}
-                />
+                <View style={{bottom: 0, marginTop: 410}}>
+                  <CustomButton
+                    title="Next"
+                    loading={loading}
+                    onPress={() => {
+                      if (id) {
+                        handleNextUpdate(3);
+                      } else {
+                        handleNext(3);
+                      }
+                    }}
+                  />
+                </View>
               </View>
-            </View>
-          </ScrollView> )}
+            </ScrollView>
+          )}
         </View>
 
         <View style={styles.slide}>
@@ -16780,46 +18054,53 @@ const OrderCreation = ({navigation}) => {
             role === 'Reinspector' ? 8 : 7
           }`}</Text>
 
-{refreshing ? (
+          {refreshing ? (
             <ActivityIndicator size="large" color="#0000ff" />
           ) : (
-          <ScrollView showsVerticalScrollIndicator={false}>
-            <View style={styles.wrapperContainer}>
-              {carPhotos.map((title, index) => (
-                <View key={index} style={styles.photoContainer}>
-                  <Text style={styles.label}>{title}</Text>
-                  <TouchableOpacity
-                    style={styles.photoInput}
-                    onPress={() => handleSelectContainerPress1(index)}>
-                    <View style={styles.touchableContent}>
-                      <Text style={styles.touchableText}>
-                        {carPhotovalidations[index]
-                          ? 'Update / View'
-                          : 'Upload'}
-                      </Text>
-                      <Text style={styles.icon}>
-                        {carPhotovalidations[index] ? '✅' : '☒'}
-                      </Text>
-                    </View>
-                  </TouchableOpacity>
-                </View>
-              ))}
+            <ScrollView showsVerticalScrollIndicator={false}>
+              <View style={styles.wrapperContainer}>
+                {carPhotos.map((title, index) => (
+                  <View key={index} style={styles.photoContainer}>
+                    <Text style={styles.label}>{title}</Text>
+                    <TouchableOpacity
+                      style={styles.photoInput}
+                      onPress={() => handleSelectContainerPress1(index)}>
+                      <View style={styles.touchableContent}>
+                        <Text style={styles.touchableText}>
+                          {role === 'Reinspector'
+                            ? 'Update / View'
+                            : carPhotovalidations[index]
+                            ? 'Update / View'
+                            : 'Upload'}
+                        </Text>
+                        <Text style={styles.icon}>
+                          {role === 'Reinspector'
+                            ? '✅'
+                            : carPhotovalidations[index]
+                            ? '✅'
+                            : '☒'}
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+                  </View>
+                ))}
 
-              <View style={{bottom: 25, marginTop: 410}}>
-                <CustomButton
-                  title="Next"
-                  loading={loading}
-                  onPress={() => {
-                    if (id) {
-                      handleNextUpdate(4);
-                    } else {
-                      handleNext(4);
-                    }
-                  }}
-                />
+                <View style={{bottom: 25, marginTop: 410}}>
+                  <CustomButton
+                    title="Next"
+                    loading={loading}
+                    onPress={() => {
+                      if (id) {
+                        handleNextUpdate(4);
+                      } else {
+                        handleNext(4);
+                      }
+                    }}
+                  />
+                </View>
               </View>
-            </View>
-          </ScrollView> )}
+            </ScrollView>
+          )}
         </View>
         <View style={styles.slide}>
           <Text style={{color: 'black', fontSize: 22, fontWeight: 'bold'}}>
@@ -16833,44 +18114,53 @@ const OrderCreation = ({navigation}) => {
           <Text style={styles.indicator}>{`${currentIndex + 1}/${
             role === 'Reinspector' ? 8 : 7
           }`}</Text>
-   {refreshing ? (
+          {refreshing ? (
             <ActivityIndicator size="large" color="#0000ff" />
           ) : (
-          <ScrollView showsVerticalScrollIndicator={false}>
-            <View style={styles.wrapperContainer}>
-              {carDetails.map((title, index) => (
-                <View key={index} style={styles.photoContainer}>
-                  <Text style={styles.label}>{title}</Text>
-                  <TouchableOpacity
-                    style={styles.photoInput}
-                    onPress={() => carDetailsContainerPress(index)}>
-                    <View style={styles.touchableContent}>
-                      <Text style={styles.touchableText}>
-                        {carValidation[index] ? 'Update / View' : 'Upload'}
-                      </Text>
-                      <Text style={styles.icon}>
-                        {carValidation[index] ? '✅' : '☒'}
-                      </Text>
-                    </View>
-                  </TouchableOpacity>
-                </View>
-              ))}
+            <ScrollView showsVerticalScrollIndicator={false}>
+              <View style={styles.wrapperContainer}>
+                {carDetails.map((title, index) => (
+                  <View key={index} style={styles.photoContainer}>
+                    <Text style={styles.label}>{title}</Text>
+                    <TouchableOpacity
+                      style={styles.photoInput}
+                      onPress={() => carDetailsContainerPress(index)}>
+                      <View style={styles.touchableContent}>
+                        <Text style={styles.touchableText}>
+                          {role === 'Reinspector'
+                            ? 'Update / View'
+                            : carValidation[index]
+                            ? 'Update / View'
+                            : 'Upload'}
+                        </Text>
+                        <Text style={styles.icon}>
+                          {role === 'Reinspector'
+                            ? '✅'
+                            : carValidation[index]
+                            ? '✅'
+                            : '☒'}
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+                  </View>
+                ))}
 
-              <View style={{bottom: 25, marginTop: 140}}>
-                <CustomButton
-                  title="Next"
-                  loading={loading}
-                  onPress={() => {
-                    if (id) {
-                      handleNextUpdate(5);
-                    } else {
-                      handleNext(5);
-                    }
-                  }}
-                />
+                <View style={{bottom: 25, marginTop: 140}}>
+                  <CustomButton
+                    title="Next"
+                    loading={loading}
+                    onPress={() => {
+                      if (id) {
+                        handleNextUpdate(5);
+                      } else {
+                        handleNext(5);
+                      }
+                    }}
+                  />
+                </View>
               </View>
-            </View>
-          </ScrollView> )}
+            </ScrollView>
+          )}
         </View>
         <View style={styles.slide}>
           <Text style={{color: 'black', fontSize: 22, fontWeight: 'bold'}}>
@@ -16885,45 +18175,53 @@ const OrderCreation = ({navigation}) => {
             role === 'Reinspector' ? 8 : 7
           }`}</Text>
 
-
-{refreshing ? (
+          {refreshing ? (
             <ActivityIndicator size="large" color="#0000ff" />
           ) : (
-          <ScrollView showsVerticalScrollIndicator={false}>
-            <View style={styles.wrapperContainer}>
-              {bodyInspection.map((title, index) => (
-                <View key={index} style={styles.photoContainer}>
-                  <Text style={styles.label}>{title}</Text>
-                  <TouchableOpacity
-                    style={styles.photoInput}
-                    onPress={() => handleBodyInspectionContainerPress(index)}>
-                    <View style={styles.touchableContent}>
-                      <Text style={styles.touchableText}>
-                        {thirdValidation[index] ? 'Update / View' : 'Upload'}
-                      </Text>
-                      <Text style={styles.icon}>
-                        {thirdValidation[index] ? '✅' : '☒'}
-                      </Text>
-                    </View>
-                  </TouchableOpacity>
-                </View>
-              ))}
+            <ScrollView showsVerticalScrollIndicator={false}>
+              <View style={styles.wrapperContainer}>
+                {bodyInspection.map((title, index) => (
+                  <View key={index} style={styles.photoContainer}>
+                    <Text style={styles.label}>{title}</Text>
+                    <TouchableOpacity
+                      style={styles.photoInput}
+                      onPress={() => handleBodyInspectionContainerPress(index)}>
+                      <View style={styles.touchableContent}>
+                        <Text style={styles.touchableText}>
+                          {role === 'Reinspector'
+                            ? 'Update / View'
+                            : thirdValidation[index]
+                            ? 'Update / View'
+                            : 'Upload'}
+                        </Text>
+                        <Text style={styles.icon}>
+                          {role === 'Reinspector'
+                            ? '✅'
+                            : thirdValidation[index]
+                            ? '✅'
+                            : '☒'}
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+                  </View>
+                ))}
 
-              <View style={{bottom: 25, marginTop: 20}}>
-                <CustomButton
-                  title="Next"
-                  loading={loading}
-                  onPress={() => {
-                    if (id) {
-                      handleNextUpdate(6);
-                    } else {
-                      handleNext(6);
-                    }
-                  }}
-                />
+                <View style={{bottom: 25, marginTop: 20}}>
+                  <CustomButton
+                    title="Next"
+                    loading={loading}
+                    onPress={() => {
+                      if (id) {
+                        handleNextUpdate(6);
+                      } else {
+                        handleNext(6);
+                      }
+                    }}
+                  />
+                </View>
               </View>
-            </View>
-          </ScrollView> )}
+            </ScrollView>
+          )}
         </View>
         <View style={styles.slide}>
           <Text style={{color: 'black', fontSize: 22, fontWeight: 'bold'}}>
@@ -16938,44 +18236,53 @@ const OrderCreation = ({navigation}) => {
             role === 'Reinspector' ? 8 : 7
           }`}</Text>
 
-{refreshing ? (
+          {refreshing ? (
             <ActivityIndicator size="large" color="#0000ff" />
           ) : (
-          <ScrollView showsVerticalScrollIndicator={false}>
-            <View style={styles.wrapperContainer}>
-              {mechanicalInspection.map((title, index) => (
-                <View key={index} style={styles.photoContainer}>
-                  <Text style={styles.label}>{title}</Text>
-                  <TouchableOpacity
-                    style={styles.photoInput}
-                    onPress={() => handleMechanicalInspectionPress(index)}>
-                    <View style={styles.touchableContent}>
-                      <Text style={styles.touchableText}>
-                        {secondValidation[index] ? 'Update / View' : 'Upload'}
-                      </Text>
-                      <Text style={styles.icon}>
-                        {secondValidation[index] ? '✅' : '☒'}
-                      </Text>
-                    </View>
-                  </TouchableOpacity>
-                </View>
-              ))}
+            <ScrollView showsVerticalScrollIndicator={false}>
+              <View style={styles.wrapperContainer}>
+                {mechanicalInspection.map((title, index) => (
+                  <View key={index} style={styles.photoContainer}>
+                    <Text style={styles.label}>{title}</Text>
+                    <TouchableOpacity
+                      style={styles.photoInput}
+                      onPress={() => handleMechanicalInspectionPress(index)}>
+                      <View style={styles.touchableContent}>
+                        <Text style={styles.touchableText}>
+                          {role === 'Reinspector'
+                            ? 'Update / View'
+                            : secondValidation[index]
+                            ? 'Update / View'
+                            : 'Upload'}
+                        </Text>
+                        <Text style={styles.icon}>
+                          {role === 'Reinspector'
+                            ? '✅'
+                            : secondValidation[index]
+                            ? '✅'
+                            : '☒'}
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+                  </View>
+                ))}
 
-              <View style={{bottom: 25, marginTop: 20}}>
-                <CustomButton
-                  title={role == 'Reinspector' ? 'Next' : 'Save'}
-                  loading={loading}
-                  onPress={() => {
-                    if (id) {
-                      handleNextUpdate(7);
-                    } else {
-                      handleNext(7);
-                    }
-                  }}
-                />
+                <View style={{bottom: 25, marginTop: 20}}>
+                  <CustomButton
+                    title={role == 'Reinspector' ? 'Next' : 'Save'}
+                    loading={loading}
+                    onPress={() => {
+                      if (id) {
+                        handleNextUpdate(7);
+                      } else {
+                        handleNext(7);
+                      }
+                    }}
+                  />
+                </View>
               </View>
-            </View>
-          </ScrollView> )}
+            </ScrollView>
+          )}
         </View>
 
         {role === 'Reinspector' && (
