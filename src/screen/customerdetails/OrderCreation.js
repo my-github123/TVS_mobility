@@ -1990,6 +1990,17 @@ const OrderCreation = ({navigation}) => {
       tyre4Condition: `${Math.round(values[3] * 100)}%`,
     };
 
+    const formatRoadTaxValid = (roadTaxValid) => {
+      const [datePart] = roadTaxValid.split(' ');
+      return `${datePart} 00:00:00`;
+    };
+
+
+    const roadTaxValid1 = `${roadTaxValid} 00:00:00`;
+
+// Example usage
+     const formattedRoadTaxValid = formatRoadTaxValid(roadTaxValid1);
+
     switch (step) {
       case 1:
         params = {
@@ -2011,7 +2022,7 @@ const OrderCreation = ({navigation}) => {
           hasHypothecated: getSwitchYesOrNo(selectedOption3),
           hypothecatedBy: hypothecatedBy,
           noc: getSwitchYesOrNo(selectedOption4),
-          roadTaxValid:`${roadTaxValid} 00:00:00`,
+          roadTaxValid:formattedRoadTaxValid,
           reRegistered: getSwitchYesOrNo(selectedOption5),
           cubicCapacity: cubicCapacity,
         };
@@ -11387,13 +11398,13 @@ const OrderCreation = ({navigation}) => {
   const stateUpdates3 = [];
 
   const stateUpdates2 = [
-    {setter: setBonetSwitch, index: 0, key: 'bonnetStatus'},
-    {setter: setApronSwitch, index: 0, key: 'apronLeftSideStatus'},
+    {setter: setBonetSwitch, index: 0, key: 'bonnetStatus',thirdValidation:0},
+    {setter: setApronSwitch, index: 0, key: 'apronLeftSideStatus',thirdValidation:1},
     {setter: setApronSwitch, index: 1, key: 'apronRightSideStatus'},
     {
       setter: setSupportMembersSwitch,
       index: 2,
-      key: 'headLampSupportRightSideStatus',
+      key: 'headLampSupportRightSideStatus',thirdValidation:2
     },
     {
       setter: setSupportMembersSwitch,
@@ -11410,26 +11421,26 @@ const OrderCreation = ({navigation}) => {
       index: 1,
       key: 'supportMemberLowerStatus',
     },
-    {setter: setBumperSwitch, index: 0, key: 'bumperFrontStatus'},
+    {setter: setBumperSwitch, index: 0, key: 'bumperFrontStatus',thirdValidation:3},
     {setter: setBumperSwitch, index: 1, key: 'bumperRearStatus'},
-    {setter: setWindShieldSwitch, index: 0, key: 'windShieldFrontStatus'},
+    {setter: setWindShieldSwitch, index: 0, key: 'windShieldFrontStatus',thirdValidation:4},
     {setter: setWindShieldSwitch, index: 1, key: 'windShieldRearStatus'},
-    {setter: setFenderSwitch, index: 1, key: 'fendersRightSideStatus'},
+    {setter: setFenderSwitch, index: 1, key: 'fendersRightSideStatus',thirdValidation:5},
     {setter: setFenderSwitch, index: 0, key: 'fendersLeftSideStatus'},
-    {setter: setPillarSwitch, index: 0, key: 'pillarARightSideStatus'},
+    {setter: setPillarSwitch, index: 0, key: 'pillarARightSideStatus',thirdValidation:6},
     {setter: setPillarSwitch, index: 1, key: 'pillarBRightSideStatus'},
     {setter: setPillarSwitch, index: 2, key: 'pillarCRightSideStatus'},
     {setter: setPillarSwitch, index: 3, key: 'pillarALeftSideStatus'},
     {setter: setPillarSwitch, index: 4, key: 'pillarBLeftSideStatus'},
     {setter: setPillarSwitch, index: 5, key: 'pillarCLeftSideStatus'},
-    {setter: setDoorSwitch, index: 0, key: 'doorsFrontLeftSideStatus'},
+    {setter: setDoorSwitch, index: 0, key: 'doorsFrontLeftSideStatus',thirdValidation:7},
     {setter: setDoorSwitch, index: 1, key: 'doorsRearLeftSideStatus'},
     {setter: setDoorSwitch, index: 2, key: 'doorsFrontRightSideStatus'},
     {setter: setDoorSwitch, index: 3, key: 'doorsRearRightSideStatus'},
     {
       setter: setRunningBoardSwitch,
       index: 1,
-      key: 'runningBoardLeftSideStatus',
+      key: 'runningBoardLeftSideStatus',thirdValidation:8
     },
     {
       setter: setRunningBoardSwitch,
@@ -11439,16 +11450,16 @@ const OrderCreation = ({navigation}) => {
     {
       setter: setQuarterPanlesSwitch,
       index: 0,
-      key: 'quarterPanelsLeftSideStatus',
+      key: 'quarterPanelsLeftSideStatus',thirdValidation:9
     },
     {
       setter: setQuarterPanlesSwitch,
       index: 1,
       key: 'quarterPanelsRightSideStatus',
     },
-    {setter: setDickyDoorSwitch, index: 0, key: 'bootStatus'},
-    {setter: setDickySkirtSwitch, index: 0, key: 'bootSkirtStatus'},
-    {setter: setWheelTypeSwitch, index: 0, key: 'wheelTypeStatus'},
+    {setter: setDickyDoorSwitch, index: 0, key: 'bootStatus',thirdValidation:10},
+    {setter: setDickySkirtSwitch, index: 0, key: 'bootSkirtStatus',thirdValidation:11},
+    {setter: setWheelTypeSwitch, index: 0, key: 'wheelTypeStatus',thirdValidation:12},
   ];
 
   const stateUpdates1 = [
@@ -11678,7 +11689,7 @@ const OrderCreation = ({navigation}) => {
   ];
 
   const statusUpdates3 = [
-    {setter: setSuspensionSwitch, index: 0, key: 'strutStatus'},
+    {setter: setSuspensionSwitch, index: 0, key: 'strutStatus',secondValidation:0},
     {setter: setSuspensionSwitch, index: 1, key: 'lowerArmStatus'},
     {setter: setSuspensionSwitch, index: 2, key: 'linkRodStatus'},
     {setter: setSuspensionSwitch, index: 3, key: 'stabilizerBarStatus'},
@@ -11686,19 +11697,19 @@ const OrderCreation = ({navigation}) => {
     {setter: setSuspensionSwitch, index: 5, key: 'coilSpringStatus'},
     {setter: setSuspensionSwitch, index: 6, key: 'leafSpringStatus'},
 
-    {setter: setSteeringSwitch, index: 0, key: 'rackAndPinionStatus'},
+    {setter: setSteeringSwitch, index: 0, key: 'rackAndPinionStatus',secondValidation:1},
     {setter: setSteeringSwitch, index: 1, key: 'steeringColumnStatus'},
     {setter: setSteeringSwitch, index: 2, key: 'hardnessStatus'},
     {setter: setSteeringSwitch, index: 3, key: 'ballJointEndStatus'},
 
-    {setter: setBrakeSwitch, index: 0, key: 'padStatus'},
+    {setter: setBrakeSwitch, index: 0, key: 'padStatus',secondValidation:2},
     {setter: setBrakeSwitch, index: 1, key: 'discStatus'},
     {setter: setBrakeSwitch, index: 2, key: 'shoeStatus'},
     {setter: setBrakeSwitch, index: 3, key: 'drumStatus'},
     {setter: setBrakeSwitch, index: 4, key: 'wheelCylinderStatus'},
     {setter: setBrakeSwitch, index: 5, key: 'mcBoosterStatus'},
 
-    {setter: setTransmissionSwitch, index: 0, key: 'clutchStatus'},
+    {setter: setTransmissionSwitch, index: 0, key: 'clutchStatus',secondValidation:4},
     {setter: setTransmissionSwitch, index: 1, key: 'gearShiftingStatus'},
     {setter: setTransmissionSwitch, index: 2, key: 'driveShaftStatus'},
     {setter: setTransmissionSwitch, index: 3, key: 'axleStatus'},
@@ -11707,7 +11718,7 @@ const OrderCreation = ({navigation}) => {
     {setter: setTransmissionSwitch, index: 6, key: 'bearingStatus'},
     {setter: setTransmissionSwitch, index: 7, key: 'mountingStatus'},
 
-    {setter: setEngineSwitch, index: 0, key: 'smokeStatus'},
+    {setter: setEngineSwitch, index: 0, key: 'smokeStatus',secondValidation:5},
     {setter: setEngineSwitch, index: 1, key: 'turboStatus'},
     {setter: setEngineSwitch, index: 2, key: 'misfiringStatus'},
     {setter: setEngineSwitch, index: 3, key: 'tappetStatus'},
@@ -11778,7 +11789,7 @@ const OrderCreation = ({navigation}) => {
     },
     {setter: setEngineSwitch, index: 17, key: 'overHeatingStatus'},
     {setter: setEngineSwitch, index: 18, key: 'allBearingsStatus'},
-    {setter: setElectricalSwitch, index: 0, key: 'batteryStatus'},
+    {setter: setElectricalSwitch, index: 0, key: 'batteryStatus',secondValidation:6},
     {setter: setElectricalSwitch, index: 1, key: 'alternatorStatus'},
     {setter: setElectricalSwitch, index: 2, key: 'selfMotorStatus'},
     {setter: setElectricalSwitch, index: 3, key: 'wiringHarnessStatus'},
@@ -11793,13 +11804,13 @@ const OrderCreation = ({navigation}) => {
     {setter: setElectricalSwitch, index: 12, key: 'absStatus'},
     {setter: setElectricalSwitch, index: 13, key: 'airBagStatus'},
     {setter: setElectricalSwitch, index: 14, key: 'powerWindowsStatus'},
-    {setter: setAcSwitch, index: 0, key: 'coolingStatus'},
+    {setter: setAcSwitch, index: 0, key: 'coolingStatus',secondValidation:7},
     {setter: setAcSwitch, index: 1, key: 'blowerStatus'},
     {setter: setAcSwitch, index: 2, key: 'condenserStatus'},
     {setter: setAcSwitch, index: 3, key: 'fanStatus'},
     {setter: setAcSwitch, index: 4, key: 'controlSwitchStatus'},
     {setter: setAcSwitch, index: 5, key: 'ventStatus'},
-    {setter: setAccessoriesSwitch, index: 0, key: 'musicSystemStatus'},
+    {setter: setAccessoriesSwitch, index: 0, key: 'musicSystemStatus',secondValidation:8},
     {setter: setAccessoriesSwitch, index: 1, key: 'parkingSensorStatus'},
     {setter: setAccessoriesSwitch, index: 2, key: 'reverseCameraStatus'},
     {setter: setAccessoriesSwitch, index: 3, key: 'ovrmAdjusterStatus'},
@@ -11810,7 +11821,7 @@ const OrderCreation = ({navigation}) => {
     {setter: setAccessoriesSwitch, index: 8, key: 'spoilerStatus'},
     {setter: setAccessoriesSwitch, index: 9, key: 'skirtStatus'},
     {setter: setAccessoriesSwitch, index: 10, key: 'steeringControlsStatus'},
-    {setter: setoilSwitch, index: 0, key: 'engineOilStatus'},
+    {setter: setoilSwitch, index: 0, key: 'engineOilStatus',secondValidation:9},
     {setter: setoilSwitch, index: 1, key: 'brakeOilStatus'},
     {setter: setoilSwitch, index: 2, key: 'coolentOilStatus'},
     {setter: setoilSwitch, index: 3, key: 'gearOilStatus'},
@@ -12156,13 +12167,13 @@ const OrderCreation = ({navigation}) => {
   ];
 
   const photoUpdates2 = [
-    {setter: setLhsViewPhoto, index: 0, key: 'lhsViewPhoto'},
-    {setter: setRearViewPhoto, index: 0, key: 'rearViewPhoto'},
-    {setter: setTrunkBootPhoto, index: 0, key: 'trunkBootPhoto'},
+    {setter: setLhsViewPhoto, index: 0, key: 'lhsViewPhoto',carValidation:0},
+    {setter: setRearViewPhoto, index: 0, key: 'rearViewPhoto',carValidation:1},
+    {setter: setTrunkBootPhoto, index: 0, key: 'trunkBootPhoto',carValidation:2},
     {setter: setSpareWheelPunchPhoto, index: 0, key: 'spareWheelPhoto'},
     {setter: setToolkitPunchPhoto, index: 0, key: 'toolKitJackPhoto'},
-    {setter: setRoofPhoto, index: 0, key: 'roofPhoto'},
-    {setter: setUnderChassisPhoto, index: 0, key: 'underChassisPhoto'},
+    {setter: setRoofPhoto, index: 0, key: 'roofPhoto',carValidation:5},
+    {setter: setUnderChassisPhoto, index: 0, key: 'underChassisPhoto',carValidation:6},
     {setter: setTyrePunchPhoto, index: 0, key: 'frontTyreLeftPhoto'},
     {setter: setTyrePunchPhoto, index: 1, key: 'frontTyreRightPhoto'},
     {setter: setTyrePunchPhoto, index: 2, key: 'rearTyreLeftPhoto'},
@@ -12170,25 +12181,25 @@ const OrderCreation = ({navigation}) => {
   ];
 
   const photoUpdates1 = [
-    {setter: setFrontViewPhoto, index: 0, key: 'frontViewPhoto'},
-    {setter: setEngineRoomPhoto, index: 0, key: 'engineRoomPhoto'},
+    {setter: setFrontViewPhoto, index: 0, key: 'frontViewPhoto',validationIndex:0},
+    {setter: setEngineRoomPhoto, index: 0, key: 'engineRoomPhoto',validationIndex:1},
     {setter: setChassisPunchPhoto, index: 0, key: 'chassisPunchPhoto'},
     {setter: setVinPlatePunchPhoto, index: 0, key: 'vinPlatePhoto'},
-    {setter: setRhsViewPhoto, index: 0, key: 'rhsViewPhoto'},
+    {setter: setRhsViewPhoto, index: 0, key: 'rhsViewPhoto',validationIndex:4},
     {setter: setKeyPunchPhoto, index: 0, key: 'primaryKeyPhoto'},
     {setter: setKeyPunchPhoto, index: 1, key: 'spareKeyPhoto'},
-    {setter: setOdometerPhoto, index: 0, key: 'odometerPhoto'},
-    {setter: setInteriorPhoto, index: 0, key: 'interiorPhoto'},
+    {setter: setOdometerPhoto, index: 0, key: 'odometerPhoto',validationIndex:6},
+    {setter: setInteriorPhoto, index: 0, key: 'interiorPhoto',validationIndex:7},
   ];
 
   const photoUpdates = [
-    {setter: setRcPhoto, index: 0, key: 'rcFrontPhoto'},
-    {setter: setRcPhoto, index: 1, key: 'rcBackPhoto'},
+    {setter: setRcPhoto, index: 0, key: 'rcFrontPhoto',validationIndex:0},
+    {setter: setRcPhoto, index: 1, key: 'rcBackPhoto',validationIndex:0},
     {setter: setRcPhoto, index: 2, key: 'rcOthersPhoto'},
-    {setter: setInsuracePhoto, index: 0, key: 'insuranceOwnDamagePhoto'},
-    {setter: setInsuracePhoto, index: 1, key: 'insuranceThirdPartyPhoto'},
+    {setter: setInsuracePhoto, index: 0, key: 'insuranceOwnDamagePhoto',validationIndex:1},
+    {setter: setInsuracePhoto, index: 1, key: 'insuranceThirdPartyPhoto',validationIndex:1},
     {setter: setInsuracePhoto, index: 2, key: 'insuranceOthersPhoto'},
-    {setter: setNOCPhoto, index: 0, key: 'nocPhoto'},
+    {setter: setNOCPhoto, index: 0, key: 'nocPhoto',validationIndex:2},
     {setter: setNOCPhoto, index: 1, key: 'nocOthersPhoto'},
 
     // {setter: setLhsViewPhoto, index: 0, key: 'lhsViewPhoto'},
@@ -12599,8 +12610,8 @@ const OrderCreation = ({navigation}) => {
       setInsuranceRemarks(response?.data?.insuranceRemarks);
       setNocRemarks(response?.data?.nocRemarks);
 
-      photoUpdates.forEach(({setter, index, key}) => {
-        updatePhotoState(setter, index, response.data[key] || '');
+      photoUpdates.forEach(({setter, index, key,validationIndex}) => {
+        updatePhotoState(setter, index, response.data[key] || '',validationIndex,setValidations);
       });
 
     
@@ -12635,8 +12646,8 @@ const OrderCreation = ({navigation}) => {
       const response = await apiGetWithToken(`getOneOrder?id=${id}`);
       
 
-      photoUpdates1.forEach(({setter, index, key}) => {
-        updatePhotoState(setter, index, response.data[key] || '');
+      photoUpdates1.forEach(({setter, index, key,validationIndex}) => {
+        updatePhotoState(setter, index, response.data[key] || '',validationIndex,setCarPhotoValidations);
       });
 
       remarksUpdates.forEach(({setter, index, key}) => {
@@ -12665,8 +12676,8 @@ const OrderCreation = ({navigation}) => {
     try {
       const response = await apiGetWithToken(`getOneOrder?id=${id}`);
 
-      photoUpdates2.forEach(({setter, index, key}) => {
-        updatePhotoState(setter, index, response.data[key] || '');
+      photoUpdates2.forEach(({setter, index, key,carValidation}) => {
+        updatePhotoState(setter, index, response.data[key] || '',carValidation,setCarDetailsValidation);
       });
 
       remarksUpdates1.forEach(({setter, index, key}) => {
@@ -12709,8 +12720,8 @@ const OrderCreation = ({navigation}) => {
         updatePhotoState(setter, index, response.data[key] || '');
       });
 
-      stateUpdates2.forEach(({setter, index, key}) => {
-        updateSwitchState(setter, index, response.data[key] || '');
+      stateUpdates2.forEach(({setter, index, key,thirdValidation}) => {
+        updateSwitchState(setter, index, response.data[key] || '',thirdValidation,setThirdValidation);
       });
 
       setRefreshing(false);
@@ -12739,8 +12750,8 @@ const OrderCreation = ({navigation}) => {
         updatePhotoState(setter, index, response.data[key] || '');
       });
 
-      statusUpdates3.forEach(({setter, index, key}) => {
-        updateSwitchState(setter, index, response.data[key] || '');
+      statusUpdates3.forEach(({setter, index, key,secondValidation}) => {
+        updateSwitchState(setter, index, response.data[key] || '',secondValidation,setSecondValidation);
       });
 
       setRefreshing(false);
@@ -12759,18 +12770,45 @@ const OrderCreation = ({navigation}) => {
   //   });
   // };
 
+  // const updatePhotoState = useMemo(() => {
+  //   return (stateSetter, index, url,validationIndex,setterValidation) => {
+
+  //     console.log(setterValidation,"setter valiuyggfyfyyf");
+  //     stateSetter(prevState => {
+  //       const newState = [...prevState];
+  //       newState[index] = url;
+  //       return newState;
+  //     });
+
+  //     setterValidation(prevState => {
+  //       const newValidations = [...prevState];
+  //       newValidations[validationIndex] = !!url; // Set true if URL is not empty
+  //       return newValidations;
+  //     });
+  //   };
+  // }, []);
+
   const updatePhotoState = useMemo(() => {
-    return (stateSetter, index, url) => {
+    return (stateSetter, index, url, validationIndex, setterValidation) => {
       stateSetter(prevState => {
         const newState = [...prevState];
         newState[index] = url;
         return newState;
       });
+      console.log(validationIndex,"vvvvvvvvvvvvvv");
+
+      if (validationIndex !== undefined) {
+        setterValidation(prevState => {
+          const newValidations = [...prevState];
+          newValidations[validationIndex] = !!url; // Set true if URL is not empty
+          return newValidations;
+        });
+      }
     };
   }, []);
 
   const updateSwitchState = useMemo(() => {
-    return (stateSetter, index, url) => {
+    return (stateSetter, index, url,validationIndex,setterValidation) => {
       stateSetter(prevState => {
         const newState = [...prevState];
         if (url === 'Ok' || url === 'Not Available') {
@@ -12782,6 +12820,13 @@ const OrderCreation = ({navigation}) => {
         }
         return newState;
       });
+      if (validationIndex !== undefined) {
+        setterValidation(prevState => {
+          const newValidations = [...prevState];
+          newValidations[validationIndex] = !!url; // Set true if URL is not empty
+          return newValidations;
+        });
+      }
     };
   }, []);
 
@@ -18005,16 +18050,13 @@ const OrderCreation = ({navigation}) => {
                       onPress={() => handleSelectContainerPress(index)}>
                       <View style={styles.touchableContent}>
                         <Text style={styles.touchableText}>
-                          {role === 'Reinspector'
-                            ? 'Update / View'
-                            : validations[index]
+                         {validations[index]
                             ? 'Update / View'
                             : 'Upload'}
                         </Text>
                         <Text style={styles.icon}>
-                          {role === 'Reinspector'
-                            ? '✅'
-                            : validations[index]
+                        
+                            {validations[index]
                             ? '✅'
                             : '☒'}
                         </Text>
@@ -18067,16 +18109,14 @@ const OrderCreation = ({navigation}) => {
                       onPress={() => handleSelectContainerPress1(index)}>
                       <View style={styles.touchableContent}>
                         <Text style={styles.touchableText}>
-                          {role === 'Reinspector'
-                            ? 'Update / View'
-                            : carPhotovalidations[index]
+                         
+                            {carPhotovalidations[index]
                             ? 'Update / View'
                             : 'Upload'}
                         </Text>
                         <Text style={styles.icon}>
-                          {role === 'Reinspector'
-                            ? '✅'
-                            : carPhotovalidations[index]
+                         
+                            {carPhotovalidations[index]
                             ? '✅'
                             : '☒'}
                         </Text>
@@ -18127,16 +18167,14 @@ const OrderCreation = ({navigation}) => {
                       onPress={() => carDetailsContainerPress(index)}>
                       <View style={styles.touchableContent}>
                         <Text style={styles.touchableText}>
-                          {role === 'Reinspector'
-                            ? 'Update / View'
-                            : carValidation[index]
+                         
+                            {carValidation[index]
                             ? 'Update / View'
                             : 'Upload'}
                         </Text>
                         <Text style={styles.icon}>
-                          {role === 'Reinspector'
-                            ? '✅'
-                            : carValidation[index]
+                      
+                            {carValidation[index]
                             ? '✅'
                             : '☒'}
                         </Text>
@@ -18188,16 +18226,12 @@ const OrderCreation = ({navigation}) => {
                       onPress={() => handleBodyInspectionContainerPress(index)}>
                       <View style={styles.touchableContent}>
                         <Text style={styles.touchableText}>
-                          {role === 'Reinspector'
-                            ? 'Update / View'
-                            : thirdValidation[index]
+                         {thirdValidation[index]
                             ? 'Update / View'
                             : 'Upload'}
                         </Text>
                         <Text style={styles.icon}>
-                          {role === 'Reinspector'
-                            ? '✅'
-                            : thirdValidation[index]
+                         {thirdValidation[index]
                             ? '✅'
                             : '☒'}
                         </Text>
@@ -18249,16 +18283,12 @@ const OrderCreation = ({navigation}) => {
                       onPress={() => handleMechanicalInspectionPress(index)}>
                       <View style={styles.touchableContent}>
                         <Text style={styles.touchableText}>
-                          {role === 'Reinspector'
-                            ? 'Update / View'
-                            : secondValidation[index]
+                         {secondValidation[index]
                             ? 'Update / View'
                             : 'Upload'}
                         </Text>
                         <Text style={styles.icon}>
-                          {role === 'Reinspector'
-                            ? '✅'
-                            : secondValidation[index]
+                          {secondValidation[index]
                             ? '✅'
                             : '☒'}
                         </Text>

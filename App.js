@@ -78,3 +78,16 @@ const styles = StyleSheet.create({
 // "hypothecatedBy": "Y",
 // "reRegistered": "No",
 // "cubicCapacity": "109",
+
+
+
+
+// <!-- <resources>
+
+//     <!-- Base application theme. -->
+//     <style name="AppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
+//         <!-- Customize your theme here. -->
+//         <item name="android:editTextBackground">@drawable/rn_edit_text_material</item>
+//     </style>
+
+// </resources> -->

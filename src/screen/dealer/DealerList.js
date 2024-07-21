@@ -102,10 +102,7 @@ export default function DealerList({navigation}) {
         storeData('vehicleDataList', data.data);
   
         // Extract the values
-        const ownerDetails = {
-          userName: data?.data?.user_name,
-          userPresentAddress: data.data.user_present_address
-        };
+      
   
         const vehicleMakeModel = data.data.vehicle_make_model;
         const vehicleMakerDescription = data.data.vehicle_maker_description;
@@ -123,8 +120,8 @@ export default function DealerList({navigation}) {
         const fuelType = data.data.vehicle_fuel_description;
         const vehicleFinanced = data.data.vehicle_financed;
         const blacklist = data.data.rc_blacklist_status;
-        const userName = ownerDetails.userName;
-        const userPresentAddress = ownerDetails.userPresentAddress;
+        const userName = data?.data?.user_name;
+        const userPresentAddress =data.data.user_present_address;
   
         console.log("Extracted vehicle details:", {
           vehicleMakeModel,
@@ -218,9 +215,14 @@ export default function DealerList({navigation}) {
       }
     } catch (error) {
       console.error('Request failed in getVahanData API:', error);
-      ToastAndroid.show('An error occurred. Please try again.', ToastAndroid.SHORT);
+      if (error.message === 'Vehicle Already Exists') {
+        ToastAndroid.show('Vehicle Already Exists', ToastAndroid.SHORT);
+      } else {
+        ToastAndroid.show('An error occurred. Please try again.', ToastAndroid.SHORT);
+      }
     }
   };
+  
   
 
   const handlePress = async item => {

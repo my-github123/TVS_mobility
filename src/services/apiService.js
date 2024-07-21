@@ -61,14 +61,21 @@ export const apiPostWithToken = async (endpoint, body) => {
     const token = await getItem('token');
     const response = await axiosInstance.post(endpoint, body, {
       headers: {
-        Authorization:token,
-        apiKey:apiKey
+        Authorization: token,
+        apiKey: apiKey
       },
     });
-   
+
     return response.data;
   } catch (error) {
     console.error('Error:', error);
+
+    // Check if the error response status is 404
+    if (error.response && error.response.status === 404) {
+      throw new Error('Vehicle Already Exists');
+    }
+
+    // Throw the original error for other status codes
     throw error;
   }
 };
