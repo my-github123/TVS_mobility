@@ -352,7 +352,7 @@ const [role,setRole]=useState("");
 
 
   const renderItem = ({ item }) => (
-    <TouchableOpacity style={styles.card}  onPress={()=>handlePress(item)}>
+    <TouchableOpacity style={styles.card}  onPress={()=>callInitiated(item)}>
       <View style={styles.row}>
         <Text style={styles.vechNumber}>{item.vechNumber===""?"-":item.vechNumber}</Text>
         <Text style={[styles.status, { backgroundColor: item.orderStatus === 1 ? '#4375fa' : '#6ecb96' }]}>

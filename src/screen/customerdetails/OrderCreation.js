@@ -6125,10 +6125,10 @@ const OrderCreation = ({navigation}) => {
         // Resize and compress the image with quality set to 10
         ImageResizer.createResizedImage(
           response.assets[0].uri,
-          400,
-          300,
+          800,  // Increase width
+          600,  // Increase height
           'JPEG',
-          70,
+          90,   // Increase quality
         ) // Quality set to 10
           .then(resizedImage => {
             RNFS.readFile(resizedImage.uri, 'base64')
@@ -6318,10 +6318,10 @@ const OrderCreation = ({navigation}) => {
         // Resize and compress the image with quality set to 10
         ImageResizer.createResizedImage(
           newPhotoUris[index],
-          400,
-          300,
+          800,  // Increase width
+          600,  // Increase height
           'JPEG',
-          70,
+          90,   // Increase quality
         )
           .then(resizedImage => {
             RNFS.readFile(resizedImage.uri, 'base64')
@@ -6534,10 +6534,10 @@ const OrderCreation = ({navigation}) => {
         // Resize and compress the image with quality set to 10
         ImageResizer.createResizedImage(
           newPhotoUris[index],
-          400,
-          300,
+          800,  // Increase width
+          600,  // Increase height
           'JPEG',
-          70,
+            90,   // Increase quality
         )
           .then(resizedImage => {
             RNFS.readFile(resizedImage.uri, 'base64')
@@ -6715,10 +6715,10 @@ const OrderCreation = ({navigation}) => {
         // Resize and compress the image with quality set to 10
         ImageResizer.createResizedImage(
           newPhotoUris[index],
-          400,
-          300,
+          800,  // Increase width
+          600,  // Increase height
           'JPEG',
-          70,
+          90,   // Increase quality
         )
           .then(resizedImage => {
             RNFS.readFile(resizedImage.uri, 'base64')
@@ -6849,10 +6849,10 @@ const OrderCreation = ({navigation}) => {
         // Resize and compress the image with quality set to 10
         ImageResizer.createResizedImage(
           newPhotoUris[index],
-          400,
-          300,
+          800,  // Increase width
+          600,  // Increase height
           'JPEG',
-          70,
+          90,   // Increase quality
         )
           .then(resizedImage => {
             RNFS.readFile(resizedImage.uri, 'base64')
@@ -6961,10 +6961,10 @@ const OrderCreation = ({navigation}) => {
         // Resize and compress the image with quality set to 10
         ImageResizer.createResizedImage(
           newPhotoUris[index],
-          400,
-          300,
+          800,  // Increase width
+          600,  // Increase height
           'JPEG',
-          70,
+          90,   // Increase quality
         )
           .then(resizedImage => {
             RNFS.readFile(resizedImage.uri, 'base64')
