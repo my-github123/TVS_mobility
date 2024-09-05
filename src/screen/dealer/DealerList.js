@@ -94,16 +94,112 @@ export default function DealerList({navigation}) {
   
       console.log(data.data, 'data is there///');
   
-      if (data.data.message === 'No Record Found') {
+      // Check if data.data is null
+      if (data.data === null) {
+        console.log("rahim............");
+        // If data is null, set all variables to empty or default values
+        const vehicleMakeModel = '';
+        const vehicleMakerDescription = '';
+        const vehicleManufacturedDate = '';
+        const vehicleColor = '';
+        const vehicleOwnerNumber = '';
+        const cubicCapacity = '';
+        const vehicleSeatingCapacity = '';
+        const rcEngineNumber = '';
+        const rcChassisNumber = '';
+        const insuranceCompany = '';
+        const expiryDate = '';
+        const registerDate = '';
+        const financer = '';
+        const fuelType = '';
+        const vehicleFinanced = '';
+        const blacklist = '';
+        const userName = '';
+        const userPresentAddress = '';
+
+        const vehicleRegex = /^[A-Z]{2}[0-9]{2}[A-Z]{1,2}[0-9]{4}$/i;
+
+        if (vehicleRegex.test(searchText)) {
+    
+        const params = {
+            dealerId: itemId,
+            orderStatus: 1,
+            locationId: locationId,
+            vechNumber: searchText,
+            make: vehicleMakerDescription,
+            model: vehicleMakeModel,
+            year: vehicleManufacturedDate,
+            variant: vehicleMakeModel,
+            color: vehicleColor,
+            fuelType: fuelType,
+            owners: vehicleOwnerNumber,
+            hasHypothecated: vehicleFinanced == 'NA' ? 'No' : 'Yes',
+            hypothecatedBy: vehicleFinanced,
+            reRegistered: registerDate,
+            cubicCapacity: cubicCapacity,
+            numberOfSeats: vehicleSeatingCapacity,
+            registrationDate: registerDate,
+            insuranceCompany: insuranceCompany,
+            insuranceValidity: expiryDate,
+            blacklisted: blacklist,
+            chassisNumber: rcChassisNumber,
+            engineNumber: rcEngineNumber,
+        };
+    
+        console.log("Params for createOrder API:", params);
+    
+        try {
+            const dataResponse = await apiPostWithToken('createOrder', params);
+            console.log("Order creation response:", dataResponse);
+    
+            navigation.navigate('OrderCreation', {
+                vehicleMakeModel,
+                vehicleMakerDescription,
+                vehicleManufacturedDate,
+                vehicleColor,
+                vehicleOwnerNumber,
+                cubicCapacity,
+                vehicleSeatingCapacity,
+                rcEngineNumber,
+                rcChassisNumber,
+                insuranceCompanyName: insuranceCompany,
+                expiryDate,
+                registerDate,
+                vechicleNumber: searchText,
+                financer,
+                fuelType,
+                vehicleFinanced,
+                blacklist,
+                orderId: dataResponse.data.id,
+                userName,
+                userPresentAddress
+            });
+    
+            setSearchText('');
+            setModalVisible(false);
+        } 
+
+
+        
+        catch (error) {
+            console.error('Request failed in createOrder API:', error);
+        }
+      } else {
+        console.log("Invalid vehicle number format.");
+        ToastAndroid.show('Invalid vehicle number format', ToastAndroid.SHORT);
+        setModalVisible(false);
+        setSearchText('');
+    }
+    }
+      else if (data.data.message === 'No Record Found') {
         ToastAndroid.show('No Record Found', ToastAndroid.SHORT);
         setModalVisible(false);
         setSearchText('');
-      } else {
+      } 
+      else {
         storeData('vehicleDataList', data.data);
   
         // Extract the values
-      
-  
         const vehicleMakeModel = data.data.vehicle_make_model;
         const vehicleMakerDescription = data.data.vehicle_maker_description;
         const vehicleManufacturedDate = data.data.vehicle_manufactured_date;
@@ -121,7 +217,7 @@ export default function DealerList({navigation}) {
         const vehicleFinanced = data.data.vehicle_financed;
         const blacklist = data.data.rc_blacklist_status;
         const userName = data?.data?.user_name;
-        const userPresentAddress =data.data.user_present_address;
+        const userPresentAddress = data.data.user_present_address;
   
         console.log("Extracted vehicle details:", {
           vehicleMakeModel,
@@ -218,10 +314,167 @@ export default function DealerList({navigation}) {
       if (error.message === 'Vehicle Already Exists') {
         ToastAndroid.show('Vehicle Already Exists', ToastAndroid.SHORT);
       } else {
-        ToastAndroid.show('An error occurred. Please try again.', ToastAndroid.SHORT);
+        ToastAndroid.show('Vehicle No Found.', ToastAndroid.SHORT);
       }
     }
   };
+  
+
+  // const callSearch = async () => {
+  //   const itemId = await getItem('dealarId');
+  //   const locationId = await getItem('locationId');
+  
+  //   console.log(locationId, "LOCATION ID IS THERE.....");
+  
+  //   if (!searchText) {
+  //     ToastAndroid.show('Please enter vehicle number', ToastAndroid.SHORT);
+  //     return;
+  //   }
+  
+  //   try {
+  //     const params = {
+  //       vechicleNumber: searchText,
+  //     };
+  //     const data = await apiPostWithToken('getVahanData', params);
+  
+  //     console.log(data.data, 'data is there///');
+  
+  //     if (data.data.message === 'No Record Found') {
+  //       ToastAndroid.show('No Record Found', ToastAndroid.SHORT);
+  //       setModalVisible(false);
+  //       setSearchText('');
+  //     } 
+  //     else if (data.data === null) {
+  //       // If message is null, show the modal
+  //       // setModalVisible(true);
+  //       console.log("rahim............");
+        
+  //     }
+  //     else {
+  //       storeData('vehicleDataList', data.data);
+  
+  //       // Extract the values
+      
+  
+  //       const vehicleMakeModel = data.data.vehicle_make_model;
+  //       const vehicleMakerDescription = data.data.vehicle_maker_description;
+  //       const vehicleManufacturedDate = data.data.vehicle_manufactured_date;
+  //       const vehicleColor = data.data.vehicle_color;
+  //       const vehicleOwnerNumber = data.data.vehicle_owner_number;
+  //       const cubicCapacity = data.data.vehicle_cubic_capacity;
+  //       const vehicleSeatingCapacity = data.data.vehicle_seating_capacity;
+  //       const rcEngineNumber = data.data.rc_engine_number;
+  //       const rcChassisNumber = data.data.rc_chassis_number;
+  //       const insuranceCompany = data.data.insurance.company;
+  //       const expiryDate = data.data.insurance.expiry_date;
+  //       const registerDate = data.data.rc_registration_date;
+  //       const financer = data.data.financer;
+  //       const fuelType = data.data.vehicle_fuel_description;
+  //       const vehicleFinanced = data.data.vehicle_financed;
+  //       const blacklist = data.data.rc_blacklist_status;
+  //       const userName = data?.data?.user_name;
+  //       const userPresentAddress =data.data.user_present_address;
+  
+  //       console.log("Extracted vehicle details:", {
+  //         vehicleMakeModel,
+  //         vehicleMakerDescription,
+  //         vehicleManufacturedDate,
+  //         vehicleColor,
+  //         vehicleOwnerNumber,
+  //         cubicCapacity,
+  //         vehicleSeatingCapacity,
+  //         rcEngineNumber,
+  //         rcChassisNumber,
+  //         insuranceCompany,
+  //         expiryDate,
+  //         registerDate,
+  //         financer,
+  //         fuelType,
+  //         vehicleFinanced,
+  //         blacklist,
+  //         userName,
+  //         userPresentAddress
+  //       });
+  
+  //       const params = {
+  //         dealerId: itemId,
+  //         orderStatus: 1,
+  //         locationId: locationId,
+  //         vechNumber: searchText,
+  //         make: vehicleMakerDescription,
+  //         model: vehicleMakeModel,
+  //         year: vehicleManufacturedDate,
+  //         variant: vehicleMakeModel,
+  //         color: vehicleColor,
+  //         fuelType: fuelType,
+  //         owners: vehicleOwnerNumber,
+  //         hasHypothecated: vehicleFinanced == 'NA' ? 'No' : 'Yes',
+  //         hypothecatedBy: vehicleFinanced,
+  //         reRegistered: registerDate,
+  //         cubicCapacity: cubicCapacity,
+  //         numberOfSeats: vehicleSeatingCapacity,
+  //         registrationDate: registerDate,
+  //         insuranceCompany: insuranceCompany,
+  //         insuranceValidity: expiryDate,
+  //         blacklisted: blacklist,
+  //         chassisNumber: rcChassisNumber,
+  //         engineNumber: rcEngineNumber,
+  //       };
+  
+  //       console.log("Params for createOrder API:", params);
+  
+  //       try {
+  //         const dataResponse = await apiPostWithToken('createOrder', params);
+  //         console.log("Order creation response:", dataResponse);
+  
+  //         navigation.navigate('OrderCreation', {
+  //           vehicleMakeModel,
+  //           vehicleMakerDescription,
+  //           vehicleManufacturedDate,
+  //           vehicleColor,
+  //           vehicleOwnerNumber,
+  //           cubicCapacity,
+  //           vehicleSeatingCapacity,
+  //           rcEngineNumber,
+  //           rcChassisNumber,
+  //           insuranceCompanyName: insuranceCompany,
+  //           expiryDate,
+  //           registerDate,
+  //           vechicleNumber: searchText,
+  //           financer,
+  //           fuelType,
+  //           vehicleFinanced,
+  //           blacklist,
+  //           orderId: dataResponse.data.id,
+  //           userName,
+  //           userPresentAddress
+  //         });
+  
+  //         setSearchText('');
+  //         setModalVisible(false);
+  //         console.log(params, "DATA IS GGNERE");
+  //       } catch (error) {
+  //         console.error('Request failed in createOrder API:', error);
+  //       }
+  
+  //       console.log(
+  //         vehicleMakeModel,
+  //         vehicleMakerDescription,
+  //         vehicleOwnerNumber,
+  //         cubicCapacity,
+  //         'VEHICLE DETAILS'
+  //       );
+  //     }
+  //   } catch (error) {
+  //     console.error('Request failed in getVahanData API:', error);
+  //     if (error.message === 'Vehicle Already Exists') {
+  //       ToastAndroid.show('Vehicle Already Exists', ToastAndroid.SHORT);
+      
+  //     } else {
+  //       ToastAndroid.show('Vehicle No Found.', ToastAndroid.SHORT);
+  //     }
+  //   }
+  // };
   
   
 

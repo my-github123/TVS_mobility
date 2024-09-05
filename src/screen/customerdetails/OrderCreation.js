@@ -125,7 +125,7 @@ const OrderCreation = ({navigation}) => {
   const [flood, setFlood] = useState('');
   const [updateOrderList, setUpdateOrderList] = useState({});
   const [selectedOption, setSelectedOption] = useState('');
-  const [selectedOption1, setSelectedOption1] = useState(
+  const [selectedOption1, setSelectedOption1] = useState(fuelType === ''?'':
     fuelType === 'PETROL'
       ? 2
       : fuelType === 'DIESEL'
@@ -140,7 +140,7 @@ const OrderCreation = ({navigation}) => {
 
   const [chooseAlteration, setChooseAlteration] = useState('');
 
-  const [selectedOption3, setSelectedOption3] = useState(
+  const [selectedOption3, setSelectedOption3] = useState(vehicleFinanced===""?"":
     vehicleFinanced === 'NA' ? 2 : vehicleFinanced === null ? 2 : 1,
   );
   const [selectedOption4, setSelectedOption4] = useState('');
@@ -3731,6 +3731,9 @@ const OrderCreation = ({navigation}) => {
     try {
       console.log(itemId, 'DEALER ID IS THERE....');
 
+      console.log(rcBase64[0],"RC BASE  64 IS THERE....");
+      
+
       console.log(params, 'NEXT BUTTON.............................');
 
       // printStatusFields(params);
@@ -6115,45 +6118,35 @@ const OrderCreation = ({navigation}) => {
   //         })
 
   const openCameraReinspector = () => {
-    launchCamera({mediaType: 'photo', cameraType: 'back'}, response => {
+    launchCamera({ mediaType: 'photo', cameraType: 'back' }, response => {
       if (response.assets && response.assets.length > 0) {
         const newPhotoUris = [...reinspectorPhoto];
-        newPhotoUris[carIndex8] = response.assets[0].uri;
-
+        const photoUri = response.assets[0].uri;
+        newPhotoUris[carIndex8] = photoUri;
+  
         setReinspectorPhoto(newPhotoUris);
-
-        // Resize and compress the image with quality set to 10
-        ImageResizer.createResizedImage(
-          response.assets[0].uri,
-          800,  // Increase width
-          600,  // Increase height
-          'JPEG',
-          90,   // Increase quality
-        ) // Quality set to 10
-          .then(resizedImage => {
-            RNFS.readFile(resizedImage.uri, 'base64')
-              .then(base64 => {
-                const imageType = getImageType(base64);
-                if (imageType) {
-                  const base64Image = `data:image/${imageType};base64,${base64}`;
-                  const newBase64Strings = [...base64ReinspectorPhoto];
-                  newBase64Strings[carIndex8] = base64Image;
-                  // Display first 15 characters of the new Base64 string
-                  setBase64ReinspectorPhoto(newBase64Strings);
-                } else {
-                  console.log('Unknown image type');
-                }
-              })
-              .catch(e => {
-                console.log('Error converting file to base64', e);
-              });
+  
+        // Read the file as base64 directly without resizing
+        RNFS.readFile(photoUri, 'base64')
+          .then(base64 => {
+            const imageType = getImageType(base64);
+            if (imageType) {
+              const base64Image = `data:image/${imageType};base64,${base64}`;
+              const newBase64Strings = [...base64ReinspectorPhoto];
+              newBase64Strings[carIndex8] = base64Image;
+              // Display first 15 characters of the new Base64 string
+              setBase64ReinspectorPhoto(newBase64Strings);
+            } else {
+              console.log('Unknown image type');
+            }
           })
-          .catch(error => {
-            console.log('Error resizing image:', error);
+          .catch(e => {
+            console.log('Error converting file to base64', e);
           });
       }
     });
   };
+  
 
   const openCameraCarPhotos = () => {
     launchCamera({mediaType: 'photo', cameraType: 'back'}, response => {
@@ -6312,37 +6305,26 @@ const OrderCreation = ({navigation}) => {
     ) => {
       if (response.assets && response.assets.length > 0) {
         const newPhotoUris = [...photoState];
-        newPhotoUris[index] = response.assets[0].uri;
+        const photoUri = response.assets[0].uri;
+        newPhotoUris[index] = photoUri;
         setPhotoState(newPhotoUris);
-
-        // Resize and compress the image with quality set to 10
-        ImageResizer.createResizedImage(
-          newPhotoUris[index],
-          800,  // Increase width
-          600,  // Increase height
-          'JPEG',
-          90,   // Increase quality
-        )
-          .then(resizedImage => {
-            RNFS.readFile(resizedImage.uri, 'base64')
-              .then(base64 => {
-                const imageType = getImageType(base64);
-
-                if (imageType) {
-                  const base64Image = `data:image/${imageType};base64,${base64}`;
-                  const newBase64Strings = [...base64State];
-                  newBase64Strings[index] = base64Image;
-                  setBase64State(newBase64Strings);
-                } else {
-                  console.log('Unknown image type');
-                }
-              })
-              .catch(e => {
-                console.log('Error converting file to base64', e);
-              });
+    
+        // Read the file as base64 directly without resizing
+        RNFS.readFile(photoUri, 'base64')
+          .then(base64 => {
+            const imageType = getImageType(base64);
+    
+            if (imageType) {
+              const base64Image = `data:image/${imageType};base64,${base64}`;
+              const newBase64Strings = [...base64State];
+              newBase64Strings[index] = base64Image;
+              setBase64State(newBase64Strings);
+            } else {
+              console.log('Unknown image type');
+            }
           })
-          .catch(error => {
-            console.log('Error resizing image:', error);
+          .catch(e => {
+            console.log('Error converting file to base64', e);
           })
           .finally(() => {
             isCameraOpen.current = false;
@@ -6528,37 +6510,26 @@ const OrderCreation = ({navigation}) => {
     ) => {
       if (response.assets && response.assets.length > 0) {
         const newPhotoUris = [...photoState];
-        newPhotoUris[index] = response.assets[0].uri;
+        const photoUri = response.assets[0].uri;
+        newPhotoUris[index] = photoUri;
         setPhotoState(newPhotoUris);
-
-        // Resize and compress the image with quality set to 10
-        ImageResizer.createResizedImage(
-          newPhotoUris[index],
-          800,  // Increase width
-          600,  // Increase height
-          'JPEG',
-            90,   // Increase quality
-        )
-          .then(resizedImage => {
-            RNFS.readFile(resizedImage.uri, 'base64')
-              .then(base64 => {
-                const imageType = getImageType(base64);
-
-                if (imageType) {
-                  const base64Image = `data:image/${imageType};base64,${base64}`;
-                  const newBase64Strings = [...base64State];
-                  newBase64Strings[index] = base64Image;
-                  setBase64State(newBase64Strings);
-                } else {
-                  console.log('Unknown image type');
-                }
-              })
-              .catch(e => {
-                console.log('Error converting file to base64', e);
-              });
+    
+        // Read the file as base64 directly without resizing
+        RNFS.readFile(photoUri, 'base64')
+          .then(base64 => {
+            const imageType = getImageType(base64);
+    
+            if (imageType) {
+              const base64Image = `data:image/${imageType};base64,${base64}`;
+              const newBase64Strings = [...base64State];
+              newBase64Strings[index] = base64Image;
+              setBase64State(newBase64Strings);
+            } else {
+              console.log('Unknown image type');
+            }
           })
-          .catch(error => {
-            console.log('Error resizing image:', error);
+          .catch(e => {
+            console.log('Error converting file to base64', e);
           })
           .finally(() => {
             isCameraOpen.current = false;
@@ -6709,37 +6680,26 @@ const OrderCreation = ({navigation}) => {
     ) => {
       if (response.assets && response.assets.length > 0) {
         const newPhotoUris = [...photoState];
-        newPhotoUris[index] = response.assets[0].uri;
+        const photoUri = response.assets[0].uri;
+        newPhotoUris[index] = photoUri;
         setPhotoState(newPhotoUris);
-
-        // Resize and compress the image with quality set to 10
-        ImageResizer.createResizedImage(
-          newPhotoUris[index],
-          800,  // Increase width
-          600,  // Increase height
-          'JPEG',
-          90,   // Increase quality
-        )
-          .then(resizedImage => {
-            RNFS.readFile(resizedImage.uri, 'base64')
-              .then(base64 => {
-                const imageType = getImageType(base64);
-
-                if (imageType) {
-                  const base64Image = `data:image/${imageType};base64,${base64}`;
-                  const newBase64Strings = [...base64State];
-                  newBase64Strings[index] = base64Image;
-                  setBase64State(newBase64Strings);
-                } else {
-                  console.log('Unknown image type');
-                }
-              })
-              .catch(e => {
-                console.log('Error converting file to base64', e);
-              });
+    
+        // Read the file as base64 directly without resizing
+        RNFS.readFile(photoUri, 'base64')
+          .then(base64 => {
+            const imageType = getImageType(base64);
+    
+            if (imageType) {
+              const base64Image = `data:image/${imageType};base64,${base64}`;
+              const newBase64Strings = [...base64State];
+              newBase64Strings[index] = base64Image;
+              setBase64State(newBase64Strings);
+            } else {
+              console.log('Unknown image type');
+            }
           })
-          .catch(error => {
-            console.log('Error resizing image:', error);
+          .catch(e => {
+            console.log('Error converting file to base64', e);
           })
           .finally(() => {
             isCameraOpen.current = false;
@@ -6843,37 +6803,26 @@ const OrderCreation = ({navigation}) => {
     ) => {
       if (response.assets && response.assets.length > 0) {
         const newPhotoUris = [...photoState];
-        newPhotoUris[index] = response.assets[0].uri;
+        const photoUri = response.assets[0].uri;
+        newPhotoUris[index] = photoUri;
         setPhotoState(newPhotoUris);
-
-        // Resize and compress the image with quality set to 10
-        ImageResizer.createResizedImage(
-          newPhotoUris[index],
-          800,  // Increase width
-          600,  // Increase height
-          'JPEG',
-          90,   // Increase quality
-        )
-          .then(resizedImage => {
-            RNFS.readFile(resizedImage.uri, 'base64')
-              .then(base64 => {
-                const imageType = getImageType(base64);
-
-                if (imageType) {
-                  const base64Image = `data:image/${imageType};base64,${base64}`;
-                  const newBase64Strings = [...base64State];
-                  newBase64Strings[index] = base64Image;
-                  setBase64State(newBase64Strings);
-                } else {
-                  console.log('Unknown image type');
-                }
-              })
-              .catch(e => {
-                console.log('Error converting file to base64', e);
-              });
+    
+        // Read the file as base64 directly without resizing
+        RNFS.readFile(photoUri, 'base64')
+          .then(base64 => {
+            const imageType = getImageType(base64);
+    
+            if (imageType) {
+              const base64Image = `data:image/${imageType};base64,${base64}`;
+              const newBase64Strings = [...base64State];
+              newBase64Strings[index] = base64Image;
+              setBase64State(newBase64Strings);
+            } else {
+              console.log('Unknown image type');
+            }
           })
-          .catch(error => {
-            console.log('Error resizing image:', error);
+          .catch(e => {
+            console.log('Error converting file to base64', e);
           })
           .finally(() => {
             isCameraOpen.current = false;
@@ -6882,6 +6831,7 @@ const OrderCreation = ({navigation}) => {
         isCameraOpen.current = false;
       }
     };
+    
 
     launchCamera({mediaType: 'photo', cameraType: 'back'}, response => {
       switch (selectedContainerIndex) {
@@ -6955,37 +6905,26 @@ const OrderCreation = ({navigation}) => {
     ) => {
       if (response.assets && response.assets.length > 0) {
         const newPhotoUris = [...photoState];
-        newPhotoUris[index] = response.assets[0].uri;
+        const photoUri = response.assets[0].uri;
+        newPhotoUris[index] = photoUri;
         setPhotoState(newPhotoUris);
-
-        // Resize and compress the image with quality set to 10
-        ImageResizer.createResizedImage(
-          newPhotoUris[index],
-          800,  // Increase width
-          600,  // Increase height
-          'JPEG',
-          90,   // Increase quality
-        )
-          .then(resizedImage => {
-            RNFS.readFile(resizedImage.uri, 'base64')
-              .then(base64 => {
-                const imageType = getImageType(base64);
-
-                if (imageType) {
-                  const base64Image = `data:image/${imageType};base64,${base64}`;
-                  const newBase64Strings = [...base64State];
-                  newBase64Strings[index] = base64Image;
-                  setBase64State(newBase64Strings);
-                } else {
-                  console.log('Unknown image type');
-                }
-              })
-              .catch(e => {
-                console.log('Error converting file to base64', e);
-              });
+    
+        // Read the file as base64 directly without resizing
+        RNFS.readFile(photoUri, 'base64')
+          .then(base64 => {
+            const imageType = getImageType(base64);
+    
+            if (imageType) {
+              const base64Image = `data:image/${imageType};base64,${base64}`;
+              const newBase64Strings = [...base64State];
+              newBase64Strings[index] = base64Image;
+              setBase64State(newBase64Strings);
+            } else {
+              console.log('Unknown image type');
+            }
           })
-          .catch(error => {
-            console.log('Error resizing image:', error);
+          .catch(e => {
+            console.log('Error converting file to base64', e);
           })
           .finally(() => {
             isCameraOpen.current = false;
