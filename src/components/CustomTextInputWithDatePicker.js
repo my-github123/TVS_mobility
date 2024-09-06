@@ -8,9 +8,8 @@ const CustomTextInputWithDatePicker = ({ label, value, onChangeText, placeholder
   const [selectedDate, setSelectedDate] = useState(null);
 
   useEffect(() => {
-    if (value && value !== 'null 00:00:00') {
-      // Trim the value to remove any extra parts if necessary
-      const trimmedValue = value.split(' ')[0];
+    if (value && value !== 'null') {
+      const trimmedValue = value.split(' ')[0]; // Ensure only the date part is used
       try {
         const parsedDate = parseISO(trimmedValue);
         if (isValid(parsedDate)) {
@@ -28,10 +27,10 @@ const CustomTextInputWithDatePicker = ({ label, value, onChangeText, placeholder
 
   const handleConfirm = (date) => {
     try {
-      const formattedDate = format(date, 'yyyy-MM-dd');
+      const formattedDate = format(date, 'yyyy-MM-dd'); // Only format as date
       setDatePickerVisible(false);
       setSelectedDate(date);
-      onChangeText(formattedDate);
+      onChangeText(formattedDate); // Set only the date without time
     } catch (error) {
       console.error('Invalid date format', error);
     }

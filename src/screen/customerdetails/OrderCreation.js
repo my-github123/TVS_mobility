@@ -1991,15 +1991,17 @@ const OrderCreation = ({navigation}) => {
     };
 
     const formatRoadTaxValid = (roadTaxValid) => {
+      // Split the date and time, and return only the date part
       const [datePart] = roadTaxValid.split(' ');
-      return `${datePart} 00:00:00`;
+      return datePart;  // Return only the date
     };
-
-
-    const roadTaxValid1 = `${roadTaxValid} 00:00:00`;
-
-// Example usage
-     const formattedRoadTaxValid = formatRoadTaxValid(roadTaxValid1);
+    
+    // Example usage
+    const roadTaxValid1 = roadTaxValid;  // No need to append 00:00:00
+    const formattedRoadTaxValid = formatRoadTaxValid(roadTaxValid1);
+    
+    console.log(formattedRoadTaxValid);  // This will print only the date
+    
 
     switch (step) {
       case 1:
@@ -3832,7 +3834,7 @@ const OrderCreation = ({navigation}) => {
           hasHypothecated: getSwitchYesOrNo(selectedOption3),
           hypothecatedBy: hypothecatedBy,
           noc: getSwitchYesOrNo(selectedOption4),
-          roadTaxValid: `${roadTaxValid} 00:00:00`,
+          roadTaxValid:roadTaxValid,
           reRegistered: getSwitchYesOrNo(selectedOption5),
           cubicCapacity: cubicCapacity,
         };
@@ -6119,41 +6121,30 @@ const OrderCreation = ({navigation}) => {
       if (response.assets && response.assets.length > 0) {
         const newPhotoUris = [...reinspectorPhoto];
         newPhotoUris[carIndex8] = response.assets[0].uri;
-
+  
         setReinspectorPhoto(newPhotoUris);
-
-        // Resize and compress the image with quality set to 10
-        ImageResizer.createResizedImage(
-          response.assets[0].uri,
-          800,  // Increase width
-          600,  // Increase height
-          'JPEG',
-          90,   // Increase quality
-        ) // Quality set to 10
-          .then(resizedImage => {
-            RNFS.readFile(resizedImage.uri, 'base64')
-              .then(base64 => {
-                const imageType = getImageType(base64);
-                if (imageType) {
-                  const base64Image = `data:image/${imageType};base64,${base64}`;
-                  const newBase64Strings = [...base64ReinspectorPhoto];
-                  newBase64Strings[carIndex8] = base64Image;
-                  // Display first 15 characters of the new Base64 string
-                  setBase64ReinspectorPhoto(newBase64Strings);
-                } else {
-                  console.log('Unknown image type');
-                }
-              })
-              .catch(e => {
-                console.log('Error converting file to base64', e);
-              });
+  
+        // Directly convert the image to Base64 without resizing
+        RNFS.readFile(response.assets[0].uri, 'base64')
+          .then(base64 => {
+            const imageType = getImageType(base64);
+            if (imageType) {
+              const base64Image = `data:image/${imageType};base64,${base64}`;
+              const newBase64Strings = [...base64ReinspectorPhoto];
+              newBase64Strings[carIndex8] = base64Image;
+              // Display first 15 characters of the new Base64 string
+              setBase64ReinspectorPhoto(newBase64Strings);
+            } else {
+              console.log('Unknown image type');
+            }
           })
-          .catch(error => {
-            console.log('Error resizing image:', error);
+          .catch(e => {
+            console.log('Error converting file to base64', e);
           });
       }
     });
   };
+  
 
   const openCameraCarPhotos = () => {
     launchCamera({mediaType: 'photo', cameraType: 'back'}, response => {
