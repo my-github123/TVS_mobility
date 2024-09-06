@@ -1990,16 +1990,18 @@ const OrderCreation = ({navigation}) => {
       tyre4Condition: `${Math.round(values[3] * 100)}%`,
     };
 
-    const formatRoadTaxValid = (roadTaxValid) => {
+  const formatRoadTaxValid = (roadTaxValid) => {
+      // Split the date and time, and return only the date part
       const [datePart] = roadTaxValid.split(' ');
-      return `${datePart} 00:00:00`;
+      return datePart;  // Return only the date
     };
-
-
-    const roadTaxValid1 = `${roadTaxValid} 00:00:00`;
-
-// Example usage
-     const formattedRoadTaxValid = formatRoadTaxValid(roadTaxValid1);
+    
+    // Example usage
+    const roadTaxValid1 = roadTaxValid;  // No need to append 00:00:00
+    const formattedRoadTaxValid = formatRoadTaxValid(roadTaxValid1);
+    
+    console.log(formattedRoadTaxValid);  // This will print only the date
+    
 
     switch (step) {
       case 1:
@@ -3835,7 +3837,7 @@ const OrderCreation = ({navigation}) => {
           hasHypothecated: getSwitchYesOrNo(selectedOption3),
           hypothecatedBy: hypothecatedBy,
           noc: getSwitchYesOrNo(selectedOption4),
-          roadTaxValid: `${roadTaxValid} 00:00:00`,
+          roadTaxValid:roadTaxValid,
           reRegistered: getSwitchYesOrNo(selectedOption5),
           cubicCapacity: cubicCapacity,
         };
