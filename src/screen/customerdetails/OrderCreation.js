@@ -147,13 +147,19 @@ const OrderCreation = ({navigation}) => {
   const [selectedOption5, setSelectedOption5] = useState('');
   const [selectedOption6, setSelectedOption6] = useState('');
   const [selectedOption7, setSelectedOption7] = useState('');
-  const [dealerIdNumbers,setDealerIdNumbers]=useState(Array.from({length:4},()=>""))
-  const [spareWheelIdNumber,setSpareWheelIdNumber]=useState(Array.from({length:1},()=>""))
-  
+  const [dealerIdNumbers, setDealerIdNumbers] = useState(
+    Array.from({length: 4}, () => ''),
+  );
+  const [spareWheelIdNumber, setSpareWheelIdNumber] = useState(
+    Array.from({length: 1}, () => ''),
+  );
+
   // blacklist === 'NA' ? 2 : blacklist === null ? 2 : 1,
   const [selectedOption8, setSelectedOption8] = useState('');
   const [selectedOption9, setSelectedOption9] = useState('');
   const [selectedOption10, setSelectedOption10] = useState('');
+  const [selectedOption11, setSelectedOption11] = useState('');
+  const [accidentRemarks, setAccidentRemarks] = useState('');
 
   const [rcRemarks, setRcRemarks] = useState('');
   const [insuranceRemarks, setInsuranceRemarks] = useState('');
@@ -252,6 +258,11 @@ const OrderCreation = ({navigation}) => {
     console.log(`Selected value: ${value}`);
   };
 
+  const handleSwitchSelection11 = value => {
+    setSelectedOption11(value);
+    console.log(`Selected value: ${value}`);
+  };
+
   const [carDetailsThirdFormData, setCarDetailsThirdFormData] = useState({
     insuranceCompany: '',
     insuranceValidity: '',
@@ -266,13 +277,12 @@ const OrderCreation = ({navigation}) => {
   // const [value2, setValue2] = useState(0.0); // Initialize value state
   //   const [value3, setValue3] = useState(0.0); // Initialize value state
   const [values, setValues] = useState(Array(4).fill(0.0));
- 
 
   const [spareWheel, setSpareWheel] = useState(Array(1).fill(0.0));
   const handleValueChange = (val, index) => {
-    const newId=[...dealerIdNumbers];
-    newId[index]="";
-    setDealerIdNumbers(newId)
+    const newId = [...dealerIdNumbers];
+    newId[index] = '';
+    setDealerIdNumbers(newId);
     const newValues = [...values]; // Create a copy of the current values
     newValues[index] = val; // Update the value at the specific index
     setValues(newValues); // Set the new values array
@@ -297,10 +307,9 @@ const OrderCreation = ({navigation}) => {
   // };
 
   const handleValueChange4 = (val, index) => {
-
-    const newId=[...spareWheelIdNumber];
-    newId[index]="";
-    setSpareWheelIdNumber(newId)
+    const newId = [...spareWheelIdNumber];
+    newId[index] = '';
+    setSpareWheelIdNumber(newId);
     const newValues = [...spareWheel];
     newValues[index] = val;
     setSpareWheel(newValues);
@@ -1990,18 +1999,17 @@ const OrderCreation = ({navigation}) => {
       tyre4Condition: `${Math.round(values[3] * 100)}%`,
     };
 
-    const formatRoadTaxValid = (roadTaxValid) => {
+    const formatRoadTaxValid = roadTaxValid => {
       // Split the date and time, and return only the date part
       const [datePart] = roadTaxValid.split(' ');
-      return datePart;  // Return only the date
+      return datePart; // Return only the date
     };
-    
+
     // Example usage
-    const roadTaxValid1 = roadTaxValid;  // No need to append 00:00:00
+    const roadTaxValid1 = roadTaxValid; // No need to append 00:00:00
     const formattedRoadTaxValid = formatRoadTaxValid(roadTaxValid1);
-    
-    console.log(formattedRoadTaxValid);  // This will print only the date
-    
+
+    console.log(formattedRoadTaxValid); // This will print only the date
 
     switch (step) {
       case 1:
@@ -2024,7 +2032,7 @@ const OrderCreation = ({navigation}) => {
           hasHypothecated: getSwitchYesOrNo(selectedOption3),
           hypothecatedBy: hypothecatedBy,
           noc: getSwitchYesOrNo(selectedOption4),
-          roadTaxValid:formattedRoadTaxValid,
+          roadTaxValid: formattedRoadTaxValid,
           reRegistered: getSwitchYesOrNo(selectedOption5),
           cubicCapacity: cubicCapacity,
         };
@@ -2047,7 +2055,9 @@ const OrderCreation = ({navigation}) => {
           engineNumber: engineNumber,
           rcStatus: getOriginal(selectedOption8),
           stateNoc: getSwitchYesOrNo(selectedOption9),
-          flood: getSwitchYesOrNo(selectedOption10)
+          flood: getSwitchYesOrNo(selectedOption10),
+          accident: getSwitchYesOrNo(selectedOption11),
+          accidentRemarks: accidentRemarks,
         };
         break;
       case 3:
@@ -3834,7 +3844,7 @@ const OrderCreation = ({navigation}) => {
           hasHypothecated: getSwitchYesOrNo(selectedOption3),
           hypothecatedBy: hypothecatedBy,
           noc: getSwitchYesOrNo(selectedOption4),
-          roadTaxValid:roadTaxValid,
+          roadTaxValid: roadTaxValid,
           reRegistered: getSwitchYesOrNo(selectedOption5),
           cubicCapacity: cubicCapacity,
         };
@@ -3860,6 +3870,8 @@ const OrderCreation = ({navigation}) => {
           rcStatus: getOriginal(selectedOption8),
           stateNoc: getSwitchYesOrNo(selectedOption9),
           flood: getSwitchYesOrNo(selectedOption10),
+          accident: getSwitchYesOrNo(selectedOption11),
+          accidentRemarks:accidentRemarks
         };
         await getTwoOrder();
 
@@ -3953,7 +3965,9 @@ const OrderCreation = ({navigation}) => {
           trunkBootRemarks: trunkBootRemarks[0],
           spareWheelPhoto: spareWheelBase64[0],
           spareWheelStatus: getSwitchForAvailable(spareWheelSwitch[0]),
-          spareWheelCondition:spareWheelIdNumber[0] ? spareWheel[0] :`${Math.round(spareWheel[0] * 100)}%`,
+          spareWheelCondition: spareWheelIdNumber[0]
+            ? spareWheel[0]
+            : `${Math.round(spareWheel[0] * 100)}%`,
           spareWheelRemarks: spareWheelRemarks[0],
           toolKitJackPhoto: toolKitBase64[0],
           toolKitJackStatus: getSwitchForAvailable(toolKitSwitch[0]),
@@ -3963,22 +3977,30 @@ const OrderCreation = ({navigation}) => {
           roofRemarks: roofRemarks[0],
           underChassisPhoto: underChassisBase64[0],
           underChassisRemarks: underChassisRemarks[0],
-          
+
           frontTyreLeftPhoto: tyreBase64[0],
           frontTyreLeftStatus: getSwitch(tyreSwitch[0]),
-          frontTyreLeftCondition:dealerIdNumbers[0] ? values[0] :`${Math.round(values[0] * 100)}%`,
+          frontTyreLeftCondition: dealerIdNumbers[0]
+            ? values[0]
+            : `${Math.round(values[0] * 100)}%`,
           frontTyreLeftRemarks: tyreRemarks[0],
           frontTyreRightPhoto: tyreBase64[1],
           frontTyreRightStatus: getSwitch(tyreSwitch[1]),
-          frontTyreRightCondition:dealerIdNumbers[1] ? values[1] :`${Math.round(values[1] * 100)}%`,
+          frontTyreRightCondition: dealerIdNumbers[1]
+            ? values[1]
+            : `${Math.round(values[1] * 100)}%`,
           frontTyreRightRemarks: tyreRemarks[1],
           rearTyreLeftPhoto: tyreBase64[2],
           rearTyreLeftStatus: getSwitch(tyreSwitch[2]),
-          rearTyreLeftCondition: dealerIdNumbers[2] ? values[2] :`${Math.round(values[2] * 100)}%`,
+          rearTyreLeftCondition: dealerIdNumbers[2]
+            ? values[2]
+            : `${Math.round(values[2] * 100)}%`,
           rearTyreLeftRemarks: tyreRemarks[2],
           rearTyreRightPhoto: tyreBase64[3],
           rearTyreRightStatus: getSwitch(tyreSwitch[3]),
-          rearTyreRightCondition:dealerIdNumbers[3] ? values[3] :`${Math.round(values[3] * 100)}%`,
+          rearTyreRightCondition: dealerIdNumbers[3]
+            ? values[3]
+            : `${Math.round(values[3] * 100)}%`,
           rearTyreRightRemarks: tyreRemarks[3],
         };
 
@@ -5528,8 +5550,8 @@ const OrderCreation = ({navigation}) => {
 
     try {
       console.log(params, 'pgyfy');
-      console.log(getSwitch(transmissionSwitch[7]),"hi therres");
-      console.log(itemId,"dealer id is there...");
+      console.log(getSwitch(transmissionSwitch[7]), 'hi therres');
+      console.log(itemId, 'dealer id is there...');
       const data = await apiPostWithToken('updateOrder', params);
 
       if (role === 'Reinspector') {
@@ -5559,7 +5581,6 @@ const OrderCreation = ({navigation}) => {
           }
         }
       }
-    
 
       // if (step == 8) {
       //   navigation.dispatch(
@@ -6121,9 +6142,9 @@ const OrderCreation = ({navigation}) => {
       if (response.assets && response.assets.length > 0) {
         const newPhotoUris = [...reinspectorPhoto];
         newPhotoUris[carIndex8] = response.assets[0].uri;
-  
+
         setReinspectorPhoto(newPhotoUris);
-  
+
         // Directly convert the image to Base64 without resizing
         RNFS.readFile(response.assets[0].uri, 'base64')
           .then(base64 => {
@@ -6144,7 +6165,6 @@ const OrderCreation = ({navigation}) => {
       }
     });
   };
-  
 
   const openCameraCarPhotos = () => {
     launchCamera({mediaType: 'photo', cameraType: 'back'}, response => {
@@ -6309,10 +6329,10 @@ const OrderCreation = ({navigation}) => {
         // Resize and compress the image with quality set to 10
         ImageResizer.createResizedImage(
           newPhotoUris[index],
-          800,  // Increase width
-          600,  // Increase height
+          800, // Increase width
+          600, // Increase height
           'JPEG',
-          90,   // Increase quality
+          90, // Increase quality
         )
           .then(resizedImage => {
             RNFS.readFile(resizedImage.uri, 'base64')
@@ -6525,10 +6545,10 @@ const OrderCreation = ({navigation}) => {
         // Resize and compress the image with quality set to 10
         ImageResizer.createResizedImage(
           newPhotoUris[index],
-          800,  // Increase width
-          600,  // Increase height
+          800, // Increase width
+          600, // Increase height
           'JPEG',
-            90,   // Increase quality
+          90, // Increase quality
         )
           .then(resizedImage => {
             RNFS.readFile(resizedImage.uri, 'base64')
@@ -6706,10 +6726,10 @@ const OrderCreation = ({navigation}) => {
         // Resize and compress the image with quality set to 10
         ImageResizer.createResizedImage(
           newPhotoUris[index],
-          800,  // Increase width
-          600,  // Increase height
+          800, // Increase width
+          600, // Increase height
           'JPEG',
-          90,   // Increase quality
+          90, // Increase quality
         )
           .then(resizedImage => {
             RNFS.readFile(resizedImage.uri, 'base64')
@@ -6840,10 +6860,10 @@ const OrderCreation = ({navigation}) => {
         // Resize and compress the image with quality set to 10
         ImageResizer.createResizedImage(
           newPhotoUris[index],
-          800,  // Increase width
-          600,  // Increase height
+          800, // Increase width
+          600, // Increase height
           'JPEG',
-          90,   // Increase quality
+          90, // Increase quality
         )
           .then(resizedImage => {
             RNFS.readFile(resizedImage.uri, 'base64')
@@ -6952,10 +6972,10 @@ const OrderCreation = ({navigation}) => {
         // Resize and compress the image with quality set to 10
         ImageResizer.createResizedImage(
           newPhotoUris[index],
-          800,  // Increase width
-          600,  // Increase height
+          800, // Increase width
+          600, // Increase height
           'JPEG',
-          90,   // Increase quality
+          90, // Increase quality
         )
           .then(resizedImage => {
             RNFS.readFile(resizedImage.uri, 'base64')
@@ -8543,7 +8563,7 @@ const OrderCreation = ({navigation}) => {
             return false;
           }
         }
-      
+
         return true;
         break;
 
@@ -10282,7 +10302,7 @@ const OrderCreation = ({navigation}) => {
         newState[index] = value; // 1 for Yes and 2 for No
         setTransmissionSwitch(newState);
 
-        console.log(newState,"new.............");
+        console.log(newState, 'new.............');
         break;
       case 4:
         if (id) {
@@ -11389,13 +11409,19 @@ const OrderCreation = ({navigation}) => {
   const stateUpdates3 = [];
 
   const stateUpdates2 = [
-    {setter: setBonetSwitch, index: 0, key: 'bonnetStatus',thirdValidation:0},
-    {setter: setApronSwitch, index: 0, key: 'apronLeftSideStatus',thirdValidation:1},
+    {setter: setBonetSwitch, index: 0, key: 'bonnetStatus', thirdValidation: 0},
+    {
+      setter: setApronSwitch,
+      index: 0,
+      key: 'apronLeftSideStatus',
+      thirdValidation: 1,
+    },
     {setter: setApronSwitch, index: 1, key: 'apronRightSideStatus'},
     {
       setter: setSupportMembersSwitch,
       index: 2,
-      key: 'headLampSupportRightSideStatus',thirdValidation:2
+      key: 'headLampSupportRightSideStatus',
+      thirdValidation: 2,
     },
     {
       setter: setSupportMembersSwitch,
@@ -11412,26 +11438,52 @@ const OrderCreation = ({navigation}) => {
       index: 1,
       key: 'supportMemberLowerStatus',
     },
-    {setter: setBumperSwitch, index: 0, key: 'bumperFrontStatus',thirdValidation:3},
+    {
+      setter: setBumperSwitch,
+      index: 0,
+      key: 'bumperFrontStatus',
+      thirdValidation: 3,
+    },
     {setter: setBumperSwitch, index: 1, key: 'bumperRearStatus'},
-    {setter: setWindShieldSwitch, index: 0, key: 'windShieldFrontStatus',thirdValidation:4},
+    {
+      setter: setWindShieldSwitch,
+      index: 0,
+      key: 'windShieldFrontStatus',
+      thirdValidation: 4,
+    },
     {setter: setWindShieldSwitch, index: 1, key: 'windShieldRearStatus'},
-    {setter: setFenderSwitch, index: 1, key: 'fendersRightSideStatus',thirdValidation:5},
+    {
+      setter: setFenderSwitch,
+      index: 1,
+      key: 'fendersRightSideStatus',
+      thirdValidation: 5,
+    },
     {setter: setFenderSwitch, index: 0, key: 'fendersLeftSideStatus'},
-    {setter: setPillarSwitch, index: 0, key: 'pillarARightSideStatus',thirdValidation:6},
+    {
+      setter: setPillarSwitch,
+      index: 0,
+      key: 'pillarARightSideStatus',
+      thirdValidation: 6,
+    },
     {setter: setPillarSwitch, index: 1, key: 'pillarBRightSideStatus'},
     {setter: setPillarSwitch, index: 2, key: 'pillarCRightSideStatus'},
     {setter: setPillarSwitch, index: 3, key: 'pillarALeftSideStatus'},
     {setter: setPillarSwitch, index: 4, key: 'pillarBLeftSideStatus'},
     {setter: setPillarSwitch, index: 5, key: 'pillarCLeftSideStatus'},
-    {setter: setDoorSwitch, index: 0, key: 'doorsFrontLeftSideStatus',thirdValidation:7},
+    {
+      setter: setDoorSwitch,
+      index: 0,
+      key: 'doorsFrontLeftSideStatus',
+      thirdValidation: 7,
+    },
     {setter: setDoorSwitch, index: 1, key: 'doorsRearLeftSideStatus'},
     {setter: setDoorSwitch, index: 2, key: 'doorsFrontRightSideStatus'},
     {setter: setDoorSwitch, index: 3, key: 'doorsRearRightSideStatus'},
     {
       setter: setRunningBoardSwitch,
       index: 1,
-      key: 'runningBoardLeftSideStatus',thirdValidation:8
+      key: 'runningBoardLeftSideStatus',
+      thirdValidation: 8,
     },
     {
       setter: setRunningBoardSwitch,
@@ -11441,42 +11493,87 @@ const OrderCreation = ({navigation}) => {
     {
       setter: setQuarterPanlesSwitch,
       index: 0,
-      key: 'quarterPanelsLeftSideStatus',thirdValidation:9
+      key: 'quarterPanelsLeftSideStatus',
+      thirdValidation: 9,
     },
     {
       setter: setQuarterPanlesSwitch,
       index: 1,
       key: 'quarterPanelsRightSideStatus',
     },
-    {setter: setDickyDoorSwitch, index: 0, key: 'bootStatus',thirdValidation:10},
-    {setter: setDickySkirtSwitch, index: 0, key: 'bootSkirtStatus',thirdValidation:11},
-    {setter:setSelectWheelTypeSwitch,index:0,key:'wheelType'},
-    {setter: setWheelTypeSwitch, index: 0, key: 'wheelTypeStatus',thirdValidation:12},
+    {
+      setter: setDickyDoorSwitch,
+      index: 0,
+      key: 'bootStatus',
+      thirdValidation: 10,
+    },
+    {
+      setter: setDickySkirtSwitch,
+      index: 0,
+      key: 'bootSkirtStatus',
+      thirdValidation: 11,
+    },
+    {setter: setSelectWheelTypeSwitch, index: 0, key: 'wheelType'},
+    {
+      setter: setWheelTypeSwitch,
+      index: 0,
+      key: 'wheelTypeStatus',
+      thirdValidation: 12,
+    },
   ];
 
   const stateUpdates1 = [
-    {setter: setSpareWheelSwitch, index: 0, key: 'spareWheelStatus',validationIndex:3},
-    {setter: setToolkitSwitch, index: 0, key: 'toolKitJackStatus',validationIndex:4},
-    {setter: setTyreSwitch, index: 0, key: 'frontTyreLeftStatus',validationIndex:7},
+    {
+      setter: setSpareWheelSwitch,
+      index: 0,
+      key: 'spareWheelStatus',
+      validationIndex: 3,
+    },
+    {
+      setter: setToolkitSwitch,
+      index: 0,
+      key: 'toolKitJackStatus',
+      validationIndex: 4,
+    },
+    {
+      setter: setTyreSwitch,
+      index: 0,
+      key: 'frontTyreLeftStatus',
+      validationIndex: 7,
+    },
     {setter: setTyreSwitch, index: 1, key: 'frontTyreRightStatus'},
     {setter: setTyreSwitch, index: 2, key: 'rearTyreLeftStatus'},
     {setter: setTyreSwitch, index: 3, key: 'rearTyreRightStatus'},
   ];
 
-
   const conditionUpdates1 = [
-    {setter:setSpareWheel, index: 0, key: 'spareWheelCondition'},
-    {setter:setToolkitCondition, index: 0, key: 'toolkitJackCondition'},
-    {setter:setValues, index: 0, key: 'frontTyreLeftCondition'},
+    {setter: setSpareWheel, index: 0, key: 'spareWheelCondition'},
+    {setter: setToolkitCondition, index: 0, key: 'toolkitJackCondition'},
+    {setter: setValues, index: 0, key: 'frontTyreLeftCondition'},
     {setter: setValues, index: 1, key: 'frontTyreRightCondition'},
     {setter: setValues, index: 2, key: 'rearTyreLeftCondition'},
     {setter: setValues, index: 3, key: 'rearTyreRightCondition'},
   ];
 
   const stateUpdates = [
-    {setter: setChassisSwitch, index: 0, key: 'chassisPunchStatus',validationIndex:2},
-    {setter: setVinPlateSwitch, index: 0, key: 'vinPlateStatus',validationIndex:3},
-    {setter: setKeySwitch, index: 0, key: 'primaryKeyStatus',validationIndex:5},
+    {
+      setter: setChassisSwitch,
+      index: 0,
+      key: 'chassisPunchStatus',
+      validationIndex: 2,
+    },
+    {
+      setter: setVinPlateSwitch,
+      index: 0,
+      key: 'vinPlateStatus',
+      validationIndex: 3,
+    },
+    {
+      setter: setKeySwitch,
+      index: 0,
+      key: 'primaryKeyStatus',
+      validationIndex: 5,
+    },
     {setter: setKeySwitch, index: 1, key: 'spareKeyStatus'},
 
     // {setter: setBonetSwitch, index: 0, key: 'bonnetStatus'},
@@ -11681,7 +11778,12 @@ const OrderCreation = ({navigation}) => {
   ];
 
   const statusUpdates3 = [
-    {setter: setSuspensionSwitch, index: 0, key: 'strutStatus',secondValidation:0},
+    {
+      setter: setSuspensionSwitch,
+      index: 0,
+      key: 'strutStatus',
+      secondValidation: 0,
+    },
     {setter: setSuspensionSwitch, index: 1, key: 'lowerArmStatus'},
     {setter: setSuspensionSwitch, index: 2, key: 'linkRodStatus'},
     {setter: setSuspensionSwitch, index: 3, key: 'stabilizerBarStatus'},
@@ -11689,19 +11791,29 @@ const OrderCreation = ({navigation}) => {
     {setter: setSuspensionSwitch, index: 5, key: 'coilSpringStatus'},
     {setter: setSuspensionSwitch, index: 6, key: 'leafSpringStatus'},
 
-    {setter: setSteeringSwitch, index: 0, key: 'rackAndPinionStatus',secondValidation:1},
+    {
+      setter: setSteeringSwitch,
+      index: 0,
+      key: 'rackAndPinionStatus',
+      secondValidation: 1,
+    },
     {setter: setSteeringSwitch, index: 1, key: 'steeringColumnStatus'},
     {setter: setSteeringSwitch, index: 2, key: 'hardnessStatus'},
     {setter: setSteeringSwitch, index: 3, key: 'ballJointEndStatus'},
 
-    {setter: setBrakeSwitch, index: 0, key: 'padStatus',secondValidation:2},
+    {setter: setBrakeSwitch, index: 0, key: 'padStatus', secondValidation: 2},
     {setter: setBrakeSwitch, index: 1, key: 'discStatus'},
     {setter: setBrakeSwitch, index: 2, key: 'shoeStatus'},
     {setter: setBrakeSwitch, index: 3, key: 'drumStatus'},
     {setter: setBrakeSwitch, index: 4, key: 'wheelCylinderStatus'},
     {setter: setBrakeSwitch, index: 5, key: 'mcBoosterStatus'},
 
-    {setter: setTransmissionSwitch, index: 0, key: 'clutchStatus',secondValidation:3},
+    {
+      setter: setTransmissionSwitch,
+      index: 0,
+      key: 'clutchStatus',
+      secondValidation: 3,
+    },
     {setter: setTransmissionSwitch, index: 1, key: 'gearShiftingStatus'},
     {setter: setTransmissionSwitch, index: 2, key: 'driveShaftStatus'},
     {setter: setTransmissionSwitch, index: 3, key: 'axleStatus'},
@@ -11710,7 +11822,12 @@ const OrderCreation = ({navigation}) => {
     {setter: setTransmissionSwitch, index: 6, key: 'bearingStatus'},
     {setter: setTransmissionSwitch, index: 7, key: 'mountingStatus'},
 
-    {setter: setEngineSwitch, index: 0, key: 'smokeStatus',secondValidation:4},
+    {
+      setter: setEngineSwitch,
+      index: 0,
+      key: 'smokeStatus',
+      secondValidation: 4,
+    },
     {setter: setEngineSwitch, index: 1, key: 'turboStatus'},
     {setter: setEngineSwitch, index: 2, key: 'misfiringStatus'},
     {setter: setEngineSwitch, index: 3, key: 'tappetStatus'},
@@ -11781,7 +11898,12 @@ const OrderCreation = ({navigation}) => {
     },
     {setter: setEngineSwitch, index: 17, key: 'overHeatingStatus'},
     {setter: setEngineSwitch, index: 18, key: 'allBearingsStatus'},
-    {setter: setElectricalSwitch, index: 0, key: 'batteryStatus',secondValidation:5},
+    {
+      setter: setElectricalSwitch,
+      index: 0,
+      key: 'batteryStatus',
+      secondValidation: 5,
+    },
     {setter: setElectricalSwitch, index: 1, key: 'alternatorStatus'},
     {setter: setElectricalSwitch, index: 2, key: 'selfMotorStatus'},
     {setter: setElectricalSwitch, index: 3, key: 'wiringHarnessStatus'},
@@ -11796,13 +11918,18 @@ const OrderCreation = ({navigation}) => {
     {setter: setElectricalSwitch, index: 12, key: 'absStatus'},
     {setter: setElectricalSwitch, index: 13, key: 'airBagStatus'},
     {setter: setElectricalSwitch, index: 14, key: 'powerWindowsStatus'},
-    {setter: setAcSwitch, index: 0, key: 'coolingStatus',secondValidation:6},
+    {setter: setAcSwitch, index: 0, key: 'coolingStatus', secondValidation: 6},
     {setter: setAcSwitch, index: 1, key: 'blowerStatus'},
     {setter: setAcSwitch, index: 2, key: 'condenserStatus'},
     {setter: setAcSwitch, index: 3, key: 'fanStatus'},
     {setter: setAcSwitch, index: 4, key: 'controlSwitchStatus'},
     {setter: setAcSwitch, index: 5, key: 'ventStatus'},
-    {setter: setAccessoriesSwitch, index: 0, key: 'musicSystemStatus',secondValidation:7},
+    {
+      setter: setAccessoriesSwitch,
+      index: 0,
+      key: 'musicSystemStatus',
+      secondValidation: 7,
+    },
     {setter: setAccessoriesSwitch, index: 1, key: 'parkingSensorStatus'},
     {setter: setAccessoriesSwitch, index: 2, key: 'reverseCameraStatus'},
     {setter: setAccessoriesSwitch, index: 3, key: 'ovrmAdjusterStatus'},
@@ -11813,7 +11940,12 @@ const OrderCreation = ({navigation}) => {
     {setter: setAccessoriesSwitch, index: 8, key: 'spoilerStatus'},
     {setter: setAccessoriesSwitch, index: 9, key: 'skirtStatus'},
     {setter: setAccessoriesSwitch, index: 10, key: 'steeringControlsStatus'},
-    {setter: setoilSwitch, index: 0, key: 'engineOilStatus',secondValidation:8},
+    {
+      setter: setoilSwitch,
+      index: 0,
+      key: 'engineOilStatus',
+      secondValidation: 8,
+    },
     {setter: setoilSwitch, index: 1, key: 'brakeOilStatus'},
     {setter: setoilSwitch, index: 2, key: 'coolentOilStatus'},
     {setter: setoilSwitch, index: 3, key: 'gearOilStatus'},
@@ -11930,7 +12062,7 @@ const OrderCreation = ({navigation}) => {
     },
     {
       setter: setOilDropDown,
-      index:4,
+      index: 4,
       key: 'crownOilCondition',
     },
   ];
@@ -12012,14 +12144,11 @@ const OrderCreation = ({navigation}) => {
     {setter: setAccessoriesRemarks, index: 8, key: 'spoilerRemarks'},
     {setter: setAccessoriesRemarks, index: 9, key: 'skirtRemarks'},
     {setter: setAccessoriesRemarks, index: 10, key: 'steeringControlsRemarks'},
-    {setter:setOilRemarks,index:0,key:'engineOilRemarks'},
-    {setter:setOilRemarks,index:1,key:'brakeOilRemarks'},
-    {setter:setOilRemarks,index:2,key:'coolentOilRemarks'},
-    {setter:setOilRemarks,index:3,key:'gearOilRemarks'},
-    {setter:setOilRemarks,index:4,key:'crownOilRemarks'},
-    
-    
-    
+    {setter: setOilRemarks, index: 0, key: 'engineOilRemarks'},
+    {setter: setOilRemarks, index: 1, key: 'brakeOilRemarks'},
+    {setter: setOilRemarks, index: 2, key: 'coolentOilRemarks'},
+    {setter: setOilRemarks, index: 3, key: 'gearOilRemarks'},
+    {setter: setOilRemarks, index: 4, key: 'crownOilRemarks'},
   ];
 
   const photoUpdates4 = [
@@ -12159,13 +12288,28 @@ const OrderCreation = ({navigation}) => {
   ];
 
   const photoUpdates2 = [
-    {setter: setLhsViewPhoto, index: 0, key: 'lhsViewPhoto',carValidation:0},
-    {setter: setRearViewPhoto, index: 0, key: 'rearViewPhoto',carValidation:1},
-    {setter: setTrunkBootPhoto, index: 0, key: 'trunkBootPhoto',carValidation:2},
+    {setter: setLhsViewPhoto, index: 0, key: 'lhsViewPhoto', carValidation: 0},
+    {
+      setter: setRearViewPhoto,
+      index: 0,
+      key: 'rearViewPhoto',
+      carValidation: 1,
+    },
+    {
+      setter: setTrunkBootPhoto,
+      index: 0,
+      key: 'trunkBootPhoto',
+      carValidation: 2,
+    },
     {setter: setSpareWheelPunchPhoto, index: 0, key: 'spareWheelPhoto'},
     {setter: setToolkitPunchPhoto, index: 0, key: 'toolKitJackPhoto'},
-    {setter: setRoofPhoto, index: 0, key: 'roofPhoto',carValidation:5},
-    {setter: setUnderChassisPhoto, index: 0, key: 'underChassisPhoto',carValidation:6},
+    {setter: setRoofPhoto, index: 0, key: 'roofPhoto', carValidation: 5},
+    {
+      setter: setUnderChassisPhoto,
+      index: 0,
+      key: 'underChassisPhoto',
+      carValidation: 6,
+    },
     {setter: setTyrePunchPhoto, index: 0, key: 'frontTyreLeftPhoto'},
     {setter: setTyrePunchPhoto, index: 1, key: 'frontTyreRightPhoto'},
     {setter: setTyrePunchPhoto, index: 2, key: 'rearTyreLeftPhoto'},
@@ -12173,25 +12317,60 @@ const OrderCreation = ({navigation}) => {
   ];
 
   const photoUpdates1 = [
-    {setter: setFrontViewPhoto, index: 0, key: 'frontViewPhoto',validationIndex:0},
-    {setter: setEngineRoomPhoto, index: 0, key: 'engineRoomPhoto',validationIndex:1},
+    {
+      setter: setFrontViewPhoto,
+      index: 0,
+      key: 'frontViewPhoto',
+      validationIndex: 0,
+    },
+    {
+      setter: setEngineRoomPhoto,
+      index: 0,
+      key: 'engineRoomPhoto',
+      validationIndex: 1,
+    },
     {setter: setChassisPunchPhoto, index: 0, key: 'chassisPunchPhoto'},
     {setter: setVinPlatePunchPhoto, index: 0, key: 'vinPlatePhoto'},
-    {setter: setRhsViewPhoto, index: 0, key: 'rhsViewPhoto',validationIndex:4},
+    {
+      setter: setRhsViewPhoto,
+      index: 0,
+      key: 'rhsViewPhoto',
+      validationIndex: 4,
+    },
     {setter: setKeyPunchPhoto, index: 0, key: 'primaryKeyPhoto'},
     {setter: setKeyPunchPhoto, index: 1, key: 'spareKeyPhoto'},
-    {setter: setOdometerPhoto, index: 0, key: 'odometerPhoto',validationIndex:6},
-    {setter: setInteriorPhoto, index: 0, key: 'interiorPhoto',validationIndex:7},
+    {
+      setter: setOdometerPhoto,
+      index: 0,
+      key: 'odometerPhoto',
+      validationIndex: 6,
+    },
+    {
+      setter: setInteriorPhoto,
+      index: 0,
+      key: 'interiorPhoto',
+      validationIndex: 7,
+    },
   ];
 
   const photoUpdates = [
-    {setter: setRcPhoto, index: 0, key: 'rcFrontPhoto',validationIndex:0},
-    {setter: setRcPhoto, index: 1, key: 'rcBackPhoto',validationIndex:0},
+    {setter: setRcPhoto, index: 0, key: 'rcFrontPhoto', validationIndex: 0},
+    {setter: setRcPhoto, index: 1, key: 'rcBackPhoto', validationIndex: 0},
     {setter: setRcPhoto, index: 2, key: 'rcOthersPhoto'},
-    {setter: setInsuracePhoto, index: 0, key: 'insuranceOwnDamagePhoto',validationIndex:1},
-    {setter: setInsuracePhoto, index: 1, key: 'insuranceThirdPartyPhoto',validationIndex:1},
+    {
+      setter: setInsuracePhoto,
+      index: 0,
+      key: 'insuranceOwnDamagePhoto',
+      validationIndex: 1,
+    },
+    {
+      setter: setInsuracePhoto,
+      index: 1,
+      key: 'insuranceThirdPartyPhoto',
+      validationIndex: 1,
+    },
     {setter: setInsuracePhoto, index: 2, key: 'insuranceOthersPhoto'},
-    {setter: setNOCPhoto, index: 0, key: 'nocPhoto',validationIndex:2},
+    {setter: setNOCPhoto, index: 0, key: 'nocPhoto', validationIndex: 2},
     {setter: setNOCPhoto, index: 1, key: 'nocOthersPhoto'},
 
     // {setter: setLhsViewPhoto, index: 0, key: 'lhsViewPhoto'},
@@ -12338,7 +12517,7 @@ const OrderCreation = ({navigation}) => {
     // {setter: setAccessoriesPhoto, index: 10, key: 'steeringControlsPhoto'},
   ];
 
-  const [dealerIdNumber,setDealerIdNumber]=useState("")
+  const [dealerIdNumber, setDealerIdNumber] = useState('');
 
   useEffect(() => {
     const handleBackPress = () => {
@@ -12359,7 +12538,6 @@ const OrderCreation = ({navigation}) => {
 
     return () => backHandler.remove(); // Clean up event listener
   }, [navigation, swiperRef, currentIndex]);
-
 
   const updateIndexValue = (index, value) => {
     setDealerIdNumbers(prevState => {
@@ -12382,11 +12560,11 @@ const OrderCreation = ({navigation}) => {
     // fuelType: getFuelType(selectedOption1),
     // alteration: getCngType(selectedOption2),
     console.log(data.roadTaxValid, 'log hypotherticated');
-    updateIndexValue(0,data.dealerId)
-    updateIndexValue(1,data.dealerId)
-    updateIndexValue(2,data.dealerId)
-    updateIndexValue(3,data.dealerId)
-    updateIndexValue1(0,data.dealerId)
+    updateIndexValue(0, data.dealerId);
+    updateIndexValue(1, data.dealerId);
+    updateIndexValue(2, data.dealerId);
+    updateIndexValue(3, data.dealerId);
+    updateIndexValue1(0, data.dealerId);
     setDealerIdNumber(data.dealerId);
     setMake(data.make);
     setModel(data.model);
@@ -12394,7 +12572,13 @@ const OrderCreation = ({navigation}) => {
     setVariant(data.variant);
     setMileage(data.mileage);
     setColor(data.color);
-    setSelectedOption(data.transmission === 'Automatic' ? 1 :data.transmission==='Manual'?2:"");
+    setSelectedOption(
+      data.transmission === 'Automatic'
+        ? 1
+        : data.transmission === 'Manual'
+        ? 2
+        : '',
+    );
     setSelectedOption1(
       data.fuelType === 'Diesel'
         ? 1
@@ -12406,17 +12590,35 @@ const OrderCreation = ({navigation}) => {
         ? 4
         : 5,
     );
-   
-    setChooseAlteration(data.alteration==="Yes"?1:data.alteration==="No"?2:"")
-   
-    setSelectedOption2(data.alteration==="CNG"?1:data.alteration==="LPG"?2:data.alteration===""?"":3)
+
+    setChooseAlteration(
+      data.alteration === 'Yes' ? 1 : data.alteration === 'No' ? 2 : '',
+    );
+
+    setSelectedOption2(
+      data.alteration === 'CNG'
+        ? 1
+        : data.alteration === 'LPG'
+        ? 2
+        : data.alteration === ''
+        ? ''
+        : 3,
+    );
     setOwners(data.owners);
-    setSelectedOption3(data.hasHypothecated === 'Yes' ? 1 : data.hasHypothecated==="No"?  2:"");
+    setSelectedOption3(
+      data.hasHypothecated === 'Yes'
+        ? 1
+        : data.hasHypothecated === 'No'
+        ? 2
+        : '',
+    );
     setHypothecatedBy(data.hypothecatedBy);
-    setSelectedOption4(data.noc === 'Yes' ? 1 : data.noc==="No"? 2:"");
+    setSelectedOption4(data.noc === 'Yes' ? 1 : data.noc === 'No' ? 2 : '');
     setRoadTaxValid(data.roadTaxValid);
-  // setRoadTaxValid("2033-03-19 00:00:00")
-    setSelectedOption5(data.reRegistered === 'Yes' ? 1 :data.reRegistered==='No'? 2:"");
+    // setRoadTaxValid("2033-03-19 00:00:00")
+    setSelectedOption5(
+      data.reRegistered === 'Yes' ? 1 : data.reRegistered === 'No' ? 2 : '',
+    );
     setCubicCapacity(data.cubicCapacity);
     // setNumberOfSeats(data.numberOfSeats);
     // setRegistrationType(data.registrationType);
@@ -12433,36 +12635,59 @@ const OrderCreation = ({navigation}) => {
     // setFlood(data.flood === 'No' ? 2 : 1);
   };
 
-  const parseDate = (dateString) => {
+  const parseDate = dateString => {
     const [day, month, year] = dateString.split('-');
     const monthIndex = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
     ].indexOf(month);
-  
+
     if (monthIndex === -1) return null;
-  
+
     return new Date(year, monthIndex, day);
   };
-  
-  const setVehicleOneData = data => {
 
-  
+  const setVehicleOneData = data => {
     setNumberOfSeats(data.numberOfSeats);
     setRegistrationType(data.registrationType);
     setRegistrationDate(data.registrationDate);
-    setSelectedOption6(data.insurance === 'No' ? 2 : data.insurance==="Yes"?1:"");
+    setSelectedOption6(
+      data.insurance === 'No' ? 2 : data.insurance === 'Yes' ? 1 : '',
+    );
     setInsuranceCompany(data.insuranceCompany);
     setInsuranceValidity(data.insuranceValidity);
     setChallanDetails(data.challanDetails);
-    setSelectedOption7(data.blacklisted === 'No' ? 2 :data.blacklisted==="Yes"? 1:"");
+    setSelectedOption7(
+      data.blacklisted === 'No' ? 2 : data.blacklisted === 'Yes' ? 1 : '',
+    );
     setChassisNumber(data.chassisNumber);
     setEngineNumber(data.engineNumber);
-    setSelectedOption8(data.rcStatus === 'Original' ? 1 :data.rcStatus===""?"": 2)
-   
-    setSelectedOption9(data.stateNoc === 'No' ? 2 : data.stateNoc==="Yes"? 1:"");
-    setSelectedOption10(data.flood === 'No' ? 2 :data.flood==="Yes"? 1:"");
+    setSelectedOption8(
+      data.rcStatus === 'Original' ? 1 : data.rcStatus === '' ? '' : 2,
+    );
+
+    setSelectedOption9(
+      data.stateNoc === 'No' ? 2 : data.stateNoc === 'Yes' ? 1 : '',
+    );
+    setSelectedOption10(
+      data.flood === 'No' ? 2 : data.flood === 'Yes' ? 1 : '',
+    );
+    setSelectedOption11(
+      data.accident === 'No' ? 2 : data.accident === 'Yes' ? 1 : '',
+    );
+    setAccidentRemarks(data?.accidentRemarks);
   };
+
 
   // setMake(response.data.make);
   // setModel(response.data.model);
@@ -12580,8 +12805,6 @@ const OrderCreation = ({navigation}) => {
     }
   };
 
-
-
   const photoLists = [rcList, insuranceList, nocList];
 
   const getTwoOrder = async () => {
@@ -12593,20 +12816,21 @@ const OrderCreation = ({navigation}) => {
       // setVehicleOneData(response.data);
       //dispatch(storeOrderData(response.data));
 
-          // Log specific photo URLs to check if they exist
-    
-
-    
+      // Log specific photo URLs to check if they exist
 
       setRcRemarks(response?.data?.rcRemarks);
       setInsuranceRemarks(response?.data?.insuranceRemarks);
       setNocRemarks(response?.data?.nocRemarks);
 
-      photoUpdates.forEach(({setter, index, key,validationIndex}) => {
-        updatePhotoState(setter, index, response.data[key] || '',validationIndex,setValidations);
+      photoUpdates.forEach(({setter, index, key, validationIndex}) => {
+        updatePhotoState(
+          setter,
+          index,
+          response.data[key] || '',
+          validationIndex,
+          setValidations,
+        );
       });
-
-    
 
       // remarksUpdates.forEach(({setter, index, key}) => {
       //   updatePhotoState(setter, index, response.data[key] || '');
@@ -12622,24 +12846,25 @@ const OrderCreation = ({navigation}) => {
 
       setRefreshing(false);
       // setLoading(false);
-     
     } catch (error) {
       console.error('GET error:', error);
     }
   };
-
- 
-  
 
   const getThreeOrder = async () => {
     console.log('loading and loading');
     setRefreshing(true);
     try {
       const response = await apiGetWithToken(`getOneOrder?id=${id}`);
-      
 
-      photoUpdates1.forEach(({setter, index, key,validationIndex}) => {
-        updatePhotoState(setter, index, response.data[key] || '',validationIndex,setCarPhotoValidations);
+      photoUpdates1.forEach(({setter, index, key, validationIndex}) => {
+        updatePhotoState(
+          setter,
+          index,
+          response.data[key] || '',
+          validationIndex,
+          setCarPhotoValidations,
+        );
       });
 
       remarksUpdates.forEach(({setter, index, key}) => {
@@ -12650,8 +12875,14 @@ const OrderCreation = ({navigation}) => {
         updatePhotoState(setter, index, response.data[key] || '');
       });
 
-      stateUpdates.forEach(({setter, index, key,validationIndex}) => {
-        updateSwitchState(setter, index, response.data[key] || '',validationIndex,setCarPhotoValidations);
+      stateUpdates.forEach(({setter, index, key, validationIndex}) => {
+        updateSwitchState(
+          setter,
+          index,
+          response.data[key] || '',
+          validationIndex,
+          setCarPhotoValidations,
+        );
       });
 
       setRefreshing(false);
@@ -12668,22 +12899,32 @@ const OrderCreation = ({navigation}) => {
     try {
       const response = await apiGetWithToken(`getOneOrder?id=${id}`);
 
-      photoUpdates2.forEach(({setter, index, key,carValidation}) => {
-        updatePhotoState(setter, index, response.data[key] || '',carValidation,setCarDetailsValidation);
+      photoUpdates2.forEach(({setter, index, key, carValidation}) => {
+        updatePhotoState(
+          setter,
+          index,
+          response.data[key] || '',
+          carValidation,
+          setCarDetailsValidation,
+        );
       });
 
       remarksUpdates1.forEach(({setter, index, key}) => {
         updatePhotoState(setter, index, response.data[key] || '');
       });
-    
-    
 
       conditionUpdates1.forEach(({setter, index, key}) => {
         updatePhotoState(setter, index, response.data[key] || '');
       });
 
-      stateUpdates1.forEach(({setter, index, key,validationIndex}) => {
-        updateSwitchState(setter, index, response.data[key] || '',validationIndex,setCarDetailsValidation);
+      stateUpdates1.forEach(({setter, index, key, validationIndex}) => {
+        updateSwitchState(
+          setter,
+          index,
+          response.data[key] || '',
+          validationIndex,
+          setCarDetailsValidation,
+        );
       });
 
       setRefreshing(false);
@@ -12712,8 +12953,14 @@ const OrderCreation = ({navigation}) => {
         updatePhotoState(setter, index, response.data[key] || '');
       });
 
-      stateUpdates2.forEach(({setter, index, key,thirdValidation}) => {
-        updateSwitchState(setter, index, response.data[key] || '',thirdValidation,setThirdValidation);
+      stateUpdates2.forEach(({setter, index, key, thirdValidation}) => {
+        updateSwitchState(
+          setter,
+          index,
+          response.data[key] || '',
+          thirdValidation,
+          setThirdValidation,
+        );
       });
 
       setRefreshing(false);
@@ -12730,8 +12977,7 @@ const OrderCreation = ({navigation}) => {
     try {
       const response = await apiGetWithToken(`getOneOrder?id=${id}`);
 
-
-      var validationIndex=9;
+      var validationIndex = 9;
       if (validationIndex !== undefined) {
         setSecondValidation(prevState => {
           const newValidations = [...prevState];
@@ -12740,8 +12986,7 @@ const OrderCreation = ({navigation}) => {
         });
       }
 
-
-      setRoadTestRemarks(response?.data?.roadTestRemarks)
+      setRoadTestRemarks(response?.data?.roadTestRemarks);
 
       photoUpdates4.forEach(({setter, index, key}) => {
         updatePhotoState(setter, index, response.data[key] || '');
@@ -12755,8 +13000,14 @@ const OrderCreation = ({navigation}) => {
         updatePhotoState(setter, index, response.data[key] || '');
       });
 
-      statusUpdates3.forEach(({setter, index, key,secondValidation}) => {
-        updateSwitchState(setter, index, response.data[key] || '',secondValidation,setSecondValidation);
+      statusUpdates3.forEach(({setter, index, key, secondValidation}) => {
+        updateSwitchState(
+          setter,
+          index,
+          response.data[key] || '',
+          secondValidation,
+          setSecondValidation,
+        );
       });
 
       setRefreshing(false);
@@ -12800,7 +13051,7 @@ const OrderCreation = ({navigation}) => {
         newState[index] = url;
         return newState;
       });
-      console.log(validationIndex,"vvvvvvvvvvvvvv");
+      console.log(validationIndex, 'vvvvvvvvvvvvvv');
 
       if (validationIndex !== undefined) {
         setterValidation(prevState => {
@@ -12813,24 +13064,18 @@ const OrderCreation = ({navigation}) => {
   }, []);
 
   const updateSwitchState = useMemo(() => {
-    return (stateSetter, index, url,validationIndex,setterValidation) => {
+    return (stateSetter, index, url, validationIndex, setterValidation) => {
       stateSetter(prevState => {
         const newState = [...prevState];
         if (url === 'Ok' || url === 'Not Available') {
           newState[index] = 1;
         } else if (url === 'Not Ok' || url === 'Available') {
           newState[index] = 2;
-        }
-
-        else if(url ==="Alloy") {
-          newState[index] =1;
-        }
-
-        else if(url==="Drum") {
-          newState[index]=2;
-        }
-        
-        else {
+        } else if (url === 'Alloy') {
+          newState[index] = 1;
+        } else if (url === 'Drum') {
+          newState[index] = 2;
+        } else {
           newState[index] = url;
         }
         return newState;
@@ -13671,7 +13916,6 @@ const OrderCreation = ({navigation}) => {
                     />
                     <TouchableOpacity
                       style={{
-                       
                         position: 'absolute',
                         top: 20,
                         right: 0,
@@ -13904,7 +14148,7 @@ const OrderCreation = ({navigation}) => {
                                   index == 0
                                     ? 'Damaged'
                                     : index === 1
-                                    ? ""
+                                    ? ''
                                     : index == 2
                                     ? ''
                                     : index == 3
@@ -17179,20 +17423,29 @@ const OrderCreation = ({navigation}) => {
                           <View style={{marginTop: 14}}>
                             <View key={index} style={styles.sliderContainer}>
                               <Text style={styles.percentageText}>
-                              <Text style={styles.percentageText}>
-  {dealerIdNumbers[0] ? values[0] : `${Math.round(values[0] * 100)}%`}
-</Text>
-
+                                <Text style={styles.percentageText}>
+                                  {dealerIdNumbers[0]
+                                    ? values[0]
+                                    : `${Math.round(values[0] * 100)}%`}
+                                </Text>
                               </Text>
                               <Slider
                                 style={styles.slider}
                                 minimumValue={0}
                                 maximumValue={1}
-                                value={dealerIdNumbers[0]? parseFloat(values[0]) / 100: values[0]}
+                                value={
+                                  dealerIdNumbers[0]
+                                    ? parseFloat(values[0]) / 100
+                                    : values[0]
+                                }
                                 onValueChange={val =>
                                   handleValueChange(val, index)
                                 }
-                                minimumTrackTintColor={getTrackColor(dealerIdNumbers[0]?parseFloat(values[0])/100:values[0])}
+                                minimumTrackTintColor={getTrackColor(
+                                  dealerIdNumbers[0]
+                                    ? parseFloat(values[0]) / 100
+                                    : values[0],
+                                )}
                                 maximumTrackTintColor="#000000"
                                 thumbTintColor="#007BFF"
                               />
@@ -17205,19 +17458,29 @@ const OrderCreation = ({navigation}) => {
                           <View style={{marginTop: 14}}>
                             <View style={styles.sliderContainer}>
                               <Text style={styles.percentageText}>
-                              <Text style={styles.percentageText}>
-  {dealerIdNumbers[1] ? values[1] : `${Math.round(values[1] * 100)}%`}
-</Text>
+                                <Text style={styles.percentageText}>
+                                  {dealerIdNumbers[1]
+                                    ? values[1]
+                                    : `${Math.round(values[1] * 100)}%`}
+                                </Text>
                               </Text>
                               <Slider
                                 style={styles.slider}
                                 minimumValue={0}
                                 maximumValue={1}
-                                value={dealerIdNumbers[1]? parseFloat(values[1]) / 100: values[1]}
+                                value={
+                                  dealerIdNumbers[1]
+                                    ? parseFloat(values[1]) / 100
+                                    : values[1]
+                                }
                                 onValueChange={val =>
                                   handleValueChange(val, index)
                                 }
-                                minimumTrackTintColor={getTrackColor(dealerIdNumbers[1]?parseFloat(values[1])/100:values[1])}
+                                minimumTrackTintColor={getTrackColor(
+                                  dealerIdNumbers[1]
+                                    ? parseFloat(values[1]) / 100
+                                    : values[1],
+                                )}
                                 maximumTrackTintColor="#000000"
                                 thumbTintColor="#007BFF"
                               />
@@ -17228,18 +17491,28 @@ const OrderCreation = ({navigation}) => {
                         {index === 2 && (
                           <View style={{marginTop: 14}}>
                             <View style={styles.sliderContainer}>
-                            <Text style={styles.percentageText}>
-  {dealerIdNumbers[2] ? values[2] : `${Math.round(values[2] * 100)}%`}
-</Text>
+                              <Text style={styles.percentageText}>
+                                {dealerIdNumbers[2]
+                                  ? values[2]
+                                  : `${Math.round(values[2] * 100)}%`}
+                              </Text>
                               <Slider
                                 style={styles.slider}
                                 minimumValue={0}
                                 maximumValue={1}
-                                value={dealerIdNumbers[2]? parseFloat(values[2]) / 100: values[2]}
+                                value={
+                                  dealerIdNumbers[2]
+                                    ? parseFloat(values[2]) / 100
+                                    : values[2]
+                                }
                                 onValueChange={val =>
                                   handleValueChange(val, index)
                                 }
-                                minimumTrackTintColor={getTrackColor(dealerIdNumbers[2]?parseFloat(values[2])/100:values[2])}
+                                minimumTrackTintColor={getTrackColor(
+                                  dealerIdNumbers[2]
+                                    ? parseFloat(values[2]) / 100
+                                    : values[2],
+                                )}
                                 maximumTrackTintColor="#000000"
                                 thumbTintColor="#007BFF"
                               />
@@ -17249,18 +17522,28 @@ const OrderCreation = ({navigation}) => {
                         {index === 3 && (
                           <View style={{marginTop: 14}}>
                             <View style={styles.sliderContainer}>
-                            <Text style={styles.percentageText}>
-    {dealerIdNumbers[3] ? values[3] : `${Math.round(values[3] * 100)}%`}
-</Text>
+                              <Text style={styles.percentageText}>
+                                {dealerIdNumbers[3]
+                                  ? values[3]
+                                  : `${Math.round(values[3] * 100)}%`}
+                              </Text>
                               <Slider
                                 style={styles.slider}
                                 minimumValue={0}
                                 maximumValue={1}
-                                value={dealerIdNumbers[3]? parseFloat(values[3]) / 100: values[3]}
+                                value={
+                                  dealerIdNumbers[3]
+                                    ? parseFloat(values[3]) / 100
+                                    : values[3]
+                                }
                                 onValueChange={val =>
                                   handleValueChange(val, index)
                                 }
-                                minimumTrackTintColor={getTrackColor(dealerIdNumbers[3]?parseFloat(values[3])/100:values[3])}
+                                minimumTrackTintColor={getTrackColor(
+                                  dealerIdNumbers[3]
+                                    ? parseFloat(values[3]) / 100
+                                    : values[3],
+                                )}
                                 maximumTrackTintColor="#000000"
                                 thumbTintColor="#007BFF"
                               />
@@ -17337,18 +17620,27 @@ const OrderCreation = ({navigation}) => {
                             <View style={{marginTop: 14}}>
                               <View key={index} style={styles.sliderContainer}>
                                 <Text style={styles.percentageText}>
-                                  
-                                  {spareWheelIdNumber[0] ? spareWheel[0] : `${Math.round(spareWheel[0] * 100)}%`}
+                                  {spareWheelIdNumber[0]
+                                    ? spareWheel[0]
+                                    : `${Math.round(spareWheel[0] * 100)}%`}
                                 </Text>
                                 <Slider
                                   style={styles.slider}
                                   minimumValue={0}
                                   maximumValue={1}
-                                  value={spareWheelIdNumber[0]? parseFloat(spareWheel[0]) / 100: spareWheel[0]}
+                                  value={
+                                    spareWheelIdNumber[0]
+                                      ? parseFloat(spareWheel[0]) / 100
+                                      : spareWheel[0]
+                                  }
                                   onValueChange={val =>
                                     handleValueChange4(val, index)
                                   }
-                                  minimumTrackTintColor={getTrackColor(spareWheelIdNumber[0]?parseFloat(spareWheel[0])/100:spareWheel[0])}
+                                  minimumTrackTintColor={getTrackColor(
+                                    spareWheelIdNumber[0]
+                                      ? parseFloat(spareWheel[0]) / 100
+                                      : spareWheel[0],
+                                  )}
                                   maximumTrackTintColor="#000000"
                                   thumbTintColor="#007BFF"
                                 />
@@ -17974,6 +18266,26 @@ const OrderCreation = ({navigation}) => {
                   selectionColor="#007BFF"
                   label="Flood"
                 />
+
+                <SingleSwitch
+                  selectionMode={selectedOption11}
+                  roundCorner={true}
+                  options={['Yes', 'No']}
+                  onSelectSwitch={handleSwitchSelection11}
+                  selectionColor="#007BFF"
+                  label="Accident"
+                />
+
+                {selectedOption11 === 1 && (
+                  <View style={{marginTop: 10, paddingHorizontal: 8}}>
+                    <TextInput
+                      style={styles.photoInput}
+                      placeholder="Enter the Accident remarks"
+                      value={accidentRemarks}
+                      onChangeText={text => setAccidentRemarks(text)}
+                    />
+                  </View>
+                )}
                 <View style={{bottom: 25, marginTop: 20}}>
                   <CustomButton
                     title="Next"
@@ -18066,15 +18378,10 @@ const OrderCreation = ({navigation}) => {
                       onPress={() => handleSelectContainerPress(index)}>
                       <View style={styles.touchableContent}>
                         <Text style={styles.touchableText}>
-                         {validations[index]
-                            ? 'Update / View'
-                            : 'Upload'}
+                          {validations[index] ? 'Update / View' : 'Upload'}
                         </Text>
                         <Text style={styles.icon}>
-                        
-                            {validations[index]
-                            ? '✅'
-                            : '☒'}
+                          {validations[index] ? '✅' : '☒'}
                         </Text>
                       </View>
                     </TouchableOpacity>
@@ -18125,16 +18432,12 @@ const OrderCreation = ({navigation}) => {
                       onPress={() => handleSelectContainerPress1(index)}>
                       <View style={styles.touchableContent}>
                         <Text style={styles.touchableText}>
-                         
-                            {carPhotovalidations[index]
+                          {carPhotovalidations[index]
                             ? 'Update / View'
                             : 'Upload'}
                         </Text>
                         <Text style={styles.icon}>
-                         
-                            {carPhotovalidations[index]
-                            ? '✅'
-                            : '☒'}
+                          {carPhotovalidations[index] ? '✅' : '☒'}
                         </Text>
                       </View>
                     </TouchableOpacity>
@@ -18183,16 +18486,10 @@ const OrderCreation = ({navigation}) => {
                       onPress={() => carDetailsContainerPress(index)}>
                       <View style={styles.touchableContent}>
                         <Text style={styles.touchableText}>
-                         
-                            {carValidation[index]
-                            ? 'Update / View'
-                            : 'Upload'}
+                          {carValidation[index] ? 'Update / View' : 'Upload'}
                         </Text>
                         <Text style={styles.icon}>
-                      
-                            {carValidation[index]
-                            ? '✅'
-                            : '☒'}
+                          {carValidation[index] ? '✅' : '☒'}
                         </Text>
                       </View>
                     </TouchableOpacity>
@@ -18242,14 +18539,10 @@ const OrderCreation = ({navigation}) => {
                       onPress={() => handleBodyInspectionContainerPress(index)}>
                       <View style={styles.touchableContent}>
                         <Text style={styles.touchableText}>
-                         {thirdValidation[index]
-                            ? 'Update / View'
-                            : 'Upload'}
+                          {thirdValidation[index] ? 'Update / View' : 'Upload'}
                         </Text>
                         <Text style={styles.icon}>
-                         {thirdValidation[index]
-                            ? '✅'
-                            : '☒'}
+                          {thirdValidation[index] ? '✅' : '☒'}
                         </Text>
                       </View>
                     </TouchableOpacity>
@@ -18299,14 +18592,10 @@ const OrderCreation = ({navigation}) => {
                       onPress={() => handleMechanicalInspectionPress(index)}>
                       <View style={styles.touchableContent}>
                         <Text style={styles.touchableText}>
-                         {secondValidation[index]
-                            ? 'Update / View'
-                            : 'Upload'}
+                          {secondValidation[index] ? 'Update / View' : 'Upload'}
                         </Text>
                         <Text style={styles.icon}>
-                          {secondValidation[index]
-                            ? '✅'
-                            : '☒'}
+                          {secondValidation[index] ? '✅' : '☒'}
                         </Text>
                       </View>
                     </TouchableOpacity>
